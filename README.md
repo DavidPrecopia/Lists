@@ -8,7 +8,7 @@ Features
 - Synchronized all of your lists between different devices.
   - Cloud storage and device synchronization requires creating an account (supported methods below).
 - All lists are also stored on your device for easy offline access.
-- Available log-in methods include:
+- Available authentication methods:
   - Email
   - Google account
   - Phone number

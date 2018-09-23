@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    NOTE: This layout is <i>shared between</i> ListFragment and DetailFragment
+-->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            style="@style/AppBarThemeLight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="@dimen/elevation_app_bar">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/ToolbarPopUpTheme"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/margin_normal"
+            android:contentDescription="@string/content_description_fab_add_list"
+            app:elevation="@dimen/elevation_fab"
+            app:pressedTranslationZ="@dimen/elevation_fab_pressed_z_axis"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_error"
+            style="@style/ErrorTextView"
+            android:layout_gravity="center"
+            tools:text="This is an error message regarding something" />
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</layout>
