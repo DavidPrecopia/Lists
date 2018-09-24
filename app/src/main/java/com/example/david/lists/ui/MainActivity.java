@@ -1,7 +1,6 @@
 package com.example.david.lists.ui;
 
 import android.databinding.DataBindingUtil;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,15 +37,29 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void openDetailFragment(int listId) {
-        addFragment(DetailFragment.newInstance(listId));
+        replaceFragment(DetailFragment.newInstance(listId));
     }
 
 
-    private void addFragment(Fragment fragment) {
+    private void replaceFragment(Fragment fragment) {
         fragmentManager.beginTransaction()
-                .add(binding.fragmentHolder.getId(), fragment)
+                .replace(binding.fragmentHolder.getId(), fragment)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+    }
+
+
+    /**
+     * @return true if Up navigation completed successfully <i>and</i> this Activity was finished, false otherwise.
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+            return false;
+        } else {
+            return super.onSupportNavigateUp();
+        }
     }
 }

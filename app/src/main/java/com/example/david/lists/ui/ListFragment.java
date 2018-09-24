@@ -4,15 +4,30 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListSharedBinding;
+import com.example.david.lists.databinding.ListItemBinding;
+import com.example.david.lists.datamodel.UserList;
 
-public class ListFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentListSharedBinding binding;
 
@@ -29,8 +44,25 @@ public class ListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // init ViewModel
+        setHasOptionsMenu(true);
+        // TODO initialize ViewModel
     }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setFragmentClickListener(context);
+    }
+
+    private void setFragmentClickListener(Context context) {
+        if (context instanceof ListFragmentClickListener) {
+            fragmentClickListener = (ListFragmentClickListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement ListFragmentClickListener");
+        }
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,23 +72,85 @@ public class ListFragment extends Fragment {
     }
 
     private void init() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.tvError.setVisibility(View.VISIBLE);
-        binding.tvError.setText("List");
-        binding.fab.setOnClickListener(view -> fragmentClickListener.openDetailFragment(-1));
+        initToolbar();
+        // TODO Move to LiveData observer
+        initRecyclerView();
+        initFab();
+        initSwipeRefresh();
+    }
+
+    private void initToolbar() {
+        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+        binding.toolbar.setTitle(getContext().getString(R.string.app_name));
+    }
+
+    private void initRecyclerView() {
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
+        // FOR TESTING PURPOSES
+        recyclerView.setAdapter(new UserListsAdapter(getUsersLists()));
+    }
+
+    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
+        );
+    }
+
+    /**
+     * FOR TESTING PURPOSES
+     */
+    private List<UserList> getUsersLists() {
+        List<UserList> testing = new ArrayList<>();
+        for (int x = 0; x < 20; x++) {
+            testing.add(new UserList(x, String.valueOf(x), x));
+        }
+        return testing;
+    }
+
+
+    private void initFab() {
+        FloatingActionButton fab = binding.fab;
+        initFabClickListener(fab);
+        initFabScrollListener(fab);
+    }
+
+    private void initFabClickListener(FloatingActionButton fab) {
+        fab.setOnClickListener(view -> snackbarMessage("FAB clicked"));
+    }
+
+    private void initFabScrollListener(FloatingActionButton fab) {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    fab.hide();
+                } else if (dy < 0) {
+                    fab.show();
+                }
+            }
+        });
+    }
+
+    private void initSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
     }
 
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ListFragmentClickListener) {
-            fragmentClickListener = (ListFragmentClickListener) context;
-        } else {
-            throw new RuntimeException(
-                    context.toString() + " must implement ListFragmentClickListener"
-            );
-        }
+    public void onRefresh() {
+        binding.swipeRefreshLayout.setRefreshing(false);
+        snackbarMessage("Swiped Refresh");
+    }
+
+
+    private void snackbarMessage(String message) {
+        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
 
@@ -66,8 +160,81 @@ public class ListFragment extends Fragment {
         fragmentClickListener = null;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_log_out, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_id_log_out:
+                snackbarMessage("Log Out");
+                break;
+            case R.id.menu_id_log_in:
+                snackbarMessage("Log In");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     interface ListFragmentClickListener {
         void openDetailFragment(int listId);
+    }
+
+
+    private final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
+
+        private final List<UserList> userLists;
+
+        UserListsAdapter(List<UserList> userLists) {
+            this.userLists = userLists;
+        }
+
+        @NonNull
+        @Override
+        public UserListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new UserListViewHolder(
+                    ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
+            );
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
+            userListViewHolder.bindView(
+                    userLists.get(userListViewHolder.getAdapterPosition())
+            );
+        }
+
+        @Override
+        public int getItemCount() {
+            return userLists.size();
+        }
+
+
+        final class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+            private final ListItemBinding binding;
+
+            UserListViewHolder(@NonNull ListItemBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+                binding.getRoot().setOnClickListener(this);
+            }
+
+            void bindView(UserList userList) {
+                binding.tvName.setText(userList.getName());
+                binding.executePendingBindings();
+            }
+
+            @Override
+            public void onClick(View v) {
+                fragmentClickListener.openDetailFragment(
+                        userLists.get(getAdapterPosition()).getId()
+                );
+            }
+        }
     }
 }

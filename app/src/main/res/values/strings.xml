@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Lists</string>
+
+    <!--ListFragment-->
+    <string name="content_description_fab_add_list">Add a list</string>
+
+    <!--list_item-->
+    <string name="content_description_list_item_drag">Hold to drag</string>
+    <string name="content_description_list_item_edit">Edit name</string>
+
+    <string name="menu_item_title_log_out">Log Out (placholder)</string>
+    <string name="menu_item_title_log_in">Log In (placholder)</string>
 </resources>
