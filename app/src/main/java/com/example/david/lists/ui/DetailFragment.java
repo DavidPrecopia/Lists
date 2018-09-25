@@ -1,5 +1,6 @@
 package com.example.david.lists.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,13 +20,12 @@ import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListSharedBinding;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.datamodel.UserList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private DetailViewModel viewModel;
     private FragmentListSharedBinding binding;
 
     private static final String ARG_PARAM_LIST_ID = "list_id_key";
@@ -44,8 +44,15 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO initialize ViewModel
-        // getArguments().getInt(ARG_PARAM_LIST_ID)
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        DetailViewModelFactory factory = new DetailViewModelFactory(
+                getActivity().getApplication(),
+                getArguments().getInt(ARG_PARAM_LIST_ID)
+        );
+        viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
     }
 
 
@@ -57,19 +64,29 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void init() {
+        observeViewModel();
+
         initToolbar();
-        // TODO Move to LiveData observer
-        initRecyclerView();
         initFab();
         initSwipeRefresh();
+    }
+
+    private void observeViewModel() {
+        viewModel.getError().observe(this, itemList -> {
+            // TODO Stop loading
+            // Initializing the RecyclerView here ensure that the data is ready.
+            // This preserves scroll position
+            initRecyclerView();
+        });
     }
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // TODO Title will be list's name - start with blank title - add in LiveData's observer
+        // TODO Title will be list's name - start with blank title - set title in LiveData's observer
         binding.toolbar.setTitle("DETAIL PLACEHOLDER");
     }
+
 
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
@@ -77,8 +94,7 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        // FOR TESTING PURPOSES
-        recyclerView.setAdapter(new ItemsAdapter(getUsersLists()));
+        recyclerView.setAdapter(new ItemsAdapter(viewModel.getItemList().getValue()));
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -88,16 +104,6 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
         );
     }
 
-    /**
-     * FOR TESTING PURPOSES
-     */
-    private List<Item> getUsersLists() {
-        List<Item> testing = new ArrayList<>();
-        for (int x = 5; x < 20; x++) {
-            testing.add(new Item(x, String.valueOf(x), x, x));
-        }
-        return testing;
-    }
 
     private void initFab() {
         FloatingActionButton fab = binding.fab;

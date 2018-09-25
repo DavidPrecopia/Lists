@@ -1,6 +1,6 @@
 # Lists
 
-Easily keep track of task that need to be complete across multiple devices.
+Keep track of task that need to be complete across multiple devices.
 
 Features
 

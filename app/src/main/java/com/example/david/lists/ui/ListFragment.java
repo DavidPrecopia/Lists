@@ -1,5 +1,6 @@
 package com.example.david.lists.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -24,11 +25,11 @@ import com.example.david.lists.databinding.FragmentListSharedBinding;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.UserList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    private ListViewModel viewModel;
     private FragmentListSharedBinding binding;
 
     private ListFragmentClickListener fragmentClickListener;
@@ -45,7 +46,12 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        // TODO initialize ViewModel
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        ListViewModelFactory factory = new ListViewModelFactory(getActivity().getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(ListViewModel.class);
     }
 
 
@@ -72,11 +78,20 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void init() {
+        observeViewModel();
+
         initToolbar();
-        // TODO Move to LiveData observer
-        initRecyclerView();
         initFab();
         initSwipeRefresh();
+    }
+
+    private void observeViewModel() {
+        viewModel.getUserLists().observe(this, userLists -> {
+            // TODO Add stop loading
+            // Initializing the RecyclerView here ensure that the data is ready.
+            // This preserves scroll position
+            initRecyclerView();
+        });
     }
 
     private void initToolbar() {
@@ -90,8 +105,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        // FOR TESTING PURPOSES
-        recyclerView.setAdapter(new UserListsAdapter(getUsersLists()));
+        recyclerView.setAdapter(new UserListsAdapter(viewModel.getUserLists().getValue()));
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -99,17 +113,6 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 recyclerView.getContext(),
                 layoutManager.getOrientation()
         );
-    }
-
-    /**
-     * FOR TESTING PURPOSES
-     */
-    private List<UserList> getUsersLists() {
-        List<UserList> testing = new ArrayList<>();
-        for (int x = 0; x < 20; x++) {
-            testing.add(new UserList(x, String.valueOf(x), x));
-        }
-        return testing;
     }
 
 
@@ -180,6 +183,9 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    /**
+     * Must be implemented by this Fragment's containing Activity
+     */
     interface ListFragmentClickListener {
         void openDetailFragment(int listId);
     }
