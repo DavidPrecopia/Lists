@@ -1,8 +1,8 @@
 # Lists
 
-Keep track of task that need to be complete across multiple devices.
+Keep track of task across multiple devices.
 
-Features
+**Features**
 
 - Automatic backs-up all of your lists to the cloud.
 - Synchronized all of your lists between different devices.
