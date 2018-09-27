@@ -1,10 +1,6 @@
 package com.example.david.lists.ui;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
 
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.Item;
@@ -13,6 +9,10 @@ import com.example.david.lists.model.Model;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

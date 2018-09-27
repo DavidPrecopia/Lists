@@ -26,7 +26,7 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        dao = ListsDatabase.getInstnace(application).getListDao();
+        dao = ListsDatabase.getInstance(application).getListDao();
     }
 
 

@@ -1,17 +1,6 @@
 package com.example.david.lists.ui;
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +9,20 @@ import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListSharedBinding;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -33,7 +34,7 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public DetailFragment() {
     }
 
-    public static DetailFragment newInstance(int listId) {
+    static DetailFragment newInstance(int listId) {
         DetailFragment fragment = new DetailFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_PARAM_LIST_ID, listId);
@@ -190,5 +191,4 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
         }
     }
-
 }

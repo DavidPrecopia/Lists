@@ -1,8 +1,8 @@
 package com.example.david.lists.datamodel;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_NAME;

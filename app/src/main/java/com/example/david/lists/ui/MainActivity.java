@@ -1,14 +1,15 @@
 package com.example.david.lists.ui;
 
-import android.databinding.DataBindingUtil;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityMainBinding;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity
         implements ListFragment.ListFragmentClickListener {

@@ -1,17 +1,16 @@
 package com.example.david.lists.database;
 
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
-
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
 
 import java.util.List;
 
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
 import io.reactivex.Flowable;
 
-import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+import static androidx.room.OnConflictStrategy.REPLACE;
 import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_ID;
 import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_LIST_ID;
 import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_NAME;

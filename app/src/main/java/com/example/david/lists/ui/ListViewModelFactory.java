@@ -1,9 +1,10 @@
 package com.example.david.lists.ui;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 final class ListViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
