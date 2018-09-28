@@ -59,15 +59,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        setFragmentClickListener(context);
-    }
-
-    private void setFragmentClickListener(Context context) {
-        if (context instanceof ListFragmentClickListener) {
-            fragmentClickListener = (ListFragmentClickListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement ListFragmentClickListener");
-        }
+        fragmentClickListener = (ListFragmentClickListener) context;
     }
 
 
