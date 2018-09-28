@@ -15,4 +15,6 @@
     <!--errors-->
     <string name="error_msg_generic">An error has occurred</string>
     <string name="error_msg_no_network_connection">No internet connection</string>
+    <string name="error_msg_no_lists">No lists created</string>
+    <string name="error_msg_empty_list">List is empty</string>
 </resources>

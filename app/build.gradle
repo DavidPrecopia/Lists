@@ -28,20 +28,20 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation "androidx.appcompat:appcompat:$androidXVersion"
+    implementation "androidx.legacy:legacy-support-v4:$androidXVersion"
+    implementation "com.google.android.material:material:$androidXVersion"
 
+    implementation "androidx.recyclerview:recyclerview:$androidXVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // LiveData and ViewModel
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensionsVersion"
     // Room
-    implementation 'androidx.room:room-runtime:2.0.0-rc01'
-    annotationProcessor 'androidx.room:room-compiler:2.0.0-rc01'
-    implementation 'androidx.room:room-rxjava2:2.0.0-rc01'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-rxjava2:$roomVersion"
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

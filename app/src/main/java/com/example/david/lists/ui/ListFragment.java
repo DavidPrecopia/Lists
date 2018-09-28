@@ -79,6 +79,7 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void init() {
+        showLoading();
         observeViewModel();
         initToolbar();
         initFab();
@@ -86,12 +87,23 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void observeViewModel() {
+        observerUserLists();
+        observerError();
+    }
+
+    private void observerUserLists() {
         viewModel.getUserLists().observe(this, userLists -> {
-            // TODO Add stop loading
-            // Initializing the RecyclerView here ensure that the data is ready.
-            // This preserves scroll position
-            initRecyclerView();
+            hideLoading();
+            if (userLists == null || userLists.isEmpty()) {
+                showError(getString(R.string.error_msg_no_lists));
+            } else {
+                initRecyclerView(userLists);
+            }
         });
+    }
+
+    private void observerError() {
+        viewModel.getError().observe(this, this::showError);
     }
 
     private void initToolbar() {
@@ -99,13 +111,13 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         binding.toolbar.setTitle(getContext().getString(R.string.app_name));
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(List<UserList> userLists) {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        recyclerView.setAdapter(new UserListsAdapter(viewModel.getUserLists().getValue()));
+        recyclerView.setAdapter(new UserListsAdapter(userLists));
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -145,15 +157,40 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    private void snackbarMessage(String message) {
+        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+
+    private void showLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.swipeRefreshLayout.setVisibility(View.GONE);
+        binding.fab.hide();
+    }
+
+    private void hideLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.GONE);
+        binding.swipeRefreshLayout.setVisibility(View.VISIBLE);
+        binding.fab.show();
+    }
+
+    private void showError(String errorMessage) {
+        hideLoading();
+        binding.tvError.setText(errorMessage);
+        binding.tvError.setVisibility(View.VISIBLE);
+    }
+
+    private void hideError() {
+        binding.tvError.setVisibility(View.GONE);
+    }
+
+
     @Override
     public void onRefresh() {
         binding.swipeRefreshLayout.setRefreshing(false);
         snackbarMessage("Swiped Refresh");
-    }
-
-
-    private void snackbarMessage(String message) {
-        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
 

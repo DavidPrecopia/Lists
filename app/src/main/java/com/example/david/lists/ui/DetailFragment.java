@@ -65,20 +65,31 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void init() {
+        showLoading();
         observeViewModel();
-
         initToolbar();
         initFab();
         initSwipeRefresh();
     }
 
     private void observeViewModel() {
-        viewModel.getError().observe(this, itemList -> {
-            // TODO Stop loading
-            // Initializing the RecyclerView here ensure that the data is ready.
-            // This preserves scroll position
-            initRecyclerView();
+        observeItemList();
+        observerError();
+    }
+
+    private void observeItemList() {
+        viewModel.getItemList().observe(this, itemList -> {
+            hideLoading();
+            if (itemList == null || itemList.isEmpty()) {
+                showError(getString(R.string.error_msg_empty_list));
+            } else {
+                initRecyclerView(itemList);
+            }
         });
+    }
+
+    private void observerError() {
+        viewModel.getError().observe(this, this::showError);
     }
 
     private void initToolbar() {
@@ -89,13 +100,13 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
 
-    private void initRecyclerView() {
+    private void initRecyclerView(List<Item> itemList) {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        recyclerView.setAdapter(new ItemsAdapter(viewModel.getItemList().getValue()));
+        recyclerView.setAdapter(new ItemsAdapter(itemList));
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -138,6 +149,32 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void snackbarMessage(String message) {
         Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
+
+
+    private void showLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.swipeRefreshLayout.setVisibility(View.GONE);
+        binding.fab.hide();
+    }
+
+    private void hideLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.GONE);
+        binding.swipeRefreshLayout.setVisibility(View.VISIBLE);
+        binding.fab.show();
+    }
+
+    private void showError(String errorMessage) {
+        hideLoading();
+        binding.tvError.setText(errorMessage);
+        binding.tvError.setVisibility(View.VISIBLE);
+    }
+
+    private void hideError() {
+        binding.tvError.setVisibility(View.GONE);
+    }
+
 
     // TODO Implement swipe refresh
     @Override
