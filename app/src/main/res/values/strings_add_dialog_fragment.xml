@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hint_add_list">List name</string>
-    <string name="hint_add_item">Item name</string>
+    <string name="hint_add_list">List\'s name</string>
+    <string name="hint_add_item">Item\'s name</string>
 
     <string name="button_name_cancel">Cancel</string>
     <string name="button_name_confirm">Add</string>
 
-    <string name="notice_empty_name_text_field">Must enter a name</string>
+    <string name="notice_empty_name_text_field">Cannot be empty</string>
 </resources>
