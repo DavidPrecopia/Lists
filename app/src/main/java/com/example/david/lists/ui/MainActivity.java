@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void openDetailFragment(int listId) {
-        replaceFragment(DetailFragment.newInstance(listId));
+    public void openDetailFragment(int listId, String listName) {
+        replaceFragment(DetailFragment.newInstance(listId, listName));
     }
 
 

@@ -8,13 +8,8 @@
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_item_edit">Edit name</string>
 
+
     <!--menu-->
     <string name="menu_item_title_log_out">Log Out</string>
     <string name="menu_item_title_log_in">Log In</string>
-
-    <!--errors-->
-    <string name="error_msg_generic">An error has occurred</string>
-    <string name="error_msg_no_network_connection">No internet connection</string>
-    <string name="error_msg_no_lists">No lists created</string>
-    <string name="error_msg_empty_list">List is empty</string>
 </resources>

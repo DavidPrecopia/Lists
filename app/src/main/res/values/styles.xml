@@ -24,4 +24,10 @@
         <item name="android:textColor">@color/error</item>
         <item name="android:visibility">gone</item>
     </style>
+
+
+    <style name="ButtonColor">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="rippleColor">@color/colorAccent</item>
+    </style>
 </resources>

@@ -3,6 +3,7 @@ package com.example.david.lists.datamodel;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -28,7 +29,7 @@ public final class Item {
 
     @PrimaryKey
     @ColumnInfo(name = ITEM_COLUMN_ID)
-    private final int id;
+    private int id;
 
     @ColumnInfo(name = ITEM_COLUMN_NAME)
     private final String name;
@@ -42,6 +43,13 @@ public final class Item {
 
     public Item(int id, String name, int position, int listId) {
         this.id = id;
+        this.name = name;
+        this.position = position;
+        this.listId = listId;
+    }
+
+    @Ignore
+    public Item(String name, int position, int listId) {
         this.name = name;
         this.position = position;
         this.listId = listId;

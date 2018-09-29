@@ -43,13 +43,14 @@ public final class Model implements IModelContract {
 
     @Override
     public void addList(UserList list) {
-        Timber.d("addList");
-        dao.addList(list);
+        long rowId = dao.addList(list);
+        Timber.d(String.valueOf(rowId));
     }
 
     @Override
     public void addItem(Item item) {
-        dao.addItem(item);
+        long rowId = dao.addItem(item);
+        Timber.d(String.valueOf(rowId));
     }
 
 

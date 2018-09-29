@@ -71,8 +71,8 @@ final class DetailViewModel extends AndroidViewModel {
     }
 
 
-    void add(Item item) {
-        Completable.fromAction(() -> model.addItem(item))
+    void add(String name, int position, int listId) {
+        Completable.fromAction(() -> model.addItem(new Item(name, position, listId)))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
@@ -90,6 +90,10 @@ final class DetailViewModel extends AndroidViewModel {
 
     LiveData<String> getError() {
         return error;
+    }
+
+    int getListId() {
+        return listId;
     }
 
 

@@ -28,10 +28,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ListFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener,
+        AddDialogFragment.AddDialogFragmentListener {
 
     private ListViewModel viewModel;
     private FragmentListSharedBinding binding;
+
+    private UserListsAdapter adapter;
 
     private ListFragmentClickListener fragmentClickListener;
 
@@ -109,7 +113,8 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        recyclerView.setAdapter(new UserListsAdapter(userLists));
+        adapter = new UserListsAdapter(userLists);
+        recyclerView.setAdapter(adapter);
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -127,7 +132,11 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void initFabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> snackbarMessage("FAB clicked"));
+        fab.setOnClickListener(view -> {
+            AddDialogFragment dialogFragment = AddDialogFragment.getInstance(getString(R.string.hint_add_list));
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+        });
     }
 
     private void initFabScrollListener(FloatingActionButton fab) {
@@ -212,11 +221,20 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    @Override
+    public void add(String name) {
+        // getItemCount returns the length of the list in use,
+        // ensuring the new UserList is added at the bottom
+        int position = adapter == null ? 0 : adapter.getItemCount();
+        viewModel.add(name, position);
+    }
+
+
     /**
      * Must be implemented by this Fragment's containing Activity
      */
     interface ListFragmentClickListener {
-        void openDetailFragment(int listId);
+        void openDetailFragment(int listId, String listName);
     }
 
 
@@ -266,8 +284,9 @@ public class ListFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onClick(View v) {
+                UserList userList = userLists.get(getAdapterPosition());
                 fragmentClickListener.openDetailFragment(
-                        userLists.get(getAdapterPosition()).getId()
+                        userList.getId(), userList.getName()
                 );
             }
         }

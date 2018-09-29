@@ -24,20 +24,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class DetailFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener,
+        AddDialogFragment.AddDialogFragmentListener {
 
     private DetailViewModel viewModel;
     private FragmentListSharedBinding binding;
 
-    private static final String ARG_PARAM_LIST_ID = "list_id_key";
+    private ItemsAdapter adapter;
+
+    private static final String ARG_KEY_LIST_ID = "list_id_key";
+    private static final String ARG_KEY_LIST_NAME = "list_name_key";
 
     public DetailFragment() {
     }
 
-    static DetailFragment newInstance(int listId) {
+    static DetailFragment newInstance(int listId, String listName) {
         DetailFragment fragment = new DetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARG_PARAM_LIST_ID, listId);
+        bundle.putInt(ARG_KEY_LIST_ID, listId);
+        bundle.putString(ARG_KEY_LIST_NAME, listName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -51,7 +57,7 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void initViewModel() {
         DetailViewModelFactory factory = new DetailViewModelFactory(
                 getActivity().getApplication(),
-                getArguments().getInt(ARG_PARAM_LIST_ID)
+                getArguments().getInt(ARG_KEY_LIST_ID)
         );
         viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
     }
@@ -95,8 +101,7 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // TODO Title will be list's name - start with blank title - set title in LiveData's observer
-        binding.toolbar.setTitle("DETAIL PLACEHOLDER");
+        binding.toolbar.setTitle(getArguments().getString(ARG_KEY_LIST_NAME));
     }
 
 
@@ -106,7 +111,8 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        recyclerView.setAdapter(new ItemsAdapter(itemList));
+        adapter = new ItemsAdapter(itemList);
+        recyclerView.setAdapter(adapter);
     }
 
     private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
@@ -124,7 +130,11 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void initFabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> snackbarMessage("FAB clicked"));
+        fab.setOnClickListener(view -> {
+            AddDialogFragment dialogFragment = AddDialogFragment.getInstance(getString(R.string.hint_add_item));
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+        });
     }
 
     private void initFabScrollListener(FloatingActionButton fab) {
@@ -181,6 +191,15 @@ public class DetailFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onRefresh() {
         binding.swipeRefreshLayout.setRefreshing(false);
         snackbarMessage("Swiped Refresh");
+    }
+
+
+    @Override
+    public void add(String name) {
+        // getItemCount returns the length of the list in use,
+        // ensuring the new Item is added at the bottom
+        int position = adapter == null ? 0 : adapter.getItemCount();
+        viewModel.add(name, position, viewModel.getListId());
     }
 
 

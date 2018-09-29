@@ -34,10 +34,10 @@ public interface ListsDao {
 
 
     @Insert(onConflict = REPLACE)
-    void addList(UserList list);
+    long addList(UserList list);
 
     @Insert(onConflict = REPLACE)
-    void addItem(Item item);
+    long addItem(Item item);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME

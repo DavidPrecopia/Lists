@@ -2,6 +2,7 @@ package com.example.david.lists.datamodel;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
@@ -12,9 +13,9 @@ import static com.example.david.lists.database.DatabaseContract.USER_LIST_TABLE_
 @Entity(tableName = USER_LIST_TABLE_NAME)
 public final class UserList {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = USER_LIST_COLUMN_ID)
-    private final int id;
+    private int id;
 
     @ColumnInfo(name = USER_LIST_COLUMN_NAME)
     private final String name;
@@ -25,6 +26,12 @@ public final class UserList {
 
     public UserList(int id, String name, int position) {
         this.id = id;
+        this.name = name;
+        this.position = position;
+    }
+
+    @Ignore
+    public UserList(String name, int position) {
         this.name = name;
         this.position = position;
     }

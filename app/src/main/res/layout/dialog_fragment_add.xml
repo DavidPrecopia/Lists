@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--focusableInTouchMode prevents the TextInputEditText from -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
+        android:layout_width="@dimen/dialog_width"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:minWidth="@dimen/dialog_width"
+        android:paddingStart="@dimen/margin_normal"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingEnd="@dimen/margin_normal"
+        android:paddingBottom="@dimen/margin_medium">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/text_input_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="@dimen/dialog_width"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/dialog_width"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_edit_text"
+                android:layout_width="@dimen/dialog_width"
+                android:layout_height="match_parent"
+                android:inputType="textAutoCorrect"
+                android:minWidth="@dimen/dialog_width"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_cancel"
+            style="@style/ButtonColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:text="@string/button_name_cancel"
+            app:layout_constraintBottom_toBottomOf="@+id/button_confirm"
+            app:layout_constraintEnd_toStartOf="@+id/button_confirm"
+            app:layout_constraintTop_toTopOf="@+id/button_confirm" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_confirm"
+            style="@style/ButtonColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:text="@string/button_name_confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
