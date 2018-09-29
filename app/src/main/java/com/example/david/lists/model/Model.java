@@ -66,13 +66,13 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void changeListName(int listId, String newName) {
-        throw new UnsupportedOperationException();
+    public void changeListTitle(int listId, String newTitle) {
+        dao.changeListTitle(listId, newTitle);
     }
 
     @Override
-    public void changeItemName(int itemId, String newName) {
-        throw new UnsupportedOperationException();
+    public void changeItemTitle(int itemId, String newTitle) {
+        dao.changeItemTitle(itemId, newTitle);
     }
 
 

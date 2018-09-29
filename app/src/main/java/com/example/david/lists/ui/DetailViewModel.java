@@ -71,14 +71,20 @@ final class DetailViewModel extends AndroidViewModel {
     }
 
 
-    void add(String name, int position, int listId) {
-        Completable.fromAction(() -> model.addItem(new Item(name, position, listId)))
+    void add(String title, int position, int listId) {
+        Completable.fromAction(() -> model.addItem(new Item(title, position, listId)))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
     void delete(int itemId) {
         Completable.fromAction(() -> model.deleteItem(itemId))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    void changeTitle(int itemId, String newTitle) {
+        Completable.fromAction(() -> model.changeItemTitle(itemId, newTitle))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }

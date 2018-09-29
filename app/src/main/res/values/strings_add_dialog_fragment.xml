@@ -3,8 +3,10 @@
     <string name="hint_add_list">List\'s name</string>
     <string name="hint_add_item">Item\'s name</string>
 
-    <string name="button_name_cancel">Cancel</string>
-    <string name="button_name_confirm">Add</string>
+    <string name="button_text_cancel">Cancel</string>
+    <string name="button_text_confirm_add">Add</string>
+    <string name="button_text_confirm_edit">Apply</string>
 
-    <string name="notice_empty_name_text_field">Cannot be empty</string>
+    <string name="error_empty_title_text_field">Cannot be empty</string>
+    <string name="error_title_unchanged">Title is unchanged</string>
 </resources>

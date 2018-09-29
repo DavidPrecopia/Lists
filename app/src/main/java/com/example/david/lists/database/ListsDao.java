@@ -41,14 +41,14 @@ public interface ListsDao {
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
-            + " SET " + USER_LIST_COLUMN_NAME + " = :newName"
+            + " SET " + USER_LIST_COLUMN_NAME + " = :newTitle"
             + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    void changeListName(int listId, String newName);
+    void changeListTitle(int listId, String newTitle);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
-            + " SET " + ITEM_COLUMN_NAME + " = :newName"
+            + " SET " + ITEM_COLUMN_NAME + " = :newTitle"
             + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    void changeItemName(int itemId, String newName);
+    void changeItemTitle(int itemId, String newTitle);
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")

@@ -21,7 +21,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                style="@style/ToolbarPopUpTheme"
+                style="@style/ToolbarPopUpThemeLight"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -67,7 +67,7 @@
 
         <TextView
             android:id="@+id/tv_error"
-            style="@style/ErrorTextView"
+            style="@style/ErrorTextViewStyle"
             android:layout_gravity="center"
             tools:text="This is an error message regarding something" />
 

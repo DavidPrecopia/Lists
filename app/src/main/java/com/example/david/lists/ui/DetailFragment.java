@@ -26,7 +26,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class DetailFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
-        AddDialogFragment.AddDialogFragmentListener {
+        AddDialogFragment.AddDialogFragmentListener,
+        EditDialogFragment.EditDialogFragmentListener {
 
     private DetailViewModel viewModel;
     private FragmentListSharedBinding binding;
@@ -195,11 +196,16 @@ public class DetailFragment extends Fragment
 
 
     @Override
-    public void add(String name) {
+    public void add(String title) {
         // getItemCount returns the length of the list in use,
         // ensuring the new Item is added at the bottom
         int position = adapter == null ? 0 : adapter.getItemCount();
-        viewModel.add(name, position, viewModel.getListId());
+        viewModel.add(title, position, viewModel.getListId());
+    }
+
+    @Override
+    public void edit(int id, String newTitle) {
+        viewModel.changeTitle(id, newTitle);
     }
 
 
@@ -242,7 +248,7 @@ public class DetailFragment extends Fragment
             }
 
             private void bindView(Item item) {
-                binding.tvName.setText(item.getName());
+                binding.tvTitle.setText(item.getTitle());
                 binding.executePendingBindings();
             }
         }

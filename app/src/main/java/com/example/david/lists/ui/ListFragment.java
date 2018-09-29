@@ -30,7 +30,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
-        AddDialogFragment.AddDialogFragmentListener {
+        AddDialogFragment.AddDialogFragmentListener,
+        EditDialogFragment.EditDialogFragmentListener {
 
     private ListViewModel viewModel;
     private FragmentListSharedBinding binding;
@@ -222,19 +223,21 @@ public class ListFragment extends Fragment
 
 
     @Override
-    public void add(String name) {
+    public void add(String title) {
         // getItemCount returns the length of the list in use,
         // ensuring the new UserList is added at the bottom
         int position = adapter == null ? 0 : adapter.getItemCount();
-        viewModel.add(name, position);
+        viewModel.add(title, position);
+    }
+
+    @Override
+    public void edit(int id, String newTitle) {
+        viewModel.changeTitle(id, newTitle);
     }
 
 
-    /**
-     * Must be implemented by this Fragment's containing Activity
-     */
     interface ListFragmentClickListener {
-        void openDetailFragment(int listId, String listName);
+        void openDetailFragment(int listId, String listTitle);
     }
 
 
@@ -278,7 +281,7 @@ public class ListFragment extends Fragment
             }
 
             void bindView(UserList userList) {
-                binding.tvName.setText(userList.getName());
+                binding.tvTitle.setText(userList.getTitle());
                 binding.executePendingBindings();
             }
 
@@ -286,7 +289,7 @@ public class ListFragment extends Fragment
             public void onClick(View v) {
                 UserList userList = userLists.get(getAdapterPosition());
                 fragmentClickListener.openDetailFragment(
-                        userList.getId(), userList.getName()
+                        userList.getId(), userList.getTitle()
                 );
             }
         }

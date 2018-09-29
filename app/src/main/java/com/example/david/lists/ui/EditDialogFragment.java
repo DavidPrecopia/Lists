@@ -15,31 +15,33 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
-public final class AddDialogFragment extends DialogFragment {
+public final class EditDialogFragment extends DialogFragment {
 
     private DialogFragmentSharedBinding binding;
 
-    private static final String ARG_KEY_HINT_TEXT = "hint_text_key";
+    private static final String ARG_KEY_ID = "id_key";
+    private static final String ARG_KEY_TITLE = "title_key";
 
-    private AddDialogFragmentListener dialogListener;
+    private EditDialogFragmentListener dialogListener;
 
-
-    public AddDialogFragment() {
+    public EditDialogFragment() {
     }
 
-    static AddDialogFragment getInstance(String hintText) {
-        AddDialogFragment dialogFragment = new AddDialogFragment();
+
+    static EditDialogFragment getInstance(int id, String title) {
+        EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_KEY_HINT_TEXT, hintText);
-        dialogFragment.setArguments(bundle);
-        return dialogFragment;
+        bundle.putInt(ARG_KEY_ID, id);
+        bundle.putString(ARG_KEY_TITLE, title);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        dialogListener = (AddDialogFragmentListener) getTargetFragment();
+        dialogListener = (EditDialogFragmentListener) getTargetFragment();
     }
 
     @Nullable
@@ -51,27 +53,29 @@ public final class AddDialogFragment extends DialogFragment {
     }
 
     private void init() {
-        setHint();
+        setEditText();
         setConfirmButtonText();
         confirmClickListener();
         cancelClickListener();
     }
 
-    private void setHint() {
-        binding.textInputLayout.setHint(getArguments().getString(ARG_KEY_HINT_TEXT));
+    private void setEditText() {
+        binding.textInputEditText.setText(getArguments().getString(ARG_KEY_TITLE));
     }
 
     private void setConfirmButtonText() {
-        binding.buttonConfirm.setText(getString(R.string.button_text_confirm_add));
+        binding.buttonConfirm.setText(getString(R.string.button_text_confirm_edit));
     }
 
     private void confirmClickListener() {
         binding.buttonConfirm.setOnClickListener(view -> {
-            String title = binding.textInputEditText.getText().toString();
-            if (invalidInput(title)) {
-                showError();
+            String newTitle = binding.textInputEditText.getText().toString();
+            if (invalidInput(newTitle)) {
+                showError(getString(R.string.error_empty_title_text_field));
+            } else if (titleUnchanged(newTitle)) {
+                showError(getString(R.string.error_title_unchanged));
             } else {
-                dialogListener.add(title);
+                dialogListener.edit(getArguments().getInt(ARG_KEY_ID), newTitle);
                 dismiss();
             }
         });
@@ -82,16 +86,20 @@ public final class AddDialogFragment extends DialogFragment {
     }
 
 
-    private void showError() {
-        binding.textInputLayout.setError(getString(R.string.error_empty_title_text_field));
+    private void showError(String message) {
+        binding.textInputLayout.setError(message);
     }
 
     private boolean invalidInput(String msg) {
         return TextUtils.isEmpty(msg);
     }
 
+    private boolean titleUnchanged(String newTitle) {
+        return newTitle.equals(getArguments().getString(ARG_KEY_TITLE));
+    }
 
-    interface AddDialogFragmentListener {
-        void add(String title);
+
+    interface EditDialogFragmentListener {
+        void edit(int id, String newTitle);
     }
 }

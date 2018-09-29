@@ -69,14 +69,20 @@ final class ListViewModel extends AndroidViewModel {
     }
 
 
-    void add(String name, int position) {
-        Completable.fromAction(() -> model.addList(new UserList(name, position)))
+    void add(String title, int position) {
+        Completable.fromAction(() -> model.addList(new UserList(title, position)))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
     void delete(int listId) {
         Completable.fromAction(() -> model.deleteList(listId))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    void changeTitle(int listId, String newTitle) {
+        Completable.fromAction(() -> model.changeListTitle(listId, newTitle))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }

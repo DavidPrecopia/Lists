@@ -32,7 +32,7 @@ public final class Item {
     private int id;
 
     @ColumnInfo(name = ITEM_COLUMN_NAME)
-    private final String name;
+    private final String title;
 
     @ColumnInfo(name = ITEM_COLUMN_POSITION)
     private final int position;
@@ -41,16 +41,16 @@ public final class Item {
     private final int listId;
 
 
-    public Item(int id, String name, int position, int listId) {
+    public Item(int id, String title, int position, int listId) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.position = position;
         this.listId = listId;
     }
 
     @Ignore
-    public Item(String name, int position, int listId) {
-        this.name = name;
+    public Item(String title, int position, int listId) {
+        this.title = title;
         this.position = position;
         this.listId = listId;
     }
@@ -60,8 +60,8 @@ public final class Item {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public int getPosition() {

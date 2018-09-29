@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!--
         focusableInTouchMode prevents TextInputEditText from gaining focus
@@ -22,8 +23,9 @@
             android:layout_width="@dimen/dialog_width"
             android:layout_height="wrap_content"
             android:minWidth="@dimen/dialog_width"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="true"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/max_name_length"
+            app:hintTextAppearance="@style/HintTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -33,6 +35,7 @@
                 android:layout_width="@dimen/dialog_width"
                 android:layout_height="match_parent"
                 android:inputType="textAutoCorrect"
+                android:maxLength="@integer/max_name_length"
                 android:minWidth="@dimen/dialog_width"
                 android:singleLine="true" />
 
@@ -44,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_normal"
-            android:text="@string/button_name_cancel"
+            android:text="@string/button_text_cancel"
             app:layout_constraintBottom_toBottomOf="@+id/button_confirm"
             app:layout_constraintEnd_toStartOf="@+id/button_confirm"
             app:layout_constraintTop_toTopOf="@+id/button_confirm" />
@@ -55,9 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_medium"
-            android:text="@string/button_name_confirm"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_input_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/text_input_layout"
+            tools:text="Confirm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

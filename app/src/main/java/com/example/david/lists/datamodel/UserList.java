@@ -18,21 +18,21 @@ public final class UserList {
     private int id;
 
     @ColumnInfo(name = USER_LIST_COLUMN_NAME)
-    private final String name;
+    private final String title;
 
     @ColumnInfo(name = USER_LIST_COLUMN_POSITION)
     private final int position;
 
 
-    public UserList(int id, String name, int position) {
+    public UserList(int id, String title, int position) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.position = position;
     }
 
     @Ignore
-    public UserList(String name, int position) {
-        this.name = name;
+    public UserList(String title, int position) {
+        this.title = title;
         this.position = position;
     }
 
@@ -41,8 +41,8 @@ public final class UserList {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public int getPosition() {
