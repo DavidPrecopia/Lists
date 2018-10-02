@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.detail;
 
 import android.app.Application;
 

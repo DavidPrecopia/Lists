@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.detail;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,20 +7,21 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListSharedBinding;
-import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
+import com.example.david.lists.ui.UtilInitRecyclerView;
+import com.example.david.lists.ui.dialogs.AddDialogFragment;
+import com.example.david.lists.ui.dialogs.EditDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -40,7 +41,7 @@ public class DetailFragment extends Fragment
     public DetailFragment() {
     }
 
-    static DetailFragment newInstance(int listId, String listName) {
+    public static DetailFragment newInstance(int listId, String listName) {
         DetailFragment fragment = new DetailFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_KEY_LIST_ID, listId);
@@ -74,6 +75,7 @@ public class DetailFragment extends Fragment
     private void init() {
         showLoading();
         observeViewModel();
+        initRecyclerView();
         initToolbar();
         initFab();
         initSwipeRefresh();
@@ -90,7 +92,7 @@ public class DetailFragment extends Fragment
             if (itemList == null || itemList.isEmpty()) {
                 showError(getString(R.string.error_msg_empty_list));
             } else {
-                initRecyclerView(itemList);
+                adapter.swapData(itemList);
             }
         });
     }
@@ -106,21 +108,48 @@ public class DetailFragment extends Fragment
     }
 
 
-    private void initRecyclerView(List<Item> itemList) {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        adapter = new ItemsAdapter(itemList);
-        recyclerView.setAdapter(adapter);
+    private void initRecyclerView() {
+        UtilInitRecyclerView.initRecyclerView(
+                binding.recyclerView,
+                getRecyclerViewAdapter(),
+                getItemTouchCallback(),
+                getActivity().getApplication()
+        );
     }
 
-    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
+    private RecyclerView.Adapter getRecyclerViewAdapter() {
+        adapter = new ItemsAdapter();
+        if (viewModel.getItemList().getValue() != null) {
+            adapter.swapData(viewModel.getItemList().getValue());
+        }
+        return adapter;
+    }
+
+    private ItemTouchHelper.SimpleCallback getItemTouchCallback() {
+        return new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                        viewModel.prepareToDelete(adapter.getData(position));
+                        adapter.removeUserList(position);
+                        notifyDeletionSnackbar();
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        Item item = adapter.getData(position);
+                        commonDialogFragmentSteps(
+                                EditDialogFragment.getInstance(item.getId(), item.getTitle())
+                        );
+                        break;
+                }
+            }
+        };
     }
 
 
@@ -131,11 +160,11 @@ public class DetailFragment extends Fragment
     }
 
     private void initFabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> {
-            AddDialogFragment dialogFragment = AddDialogFragment.getInstance(getString(R.string.hint_add_item));
-            dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), null);
-        });
+        fab.setOnClickListener(view ->
+                commonDialogFragmentSteps(
+                        AddDialogFragment.getInstance(getString(R.string.hint_add_item))
+                )
+        );
     }
 
     private void initFabScrollListener(FloatingActionButton fab) {
@@ -154,11 +183,6 @@ public class DetailFragment extends Fragment
 
     private void initSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener(this);
-    }
-
-
-    private void snackbarMessage(String message) {
-        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
 
@@ -187,11 +211,9 @@ public class DetailFragment extends Fragment
     }
 
 
-    // TODO Implement swipe refresh
     @Override
     public void onRefresh() {
         binding.swipeRefreshLayout.setRefreshing(false);
-        snackbarMessage("Swiped Refresh");
     }
 
 
@@ -209,48 +231,22 @@ public class DetailFragment extends Fragment
     }
 
 
-    private final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
-
-        private final List<Item> itemsList;
-
-        ItemsAdapter(List<Item> itemsList) {
-            this.itemsList = itemsList;
-        }
-
-        @NonNull
-        @Override
-        public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ItemsViewHolder(
-                    ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
-            );
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
-            itemsViewHolder.bindView(
-                    itemsList.get(itemsViewHolder.getAdapterPosition())
-            );
-        }
-
-        @Override
-        public int getItemCount() {
-            return itemsList.size();
-        }
+    private void commonDialogFragmentSteps(DialogFragment dialogFragment) {
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+    }
 
 
-        final class ItemsViewHolder extends RecyclerView.ViewHolder {
-
-            private final ListItemBinding binding;
-
-            ItemsViewHolder(@NonNull ListItemBinding binding) {
-                super(binding.getRoot());
-                this.binding = binding;
-            }
-
-            private void bindView(Item item) {
-                binding.tvTitle.setText(item.getTitle());
-                binding.executePendingBindings();
-            }
-        }
+    private void notifyDeletionSnackbar() {
+        Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
+                .setAction(R.string.message_undo, view -> viewModel.undoDeletion())
+                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        viewModel.permanentlyDelete();
+                    }
+                })
+                .show();
     }
 }

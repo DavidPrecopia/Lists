@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.list;
 
 import android.app.Application;
 
@@ -28,6 +28,8 @@ final class ListViewModel extends AndroidViewModel {
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
+    private UserList temporaryUserList;
+
     ListViewModel(@NonNull Application application) {
         super(application);
         userLists = new MutableLiveData<>();
@@ -51,19 +53,18 @@ final class ListViewModel extends AndroidViewModel {
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                Timber.i("onNext");
+                Timber.d("onNext");
                 ListViewModel.this.userLists.setValue(userLists);
             }
 
             @Override
             public void onError(Throwable t) {
-                Timber.e(t);
                 ListViewModel.this.error.setValue(getApplication().getString(R.string.error_msg_generic));
             }
 
             @Override
             public void onComplete() {
-                Timber.i("onComplete");
+
             }
         };
     }
@@ -75,11 +76,32 @@ final class ListViewModel extends AndroidViewModel {
                 .subscribe();
     }
 
-    void delete(int listId) {
-        Completable.fromAction(() -> model.deleteList(listId))
+
+    void prepareToDelete(UserList userList) {
+        this.temporaryUserList = userList;
+    }
+
+    void permanentlyDelete() {
+        checkIfValidTempValue();
+        Completable.fromAction(() -> model.deleteList(temporaryUserList.getId()))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
+        temporaryUserList = null;
     }
+
+    List<UserList> undoDeletion() {
+        checkIfValidTempValue();
+        return userLists.getValue();
+    }
+
+    private void checkIfValidTempValue() {
+        if (temporaryUserList == null) {
+            throw new IllegalStateException(
+                    getApplication().getString(R.string.error_invalid_deletion_undo)
+            );
+        }
+    }
+
 
     void changeTitle(int listId, String newTitle) {
         Completable.fromAction(() -> model.changeListTitle(listId, newTitle))

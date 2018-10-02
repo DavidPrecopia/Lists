@@ -30,7 +30,7 @@ public interface ListsDao {
     @Query("SELECT * FROM " + ITEM_TABLE_NAME
             + " WHERE " + ITEM_COLUMN_LIST_ID + " = :listId"
             + " ORDER BY " + ITEM_COLUMN_POSITION)
-    Flowable<List<Item>> getListContents(int listId);
+    Flowable<List<Item>> getListItems(int listId);
 
 
     @Insert(onConflict = REPLACE)
@@ -52,10 +52,10 @@ public interface ListsDao {
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    void deleteList(int listId);
+    int deleteList(int listId);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    void deleteItem(int itemId);
+    int deleteItem(int itemId);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME

@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityMainBinding;
+import com.example.david.lists.ui.detail.DetailFragment;
+import com.example.david.lists.ui.list.ListFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -27,8 +29,7 @@ public class MainActivity extends AppCompatActivity
     private void init(boolean newActivity) {
         fragmentManager = getSupportFragmentManager();
         if (newActivity) {
-            // Because this is the first Fragment,
-            // do not add to the backstack
+            // Because this is the first Fragment, do not add to the backstack
             fragmentManager.beginTransaction()
                     .add(binding.fragmentHolder.getId(), ListFragment.newInstance())
                     .commit();

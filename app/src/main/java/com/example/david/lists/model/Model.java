@@ -36,15 +36,15 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public Flowable<List<Item>> getListContents(int listId) {
-        return dao.getListContents(listId);
+    public Flowable<List<Item>> getListItems(int listId) {
+        return dao.getListItems(listId);
     }
 
 
     @Override
     public void addList(UserList list) {
         long rowId = dao.addList(list);
-        Timber.d(String.valueOf(rowId));
+        Timber.d("Add %s", String.valueOf(rowId));
     }
 
     @Override
@@ -56,12 +56,14 @@ public final class Model implements IModelContract {
 
     @Override
     public void deleteList(int listId) {
-        dao.deleteList(listId);
+        int numberOfRows = dao.deleteList(listId);
+        Timber.d("Delete %s", String.valueOf(numberOfRows));
     }
 
     @Override
     public void deleteItem(int itemId) {
-        dao.deleteItem(itemId);
+        int numberOfRows = dao.deleteItem(itemId);
+        Timber.d(String.valueOf(numberOfRows));
     }
 
 

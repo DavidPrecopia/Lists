@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.list;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,22 +11,23 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListSharedBinding;
-import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.ui.UtilInitRecyclerView;
+import com.example.david.lists.ui.dialogs.AddDialogFragment;
+import com.example.david.lists.ui.dialogs.EditDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import timber.log.Timber;
 
 public class ListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
@@ -43,7 +44,7 @@ public class ListFragment extends Fragment
     public ListFragment() {
     }
 
-    static ListFragment newInstance() {
+    public static ListFragment newInstance() {
         return new ListFragment();
     }
 
@@ -78,6 +79,7 @@ public class ListFragment extends Fragment
     private void init() {
         showLoading();
         observeViewModel();
+        initRecyclerView();
         initToolbar();
         initFab();
         initSwipeRefresh();
@@ -94,7 +96,7 @@ public class ListFragment extends Fragment
             if (userLists == null || userLists.isEmpty()) {
                 showError(getString(R.string.error_msg_no_lists));
             } else {
-                initRecyclerView(userLists);
+                adapter.swapData(userLists);
             }
         });
     }
@@ -108,21 +110,63 @@ public class ListFragment extends Fragment
         binding.toolbar.setTitle(getContext().getString(R.string.app_name));
     }
 
-    private void initRecyclerView(List<UserList> userLists) {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-        adapter = new UserListsAdapter(userLists);
-        recyclerView.setAdapter(adapter);
+    private void initRecyclerView() {
+        UtilInitRecyclerView.initRecyclerView(
+                binding.recyclerView,
+                getRecyclerViewAdapter(),
+                getItemTouchCallback(),
+                getActivity().getApplication()
+        );
     }
 
-    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
+    private ItemTouchHelper.SimpleCallback getItemTouchCallback() {
+        return new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                final int position = viewHolder.getAdapterPosition();
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                        viewModel.prepareToDelete(adapter.getData(position));
+                        adapter.removeUserList(position);
+                        notifyDeletionSnackbar();
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        UserList userList = adapter.getData(position);
+                        dialogFragmentCommonSteps(
+                                EditDialogFragment.getInstance(userList.getId(), userList.getTitle())
+                        );
+                        break;
+                }
+            }
+
+            private void notifyDeletionSnackbar() {
+                Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.message_undo, view -> adapter.swapData(viewModel.undoDeletion()))
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                if (event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                                    viewModel.permanentlyDelete();
+                                }
+                            }
+                        })
+                        .show();
+            }
+        };
+    }
+
+    private RecyclerView.Adapter getRecyclerViewAdapter() {
+        adapter = new UserListsAdapter(fragmentClickListener);
+        if (viewModel.getUserLists().getValue() != null) {
+            adapter.swapData(viewModel.getUserLists().getValue());
+        }
+        return adapter;
     }
 
 
@@ -133,11 +177,11 @@ public class ListFragment extends Fragment
     }
 
     private void initFabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> {
-            AddDialogFragment dialogFragment = AddDialogFragment.getInstance(getString(R.string.hint_add_list));
-            dialogFragment.setTargetFragment(this, 0);
-            dialogFragment.show(getActivity().getSupportFragmentManager(), null);
-        });
+        fab.setOnClickListener(view ->
+                dialogFragmentCommonSteps(
+                        AddDialogFragment.getInstance(getString(R.string.hint_add_list))
+                )
+        );
     }
 
     private void initFabScrollListener(FloatingActionButton fab) {
@@ -154,13 +198,29 @@ public class ListFragment extends Fragment
         });
     }
 
-    private void initSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener(this);
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_log_out, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_id_log_out:
+                Timber.i("Log out");
+                break;
+            case R.id.menu_id_log_in:
+                Timber.i("Log in");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
-    private void snackbarMessage(String message) {
-        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
+    private void initSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener(this);
     }
 
 
@@ -192,33 +252,6 @@ public class ListFragment extends Fragment
     @Override
     public void onRefresh() {
         binding.swipeRefreshLayout.setRefreshing(false);
-        snackbarMessage("Swiped Refresh");
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        fragmentClickListener = null;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_log_out, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_id_log_out:
-                snackbarMessage("Log Out");
-                break;
-            case R.id.menu_id_log_in:
-                snackbarMessage("Log In");
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -236,62 +269,20 @@ public class ListFragment extends Fragment
     }
 
 
-    interface ListFragmentClickListener {
-        void openDetailFragment(int listId, String listTitle);
+    private void dialogFragmentCommonSteps(DialogFragment dialogFragment) {
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
     }
 
 
-    private final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
-
-        private final List<UserList> userLists;
-
-        UserListsAdapter(List<UserList> userLists) {
-            this.userLists = userLists;
-        }
-
-        @NonNull
-        @Override
-        public UserListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new UserListViewHolder(
-                    ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
-            );
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
-            userListViewHolder.bindView(
-                    userLists.get(userListViewHolder.getAdapterPosition())
-            );
-        }
-
-        @Override
-        public int getItemCount() {
-            return userLists.size();
-        }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentClickListener = null;
+    }
 
 
-        final class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            private final ListItemBinding binding;
-
-            UserListViewHolder(@NonNull ListItemBinding binding) {
-                super(binding.getRoot());
-                this.binding = binding;
-                binding.getRoot().setOnClickListener(this);
-            }
-
-            void bindView(UserList userList) {
-                binding.tvTitle.setText(userList.getTitle());
-                binding.executePendingBindings();
-            }
-
-            @Override
-            public void onClick(View v) {
-                UserList userList = userLists.get(getAdapterPosition());
-                fragmentClickListener.openDetailFragment(
-                        userList.getId(), userList.getTitle()
-                );
-            }
-        }
+    public interface ListFragmentClickListener {
+        void openDetailFragment(int listId, String listTitle);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
 
-    static EditDialogFragment getInstance(int id, String title) {
+    public static EditDialogFragment getInstance(int id, String title) {
         EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_KEY_ID, id);
@@ -99,7 +99,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
 
-    interface EditDialogFragmentListener {
+    public interface EditDialogFragmentListener {
         void edit(int id, String newTitle);
     }
 }

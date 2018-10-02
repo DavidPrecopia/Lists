@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.detail;
 
 import android.app.Application;
 
@@ -42,7 +42,7 @@ final class DetailViewModel extends AndroidViewModel {
 
 
     private void getItems() {
-        disposable.add(model.getListContents(listId)
+        disposable.add(model.getListItems(listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListsSubscriber())
@@ -77,11 +77,17 @@ final class DetailViewModel extends AndroidViewModel {
                 .subscribe();
     }
 
+
     void delete(int itemId) {
         Completable.fromAction(() -> model.deleteItem(itemId))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
+
+    void prepareToDelete(Item item) {
+
+    }
+
 
     void changeTitle(int itemId, String newTitle) {
         Completable.fromAction(() -> model.changeItemTitle(itemId, newTitle))
@@ -107,5 +113,13 @@ final class DetailViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+    }
+
+    void undoDeletion() {
+
+    }
+
+    void permanentlyDelete() {
+
     }
 }

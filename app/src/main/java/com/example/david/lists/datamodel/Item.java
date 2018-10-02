@@ -17,7 +17,9 @@ import static com.example.david.lists.database.DatabaseContract.ITEM_TABLE_NAME;
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
 
 @Entity(tableName = ITEM_TABLE_NAME,
-        indices = @Index(ITEM_COLUMN_LIST_ID),
+        indices = {@Index(value = {ITEM_COLUMN_POSITION}, unique = true),
+                @Index(value = {ITEM_COLUMN_LIST_ID}, unique = true)
+        },
         foreignKeys = @ForeignKey(
                 entity = UserList.class,
                 parentColumns = USER_LIST_COLUMN_ID,
