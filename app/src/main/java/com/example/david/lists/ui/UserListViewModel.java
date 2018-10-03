@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.list;
+package com.example.david.lists.ui;
 
 import android.app.Application;
 
@@ -10,7 +10,6 @@ import com.example.david.lists.model.Model;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Completable;
@@ -20,7 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
-final class ListViewModel extends AndroidViewModel {
+final class UserListViewModel {
 
     private final MutableLiveData<List<UserList>> userLists;
     private final MutableLiveData<String> error;
@@ -28,14 +27,14 @@ final class ListViewModel extends AndroidViewModel {
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
-    private UserList temporaryUserList;
+    private final Application application;
 
-    ListViewModel(@NonNull Application application) {
-        super(application);
+    UserListViewModel(@NonNull Application application) {
         userLists = new MutableLiveData<>();
         error = new MutableLiveData<>();
         model = Model.getInstance(application);
         disposable = new CompositeDisposable();
+        this.application = application;
 
         getAllUserLists();
     }
@@ -54,12 +53,12 @@ final class ListViewModel extends AndroidViewModel {
             @Override
             public void onNext(List<UserList> userLists) {
                 Timber.d("onNext");
-                ListViewModel.this.userLists.setValue(userLists);
+                UserListViewModel.this.userLists.setValue(userLists);
             }
 
             @Override
             public void onError(Throwable t) {
-                ListViewModel.this.error.setValue(getApplication().getString(R.string.error_msg_generic));
+                UserListViewModel.this.error.setValue(application.getString(R.string.error_msg_generic));
             }
 
             @Override
@@ -76,30 +75,10 @@ final class ListViewModel extends AndroidViewModel {
                 .subscribe();
     }
 
-
-    void prepareToDelete(UserList userList) {
-        this.temporaryUserList = userList;
-    }
-
-    void permanentlyDelete() {
-        checkIfValidTempValue();
-        Completable.fromAction(() -> model.deleteList(temporaryUserList.getId()))
+    void delete(int listId) {
+        Completable.fromAction(() -> model.deleteList(listId))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
-        temporaryUserList = null;
-    }
-
-    List<UserList> undoDeletion() {
-        checkIfValidTempValue();
-        return userLists.getValue();
-    }
-
-    private void checkIfValidTempValue() {
-        if (temporaryUserList == null) {
-            throw new IllegalStateException(
-                    getApplication().getString(R.string.error_invalid_deletion_undo)
-            );
-        }
     }
 
 
@@ -116,12 +95,5 @@ final class ListViewModel extends AndroidViewModel {
 
     LiveData<String> getError() {
         return error;
-    }
-
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        disposable.clear();
     }
 }

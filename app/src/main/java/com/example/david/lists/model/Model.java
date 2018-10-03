@@ -16,13 +16,15 @@ public final class Model implements IModelContract {
 
     private final ListsDao dao;
 
-    private static Model model;
+    private static volatile Model instance;
 
     public static Model getInstance(Application application) {
-        if (model == null) {
-            model = new Model(application);
+        if (instance == null) {
+            synchronized (Model.class) {
+                instance = new Model(application);
+            }
         }
-        return model;
+        return instance;
     }
 
     private Model(Application application) {

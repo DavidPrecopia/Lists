@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.list;
+package com.example.david.lists.ui;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
 
-    private ListFragment.ListFragmentClickListener fragmentClickListener;
-    private List<UserList> userLists;
+    private final List<UserList> userLists;
+    private final ListViewModel viewModel;
 
-    UserListsAdapter(ListFragment.ListFragmentClickListener fragmentClickListener) {
-        this.fragmentClickListener = fragmentClickListener;
+    UserListsAdapter(ListViewModel viewModel) {
+        this.viewModel = viewModel;
         userLists = new ArrayList<>();
     }
 
@@ -49,17 +49,14 @@ final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserL
         notifyDataSetChanged();
     }
 
-    void removeUserList(int position) {
+    void remove(int position) {
         userLists.remove(position);
         notifyItemRemoved(position);
     }
 
-    UserList getData(int position) {
-        return userLists.get(position);
-    }
 
-
-    final class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    final class UserListViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         private final ListItemBinding binding;
 
@@ -77,7 +74,7 @@ final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserL
         @Override
         public void onClick(View v) {
             UserList userList = userLists.get(getAdapterPosition());
-            fragmentClickListener.openDetailFragment(
+            viewModel.userListClicked(
                     userList.getId(), userList.getTitle()
             );
         }

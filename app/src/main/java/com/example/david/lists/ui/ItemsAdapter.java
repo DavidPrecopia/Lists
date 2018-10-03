@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.detail;
+package com.example.david.lists.ui;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -47,13 +47,9 @@ final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHold
         notifyDataSetChanged();
     }
 
-    void removeUserList(int position) {
+    void remove(int position) {
         this.itemsList.remove(position);
         notifyItemRemoved(position);
-    }
-
-    Item getData(int position) {
-        return itemsList.get(position);
     }
 
 

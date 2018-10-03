@@ -12,15 +12,17 @@ import androidx.room.RoomDatabase;
 @Database(entities = {UserList.class, Item.class}, version = 1, exportSchema = false)
 public abstract class ListsDatabase extends RoomDatabase {
 
-    private static ListsDatabase database;
+    private static volatile ListsDatabase instance;
 
     public static ListsDatabase getInstance(Application application) {
-        if (database == null) {
-            database = Room.databaseBuilder(
-                    application, ListsDatabase.class, DatabaseContract.DATABASE_NAME
-            ).build();
+        if (instance == null) {
+            synchronized (ListsDatabase.class) {
+                instance = Room.databaseBuilder(
+                        application, ListsDatabase.class, DatabaseContract.DATABASE_NAME
+                ).build();
+            }
         }
-        return database;
+        return instance;
     }
 
     public abstract ListsDao getListDao();

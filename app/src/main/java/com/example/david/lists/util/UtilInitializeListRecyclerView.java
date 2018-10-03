@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.util;
 
 import android.app.Application;
 
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public final class UtilInitRecyclerView {
+public final class UtilInitializeListRecyclerView {
 
-    private UtilInitRecyclerView() {
+    private UtilInitializeListRecyclerView() {
     }
 
     public static void initRecyclerView(RecyclerView recyclerView,
@@ -34,5 +34,4 @@ public final class UtilInitRecyclerView {
                 layoutManager.getOrientation()
         );
     }
-
 }
