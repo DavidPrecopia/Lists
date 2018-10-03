@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public final class ListViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> displayLoading;
     private final MutableLiveData<RecyclerView.Adapter> recyclerViewAdapter;
     private final MutableLiveData<String> errorLiveData;
+    private final SingleLiveEvent<Void> eventNotifyUserOfDeletion;
 
     private final List<UserList> userLists;
     private final List<Item> itemList;
@@ -39,6 +41,11 @@ public final class ListViewModel extends AndroidViewModel {
     private final UserListsAdapter userListsAdapter;
     private final ItemsAdapter itemsAdapter;
 
+    private UserList temporaryUserList;
+    private int temporaryUserListPosition = -1;
+    private Item temporaryItem;
+    private int temporaryItemPosition = -1;
+
     private static int currentlyDisplayed;
     private static final int USER_LISTS = 100;
     private static final int ITEMS = 200;
@@ -49,6 +56,7 @@ public final class ListViewModel extends AndroidViewModel {
         displayLoading = new MutableLiveData<>();
         recyclerViewAdapter = new MutableLiveData<>();
         errorLiveData = new MutableLiveData<>();
+        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         userLists = new ArrayList<>();
         itemList = new ArrayList<>();
         userListViewModel = new UserListViewModel(application);
@@ -135,25 +143,65 @@ public final class ListViewModel extends AndroidViewModel {
      * https://stackoverflow.com/a/13433770
      */
     public void add() {
-
+        throw new UnsupportedOperationException();
     }
 
-
-    void swipedLeft(int position) {
-
-    }
-
+    /**
+     * Edit
+     */
     void swipedRight(int position) {
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
 
+                break;
+            case ITEMS:
+
+                break;
+        }
     }
 
 
-    void undoDeletion() {
+    /**
+     * Delete
+     */
+    void swipedLeft(int position) {
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                userListsAdapter.remove(position);
+                temporaryUserList = userLists.get(position);
+                temporaryUserListPosition = position;
+                break;
+            case ITEMS:
+                itemsAdapter.remove(position);
+                temporaryItem = itemList.get(position);
+                temporaryItemPosition = position;
+                break;
+        }
+        eventNotifyUserOfDeletion.call();
+    }
 
+    void undoRecentDeletion() {
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                userListsAdapter.reAdd(temporaryUserListPosition, temporaryUserList);
+                break;
+            case ITEMS:
+                itemsAdapter.reAdd(temporaryItemPosition, temporaryItem);
+                break;
+        }
+        clearTemporary();
     }
 
     void deletionNotificationTimedOut() {
-
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                userListViewModel.delete(temporaryUserList.getId());
+                break;
+            case ITEMS:
+                itemViewModel.delete(temporaryItem.getId());
+                break;
+        }
+        clearTemporary();
     }
 
 
@@ -170,8 +218,6 @@ public final class ListViewModel extends AndroidViewModel {
             case ITEMS:
                 loadItemData();
                 break;
-            default:
-                throw new IllegalArgumentException();
         }
     }
 
@@ -199,14 +245,22 @@ public final class ListViewModel extends AndroidViewModel {
     }
 
 
+    private void changeTitle(@Nullable String title) {
+        this.toolbarTitle.setValue(title);
+    }
+
     private void setEmptyListError() {
         errorLiveData.setValue(
                 getApplication().getString(R.string.error_msg_empty_list)
         );
     }
 
-    private void changeTitle(@Nullable String title) {
-        this.toolbarTitle.setValue(title);
+    private void clearTemporary() {
+        temporaryUserList = null;
+        temporaryUserListPosition = -1;
+
+        temporaryItem = null;
+        temporaryItemPosition = -1;
     }
 
 
@@ -224,6 +278,10 @@ public final class ListViewModel extends AndroidViewModel {
 
     LiveData<String> getError() {
         return errorLiveData;
+    }
+
+    SingleLiveEvent<Void> getEventNotifyUserOfDeletion() {
+        return eventNotifyUserOfDeletion;
     }
 
 

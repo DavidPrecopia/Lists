@@ -44,14 +44,19 @@ final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserL
     }
 
     void swapData(List<UserList> newUserLists) {
-        this.userLists.clear();
-        this.userLists.addAll(newUserLists);
+        userLists.clear();
+        userLists.addAll(newUserLists);
         notifyDataSetChanged();
     }
 
     void remove(int position) {
         userLists.remove(position);
         notifyItemRemoved(position);
+    }
+
+    void reAdd(int position, UserList userList) {
+        userLists.add(position, userList);
+        notifyItemInserted(position);
     }
 
 

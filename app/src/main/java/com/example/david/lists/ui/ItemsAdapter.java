@@ -42,14 +42,19 @@ final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHold
 
 
     void swapData(List<Item> newItemsList) {
-        this.itemsList.clear();
-        this.itemsList.addAll(newItemsList);
+        itemsList.clear();
+        itemsList.addAll(newItemsList);
         notifyDataSetChanged();
     }
 
     void remove(int position) {
-        this.itemsList.remove(position);
+        itemsList.remove(position);
         notifyItemRemoved(position);
+    }
+
+    void reAdd(int position, Item item) {
+        itemsList.add(position, item);
+        notifyItemInserted(position);
     }
 
 

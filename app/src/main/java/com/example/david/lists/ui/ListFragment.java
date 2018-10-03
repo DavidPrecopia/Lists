@@ -18,11 +18,11 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
 
 public class ListFragment extends Fragment {
@@ -70,6 +70,7 @@ public class ListFragment extends Fragment {
         observeRecyclerViewAdapter();
         observeDisplayLoading();
         observeError();
+        observeNotifyUserOfDeletion();
     }
 
     private void observeDisplayLoading() {
@@ -89,6 +90,13 @@ public class ListFragment extends Fragment {
     private void observeError() {
         viewModel.getError().observe(this, this::showError);
     }
+
+    private void observeNotifyUserOfDeletion() {
+        viewModel.getEventNotifyUserOfDeletion().observe(
+                this, Void -> notifyDeletionSnackbar()
+        );
+    }
+
 
     private void initRecyclerView(RecyclerView.Adapter adapter) {
         UtilInitializeListRecyclerView.initRecyclerView(
@@ -140,8 +148,13 @@ public class ListFragment extends Fragment {
         });
     }
 
+
     private void initSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
+        SwipeRefreshLayout swipeRefresh = binding.swipeRefreshLayout;
+        swipeRefresh.setOnRefreshListener(() -> {
+            viewModel.refresh();
+            swipeRefresh.setRefreshing(false);
+        });
     }
 
 
@@ -167,7 +180,7 @@ public class ListFragment extends Fragment {
 
     private void notifyDeletionSnackbar() {
         Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
-                .setAction(R.string.message_undo, view -> viewModel.undoDeletion())
+                .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
                 .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
@@ -178,11 +191,6 @@ public class ListFragment extends Fragment {
                     }
                 })
                 .show();
-    }
-
-    private void openDialogFragment(DialogFragment dialogFragment) {
-        dialogFragment.setTargetFragment(this, 0);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
     }
 
 
