@@ -57,7 +57,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/margin_normal"
             android:contentDescription="@string/content_description_fab_add_list"
-            android:onClick="@{view -> viewModel.add()}"
+            android:onClick="@{view -> viewModel.addButtonClicked()}"
             app:elevation="@dimen/elevation_fab"
             app:pressedTranslationZ="@dimen/elevation_fab_pressed_z_axis"
             app:srcCompat="@drawable/ic_add_black_24dp" />

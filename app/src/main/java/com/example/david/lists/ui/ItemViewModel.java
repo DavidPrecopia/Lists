@@ -70,8 +70,8 @@ final class ItemViewModel {
     }
 
 
-    void add(String title, int position, int listId) {
-        Completable.fromAction(() -> model.addItem(new Item(title, position, listId)))
+    void add(String title, int position) {
+        Completable.fromAction(() -> model.addItem(new Item(title, position, this.listId)))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
@@ -83,8 +83,8 @@ final class ItemViewModel {
     }
 
 
-    void changeTitle(int itemId, String newTitle) {
-        Completable.fromAction(() -> model.changeItemTitle(itemId, newTitle))
+    void changeTitle(String newTitle) {
+        Completable.fromAction(() -> model.changeItemTitle(this.listId, newTitle))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
@@ -96,9 +96,5 @@ final class ItemViewModel {
 
     LiveData<String> getError() {
         return error;
-    }
-
-    int getListId() {
-        return listId;
     }
 }

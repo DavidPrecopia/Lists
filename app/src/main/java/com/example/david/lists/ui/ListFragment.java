@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListBinding;
+import com.example.david.lists.ui.dialogs.AddDialogFragment;
 import com.example.david.lists.util.UtilInitializeListRecyclerView;
 import com.example.david.lists.util.ViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,7 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment
+        implements AddDialogFragment.AddDialogFragmentListener {
 
     private ListViewModel viewModel;
     private FragmentListBinding binding;
@@ -70,11 +73,12 @@ public class ListFragment extends Fragment {
         observeRecyclerViewAdapter();
         observeDisplayLoading();
         observeError();
-        observeNotifyUserOfDeletion();
+        observeEventNotifyUserOfDeletion();
+        observeEventAdd();
     }
 
     private void observeDisplayLoading() {
-        viewModel.getDisplayLoading().observe(this, display -> {
+        viewModel.getEventDisplayLoading().observe(this, display -> {
             if (display) {
                 showLoading();
             } else {
@@ -88,13 +92,17 @@ public class ListFragment extends Fragment {
     }
 
     private void observeError() {
-        viewModel.getError().observe(this, this::showError);
+        viewModel.getEventDisplayError().observe(this, this::showError);
     }
 
-    private void observeNotifyUserOfDeletion() {
+    private void observeEventNotifyUserOfDeletion() {
         viewModel.getEventNotifyUserOfDeletion().observe(
                 this, Void -> notifyDeletionSnackbar()
         );
+    }
+
+    private void observeEventAdd() {
+        viewModel.getEventAdd().observe(this, this::openAddDialog);
     }
 
 
@@ -178,6 +186,17 @@ public class ListFragment extends Fragment {
     }
 
 
+    private void openAddDialog(String hintMessage) {
+        openDialogFragment(
+                AddDialogFragment.getInstance(hintMessage)
+        );
+    }
+
+    @Override
+    public void add(String title) {
+        viewModel.add(title);
+    }
+
     private void notifyDeletionSnackbar() {
         Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
@@ -191,6 +210,12 @@ public class ListFragment extends Fragment {
                     }
                 })
                 .show();
+    }
+
+
+    private void openDialogFragment(DialogFragment dialogFragment) {
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
     }
 
 
@@ -217,4 +242,5 @@ public class ListFragment extends Fragment {
     private void hideError() {
         binding.tvError.setVisibility(View.GONE);
     }
+
 }

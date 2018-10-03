@@ -22,10 +22,12 @@ import timber.log.Timber;
 public final class ListViewModel extends AndroidViewModel {
 
     private final MutableLiveData<String> toolbarTitle;
-    private final MutableLiveData<Boolean> displayLoading;
     private final MutableLiveData<RecyclerView.Adapter> recyclerViewAdapter;
-    private final MutableLiveData<String> errorLiveData;
+
+    private final SingleLiveEvent<Boolean> eventDisplayLoading;
+    private final SingleLiveEvent<String> eventDisplayError;
     private final SingleLiveEvent<Void> eventNotifyUserOfDeletion;
+    private final SingleLiveEvent<String> eventAdd;
 
     private final List<UserList> userLists;
     private final List<Item> itemList;
@@ -49,14 +51,15 @@ public final class ListViewModel extends AndroidViewModel {
     private static int currentlyDisplayed;
     private static final int USER_LISTS = 100;
     private static final int ITEMS = 200;
-
+    
     public ListViewModel(@NonNull Application application) {
         super(application);
         toolbarTitle = new MutableLiveData<>();
-        displayLoading = new MutableLiveData<>();
         recyclerViewAdapter = new MutableLiveData<>();
-        errorLiveData = new MutableLiveData<>();
+        eventDisplayLoading = new SingleLiveEvent<>();
+        eventDisplayError = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
+        eventAdd = new SingleLiveEvent<>();
         userLists = new ArrayList<>();
         itemList = new ArrayList<>();
         userListViewModel = new UserListViewModel(application);
@@ -72,7 +75,7 @@ public final class ListViewModel extends AndroidViewModel {
         currentlyDisplayed = USER_LISTS;
         recyclerViewAdapter.setValue(userListsAdapter);
         changeTitle(getApplication().getString(R.string.app_name));
-        displayLoading.setValue(true);
+        eventDisplayLoading.setValue(true);
 
         observeData();
         observerErrors();
@@ -116,7 +119,7 @@ public final class ListViewModel extends AndroidViewModel {
     private Observer<String> initUserListErrorObserver() {
         return errorMessage -> {
             if (currentlyDisplayed == USER_LISTS) {
-                errorLiveData.setValue(errorMessage);
+                this.eventDisplayError.setValue(errorMessage);
             }
         };
     }
@@ -124,7 +127,7 @@ public final class ListViewModel extends AndroidViewModel {
     private Observer<String> initItemErrorObserver() {
         return errorMessage -> {
             if (currentlyDisplayed == ITEMS) {
-                errorLiveData.setValue(errorMessage);
+                this.eventDisplayError.setValue(errorMessage);
             }
         };
     }
@@ -132,19 +135,36 @@ public final class ListViewModel extends AndroidViewModel {
 
     void userListClicked(int id, String userListTitle) {
         currentlyDisplayed = ITEMS;
-        displayLoading.setValue(true);
+        eventDisplayLoading.setValue(true);
         changeTitle(userListTitle);
         itemViewModel.getItems(id);
     }
 
 
-    /**
-     * Start DialogFragment from a Fragment for a result
-     * https://stackoverflow.com/a/13433770
-     */
-    public void add() {
-        throw new UnsupportedOperationException();
+    public void addButtonClicked() {
+        String message = null;
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                message = getApplication().getString(R.string.hint_add_list);
+                break;
+            case ITEMS:
+                message = getApplication().getString(R.string.hint_add_item);
+                break;
+        }
+        eventAdd.setValue(message);
     }
+
+    void add(String title) {
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                userListViewModel.add(title, userListsAdapter.getItemCount());
+                break;
+            case ITEMS:
+                itemViewModel.add(title, itemsAdapter.getItemCount());
+                break;
+        }
+    }
+
 
     /**
      * Edit
@@ -241,7 +261,7 @@ public final class ListViewModel extends AndroidViewModel {
 
     private void commonLoadDataSteps(RecyclerView.Adapter adapter) {
         recyclerViewAdapter.setValue(adapter);
-        displayLoading.setValue(false);
+        eventDisplayLoading.setValue(false);
     }
 
 
@@ -250,7 +270,7 @@ public final class ListViewModel extends AndroidViewModel {
     }
 
     private void setEmptyListError() {
-        errorLiveData.setValue(
+        eventDisplayError.setValue(
                 getApplication().getString(R.string.error_msg_empty_list)
         );
     }
@@ -268,20 +288,24 @@ public final class ListViewModel extends AndroidViewModel {
         return toolbarTitle;
     }
 
-    LiveData<Boolean> getDisplayLoading() {
-        return displayLoading;
-    }
-
     LiveData<RecyclerView.Adapter> getRecyclerViewAdapter() {
         return recyclerViewAdapter;
     }
-
-    LiveData<String> getError() {
-        return errorLiveData;
+    
+    LiveData<Boolean> getEventDisplayLoading() {
+        return eventDisplayLoading;
     }
 
-    SingleLiveEvent<Void> getEventNotifyUserOfDeletion() {
+    LiveData<String> getEventDisplayError() {
+        return eventDisplayError;
+    }
+
+    LiveData<Void> getEventNotifyUserOfDeletion() {
         return eventNotifyUserOfDeletion;
+    }
+
+    LiveData<String> getEventAdd() {
+        return eventAdd;
     }
 
 
