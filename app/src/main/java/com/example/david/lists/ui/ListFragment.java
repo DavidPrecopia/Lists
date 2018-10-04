@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.dialogs.AddDialogFragment;
+import com.example.david.lists.ui.dialogs.EditDialogFragment;
+import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.util.UtilInitializeListRecyclerView;
 import com.example.david.lists.util.ViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,7 +30,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
 
 public class ListFragment extends Fragment
-        implements AddDialogFragment.AddDialogFragmentListener {
+        implements AddDialogFragment.AddDialogFragmentListener,
+        EditDialogFragment.EditDialogFragmentListener {
 
     private ListViewModel viewModel;
     private FragmentListBinding binding;
@@ -75,6 +78,7 @@ public class ListFragment extends Fragment
         observeError();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
+        observeEventEdit();
     }
 
     private void observeDisplayLoading() {
@@ -103,6 +107,10 @@ public class ListFragment extends Fragment
 
     private void observeEventAdd() {
         viewModel.getEventAdd().observe(this, this::openAddDialog);
+    }
+
+    private void observeEventEdit() {
+        viewModel.getEventEdit().observe(this, this::openEditDialog);
     }
 
 
@@ -197,6 +205,19 @@ public class ListFragment extends Fragment
         viewModel.add(title);
     }
 
+
+    private void openEditDialog(EditingInfo editingInfo) {
+        openDialogFragment(
+                EditDialogFragment.getInstance(editingInfo)
+        );
+    }
+
+    @Override
+    public void edit(int id, String newTitle) {
+        viewModel.changeTitle(id, newTitle);
+    }
+
+
     private void notifyDeletionSnackbar() {
         Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
@@ -242,5 +263,4 @@ public class ListFragment extends Fragment
     private void hideError() {
         binding.tvError.setVisibility(View.GONE);
     }
-
 }

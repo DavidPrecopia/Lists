@@ -71,6 +71,7 @@ public final class Model implements IModelContract {
 
     @Override
     public void changeListTitle(int listId, String newTitle) {
+        Timber.d("changeListTitle");
         dao.changeListTitle(listId, newTitle);
     }
 

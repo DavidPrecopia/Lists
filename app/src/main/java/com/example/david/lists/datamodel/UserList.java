@@ -12,7 +12,7 @@ import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_TABLE_NAME;
 
 @Entity(tableName = USER_LIST_TABLE_NAME,
-        indices = {@Index(value = {USER_LIST_COLUMN_POSITION}, unique = true)}
+        indices = {@Index(USER_LIST_COLUMN_POSITION)}
 )
 public final class UserList {
 

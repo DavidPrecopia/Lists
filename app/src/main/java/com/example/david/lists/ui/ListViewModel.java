@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public final class ListViewModel extends AndroidViewModel {
     private final SingleLiveEvent<String> eventDisplayError;
     private final SingleLiveEvent<Void> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<String> eventAdd;
+    private final SingleLiveEvent<EditingInfo> eventEdit;
 
     private final List<UserList> userLists;
     private final List<Item> itemList;
@@ -60,6 +62,7 @@ public final class ListViewModel extends AndroidViewModel {
         eventDisplayError = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
+        eventEdit = new SingleLiveEvent<>();
         userLists = new ArrayList<>();
         itemList = new ArrayList<>();
         userListViewModel = new UserListViewModel(application);
@@ -74,7 +77,7 @@ public final class ListViewModel extends AndroidViewModel {
     private void init() {
         currentlyDisplayed = USER_LISTS;
         recyclerViewAdapter.setValue(userListsAdapter);
-        changeTitle(getApplication().getString(R.string.app_name));
+        changeToolbarTitle(getApplication().getString(R.string.app_name));
         eventDisplayLoading.setValue(true);
 
         observeData();
@@ -136,7 +139,7 @@ public final class ListViewModel extends AndroidViewModel {
     void userListClicked(int id, String userListTitle) {
         currentlyDisplayed = ITEMS;
         eventDisplayLoading.setValue(true);
-        changeTitle(userListTitle);
+        changeToolbarTitle(userListTitle);
         itemViewModel.getItems(id);
     }
 
@@ -170,12 +173,25 @@ public final class ListViewModel extends AndroidViewModel {
      * Edit
      */
     void swipedRight(int position) {
+        EditingInfo currentlyEditing = null;
         switch (currentlyDisplayed) {
             case USER_LISTS:
-
+                currentlyEditing = new EditingInfo(userLists.get(position));
                 break;
             case ITEMS:
+                currentlyEditing = new EditingInfo(itemList.get(position));
+                break;
+        }
+        eventEdit.setValue(currentlyEditing);
+    }
 
+    void changeTitle(int id, String newTitle) {
+        switch (currentlyDisplayed) {
+            case USER_LISTS:
+                userListViewModel.changeTitle(id, newTitle);
+                break;
+            case ITEMS:
+                itemViewModel.changeTitle(id, newTitle);
                 break;
         }
     }
@@ -265,7 +281,7 @@ public final class ListViewModel extends AndroidViewModel {
     }
 
 
-    private void changeTitle(@Nullable String title) {
+    private void changeToolbarTitle(@Nullable String title) {
         this.toolbarTitle.setValue(title);
     }
 
@@ -306,6 +322,10 @@ public final class ListViewModel extends AndroidViewModel {
 
     LiveData<String> getEventAdd() {
         return eventAdd;
+    }
+
+    LiveData<EditingInfo> getEventEdit() {
+        return eventEdit;
     }
 
 

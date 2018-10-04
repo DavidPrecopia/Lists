@@ -83,8 +83,8 @@ final class ItemViewModel {
     }
 
 
-    void changeTitle(String newTitle) {
-        Completable.fromAction(() -> model.changeItemTitle(this.listId, newTitle))
+    void changeTitle(int idemId, String newTitle) {
+        Completable.fromAction(() -> model.changeItemTitle(idemId, newTitle))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }

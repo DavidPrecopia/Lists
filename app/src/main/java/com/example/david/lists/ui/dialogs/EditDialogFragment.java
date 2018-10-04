@@ -19,8 +19,9 @@ public final class EditDialogFragment extends DialogFragment {
 
     private DialogFragmentSharedBinding binding;
 
-    private static final String ARG_KEY_ID = "id_key";
-    private static final String ARG_KEY_TITLE = "title_key";
+    private EditingInfo editingInfo;
+
+    private static final String ARG_KEY_EDITED = "edited_key";
 
     private EditDialogFragmentListener dialogListener;
 
@@ -28,15 +29,20 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
 
-    public static EditDialogFragment getInstance(int id, String title) {
+    public static EditDialogFragment getInstance(EditingInfo editingInfo) {
         EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARG_KEY_ID, id);
-        bundle.putString(ARG_KEY_TITLE, title);
+        bundle.putParcelable(ARG_KEY_EDITED, editingInfo);
         fragment.setArguments(bundle);
         return fragment;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        editingInfo = getArguments().getParcelable(ARG_KEY_EDITED);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -60,7 +66,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
     private void setEditText() {
-        binding.textInputEditText.setText(getArguments().getString(ARG_KEY_TITLE));
+        binding.textInputEditText.setText(editingInfo.getTitle());
     }
 
     private void setConfirmButtonText() {
@@ -75,7 +81,7 @@ public final class EditDialogFragment extends DialogFragment {
             } else if (titleUnchanged(newTitle)) {
                 showError(getString(R.string.error_title_unchanged));
             } else {
-                dialogListener.edit(getArguments().getInt(ARG_KEY_ID), newTitle);
+                dialogListener.edit(editingInfo.getId(), newTitle);
                 dismiss();
             }
         });
@@ -95,7 +101,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
     private boolean titleUnchanged(String newTitle) {
-        return newTitle.equals(getArguments().getString(ARG_KEY_TITLE));
+        return newTitle.equals(editingInfo.getTitle());
     }
 
 
