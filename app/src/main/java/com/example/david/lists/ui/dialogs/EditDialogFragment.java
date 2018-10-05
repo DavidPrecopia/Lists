@@ -20,8 +20,7 @@ public final class EditDialogFragment extends DialogFragment {
     private DialogFragmentSharedBinding binding;
 
     private EditingInfo editingInfo;
-
-    private static final String ARG_KEY_EDITED = "edited_key";
+    private static final String ARG_KEY_EDITING_INFO = "edited_key";
 
     private EditDialogFragmentListener dialogListener;
 
@@ -32,7 +31,7 @@ public final class EditDialogFragment extends DialogFragment {
     public static EditDialogFragment getInstance(EditingInfo editingInfo) {
         EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_KEY_EDITED, editingInfo);
+        bundle.putParcelable(ARG_KEY_EDITING_INFO, editingInfo);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -41,7 +40,7 @@ public final class EditDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        editingInfo = getArguments().getParcelable(ARG_KEY_EDITED);
+        editingInfo = getArguments().getParcelable(ARG_KEY_EDITING_INFO);
     }
 
     @Override
@@ -76,7 +75,7 @@ public final class EditDialogFragment extends DialogFragment {
     private void confirmClickListener() {
         binding.buttonConfirm.setOnClickListener(view -> {
             String newTitle = binding.textInputEditText.getText().toString();
-            if (invalidInput(newTitle)) {
+            if (emptyInput(newTitle)) {
                 showError(getString(R.string.error_empty_title_text_field));
             } else if (titleUnchanged(newTitle)) {
                 showError(getString(R.string.error_title_unchanged));
@@ -96,7 +95,7 @@ public final class EditDialogFragment extends DialogFragment {
         binding.textInputLayout.setError(message);
     }
 
-    private boolean invalidInput(String msg) {
+    private boolean emptyInput(String msg) {
         return TextUtils.isEmpty(msg);
     }
 

@@ -44,6 +44,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
         return userLists.size();
     }
 
+
     public void swapData(List<UserList> newUserLists) {
         userLists.clear();
         userLists.addAll(newUserLists);

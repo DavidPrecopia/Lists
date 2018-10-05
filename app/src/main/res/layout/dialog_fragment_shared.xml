@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    <em>BE MINDFUL OF</em>: This layout is used by multiple DialogFragments.
+-->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--
         focusableInTouchMode prevents TextInputEditText from gaining focus
-        when the dialog is opened - thus, clearly showing the hint
+        when the dialog is opened - thus, the hint is clearly shown.
     -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"

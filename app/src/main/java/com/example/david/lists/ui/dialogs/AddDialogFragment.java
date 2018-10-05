@@ -68,7 +68,7 @@ public final class AddDialogFragment extends DialogFragment {
     private void confirmClickListener() {
         binding.buttonConfirm.setOnClickListener(view -> {
             String title = binding.textInputEditText.getText().toString();
-            if (invalidInput(title)) {
+            if (emptyInput(title)) {
                 showError();
             } else {
                 dialogListener.add(title);
@@ -86,7 +86,7 @@ public final class AddDialogFragment extends DialogFragment {
         binding.textInputLayout.setError(getString(R.string.error_empty_title_text_field));
     }
 
-    private boolean invalidInput(String msg) {
+    private boolean emptyInput(String msg) {
         return TextUtils.isEmpty(msg);
     }
 

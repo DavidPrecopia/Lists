@@ -23,7 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
@@ -128,11 +130,23 @@ public class ListFragment extends Fragment
 
 
     private void initRecyclerView() {
-        UtilInitializeListRecyclerView.initRecyclerView(
-                binding.recyclerView,
-                viewModel.getAdapter(),
-                getItemTouchCallback(),
-                getActivity().getApplication()
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(true);
+        initLayoutManager(recyclerView);
+        new ItemTouchHelper(getItemTouchCallback()).attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(viewModel.getAdapter());
+    }
+
+    private void initLayoutManager(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplication());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
+    }
+
+    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
         );
     }
 
