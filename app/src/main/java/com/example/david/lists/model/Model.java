@@ -10,7 +10,6 @@ import com.example.david.lists.datamodel.UserList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import timber.log.Timber;
 
 public final class Model implements IModelContract {
 
@@ -45,33 +44,28 @@ public final class Model implements IModelContract {
 
     @Override
     public void addList(UserList list) {
-        long rowId = dao.addList(list);
-        Timber.d("Add %s", String.valueOf(rowId));
+        dao.addList(list);
     }
 
     @Override
     public void addItem(Item item) {
-        long rowId = dao.addItem(item);
-        Timber.d(String.valueOf(rowId));
+        dao.addItem(item);
     }
 
 
     @Override
     public void deleteList(int listId) {
-        int numberOfRows = dao.deleteList(listId);
-        Timber.d("Delete %s", String.valueOf(numberOfRows));
+        dao.deleteList(listId);
     }
 
     @Override
     public void deleteItem(int itemId) {
-        int numberOfRows = dao.deleteItem(itemId);
-        Timber.d(String.valueOf(numberOfRows));
+        dao.deleteItem(itemId);
     }
 
 
     @Override
     public void changeListTitle(int listId, String newTitle) {
-        Timber.d("changeListTitle");
         dao.changeListTitle(listId, newTitle);
     }
 

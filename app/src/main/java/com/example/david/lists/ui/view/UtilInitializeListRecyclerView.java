@@ -1,4 +1,4 @@
-package com.example.david.lists.util;
+package com.example.david.lists.ui.view;
 
 import android.app.Application;
 
@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public final class UtilInitializeListRecyclerView {
+final class UtilInitializeListRecyclerView {
 
     private UtilInitializeListRecyclerView() {
     }
 
-    public static void initRecyclerView(RecyclerView recyclerView,
+    static void initRecyclerView(RecyclerView recyclerView,
                                         RecyclerView.Adapter adapter,
                                         ItemTouchHelper.SimpleCallback simpleCallback,
                                         Application application) {

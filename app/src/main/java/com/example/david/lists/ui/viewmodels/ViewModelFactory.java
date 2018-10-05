@@ -1,18 +1,16 @@
-package com.example.david.lists.util;
+package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
-
-import com.example.david.lists.ui.ListViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     private final Application application;
 
-    public ViewModelFactory(@NonNull Application application) {
+    ViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
     }
@@ -20,9 +18,12 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(ListViewModel.class)) {
+        if (modelClass.isAssignableFrom(UserListViewModel.class)) {
             //noinspection unchecked
-            return (T) new ListViewModel(application);
+            return (T) new UserListViewModel(application);
+        } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
+            //noinspection unchecked
+            return (T) new ItemViewModel(application);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,11 +12,11 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
+public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
 
     private final List<Item> itemsList;
 
-    ItemsAdapter() {
+    public ItemsAdapter() {
         this.itemsList = new ArrayList<>();
     }
 
@@ -41,18 +41,18 @@ final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHold
     }
 
 
-    void swapData(List<Item> newItemsList) {
+    public void swapData(List<Item> newItemsList) {
         itemsList.clear();
         itemsList.addAll(newItemsList);
         notifyDataSetChanged();
     }
 
-    void remove(int position) {
+    public void remove(int position) {
         itemsList.remove(position);
         notifyItemRemoved(position);
     }
 
-    void reAdd(int position, Item item) {
+    public void reAdd(int position, Item item) {
         itemsList.add(position, item);
         notifyItemInserted(position);
     }

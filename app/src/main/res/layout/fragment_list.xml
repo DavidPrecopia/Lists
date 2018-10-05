@@ -4,13 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.example.david.lists.ui.ListViewModel" />
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
@@ -29,7 +22,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:title="@{viewModel.toolbarTitle}"
                 app:titleTextColor="@color/colorAccent" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -57,7 +49,6 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/margin_normal"
             android:contentDescription="@string/content_description_fab_add_list"
-            android:onClick="@{view -> viewModel.addButtonClicked()}"
             app:elevation="@dimen/elevation_fab"
             app:pressedTranslationZ="@dimen/elevation_fab_pressed_z_axis"
             app:srcCompat="@drawable/ic_add_black_24dp" />

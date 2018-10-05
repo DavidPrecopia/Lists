@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.ui.viewmodels.IListViewModelContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
+public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
 
     private final List<UserList> userLists;
-    private final ListViewModel viewModel;
+    private final IListViewModelContract viewModel;
 
-    UserListsAdapter(ListViewModel viewModel) {
+    public UserListsAdapter(IListViewModelContract viewModel) {
         this.viewModel = viewModel;
         userLists = new ArrayList<>();
     }
@@ -43,18 +44,18 @@ final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserL
         return userLists.size();
     }
 
-    void swapData(List<UserList> newUserLists) {
+    public void swapData(List<UserList> newUserLists) {
         userLists.clear();
         userLists.addAll(newUserLists);
         notifyDataSetChanged();
     }
 
-    void remove(int position) {
+    public void remove(int position) {
         userLists.remove(position);
         notifyItemRemoved(position);
     }
 
-    void reAdd(int position, UserList userList) {
+    public void reAdd(int position, UserList userList) {
         userLists.add(position, userList);
         notifyItemInserted(position);
     }
@@ -78,9 +79,8 @@ final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserL
 
         @Override
         public void onClick(View v) {
-            UserList userList = userLists.get(getAdapterPosition());
             viewModel.userListClicked(
-                    userList.getId(), userList.getTitle()
+                    userLists.get(getAdapterPosition())
             );
         }
     }

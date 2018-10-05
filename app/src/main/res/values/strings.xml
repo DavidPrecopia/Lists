@@ -1,16 +1,22 @@
 <resources>
     <string name="app_name">Lists</string>
 
+    <string name="content_description_fab_add_list">Add a list</string>
+    <string name="content_description_list_item_drag">Hold to drag</string>
+    <string name="content_description_list_item_edit">Edit name</string>
+
     <string name="message_list_deletion">List deleted</string>
     <string name="message_item_deletion">Item deleted</string>
     <string name="message_undo">Undo</string>
 
-    <!--ListFragment-->
-    <string name="content_description_fab_add_list">Add a list</string>
 
-    <!--list_item-->
-    <string name="content_description_list_item_drag">Hold to drag</string>
-    <string name="content_description_list_item_edit">Edit name</string>
+    <string name="displaying_user_list">100</string>
+    <string name="displaying_item">200</string>
+
+    <string name="key_shared_prefs_name">@string/app_name</string>
+    <string name="key_shared_pref_user_list_title">user_list_title_key</string>
+    <string name="key_shared_pref_user_list_id">user_list_id_key</string>
+
 
     <!--menu-->
     <string name="menu_item_title_log_out">Log Out</string>

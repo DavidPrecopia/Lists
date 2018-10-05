@@ -6,4 +6,6 @@
     <string name="error_msg_empty_list">List is empty</string>
 
     <string name="error_invalid_deletion_undo">No recent deletions</string>
+
+    <string name="error_cannot_open_user_list">Cannot open a UserList from within UserList</string>
 </resources>

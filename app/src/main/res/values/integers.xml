@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="max_name_length">30</integer>
-
-    <integer name="selected_user_list">100</integer>
-    <integer name="selected_item">200</integer>
 </resources>

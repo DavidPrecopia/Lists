@@ -34,10 +34,10 @@ public interface ListsDao {
 
 
     @Insert(onConflict = REPLACE)
-    long addList(UserList list);
+    void addList(UserList list);
 
     @Insert(onConflict = REPLACE)
-    long addItem(Item item);
+    void addItem(Item item);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
@@ -52,10 +52,10 @@ public interface ListsDao {
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    int deleteList(int listId);
+    void deleteList(int listId);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    int deleteItem(int itemId);
+    void deleteItem(int itemId);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME

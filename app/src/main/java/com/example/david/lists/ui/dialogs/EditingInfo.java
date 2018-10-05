@@ -7,8 +7,8 @@ import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
 
 /**
- * A uniform way to store and pass information about an
- * {@link UserList} or {@link Item} that is being edited
+ * This provides a uniform way to store and pass information about an
+ * {@link UserList} or {@link Item} that is being edited.
  */
 public final class EditingInfo implements Parcelable {
     private final int id;
@@ -34,6 +34,8 @@ public final class EditingInfo implements Parcelable {
         return title;
     }
 
+
+    // Parcelable code
 
     private EditingInfo(Parcel in) {
         id = in.readInt();

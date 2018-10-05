@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.view;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +13,8 @@ import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.dialogs.AddDialogFragment;
 import com.example.david.lists.ui.dialogs.EditDialogFragment;
 import com.example.david.lists.ui.dialogs.EditingInfo;
-import com.example.david.lists.util.UtilInitializeListRecyclerView;
-import com.example.david.lists.util.ViewModelFactory;
+import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.UtilViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,14 +32,20 @@ public class ListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener {
 
-    private ListViewModel viewModel;
+    private IListViewModelContract viewModel;
     private FragmentListBinding binding;
+
+    private static final String ARG_KEY_DISPLAYING = "displaying_key";
 
     public ListFragment() {
     }
 
-    static ListFragment newInstance() {
-        return new ListFragment();
+    static ListFragment newInstance(String displaying) {
+        ListFragment fragment = new ListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_KEY_DISPLAYING, displaying);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
@@ -52,8 +57,18 @@ public class ListFragment extends Fragment
     }
 
     private void initViewModel() {
-        ViewModelFactory factory = new ViewModelFactory(getActivity().getApplication());
-        viewModel = ViewModelProviders.of(this, factory).get(ListViewModel.class);
+        String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
+        if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
+            viewModel = UtilViewModel.getUserListViewModel(
+                    (ListActivity) getActivity(),
+                    getActivity().getApplication()
+            );
+        } else if (currentlyDisplaying.equals(getStringResource(R.string.displaying_item))) {
+            viewModel = UtilViewModel.getItemViewModel(
+                    this,
+                    getActivity().getApplication()
+            );
+        }
     }
 
 
@@ -66,19 +81,23 @@ public class ListFragment extends Fragment
 
     private void initView() {
         observeViewModel();
-        binding.setViewModel(viewModel);
+        initRecyclerView();
         initToolbar();
         initFab();
         initSwipeRefresh();
     }
 
     private void observeViewModel() {
-        observeRecyclerViewAdapter();
+        observeToolbarTitle();
         observeDisplayLoading();
         observeError();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
+    }
+
+    private void observeToolbarTitle() {
+        viewModel.getToolbarTitle().observe(this, title -> binding.toolbar.setTitle(title));
     }
 
     private void observeDisplayLoading() {
@@ -91,18 +110,12 @@ public class ListFragment extends Fragment
         });
     }
 
-    private void observeRecyclerViewAdapter() {
-        viewModel.getRecyclerViewAdapter().observe(this, this::initRecyclerView);
-    }
-
     private void observeError() {
         viewModel.getEventDisplayError().observe(this, this::showError);
     }
 
     private void observeEventNotifyUserOfDeletion() {
-        viewModel.getEventNotifyUserOfDeletion().observe(
-                this, Void -> notifyDeletionSnackbar()
-        );
+        viewModel.getEventNotifyUserOfDeletion().observe(this, this::notifyDeletionSnackbar);
     }
 
     private void observeEventAdd() {
@@ -114,10 +127,10 @@ public class ListFragment extends Fragment
     }
 
 
-    private void initRecyclerView(RecyclerView.Adapter adapter) {
+    private void initRecyclerView() {
         UtilInitializeListRecyclerView.initRecyclerView(
                 binding.recyclerView,
-                adapter,
+                viewModel.getAdapter(),
                 getItemTouchCallback(),
                 getActivity().getApplication()
         );
@@ -151,6 +164,15 @@ public class ListFragment extends Fragment
 
     private void initFab() {
         FloatingActionButton fab = binding.fab;
+        fabClickListener(fab);
+        fabScrollListener(fab);
+    }
+
+    private void fabClickListener(FloatingActionButton fab) {
+        fab.setOnClickListener(view -> viewModel.addButtonClicked());
+    }
+
+    private void fabScrollListener(FloatingActionButton fab) {
         binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -218,8 +240,8 @@ public class ListFragment extends Fragment
     }
 
 
-    private void notifyDeletionSnackbar() {
-        Snackbar.make(binding.coordinatorLayout, R.string.message_list_deletion, Snackbar.LENGTH_LONG)
+    private void notifyDeletionSnackbar(String message) {
+        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
                 .addCallback(new Snackbar.Callback() {
                     @Override
@@ -262,5 +284,10 @@ public class ListFragment extends Fragment
 
     private void hideError() {
         binding.tvError.setVisibility(View.GONE);
+    }
+
+
+    private String getStringResource(int resId) {
+        return getActivity().getApplication().getString(resId);
     }
 }
