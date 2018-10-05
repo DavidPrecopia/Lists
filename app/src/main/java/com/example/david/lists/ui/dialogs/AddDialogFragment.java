@@ -46,6 +46,7 @@ public final class AddDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_fragment_shared, container, false);
+        setStyle(STYLE_NO_TITLE, R.style.DialogStyle);
         init();
         return binding.getRoot();
     }

@@ -13,10 +13,9 @@
     -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout"
-        android:layout_width="@dimen/dialog_width"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
-        android:minWidth="@dimen/dialog_width"
         android:paddingStart="@dimen/margin_normal"
         android:paddingTop="@dimen/margin_medium"
         android:paddingEnd="@dimen/margin_normal"
@@ -24,9 +23,8 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout"
-            android:layout_width="@dimen/dialog_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="@dimen/dialog_width"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/max_name_length"
             app:hintTextAppearance="@style/HintTextAppearance"
@@ -40,7 +38,6 @@
                 android:layout_height="match_parent"
                 android:inputType="textAutoCorrect"
                 android:maxLength="@integer/max_name_length"
-                android:minWidth="@dimen/dialog_width"
                 android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
