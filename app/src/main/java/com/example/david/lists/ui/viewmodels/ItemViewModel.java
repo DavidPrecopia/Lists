@@ -8,7 +8,6 @@ import com.example.david.lists.R;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.model.Model;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.util.SingleLiveEvent;
@@ -50,14 +49,14 @@ final class ItemViewModel extends AndroidViewModel
     private Item temporaryItem;
     private int temporaryItemPosition = -1;
 
-    ItemViewModel(@NonNull Application application) {
+    ItemViewModel(@NonNull Application application, IModelContract model) {
         super(application);
         listId = getSharedPreferences().getInt(
                 getStringResource(R.string.key_shared_pref_user_list_id),
                 -1
         );
         itemList = new ArrayList<>();
-        model = Model.getInstance(application);
+        this.model = model;
         disposable = new CompositeDisposable();
         adapter = new ItemsAdapter();
         toolbarTitle = new MutableLiveData<>();
@@ -158,6 +157,22 @@ final class ItemViewModel extends AndroidViewModel
                 new Item(title, adapter.getItemCount(), this.listId)))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
+    }
+
+
+    @Override
+    public void dragging(int fromPosition, int toPosition) {
+        adapter.move(fromPosition, toPosition);
+    }
+
+    @Override
+    public void movePermanently(int newPosition) {
+        Item item = itemList.get(newPosition);
+        model.moveItemPosition(
+                item.getId(),
+                item.getPosition(),
+                newPosition
+        );
     }
 
 

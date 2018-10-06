@@ -7,6 +7,7 @@ import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,11 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
         itemsList.clear();
         itemsList.addAll(newItemsList);
         notifyDataSetChanged();
+    }
+
+    public void move(int fromPosition, int toPosition) {
+        Collections.swap(itemsList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
     public void remove(int position) {

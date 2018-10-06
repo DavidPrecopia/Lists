@@ -13,6 +13,10 @@ public interface IListViewModelContract {
 
     void add(String title);
 
+    void dragging(int fromPosition, int toPosition);
+
+    void movePermanently(int newPosition);
+
     void swipedRight(int position);
 
     void changeTitle(int id, String newTitle);

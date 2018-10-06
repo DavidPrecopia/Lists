@@ -9,6 +9,7 @@ import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.viewmodels.IListViewModelContract;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,11 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
         userLists.clear();
         userLists.addAll(newUserLists);
         notifyDataSetChanged();
+    }
+
+    public void move(int fromPosition, int toPosition) {
+        Collections.swap(userLists, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
     }
 
     public void remove(int position) {

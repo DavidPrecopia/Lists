@@ -24,11 +24,11 @@ public interface IModelContract {
 
     void changeItemTitle(int itemId, String newName);
 
-    void moveListPosition(int listId, int newPosition);
+    void moveUserListPosition(int listId, int oldPosition, int newPosition);
 
-    void moveItemPosition(int itemId, int newPosition);
+    void moveItemPosition(int itemId, int oldPosition, int newPosition);
 
-    void forceRefreshLists();
+    void forceRefreshUserLists();
 
-    void forceRefreshListContents(int listId);
+    void forceRefreshItems(int listId);
 }

@@ -2,6 +2,7 @@ package com.example.david.lists.model;
 
 import android.app.Application;
 
+import com.example.david.lists.R;
 import com.example.david.lists.database.ListsDao;
 import com.example.david.lists.database.ListsDatabase;
 import com.example.david.lists.datamodel.Item;
@@ -76,23 +77,65 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void moveListPosition(int listId, int newPosition) {
+    public void moveUserListPosition(int listId, int oldPosition, int newPosition) {
+        if (oldPosition == newPosition) {
+            return;
+        }
+        updatePositions(R.string.displaying_user_list, oldPosition, newPosition);
+        dao.moveListPosition(listId, newPosition);
+    }
+
+    @Override
+    public void moveItemPosition(int itemId, int oldPosition, int newPosition) {
+        if (oldPosition == newPosition) {
+            return;
+        }
+        updatePositions(R.string.displaying_item, oldPosition, newPosition);
+        dao.moveItemPosition(itemId, newPosition);
+    }
+
+    /**
+     * I'm using the same method for both types in order to keep the logic DRY
+     */
+    private void updatePositions(int typeResId, int oldPosition, int newPosition) {
+        int correctedPosition = oldPosition - 1;
+        if (newPosition > oldPosition) {
+            decrementPosition(typeResId, correctedPosition, newPosition);
+        } else if (newPosition < oldPosition) {
+            incrementPosition(typeResId, correctedPosition, newPosition);
+        }
+    }
+
+    private void decrementPosition(int typeResId, int correctedPosition, int newPosition) {
+        switch (typeResId) {
+            case R.string.displaying_user_list:
+                dao.updateUserListPositionsDecrement(correctedPosition, newPosition);
+                break;
+            case R.string.displaying_item:
+                dao.updateItemPositionsDecrement(correctedPosition, newPosition);
+                break;
+        }
+    }
+
+    private void incrementPosition(int typeResId, int correctedPosition, int newPosition) {
+        switch (typeResId) {
+            case R.string.displaying_user_list:
+                dao.updateUserListPositionsIncrement(correctedPosition, newPosition);
+                break;
+            case R.string.displaying_item:
+                dao.updateItemPositionsIncrement(correctedPosition, newPosition);
+                break;
+        }
+    }
+
+
+    @Override
+    public void forceRefreshUserLists() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void moveItemPosition(int itemId, int newPosition) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public void forceRefreshLists() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void forceRefreshListContents(int listId) {
+    public void forceRefreshItems(int listId) {
         throw new UnsupportedOperationException();
     }
 }

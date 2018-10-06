@@ -5,12 +5,12 @@ import android.app.Application;
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.model.Model;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -46,9 +46,9 @@ final class UserListViewModel extends AndroidViewModel
     private UserList temporaryUserList;
     private int temporaryUserListPosition = -1;
 
-    UserListViewModel(@NonNull Application application) {
+    UserListViewModel(@NonNull Application application, IModelContract model) {
         super(application);
-        model = Model.getInstance(application);
+        this.model = model;
         disposable = new CompositeDisposable();
         adapter = new UserListsAdapter(this);
         userLists = new ArrayList<>();
@@ -131,6 +131,25 @@ final class UserListViewModel extends AndroidViewModel
     @Override
     public void add(String title) {
         Completable.fromAction(() -> model.addList(new UserList(title, adapter.getItemCount())))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+
+    @Override
+    public void dragging(int fromPosition, int toPosition) {
+        Collections.swap(userLists, fromPosition, toPosition);
+        adapter.move(fromPosition, toPosition);
+    }
+
+    @Override
+    public void movePermanently(int newPosition) {
+        UserList userList = userLists.get(newPosition);
+        Completable.fromAction(() -> model.moveUserListPosition(
+                userList.getId(),
+                userList.getPosition(),
+                newPosition
+        ))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
