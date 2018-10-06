@@ -95,10 +95,14 @@ public final class Model implements IModelContract {
     }
 
     /**
-     * I'm using the same method for both types in order to keep the logic DRY
+     * I'm using the same method for both types in order to keep the logic DRY.
+     *
+     * I'm decrementing oldPosition so the moved row is excluded from update operations.
+     * This assumes that this method is invoked prior to the moved row being updated.
      */
     private void updatePositions(int typeResId, int oldPosition, int newPosition) {
         int correctedPosition = oldPosition - 1;
+
         if (newPosition > oldPosition) {
             decrementPosition(typeResId, correctedPosition, newPosition);
         } else if (newPosition < oldPosition) {
