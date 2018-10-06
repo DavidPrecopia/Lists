@@ -1,8 +1,6 @@
 package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.Item;
@@ -29,7 +27,7 @@ import timber.log.Timber;
 final class ItemViewModel extends AndroidViewModel
         implements IListViewModelContract {
 
-    private int listId;
+    private final int listId;
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
@@ -47,12 +45,9 @@ final class ItemViewModel extends AndroidViewModel
     private Item temporaryItem;
     private int temporaryItemPosition = -1;
 
-    ItemViewModel(@NonNull Application application, IModelContract model) {
+    ItemViewModel(@NonNull Application application, IModelContract model, int listId, String listTitle) {
         super(application);
-        listId = getSharedPreferences().getInt(
-                getStringResource(R.string.key_shared_pref_user_list_id),
-                -1
-        );
+        this.listId = listId;
         itemList = new ArrayList<>();
         this.model = model;
         disposable = new CompositeDisposable();
@@ -64,30 +59,14 @@ final class ItemViewModel extends AndroidViewModel
         eventAdd = new MutableLiveData<>();
         eventEdit = new MutableLiveData<>();
 
-        init();
+        init(listTitle);
     }
 
 
-    private void init() {
+    private void init(String listTitle) {
         eventDisplayLoading.setValue(true);
-        setToolbarTitle();
+        toolbarTitle.setValue(listTitle);
         getItems();
-    }
-
-    private void setToolbarTitle() {
-        toolbarTitle.setValue(
-                getSharedPreferences().getString(
-                        getStringResource(R.string.key_shared_pref_user_list_title),
-                        null
-                )
-        );
-    }
-
-    private SharedPreferences getSharedPreferences() {
-        return getApplication().getSharedPreferences(
-                getStringResource(R.string.key_shared_prefs_name),
-                Context.MODE_PRIVATE
-        );
     }
 
 

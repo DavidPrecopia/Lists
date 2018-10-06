@@ -1,7 +1,10 @@
 package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
+import com.example.david.lists.R;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.model.Model;
 
@@ -27,9 +30,37 @@ final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
             //noinspection unchecked
             return (T) new UserListViewModel(application, model);
         } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
+            int listId = getListId();
+            String listTitle = getListTitle();
             //noinspection unchecked
-            return (T) new ItemViewModel(application, model);
+            return (T) new ItemViewModel(application, model, listId, listTitle);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
+    }
+
+
+    private int getListId() {
+        return getSharedPreferences().getInt(
+                getStringResource(R.string.key_shared_pref_user_list_id),
+                -1
+        );
+    }
+
+    private String getListTitle() {
+        return getSharedPreferences().getString(
+                getStringResource(R.string.key_shared_pref_user_list_title),
+                null
+        );
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return application.getSharedPreferences(
+                getStringResource(R.string.key_shared_prefs_name),
+                Context.MODE_PRIVATE
+        );
+    }
+
+    private String getStringResource(int stringResId) {
+        return application.getString(stringResId);
     }
 }
