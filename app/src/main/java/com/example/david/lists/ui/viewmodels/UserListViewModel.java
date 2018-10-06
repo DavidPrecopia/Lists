@@ -7,7 +7,6 @@ import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
-import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +34,12 @@ final class UserListViewModel extends AndroidViewModel
     private final UserListsAdapter adapter;
 
     private final MutableLiveData<String> toolbarTitle;
-
-    private final SingleLiveEvent<UserList> eventOpenUserList;
-    private final SingleLiveEvent<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<String> eventDisplayError;
-    private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
-    private final SingleLiveEvent<String> eventAdd;
-    private final SingleLiveEvent<EditingInfo> eventEdit;
+    private final MutableLiveData<Boolean> eventDisplayLoading;
+    private final MutableLiveData<UserList> eventOpenUserList;
+    private final MutableLiveData<String> eventDisplayError;
+    private final MutableLiveData<String> eventNotifyUserOfDeletion;
+    private final MutableLiveData<String> eventAdd;
+    private final MutableLiveData<EditingInfo> eventEdit;
 
     private UserList temporaryUserList;
     private int temporaryUserListPosition = -1;
@@ -53,12 +51,12 @@ final class UserListViewModel extends AndroidViewModel
         adapter = new UserListsAdapter(this);
         userLists = new ArrayList<>();
         toolbarTitle = new MutableLiveData<>();
-        eventOpenUserList = new SingleLiveEvent<>();
-        eventDisplayLoading = new SingleLiveEvent<>();
-        eventDisplayError = new SingleLiveEvent<>();
-        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
-        eventAdd = new SingleLiveEvent<>();
-        eventEdit = new SingleLiveEvent<>();
+        eventOpenUserList = new MutableLiveData<>();
+        eventDisplayLoading = new MutableLiveData<>();
+        eventDisplayError = new MutableLiveData<>();
+        eventNotifyUserOfDeletion = new MutableLiveData<>();
+        eventAdd = new MutableLiveData<>();
+        eventEdit = new MutableLiveData<>();
 
         init();
     }

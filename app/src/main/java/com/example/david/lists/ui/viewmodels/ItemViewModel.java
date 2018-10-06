@@ -10,7 +10,6 @@ import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
-import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +38,11 @@ final class ItemViewModel extends AndroidViewModel
     private final ItemsAdapter adapter;
 
     private final MutableLiveData<String> toolbarTitle;
-
-    private final SingleLiveEvent<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<String> eventDisplayError;
-    private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
-    private final SingleLiveEvent<String> eventAdd;
-    private final SingleLiveEvent<EditingInfo> eventEdit;
+    private final MutableLiveData<Boolean> eventDisplayLoading;
+    private final MutableLiveData<String> eventDisplayError;
+    private final MutableLiveData<String> eventNotifyUserOfDeletion;
+    private final MutableLiveData<String> eventAdd;
+    private final MutableLiveData<EditingInfo> eventEdit;
 
     private Item temporaryItem;
     private int temporaryItemPosition = -1;
@@ -60,11 +58,11 @@ final class ItemViewModel extends AndroidViewModel
         disposable = new CompositeDisposable();
         adapter = new ItemsAdapter();
         toolbarTitle = new MutableLiveData<>();
-        eventDisplayLoading = new SingleLiveEvent<>();
-        eventDisplayError = new SingleLiveEvent<>();
-        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
-        eventAdd = new SingleLiveEvent<>();
-        eventEdit = new SingleLiveEvent<>();
+        eventDisplayLoading = new MutableLiveData<>();
+        eventDisplayError = new MutableLiveData<>();
+        eventNotifyUserOfDeletion = new MutableLiveData<>();
+        eventAdd = new MutableLiveData<>();
+        eventEdit = new MutableLiveData<>();
 
         init();
     }
