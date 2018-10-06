@@ -24,6 +24,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
+import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
+
 final class UserListViewModel extends AndroidViewModel
         implements IListViewModelContract {
 
@@ -128,9 +130,9 @@ final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        Completable.fromAction(() -> model.addList(new UserList(title, adapter.getItemCount())))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        completableIoAccess(Completable.fromAction(() ->
+                model.addList(new UserList(title, adapter.getItemCount())))
+        );
     }
 
 
@@ -143,13 +145,13 @@ final class UserListViewModel extends AndroidViewModel
     @Override
     public void movePermanently(int newPosition) {
         UserList userList = userLists.get(newPosition);
-        Completable.fromAction(() -> model.moveUserListPosition(
-                userList.getId(),
-                userList.getPosition(),
-                newPosition
-        ))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        completableIoAccess(Completable.fromAction(() ->
+                model.moveUserListPosition(
+                        userList.getId(),
+                        userList.getPosition(),
+                        newPosition
+                ))
+        );
     }
 
 
@@ -165,9 +167,9 @@ final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(int listId, String newTitle) {
-        Completable.fromAction(() -> model.changeListTitle(listId, newTitle))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        completableIoAccess(Completable.fromAction(() ->
+                model.changeListTitle(listId, newTitle))
+        );
     }
 
 
@@ -202,10 +204,9 @@ final class UserListViewModel extends AndroidViewModel
         // There is a possibility that temporaryUserList is nullified,
         // before fromAction executes.
         int id = temporaryUserList.getId();
-        Completable.fromAction(() -> model.deleteList(id))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-
+        completableIoAccess(Completable.fromAction(() ->
+                model.deleteList(id))
+        );
         clearTemporary();
     }
 

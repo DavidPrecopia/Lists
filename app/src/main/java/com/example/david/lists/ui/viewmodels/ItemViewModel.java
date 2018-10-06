@@ -24,6 +24,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
+import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
+
 final class ItemViewModel extends AndroidViewModel
         implements IListViewModelContract {
 
@@ -130,10 +132,9 @@ final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        Completable.fromAction(() -> model.addItem(
-                new Item(title, adapter.getItemCount(), this.listId)))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        completableIoAccess(Completable.fromAction(() ->
+                model.addItem(new Item(title, adapter.getItemCount(), this.listId)))
+        );
     }
 
 
@@ -165,9 +166,9 @@ final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(int idemId, String newTitle) {
-        Completable.fromAction(() -> model.changeItemTitle(idemId, newTitle))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        completableIoAccess(Completable.fromAction(() ->
+                model.changeItemTitle(idemId, newTitle))
+        );
     }
 
 
@@ -202,10 +203,9 @@ final class ItemViewModel extends AndroidViewModel
         // There is a possibility that temporaryItem is nullified,
         // before fromAction executes.
         int id = temporaryItem.getId();
-        Completable.fromAction(() -> model.deleteItem(id))
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-
+        completableIoAccess(Completable.fromAction(() ->
+                model.deleteItem(id))
+        );
         clearTemporary();
     }
 
