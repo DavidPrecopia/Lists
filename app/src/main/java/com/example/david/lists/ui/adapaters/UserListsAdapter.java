@@ -1,11 +1,13 @@
 package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IListViewModelContract;
 
 import java.util.ArrayList;
@@ -18,10 +20,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
 
     private final List<UserList> userLists;
-    private final IListViewModelContract viewModel;
 
-    public UserListsAdapter(IListViewModelContract viewModel) {
+    private final IListViewModelContract viewModel;
+    private final ItemTouchHelperCallback.IStartDragListener startDragListener;
+
+    public UserListsAdapter(IListViewModelContract viewModel, ItemTouchHelperCallback.IStartDragListener startDragListener) {
         this.viewModel = viewModel;
+        this.startDragListener = startDragListener;
         userLists = new ArrayList<>();
     }
 
@@ -79,10 +84,27 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             binding.getRoot().setOnClickListener(this);
         }
 
+
         void bindView(UserList userList) {
-            binding.tvTitle.setText(userList.getTitle());
+            bindTitle(userList);
+            initDragHandle();
             binding.executePendingBindings();
         }
+
+        private void bindTitle(UserList userList) {
+            binding.tvTitle.setText(userList.getTitle());
+        }
+
+        private void initDragHandle() {
+            binding.ivDrag.setOnTouchListener((view, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    startDragListener.requestDrag(this);
+                }
+                view.performClick();
+                return true;
+            });
+        }
+
 
         @Override
         public void onClick(View v) {

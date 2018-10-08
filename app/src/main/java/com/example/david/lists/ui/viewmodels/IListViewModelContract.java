@@ -4,6 +4,7 @@ import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.dialogs.EditingInfo;
 
 import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public interface IListViewModelContract {
@@ -30,6 +31,8 @@ public interface IListViewModelContract {
     void refresh();
 
     RecyclerView.Adapter getAdapter();
+
+    ItemTouchHelper getItemTouchHelper();
 
     LiveData<String> getToolbarTitle();
 

@@ -1,10 +1,12 @@
 package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
+import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
 
     private final List<Item> itemsList;
+    private final ItemTouchHelperCallback.IStartDragListener startDragListener;
 
-    public ItemsAdapter() {
+    public ItemsAdapter(ItemTouchHelperCallback.IStartDragListener startDragListener) {
+        this.startDragListener = startDragListener;
         this.itemsList = new ArrayList<>();
     }
 
@@ -73,9 +77,25 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             this.binding = binding;
         }
 
+
         private void bindView(Item item) {
-            binding.tvTitle.setText(item.getTitle());
+            bindTitle(item);
+            initDragHandle();
             binding.executePendingBindings();
+        }
+
+        private void bindTitle(Item item) {
+            binding.tvTitle.setText(item.getTitle());
+        }
+
+        private void initDragHandle() {
+            binding.ivDrag.setOnTouchListener((view, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    startDragListener.requestDrag(this);
+                }
+                view.performClick();
+                return true;
+            });
         }
     }
 }

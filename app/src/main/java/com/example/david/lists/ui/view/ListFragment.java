@@ -24,7 +24,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -60,6 +59,7 @@ public class ListFragment extends Fragment
 
     private void initViewModel() {
         String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
+        assert currentlyDisplaying != null;
         if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
             viewModel = UtilViewModel.getUserListViewModel(
                     (ListActivity) getActivity(),
@@ -133,7 +133,7 @@ public class ListFragment extends Fragment
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         initLayoutManager(recyclerView);
-        new ItemTouchHelper(getItemTouchCallback()).attachToRecyclerView(recyclerView);
+        viewModel.getItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(viewModel.getAdapter());
     }
 
@@ -150,34 +150,6 @@ public class ListFragment extends Fragment
         );
     }
 
-    private ItemTouchHelper.SimpleCallback getItemTouchCallback() {
-        return new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                viewModel.dragging(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                return true;
-            }
-
-            @Override
-            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                viewModel.movePermanently(viewHolder.getAdapterPosition());
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                final int position = viewHolder.getAdapterPosition();
-                switch (direction) {
-                    case ItemTouchHelper.LEFT:
-                        viewModel.swipedLeft(position);
-                        break;
-                    case ItemTouchHelper.RIGHT:
-                        viewModel.swipedRight(position);
-                        break;
-                }
-            }
-        };
-    }
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);

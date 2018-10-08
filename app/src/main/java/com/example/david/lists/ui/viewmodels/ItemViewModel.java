@@ -8,6 +8,7 @@ import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
+import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,7 +29,8 @@ import timber.log.Timber;
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 final class ItemViewModel extends AndroidViewModel
-        implements IListViewModelContract {
+        implements IListViewModelContract,
+        ItemTouchHelperCallback.IStartDragListener {
 
     private final int listId;
 
@@ -36,6 +39,8 @@ final class ItemViewModel extends AndroidViewModel
 
     private final List<Item> itemList;
     private final ItemsAdapter adapter;
+    private final ItemTouchHelper touchHelper;
+
 
     private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
@@ -53,7 +58,8 @@ final class ItemViewModel extends AndroidViewModel
         itemList = new ArrayList<>();
         this.model = model;
         disposable = new CompositeDisposable();
-        adapter = new ItemsAdapter();
+        adapter = new ItemsAdapter(this);
+        touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
         toolbarTitle = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new MutableLiveData<>();
@@ -216,6 +222,12 @@ final class ItemViewModel extends AndroidViewModel
 
 
     @Override
+    public void requestDrag(RecyclerView.ViewHolder viewHolder) {
+        touchHelper.startDrag(viewHolder);
+    }
+
+
+    @Override
     public void refresh() {
         Timber.i("refresh");
     }
@@ -224,6 +236,11 @@ final class ItemViewModel extends AndroidViewModel
     @Override
     public RecyclerView.Adapter getAdapter() {
         return adapter;
+    }
+
+    @Override
+    public ItemTouchHelper getItemTouchHelper() {
+        return touchHelper;
     }
 
     @Override
