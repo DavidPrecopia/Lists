@@ -165,6 +165,8 @@ final class UserListViewModel extends AndroidViewModel
      */
     @Override
     public void swipedRight(int position) {
+        // Resetting the item because it was swiped
+        adapter.notifyItemChanged(position);
         eventEdit.setValue(
                 new EditingInfo(userLists.get(position))
         );
