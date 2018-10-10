@@ -12,7 +12,7 @@
     <!--Used by multiple UI classes-->
     <string name="displaying_user_list">100</string>
     <string name="displaying_item">200</string>
-    <string name="key_shared_prefs_name">@string/app_name</string>
+    <string name="key_shared_prefs_name">list_activity_shared_preferences_name</string>
     <string name="key_shared_pref_user_list_title">user_list_title_key</string>
     <string name="key_shared_pref_user_list_id">user_list_id_key</string>
 

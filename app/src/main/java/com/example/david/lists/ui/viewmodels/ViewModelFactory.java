@@ -30,10 +30,8 @@ final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
             //noinspection unchecked
             return (T) new UserListViewModel(application, model);
         } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
-            int listId = getListId();
-            String listTitle = getListTitle();
             //noinspection unchecked
-            return (T) new ItemViewModel(application, model, listId, listTitle);
+            return (T) new ItemViewModel(application, model, getListId(), getListTitle());
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
