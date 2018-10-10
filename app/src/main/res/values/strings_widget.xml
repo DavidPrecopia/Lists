@@ -4,6 +4,7 @@
     <string name="widget_key_shared_pref_user_list_title">widget_shared_prefs_title_key</string>
     <string name="widget_key_shared_pref_user_list_id">widget_shared_prefs_id_key</string>
 
+    <string name="widget_intent_bundle_name">widget_intent_bundle_name</string>
     <string name="widget_key_intent_user_list_id">widget_intent_id_key</string>
     <string name="widget_key_intent_user_list_title">widget_intent_title_key</string>
 

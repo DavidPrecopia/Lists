@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefsName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefName;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
@@ -113,7 +113,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
     private void saveDetails(int id, String title) {
         SharedPreferences.Editor editor = getSharedPreferences(
-                getSharedPrefsName(getApplicationContext()), MODE_PRIVATE
+                getSharedPrefName(getApplicationContext()), MODE_PRIVATE
         ).edit();
         editor.putInt(getSharedPrefKeyId(getApplicationContext(), widgetId), id);
         editor.putString(getSharedPrefKeyTitle(getApplicationContext(), widgetId), title);

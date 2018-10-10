@@ -6,14 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
 import com.example.david.lists.ui.view.ListActivity;
 
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentBundleName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyId;
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyTitle;
 import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefsName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefName;
 
 final class WidgetRemoteView {
 
@@ -44,17 +48,25 @@ final class WidgetRemoteView {
 
     private void setTitlePendingIntent() {
         Intent intent = new Intent(context, ListActivity.class);
+        putTitleIntentExtras(intent);
         remoteViews.setOnClickPendingIntent(
                 R.id.widget_tv_title,
                 getPendingIntent(intent)
         );
     }
 
-    private void setTitle() {
-        remoteViews.setTextViewText(R.id.widget_tv_title, getTitle());
+    private void putTitleIntentExtras(Intent intent) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(getIntentKeyId(context), getListId());
+        bundle.putString(getIntentKeyTitle(context), getListTitle());
+        intent.putExtra(getIntentBundleName(context), bundle);
     }
 
-    private CharSequence getTitle() {
+    private void setTitle() {
+        remoteViews.setTextViewText(R.id.widget_tv_title, getListTitle());
+    }
+
+    private String getListTitle() {
         return getSharedPrefs().getString(getSharedPrefKeyTitle(context, appWidgetId), null);
     }
 
@@ -102,7 +114,7 @@ final class WidgetRemoteView {
 
     private SharedPreferences getSharedPrefs() {
         return context.getSharedPreferences(
-                getSharedPrefsName(context),
+                getSharedPrefName(context),
                 Context.MODE_PRIVATE
         );
     }

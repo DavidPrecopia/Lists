@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -14,6 +15,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentBundleName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyId;
+import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyTitle;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -33,6 +38,10 @@ public class ListActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         initViewModel();
         observeViewModel();
+        if (getIntent().getExtras() != null) {
+            processIntentExtras(getIntent().getExtras());
+            newActivity = false;
+        }
         if (newActivity) {
             addFragment(ListFragment.newInstance(getString(R.string.displaying_user_list)));
         }
@@ -48,17 +57,17 @@ public class ListActivity extends AppCompatActivity {
 
 
     private void openUserList(UserList userList) {
-        saveUserListDetails(userList);
+        saveUserListDetails(userList.getId(), userList.getTitle());
         addFragmentToBackStack(
                 ListFragment.newInstance(getString(R.string.displaying_item))
         );
     }
 
-    private void saveUserListDetails(UserList userList) {
+    private void saveUserListDetails(int id, String title) {
         SharedPreferences.Editor editor =
                 getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
-        editor.putString(getString(R.string.key_shared_pref_user_list_title), userList.getTitle());
-        editor.putInt(getString(R.string.key_shared_pref_user_list_id), userList.getId());
+        editor.putInt(getString(R.string.key_shared_pref_user_list_id), id);
+        editor.putString(getString(R.string.key_shared_pref_user_list_title), title);
         editor.apply();
     }
 
@@ -77,6 +86,32 @@ public class ListActivity extends AppCompatActivity {
                 .commit();
     }
 
+
+    private void processIntentExtras(Bundle intentExtras) {
+        Bundle widgetBundle = intentExtras.getBundle(getIntentBundleName(getApplicationContext()));
+        if (widgetBundle != null) {
+            processWidgetBundle(widgetBundle);
+        }
+    }
+
+    private void processWidgetBundle(Bundle widgetBundle) {
+        saveUserListDetails(
+                widgetBundle.getInt(getIntentKeyId(getApplicationContext())),
+                widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
+        );
+        addFragment(
+                ListFragment.newInstance(getString(R.string.displaying_item))
+        );
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getExtras() != null) {
+            processIntentExtras(intent.getExtras());
+        }
+    }
 
     /**
      * @return true if Up navigation completed successfully <i>and</i> this Activity was finished, false otherwise.

@@ -98,7 +98,9 @@ public class ListFragment extends Fragment
     }
 
     private void observeToolbarTitle() {
-        viewModel.getToolbarTitle().observe(this, title -> binding.toolbar.setTitle(title));
+        viewModel.getToolbarTitle().observe(this, title ->
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title)
+        );
     }
 
     private void observeDisplayLoading() {
