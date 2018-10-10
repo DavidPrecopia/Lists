@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.util;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,17 +7,20 @@ import android.content.SharedPreferences;
 import com.example.david.lists.R;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.model.Model;
+import com.example.david.lists.ui.viewmodels.ItemViewModel;
+import com.example.david.lists.ui.viewmodels.UserListViewModel;
+import com.example.david.lists.widget.WidgetConfigViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     private final Application application;
     private final IModelContract model;
 
-    ViewModelFactory(@NonNull Application application) {
+    public UtilViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
         this.model = Model.getInstance(application);
@@ -32,6 +35,9 @@ final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
         } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
             //noinspection unchecked
             return (T) new ItemViewModel(application, model, getListId(), getListTitle());
+        } else if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
+            //noinspection unchecked
+            return (T) new WidgetConfigViewModel(application, model);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

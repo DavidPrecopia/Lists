@@ -14,7 +14,8 @@ import com.example.david.lists.ui.dialogs.AddDialogFragment;
 import com.example.david.lists.ui.dialogs.EditDialogFragment;
 import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.ui.viewmodels.IListViewModelContract;
-import com.example.david.lists.ui.viewmodels.UtilViewModel;
+import com.example.david.lists.ui.viewmodels.UtilListViewModels;
+import com.example.david.lists.util.UtilRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -23,8 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
@@ -61,12 +60,12 @@ public class ListFragment extends Fragment
         String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
         assert currentlyDisplaying != null;
         if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
-            viewModel = UtilViewModel.getUserListViewModel(
+            viewModel = UtilListViewModels.getUserListViewModel(
                     (ListActivity) getActivity(),
                     getActivity().getApplication()
             );
         } else if (currentlyDisplaying.equals(getStringResource(R.string.displaying_item))) {
-            viewModel = UtilViewModel.getItemViewModel(
+            viewModel = UtilListViewModels.getItemViewModel(
                     this,
                     getActivity().getApplication()
             );
@@ -132,22 +131,9 @@ public class ListFragment extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        initLayoutManager(recyclerView);
+        UtilRecyclerView.initLayoutManager(recyclerView);
         viewModel.getItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(viewModel.getAdapter());
-    }
-
-    private void initLayoutManager(RecyclerView recyclerView) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplication());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-    }
-
-    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
     }
 
 

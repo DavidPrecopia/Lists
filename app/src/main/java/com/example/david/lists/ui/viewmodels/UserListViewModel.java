@@ -28,7 +28,7 @@ import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
-final class UserListViewModel extends AndroidViewModel
+public final class UserListViewModel extends AndroidViewModel
         implements IListViewModelContract,
         ItemTouchHelperCallback.IStartDragListener {
 
@@ -50,7 +50,7 @@ final class UserListViewModel extends AndroidViewModel
     private UserList temporaryUserList;
     private int temporaryUserListPosition = -1;
 
-    UserListViewModel(@NonNull Application application, IModelContract model) {
+    public UserListViewModel(@NonNull Application application, IModelContract model) {
         super(application);
         this.model = model;
         disposable = new CompositeDisposable();
@@ -87,14 +87,14 @@ final class UserListViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                UserListViewModel.this.updateUserList(userLists);
-                UserListViewModel.this.updateUi();
+                updateUserList(userLists);
+                updateUi();
             }
 
             @Override
             public void onError(Throwable t) {
                 Timber.e(t);
-                UserListViewModel.this.eventDisplayError.setValue(
+                eventDisplayError.setValue(
                         getStringResource(R.string.error_msg_generic)
                 );
             }
@@ -114,7 +114,7 @@ final class UserListViewModel extends AndroidViewModel
     private void updateUi() {
         if (userLists.isEmpty()) {
             eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_empty_list)
+                    getStringResource(R.string.error_msg_no_user_lists)
             );
         } else {
             adapter.swapData(userLists);

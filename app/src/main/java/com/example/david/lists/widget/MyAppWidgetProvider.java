@@ -10,7 +10,7 @@ public final class MyAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            RemoteViews remoteViews = new UtilWidgetRemoteView().updateWidget(context, appWidgetId);
+            RemoteViews remoteViews = new WidgetRemoteView(context, appWidgetId).updateWidget();
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
     }

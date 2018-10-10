@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 public interface IModelContract {
     Flowable<List<UserList>> getAllLists();
 
-    Flowable<List<Item>> getListItems(int listId);
+    Flowable<List<Item>> getUserListItems(int listId);
 
     void addList(UserList list);
 

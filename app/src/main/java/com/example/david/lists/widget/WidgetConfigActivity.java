@@ -4,21 +4,31 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
+import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.util.UtilRecyclerView;
+import com.example.david.lists.util.UtilViewModelFactory;
 
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
-import static com.example.david.lists.widget.UtilWidget.getSharedPrefTitleKey;
-import static com.example.david.lists.widget.UtilWidget.getSharedPrefsName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefsName;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
+    private WidgetConfigViewModel viewModel;
     private ActivityWidgetConfigBinding binding;
 
     private static final int INVALID_WIDGET_ID = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -35,9 +45,12 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
     private void init() {
         getWidgetId();
-
-        binding.buttonSaveTitle.setOnClickListener(view -> saveEnteredTitle());
+        initViewModel();
+        initRecyclerView();
+        initToolbar();
+        observeViewModel();
     }
+
 
     private void getWidgetId() {
         widgetId = Objects.requireNonNull(getIntent().getExtras())
@@ -47,30 +60,69 @@ public class WidgetConfigActivity extends AppCompatActivity {
         }
     }
 
+    private void initRecyclerView() {
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(true);
+        UtilRecyclerView.initLayoutManager(recyclerView);
+        recyclerView.setAdapter(viewModel.getAdapter());
+    }
 
-    private void saveEnteredTitle() {
-        SharedPreferences.Editor editor = getSharedPreferences(
-                getSharedPrefsName(getApplicationContext()), MODE_PRIVATE
-        ).edit();
-
-        editor.putString(
-                getSharedPrefTitleKey(getApplicationContext(), widgetId),
-                binding.etEnterTitle.getText().toString()
-        );
-        editor.apply();
-
-        updateWidget();
-
-        resultsIntent(RESULT_OK);
-
-        finish();
+    private void initToolbar() {
+        Toolbar toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.title_widget_config_activity);
     }
 
 
+    private void initViewModel() {
+        UtilViewModelFactory factory = new UtilViewModelFactory(getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(WidgetConfigViewModel.class);
+    }
+
+    private void observeViewModel() {
+        observeEventDisplayingLoading();
+        observeEventDisplayError();
+        observeEventUserListSelected();
+    }
+
+    private void observeEventDisplayingLoading() {
+        viewModel.getEventDisplayLoading().observe(this, display -> {
+            if (display) {
+                showLoading();
+            } else {
+                hideLoading();
+            }
+        });
+    }
+
+    private void observeEventDisplayError() {
+        viewModel.getEventDisplayError().observe(this, this::showError);
+    }
+
+    private void observeEventUserListSelected() {
+        viewModel.getEventOpenUserList().observe(this, this::applySelection);
+    }
+
+
+    private void applySelection(UserList userList) {
+        saveDetails(userList.getId(), userList.getTitle());
+        resultsIntent(RESULT_OK);
+        updateWidget();
+        finish();
+    }
+
+    private void saveDetails(int id, String title) {
+        SharedPreferences.Editor editor = getSharedPreferences(
+                getSharedPrefsName(getApplicationContext()), MODE_PRIVATE
+        ).edit();
+        editor.putInt(getSharedPrefKeyId(getApplicationContext(), widgetId), id);
+        editor.putString(getSharedPrefKeyTitle(getApplicationContext(), widgetId), title);
+        editor.apply();
+    }
+
     private void updateWidget() {
-        RemoteViews remoteView = new UtilWidgetRemoteView().updateWidget(getApplicationContext(), widgetId);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        appWidgetManager.updateAppWidget(widgetId, remoteView);
+        RemoteViews remoteView = new WidgetRemoteView(getApplicationContext(), widgetId).updateWidget();
+        AppWidgetManager.getInstance(this).updateAppWidget(widgetId, remoteView);
     }
 
 
@@ -78,5 +130,30 @@ public class WidgetConfigActivity extends AppCompatActivity {
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         setResult(resultCode, resultValue);
+    }
+
+
+    private void showLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.GONE);
+    }
+
+    private void hideLoading() {
+        hideError();
+        binding.progressBar.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showError(String message) {
+        TextView tvError = binding.tvError;
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
+        tvError.setText(message);
+        tvError.setVisibility(View.VISIBLE);
+    }
+
+    private void hideError() {
+        binding.tvError.setVisibility(View.GONE);
     }
 }

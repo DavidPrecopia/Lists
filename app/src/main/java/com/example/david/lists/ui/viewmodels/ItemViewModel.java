@@ -28,7 +28,7 @@ import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
-final class ItemViewModel extends AndroidViewModel
+public final class ItemViewModel extends AndroidViewModel
         implements IListViewModelContract,
         ItemTouchHelperCallback.IStartDragListener {
 
@@ -52,7 +52,7 @@ final class ItemViewModel extends AndroidViewModel
     private Item temporaryItem;
     private int temporaryItemPosition = -1;
 
-    ItemViewModel(@NonNull Application application, IModelContract model, int listId, String listTitle) {
+    public ItemViewModel(@NonNull Application application, IModelContract model, int listId, String listTitle) {
         super(application);
         this.listId = listId;
         itemList = new ArrayList<>();
@@ -79,7 +79,7 @@ final class ItemViewModel extends AndroidViewModel
 
 
     private void getItems() {
-        disposable.add(model.getListItems(listId)
+        disposable.add(model.getUserListItems(listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListsSubscriber())
@@ -90,14 +90,14 @@ final class ItemViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
-                ItemViewModel.this.updaterItemsList(itemList);
-                ItemViewModel.this.updateUi();
+                updaterItemsList(itemList);
+                updateUi();
             }
 
             @Override
             public void onError(Throwable t) {
                 Timber.e(t);
-                ItemViewModel.this.eventDisplayError.setValue(
+                eventDisplayError.setValue(
                         getStringResource(R.string.error_msg_generic)
                 );
             }

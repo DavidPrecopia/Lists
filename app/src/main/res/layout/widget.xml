@@ -22,19 +22,34 @@
         android:id="@+id/widget_iv_settings"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_above="@id/widget_list_view_ingredients"
+        android:layout_above="@id/widget_frame_layout"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_settings_cog_white_18dp"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/content_description_widget_settings"
         android:paddingStart="@dimen/margin_normal"
-        android:paddingEnd="@dimen/margin_normal" />
+        android:paddingEnd="@dimen/margin_normal"
+        android:src="@drawable/ic_settings_cog_white_18dp" />
 
-    <ListView
-        android:id="@+id/widget_list_view_ingredients"
+
+    <FrameLayout
+        android:id="@+id/widget_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/widget_tv_title"
-        android:divider="@color/black"
-        android:dividerHeight="1dp" />
+        android:layout_below="@id/widget_tv_title">
+
+        <ListView
+            android:id="@+id/widget_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/black"
+            android:dividerHeight="1dp" />
+
+        <TextView
+            android:id="@+id/widget_tv_error"
+            style="@style/ErrorTextViewStyle"
+            android:layout_gravity="center"
+            android:text="@string/error_msg_empty_list" />
+
+    </FrameLayout>
+
 </RelativeLayout>

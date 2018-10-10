@@ -38,7 +38,7 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public Flowable<List<Item>> getListItems(int listId) {
+    public Flowable<List<Item>> getUserListItems(int listId) {
         return dao.getListItems(listId);
     }
 

@@ -7,7 +7,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.viewmodels.IListViewModelContract;
-import com.example.david.lists.ui.viewmodels.UtilViewModel;
+import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -39,7 +39,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = UtilViewModel.getUserListViewModel(this, getApplication());
+        viewModel = UtilListViewModels.getUserListViewModel(this, getApplication());
     }
 
     private void observeViewModel() {
