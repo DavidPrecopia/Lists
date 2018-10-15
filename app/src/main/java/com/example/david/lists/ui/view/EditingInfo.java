@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.dialogs;
+package com.example.david.lists.ui.view;
 
 import android.os.Parcel;
 import android.os.Parcelable;

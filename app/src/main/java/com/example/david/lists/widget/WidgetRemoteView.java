@@ -12,12 +12,12 @@ import android.widget.RemoteViews;
 import com.example.david.lists.R;
 import com.example.david.lists.ui.view.ListActivity;
 
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentBundleName;
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyId;
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyTitle;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefName;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
 final class WidgetRemoteView {
 

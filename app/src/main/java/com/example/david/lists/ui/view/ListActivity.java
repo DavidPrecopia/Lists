@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentBundleName;
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyId;
-import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyTitle;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
+import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
 public class ListActivity extends AppCompatActivity {
 

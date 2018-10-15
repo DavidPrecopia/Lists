@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.dialogs;
+package com.example.david.lists.ui.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,7 +28,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
 
-    public static EditDialogFragment getInstance(EditingInfo editingInfo) {
+    static EditDialogFragment getInstance(EditingInfo editingInfo) {
         EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_KEY_EDITING_INFO, editingInfo);

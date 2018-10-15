@@ -7,7 +7,7 @@ import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
-import com.example.david.lists.ui.dialogs.EditingInfo;
+import com.example.david.lists.ui.view.EditingInfo;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 
 import java.util.ArrayList;

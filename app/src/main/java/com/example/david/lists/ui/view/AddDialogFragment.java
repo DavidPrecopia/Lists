@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.dialogs;
+package com.example.david.lists.ui.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ public final class AddDialogFragment extends DialogFragment {
     public AddDialogFragment() {
     }
 
-    public static AddDialogFragment getInstance(String hintText) {
+    static AddDialogFragment getInstance(String hintText) {
         AddDialogFragment dialogFragment = new AddDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_HINT_TEXT, hintText);

@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.FragmentListBinding;
-import com.example.david.lists.ui.dialogs.AddDialogFragment;
-import com.example.david.lists.ui.dialogs.EditDialogFragment;
-import com.example.david.lists.ui.dialogs.EditingInfo;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilRecyclerView;

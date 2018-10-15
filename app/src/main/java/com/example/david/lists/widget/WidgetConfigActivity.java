@@ -22,9 +22,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefName;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 

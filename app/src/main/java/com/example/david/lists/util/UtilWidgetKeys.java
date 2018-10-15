@@ -1,4 +1,4 @@
-package com.example.david.lists.widget;
+package com.example.david.lists.util;
 
 import android.content.Context;
 
@@ -8,16 +8,16 @@ public class UtilWidgetKeys {
     private UtilWidgetKeys() {
     }
 
-    static String getSharedPrefName(Context context) {
+    public static String getSharedPrefName(Context context) {
         return context.getString(R.string.widget_shared_prefs_name);
     }
 
-    static String getSharedPrefKeyId(Context context, int appWidgetId) {
+    public static String getSharedPrefKeyId(Context context, int appWidgetId) {
         return context.getString(R.string.widget_key_shared_pref_user_list_id)
                 + appWidgetId;
     }
 
-    static String getSharedPrefKeyTitle(Context context, int appWidgetId) {
+    public static String getSharedPrefKeyTitle(Context context, int appWidgetId) {
         return context.getString(R.string.widget_key_shared_pref_user_list_title)
                 + appWidgetId;
     }

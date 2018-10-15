@@ -1,7 +1,7 @@
 package com.example.david.lists.ui.viewmodels;
 
 import com.example.david.lists.datamodel.UserList;
-import com.example.david.lists.ui.dialogs.EditingInfo;
+import com.example.david.lists.ui.view.EditingInfo;
 
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.ItemTouchHelper;
