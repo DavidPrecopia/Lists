@@ -5,35 +5,45 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_medium">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_drag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/content_description_list_item_drag"
+            android:padding="@dimen/margin_medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_drag_handle_24dp" />
+            app:srcCompat="@drawable/ic_drag_handle_black_24dp" />
 
         <TextView
             android:id="@+id/tv_title"
             style="@style/TitleTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/margin_medium"
             android:paddingTop="@dimen/margin_normal"
-            android:paddingEnd="@dimen/margin_medium"
             android:paddingBottom="@dimen/margin_normal"
             app:layout_constraintBottom_toBottomOf="@+id/iv_drag"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_overflow_menu"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_drag"
             app:layout_constraintTop_toTopOf="@+id/iv_drag"
             app:layout_constraintVertical_bias="0.5"
             tools:text="This is a noticeably long title" />
+
+        <ImageView
+            android:id="@+id/iv_overflow_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/content_description_list_overflow_menu"
+            android:padding="@dimen/margin_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:srcCompat="@drawable/ic_overflow_black_24px" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

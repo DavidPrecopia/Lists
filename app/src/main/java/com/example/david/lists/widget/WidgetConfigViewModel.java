@@ -26,7 +26,7 @@ import timber.log.Timber;
 
 /**
  * Needs to implement {@link IListViewModelContract} so it can
- * work with {@link com.example.david.lists.ui.adapaters.UserListsAdapter}
+ * instantiate RecyclerView Adapters.
  */
 public final class WidgetConfigViewModel extends AndroidViewModel
         implements IListViewModelContract {
@@ -172,12 +172,17 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     }
 
     @Override
-    public void swipedRight(int position) {
+    public void edit(int position) {
         unsupportedMethodException();
     }
 
     @Override
     public void changeTitle(int id, String newTitle) {
+        unsupportedMethodException();
+    }
+
+    @Override
+    public void delete(int position) {
         unsupportedMethodException();
     }
 

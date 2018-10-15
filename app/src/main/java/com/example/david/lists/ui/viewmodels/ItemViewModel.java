@@ -58,7 +58,7 @@ public final class ItemViewModel extends AndroidViewModel
         itemList = new ArrayList<>();
         this.model = model;
         disposable = new CompositeDisposable();
-        adapter = new ItemsAdapter(this);
+        adapter = new ItemsAdapter(this, this);
         touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
         toolbarTitle = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
@@ -160,16 +160,9 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
 
-    /**
-     * Edit
-     */
     @Override
-    public void swipedRight(int position) {
-        // Resetting the item because it was swiped
-        adapter.notifyItemChanged(position);
-        eventEdit.setValue(
-                new EditingInfo(itemList.get(position))
-        );
+    public void edit(int position) {
+        eventEdit.setValue(new EditingInfo(itemList.get(position)));
     }
 
     @Override
@@ -180,11 +173,8 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
 
-    /**
-     * Delete
-     */
     @Override
-    public void swipedLeft(int position) {
+    public void delete(int position) {
         adapter.remove(position);
         temporaryItem = itemList.get(position);
         temporaryItemPosition = position;
@@ -192,6 +182,11 @@ public final class ItemViewModel extends AndroidViewModel
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_item_deletion)
         );
+    }
+
+    @Override
+    public void swipedLeft(int position) {
+        delete(position);
     }
 
     @Override

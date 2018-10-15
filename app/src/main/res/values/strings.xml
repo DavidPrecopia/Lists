@@ -4,6 +4,7 @@
     <string name="content_description_fab_add_list">Add a list</string>
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_item_edit">Edit name</string>
+    <string name="content_description_list_overflow_menu">Overflow menu</string>
 
     <string name="message_list_deletion">List deleted</string>
     <string name="message_item_deletion">Item deleted</string>
@@ -15,8 +16,4 @@
     <string name="key_shared_prefs_name">list_activity_shared_preferences_name</string>
     <string name="key_shared_pref_user_list_title">user_list_title_key</string>
     <string name="key_shared_pref_user_list_id">user_list_id_key</string>
-
-    <!--menu-->
-    <string name="menu_item_title_log_out">Log Out</string>
-    <string name="menu_item_title_log_in">Log In</string>
 </resources>

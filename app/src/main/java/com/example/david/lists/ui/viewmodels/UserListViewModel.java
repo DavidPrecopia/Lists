@@ -160,16 +160,9 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
 
-    /**
-     * Edit
-     */
     @Override
-    public void swipedRight(int position) {
-        // Resetting the item because it was swiped
-        adapter.notifyItemChanged(position);
-        eventEdit.setValue(
-                new EditingInfo(userLists.get(position))
-        );
+    public void edit(int position) {
+        eventEdit.setValue(new EditingInfo(userLists.get(position)));
     }
 
     @Override
@@ -180,11 +173,8 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
 
-    /**
-     * Delete
-     */
     @Override
-    public void swipedLeft(int position) {
+    public void delete(int position) {
         adapter.remove(position);
         temporaryUserList = userLists.get(position);
         temporaryUserListPosition = position;
@@ -192,6 +182,11 @@ public final class UserListViewModel extends AndroidViewModel
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_list_deletion)
         );
+    }
+
+    @Override
+    public void swipedLeft(int position) {
+        delete(position);
     }
 
     @Override
@@ -218,7 +213,6 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     private void clearTemporary() {
-        Timber.d("clearTemporary");
         temporaryUserList = null;
         temporaryUserListPosition = -1;
     }

@@ -2,27 +2,37 @@ package com.example.david.lists.ui.adapaters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
+import com.example.david.lists.ui.viewmodels.IListViewModelContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.example.david.lists.util.UtilRecyclerView.getDragTouchListener;
+import static com.example.david.lists.util.UtilRecyclerView.getPopupMenu;
+
+
 
 public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
 
     private final List<Item> itemsList;
     private final ItemTouchHelperCallback.IStartDragListener startDragListener;
+    private final IListViewModelContract viewModel;
 
-    public ItemsAdapter(ItemTouchHelperCallback.IStartDragListener startDragListener) {
+    public ItemsAdapter(
+            ItemTouchHelperCallback.IStartDragListener startDragListener,
+            IListViewModelContract viewModel) {
         this.startDragListener = startDragListener;
+        this.viewModel = viewModel;
         this.itemsList = new ArrayList<>();
     }
 
@@ -82,6 +92,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
         private void bindView(Item item) {
             bindTitle(item);
             initDragHandle();
+            initPopupMenu();
             binding.executePendingBindings();
         }
 
@@ -91,13 +102,16 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
         @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
-            binding.ivDrag.setOnTouchListener((view, event) -> {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startDragListener.requestDrag(this);
-                }
-                view.performClick();
-                return true;
-            });
+            binding.ivDrag.setOnTouchListener(
+                    getDragTouchListener(this, startDragListener)
+            );
+        }
+
+        private void initPopupMenu() {
+            PopupMenu popupMenu = getPopupMenu(
+                    getAdapterPosition(), binding.ivOverflowMenu, viewModel
+            );
+            binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }
     }
 }

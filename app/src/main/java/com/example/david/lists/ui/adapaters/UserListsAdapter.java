@@ -2,7 +2,6 @@ package com.example.david.lists.ui.adapaters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,7 +15,11 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.example.david.lists.util.UtilRecyclerView.getDragTouchListener;
+import static com.example.david.lists.util.UtilRecyclerView.getPopupMenu;
 
 public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder> {
 
@@ -89,6 +92,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
         void bindView(UserList userList) {
             bindTitle(userList);
             initDragHandle();
+            initPopupMenu();
             binding.executePendingBindings();
         }
 
@@ -101,14 +105,17 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             if (startDragListener == null) {
                 binding.ivDrag.setVisibility(View.GONE);
             } else {
-                binding.ivDrag.setOnTouchListener((view, event) -> {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        startDragListener.requestDrag(this);
-                    }
-                    view.performClick();
-                    return true;
-                });
+                binding.ivDrag.setOnTouchListener(
+                        getDragTouchListener(this, startDragListener)
+                );
             }
+        }
+
+        private void initPopupMenu() {
+            PopupMenu popupMenu = getPopupMenu(
+                    getAdapterPosition(), binding.ivOverflowMenu, viewModel
+            );
+            binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }
 
 

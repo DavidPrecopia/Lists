@@ -18,9 +18,11 @@ public interface IListViewModelContract {
 
     void movePermanently(int newPosition);
 
-    void swipedRight(int position);
+    void edit(int position);
 
     void changeTitle(int id, String newTitle);
+
+    void delete(int position);
 
     void swipedLeft(int position);
 
