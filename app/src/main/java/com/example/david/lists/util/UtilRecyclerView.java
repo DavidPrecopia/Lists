@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.example.david.lists.R;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -30,14 +30,14 @@ public final class UtilRecyclerView {
     }
 
 
-    public static PopupMenu getPopupMenu(int position, View anchor, IListViewModelContract viewModel) {
+    public static PopupMenu getPopupMenu(int position, View anchor, IViewModelContract viewModel) {
         PopupMenu popupMenu = new PopupMenu(anchor.getContext(), anchor);
         popupMenu.inflate(R.menu.popup_menu_list_item);
         popupMenu.setOnMenuItemClickListener(getMenuClickListener(position, viewModel));
         return popupMenu;
     }
 
-    private static PopupMenu.OnMenuItemClickListener getMenuClickListener(int position, IListViewModelContract viewModel) {
+    private static PopupMenu.OnMenuItemClickListener getMenuClickListener(int position, IViewModelContract viewModel) {
         return item -> {
             switch (item.getItemId()) {
                 case R.id.menu_item_edit:

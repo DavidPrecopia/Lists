@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.datamodel.UserList;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +22,7 @@ import static com.example.david.lists.widget.UtilWidgetKeys.getIntentKeyTitle;
 
 public class ListActivity extends AppCompatActivity {
 
-    private IListViewModelContract viewModel;
+    private IViewModelContract viewModel;
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;

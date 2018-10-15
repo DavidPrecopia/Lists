@@ -1,6 +1,5 @@
 package com.example.david.lists.ui.adapaters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +7,7 @@ import android.view.ViewGroup;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +24,12 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
 
     private final List<UserList> userLists;
 
-    private final IListViewModelContract viewModel;
+    private final IViewModelContract viewModel;
     private final ItemTouchHelperCallback.IStartDragListener startDragListener;
 
-    public UserListsAdapter(IListViewModelContract viewModel, ItemTouchHelperCallback.IStartDragListener startDragListener) {
+    public UserListsAdapter(
+            IViewModelContract viewModel,
+            ItemTouchHelperCallback.IStartDragListener startDragListener) {
         this.viewModel = viewModel;
         this.startDragListener = startDragListener;
         userLists = new ArrayList<>();
@@ -100,15 +101,10 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             binding.tvTitle.setText(userList.getTitle());
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
-            if (startDragListener == null) {
-                binding.ivDrag.setVisibility(View.GONE);
-            } else {
-                binding.ivDrag.setOnTouchListener(
-                        getDragTouchListener(this, startDragListener)
-                );
-            }
+            binding.ivDrag.setOnTouchListener(
+                    getDragTouchListener(this, startDragListener)
+            );
         }
 
         private void initPopupMenu() {

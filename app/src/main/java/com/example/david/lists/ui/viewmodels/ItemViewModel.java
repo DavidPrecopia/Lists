@@ -29,7 +29,7 @@ import timber.log.Timber;
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 public final class ItemViewModel extends AndroidViewModel
-        implements IListViewModelContract,
+        implements IViewModelContract,
         ItemTouchHelperCallback.IStartDragListener {
 
     private final int listId;

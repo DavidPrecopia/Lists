@@ -5,9 +5,8 @@ import android.app.Application;
 import com.example.david.lists.R;
 import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.dialogs.EditingInfo;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +24,17 @@ import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 /**
- * Needs to implement {@link IListViewModelContract} so it can
+ * Needs to implement {@link IViewModelContract} so it can
  * instantiate RecyclerView Adapters.
  */
 public final class WidgetConfigViewModel extends AndroidViewModel
-        implements IListViewModelContract {
+        implements IViewModelContract {
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
     private final List<UserList> userLists;
-    private final UserListsAdapter adapter;
+    private final WidgetConfigAdapter adapter;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final MutableLiveData<UserList> eventOpenUserList;
@@ -46,7 +45,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         this.model = model;
         disposable = new CompositeDisposable();
         userLists = new ArrayList<>();
-        adapter = new UserListsAdapter(this, null);
+        adapter = new WidgetConfigAdapter(this);
         eventDisplayLoading = new MutableLiveData<>();
         eventOpenUserList = new MutableLiveData<>();
         eventDisplayError = new MutableLiveData<>();

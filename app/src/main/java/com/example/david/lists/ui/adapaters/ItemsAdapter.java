@@ -1,13 +1,12 @@
 package com.example.david.lists.ui.adapaters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,17 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.example.david.lists.util.UtilRecyclerView.getDragTouchListener;
 import static com.example.david.lists.util.UtilRecyclerView.getPopupMenu;
 
-
-
 public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
 
     private final List<Item> itemsList;
     private final ItemTouchHelperCallback.IStartDragListener startDragListener;
-    private final IListViewModelContract viewModel;
+    private final IViewModelContract viewModel;
 
     public ItemsAdapter(
             ItemTouchHelperCallback.IStartDragListener startDragListener,
-            IListViewModelContract viewModel) {
+            IViewModelContract viewModel) {
         this.startDragListener = startDragListener;
         this.viewModel = viewModel;
         this.itemsList = new ArrayList<>();
@@ -100,7 +97,6 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             binding.tvTitle.setText(item.getTitle());
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
             binding.ivDrag.setOnTouchListener(
                     getDragTouchListener(this, startDragListener)

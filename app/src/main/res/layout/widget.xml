@@ -14,6 +14,7 @@
         android:layout_toStartOf="@id/widget_iv_settings"
         android:background="@color/colorPrimary"
         android:gravity="center"
+        android:maxLines="2"
         android:padding="@dimen/margin_medium"
         android:textColor="@color/white"
         tools:text="@string/app_name" />

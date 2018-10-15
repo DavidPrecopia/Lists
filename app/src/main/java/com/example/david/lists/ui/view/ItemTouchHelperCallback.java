@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import com.example.david.lists.R;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -19,11 +19,11 @@ import timber.log.Timber;
 
 public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
-    private final IListViewModelContract viewModel;
+    private final IViewModelContract viewModel;
 
     private boolean postMove = false;
 
-    public ItemTouchHelperCallback(IListViewModelContract viewModel) {
+    public ItemTouchHelperCallback(IViewModelContract viewModel) {
         this.viewModel = viewModel;
     }
 

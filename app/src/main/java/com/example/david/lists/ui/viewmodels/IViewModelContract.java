@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public interface IListViewModelContract {
+public interface IViewModelContract {
     void userListClicked(UserList userList);
 
     void addButtonClicked();

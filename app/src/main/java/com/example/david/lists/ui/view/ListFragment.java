@@ -13,7 +13,7 @@ import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.dialogs.AddDialogFragment;
 import com.example.david.lists.ui.dialogs.EditDialogFragment;
 import com.example.david.lists.ui.dialogs.EditingInfo;
-import com.example.david.lists.ui.viewmodels.IListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,7 +32,7 @@ public class ListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener {
 
-    private IListViewModelContract viewModel;
+    private IViewModelContract viewModel;
     private FragmentListBinding binding;
 
     private static final String ARG_KEY_DISPLAYING = "displaying_key";
