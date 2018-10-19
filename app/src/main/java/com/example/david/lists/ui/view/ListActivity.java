@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
@@ -27,6 +28,8 @@ public class ListActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
 
+    private boolean newActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,16 +38,15 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void init(boolean newActivity) {
-        fragmentManager = getSupportFragmentManager();
+        initFields(newActivity);
         initViewModel();
         observeViewModel();
-        if (getIntent().getExtras() != null) {
-            processIntentExtras(getIntent().getExtras());
-            newActivity = false;
-        }
-        if (newActivity) {
-            addFragment(ListFragment.newInstance(getString(R.string.displaying_user_list)));
-        }
+        initView();
+    }
+
+    private void initFields(boolean newActivity) {
+        fragmentManager = getSupportFragmentManager();
+        this.newActivity = newActivity;
     }
 
     private void initViewModel() {
@@ -53,6 +55,34 @@ public class ListActivity extends AppCompatActivity {
 
     private void observeViewModel() {
         viewModel.getEventOpenUserList().observe(this, this::openUserList);
+    }
+
+
+    private void initView() {
+        if (getIntent().getExtras() != null) {
+            processIntentExtras(getIntent().getExtras());
+        }
+        if (newActivity) {
+            addFragment(ListFragment.newInstance(getString(R.string.displaying_user_list)));
+        }
+    }
+
+    private void processIntentExtras(Bundle intentExtras) {
+        Bundle widgetBundle = intentExtras.getBundle(getIntentBundleName(getApplicationContext()));
+        if (widgetBundle != null) {
+            processWidgetBundle(widgetBundle);
+            newActivity = false;
+        }
+    }
+
+    private void processWidgetBundle(Bundle widgetBundle) {
+        saveUserListDetails(
+                widgetBundle.getInt(getIntentKeyId(getApplicationContext())),
+                widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
+        );
+        addFragment(
+                ListFragment.newInstance(getString(R.string.displaying_item))
+        );
     }
 
 
@@ -86,23 +116,6 @@ public class ListActivity extends AppCompatActivity {
                 .commit();
     }
 
-
-    private void processIntentExtras(Bundle intentExtras) {
-        Bundle widgetBundle = intentExtras.getBundle(getIntentBundleName(getApplicationContext()));
-        if (widgetBundle != null) {
-            processWidgetBundle(widgetBundle);
-        }
-    }
-
-    private void processWidgetBundle(Bundle widgetBundle) {
-        saveUserListDetails(
-                widgetBundle.getInt(getIntentKeyId(getApplicationContext())),
-                widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
-        );
-        addFragment(
-                ListFragment.newInstance(getString(R.string.displaying_item))
-        );
-    }
 
 
     @Override
