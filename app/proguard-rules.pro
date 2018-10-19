@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# You can keep Instant Run enabled with these keep options.
+# Otherwise, the program cannot find 'FirebaseInitProvider'.
+-keep public class com.google.firebase.provider.FirebaseInitProvider
+-keep public class com.google.firebase.iid.FirebaseInstanceIdService
+-keep public class androidx.lifecycle.ProcessLifecycleOwnerInitializer
+-keep public class com.example.david.lists.ui.view.ListActivity
