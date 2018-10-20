@@ -8,6 +8,7 @@ import com.example.david.lists.model.IModelContract;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.view.EditingInfo;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
+import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,11 +42,11 @@ public final class UserListViewModel extends AndroidViewModel
 
     private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final MutableLiveData<UserList> eventOpenUserList;
-    private final MutableLiveData<String> eventDisplayError;
-    private final MutableLiveData<String> eventNotifyUserOfDeletion;
-    private final MutableLiveData<String> eventAdd;
-    private final MutableLiveData<EditingInfo> eventEdit;
+    private final SingleLiveEvent<UserList> eventOpenUserList;
+    private final SingleLiveEvent<String> eventDisplayError;
+    private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
+    private final SingleLiveEvent<String> eventAdd;
+    private final SingleLiveEvent<EditingInfo> eventEdit;
 
     private UserList temporaryUserList;
     private int temporaryUserListPosition = -1;
@@ -58,12 +59,12 @@ public final class UserListViewModel extends AndroidViewModel
         touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
         userLists = new ArrayList<>();
         toolbarTitle = new MutableLiveData<>();
-        eventOpenUserList = new MutableLiveData<>();
+        eventOpenUserList = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
-        eventDisplayError = new MutableLiveData<>();
-        eventNotifyUserOfDeletion = new MutableLiveData<>();
-        eventAdd = new MutableLiveData<>();
-        eventEdit = new MutableLiveData<>();
+        eventDisplayError = new SingleLiveEvent<>();
+        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
+        eventAdd = new SingleLiveEvent<>();
+        eventEdit = new SingleLiveEvent<>();
 
         init();
     }
