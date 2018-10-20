@@ -48,8 +48,8 @@ public final class UserListViewModel extends AndroidViewModel
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
-    private UserList temporaryUserList;
-    private int temporaryUserListPosition = -1;
+    private List<UserList> tempUserLists;
+    private int tempUserListPosition = -1;
 
     public UserListViewModel(@NonNull Application application, IModelContract model) {
         super(application);
@@ -65,6 +65,7 @@ public final class UserListViewModel extends AndroidViewModel
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
+        this.tempUserLists = new ArrayList<>();
 
         init();
     }
@@ -136,8 +137,9 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
+        Timber.d("add - userLists size - %s", userLists.size());
         completableIoAccess(Completable.fromAction(() ->
-                model.addList(new UserList(title, adapter.getItemCount())))
+                model.addList(new UserList(title, this.userLists.size())))
         );
     }
 
@@ -177,8 +179,8 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public void delete(int position) {
         adapter.remove(position);
-        temporaryUserList = userLists.get(position);
-        temporaryUserListPosition = position;
+        tempUserLists.add(userLists.get(position));
+        tempUserListPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_list_deletion)
@@ -192,30 +194,40 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void undoRecentDeletion() {
-        if (temporaryUserList == null || temporaryUserListPosition < 0) {
+        if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             throw new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_deletion_undo)
             );
         }
+        reAdd();
+    }
 
-        adapter.reAdd(temporaryUserListPosition, temporaryUserList);
-        clearTemporary();
+    private void reAdd() {
+        int lastDeletedPosition = tempUserLists.size() - 1;
+        adapter.reAdd(
+                tempUserListPosition,
+                tempUserLists.get(lastDeletedPosition)
+        );
+        tempUserLists.remove(lastDeletedPosition);
     }
 
     @Override
     public void deletionNotificationTimedOut() {
-        // There is a possibility that temporaryUserList is nullified,
+        // There is a possibility that tempUserLists is nullified,
         // before fromAction executes.
-        int id = temporaryUserList.getId();
+        List<Integer> userListsIds = new ArrayList<>(getUserListsIds());
         completableIoAccess(Completable.fromAction(() ->
-                model.deleteList(id))
+                model.deleteList(userListsIds))
         );
-        clearTemporary();
+        tempUserLists.clear();
     }
 
-    private void clearTemporary() {
-        temporaryUserList = null;
-        temporaryUserListPosition = -1;
+    private List<Integer> getUserListsIds() {
+        List<Integer> userListsIds = new ArrayList<>();
+        for (UserList userList : tempUserLists) {
+            userListsIds.add(userList.getId());
+        }
+        return userListsIds;
     }
 
 

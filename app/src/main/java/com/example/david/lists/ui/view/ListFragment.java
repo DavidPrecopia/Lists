@@ -225,7 +225,8 @@ public class ListFragment extends Fragment
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        if (event != Snackbar.Callback.DISMISS_EVENT_ACTION && event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                        // If it was replaced by another Snackbar, do not forward.
+                        if (event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
                             viewModel.deletionNotificationTimedOut();
                         }
                     }

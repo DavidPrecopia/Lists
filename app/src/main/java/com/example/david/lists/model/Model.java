@@ -55,13 +55,13 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void deleteList(int listId) {
-        dao.deleteList(listId);
+    public void deleteList(List<Integer> listIds) {
+        dao.deleteList(listIds);
     }
 
     @Override
-    public void deleteItem(int itemId) {
-        dao.deleteItem(itemId);
+    public void deleteItem(List<Integer> itemIds) {
+        dao.deleteItem(itemIds);
     }
 
 

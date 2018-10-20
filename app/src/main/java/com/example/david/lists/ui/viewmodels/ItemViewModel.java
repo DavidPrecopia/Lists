@@ -42,7 +42,6 @@ public final class ItemViewModel extends AndroidViewModel
     private final ItemsAdapter adapter;
     private final ItemTouchHelper touchHelper;
 
-
     private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<String> eventDisplayError;
@@ -50,8 +49,8 @@ public final class ItemViewModel extends AndroidViewModel
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
-    private Item temporaryItem;
-    private int temporaryItemPosition = -1;
+    private List<Item> tempItemList;
+    private int tempItemPosition = -1;
 
     public ItemViewModel(@NonNull Application application, IModelContract model, int listId, String listTitle) {
         super(application);
@@ -67,6 +66,7 @@ public final class ItemViewModel extends AndroidViewModel
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
+        tempItemList = new ArrayList<>();
 
         init(listTitle);
     }
@@ -140,7 +140,7 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void add(String title) {
         completableIoAccess(Completable.fromAction(() ->
-                model.addItem(new Item(title, adapter.getItemCount(), this.listId)))
+                model.addItem(new Item(title, tempItemList.size(), this.listId)))
         );
     }
 
@@ -177,8 +177,8 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void delete(int position) {
         adapter.remove(position);
-        temporaryItem = itemList.get(position);
-        temporaryItemPosition = position;
+        tempItemList.add(itemList.get(position));
+        tempItemPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_item_deletion)
@@ -192,30 +192,39 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void undoRecentDeletion() {
-        if (temporaryItem == null || temporaryItemPosition < 0) {
+        if (tempItemList == null || tempItemPosition < 0) {
             throw new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_deletion_undo)
             );
         }
+        reAdd();
+    }
 
-        adapter.reAdd(temporaryItemPosition, temporaryItem);
-        clearTemporary();
+    private void reAdd() {
+        adapter.reAdd(
+                tempItemPosition,
+                tempItemList.get(tempItemPosition)
+        );
+        tempItemList.remove(tempItemList.size() - 1);
     }
 
     @Override
     public void deletionNotificationTimedOut() {
-        // There is a possibility that temporaryItem is nullified,
+        // There is a possibility that tempItemList is nullified,
         // before fromAction executes.
-        int id = temporaryItem.getId();
+        List<Integer> itemIds = new ArrayList<>(getItemIds());
         completableIoAccess(Completable.fromAction(() ->
-                model.deleteItem(id))
+                model.deleteItem(itemIds))
         );
-        clearTemporary();
+        tempItemList.clear();
     }
 
-    private void clearTemporary() {
-        temporaryItem = null;
-        temporaryItemPosition = -1;
+    private List<Integer> getItemIds() {
+        List<Integer> itemIds = new ArrayList<>();
+        for (Item item : tempItemList) {
+            itemIds.add(item.getId());
+        }
+        return itemIds;
     }
 
 

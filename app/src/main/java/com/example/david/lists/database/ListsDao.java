@@ -51,11 +51,11 @@ public interface ListsDao {
     void changeItemTitle(int itemId, String newTitle);
 
 
-    @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    void deleteList(int listId);
+    @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " IN (:listIds)")
+    void deleteList(List<Integer> listIds);
 
-    @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    void deleteItem(int itemId);
+    @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " IN (:itemIds)")
+    void deleteItem(List<Integer> itemIds);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
