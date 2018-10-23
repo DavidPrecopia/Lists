@@ -1,12 +1,12 @@
-package com.example.david.lists.model;
+package com.example.david.lists.data.model;
 
 import android.app.Application;
 
 import com.example.david.lists.R;
-import com.example.david.lists.database.LocalDao;
-import com.example.david.lists.database.LocalDatabase;
-import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.local.LocalDao;
+import com.example.david.lists.data.local.LocalDatabase;
 
 import java.util.List;
 

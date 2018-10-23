@@ -1,7 +1,7 @@
-package com.example.david.lists.database;
+package com.example.david.lists.data.local;
 
-import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
@@ -11,15 +11,15 @@ import androidx.room.Query;
 import io.reactivex.Flowable;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_ID;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_LIST_ID;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_NAME;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_POSITION;
-import static com.example.david.lists.database.DatabaseContract.ITEM_TABLE_NAME;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_NAME;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_POSITION;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_TABLE_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_LIST_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_POSITION;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_TABLE_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_POSITION;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_TABLE_NAME;
 
 @Dao
 public interface LocalDao {

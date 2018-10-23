@@ -11,6 +11,7 @@ import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
 import com.example.david.lists.ui.view.ListActivity;
+import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
@@ -19,21 +20,21 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
-final class WidgetRemoteView {
+public final class WidgetRemoteView {
 
     private final RemoteViews remoteViews;
     private final int appWidgetId;
 
     private final Context context;
 
-    WidgetRemoteView(Context context, int appWidgetId) {
+    public WidgetRemoteView(Context context, int appWidgetId) {
         this.remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         this.appWidgetId = appWidgetId;
         this.context = context;
     }
 
 
-    RemoteViews updateWidget() {
+    public RemoteViews updateWidget() {
         setUpRemoveView();
         return remoteViews;
     }

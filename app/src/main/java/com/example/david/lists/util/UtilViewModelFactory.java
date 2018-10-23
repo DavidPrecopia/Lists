@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.david.lists.R;
-import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.model.Model;
+import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.model.Model;
 import com.example.david.lists.ui.viewmodels.ItemViewModel;
 import com.example.david.lists.ui.viewmodels.UserListViewModel;
-import com.example.david.lists.widget.WidgetConfigViewModel;
+import com.example.david.lists.widget.configactivity.WidgetConfigViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

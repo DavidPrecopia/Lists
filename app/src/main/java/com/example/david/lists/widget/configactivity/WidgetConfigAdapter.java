@@ -1,12 +1,11 @@
-package com.example.david.lists.widget;
+package com.example.david.lists.widget.configactivity;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.WidgetListItemBinding;
-import com.example.david.lists.datamodel.UserList;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +17,9 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
 
     private final List<UserList> userLists;
 
-    private final IViewModelContract viewModel;
+    private final IWidgetConfigViewModelContract viewModel;
 
-    WidgetConfigAdapter(IViewModelContract viewModel) {
+    WidgetConfigAdapter(IWidgetConfigViewModelContract viewModel) {
         this.userLists = new ArrayList<>();
         this.viewModel = viewModel;
     }

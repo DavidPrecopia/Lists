@@ -1,9 +1,9 @@
-package com.example.david.lists.database;
+package com.example.david.lists.data.local;
 
 import android.app.Application;
 
-import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -18,7 +18,7 @@ public abstract class LocalDatabase extends RoomDatabase {
         if (instance == null) {
             synchronized (LocalDatabase.class) {
                 instance = Room.databaseBuilder(
-                        application, LocalDatabase.class, DatabaseContract.DATABASE_NAME
+                        application, LocalDatabase.class, LocalDatabaseConstants.DATABASE_NAME
                 ).build();
             }
         }

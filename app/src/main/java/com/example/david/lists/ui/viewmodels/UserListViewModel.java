@@ -3,8 +3,8 @@ package com.example.david.lists.ui.viewmodels;
 import android.app.Application;
 
 import com.example.david.lists.R;
-import com.example.david.lists.datamodel.UserList;
-import com.example.david.lists.model.IModelContract;
+import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.view.EditingInfo;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;

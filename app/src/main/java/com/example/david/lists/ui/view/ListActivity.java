@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
-import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 
@@ -15,7 +15,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;

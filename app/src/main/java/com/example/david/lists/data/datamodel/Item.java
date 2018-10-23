@@ -1,4 +1,4 @@
-package com.example.david.lists.datamodel;
+package com.example.david.lists.data.datamodel;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 import static androidx.room.ForeignKey.RESTRICT;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_ID;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_LIST_ID;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_NAME;
-import static com.example.david.lists.database.DatabaseContract.ITEM_COLUMN_POSITION;
-import static com.example.david.lists.database.DatabaseContract.ITEM_TABLE_NAME;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_LIST_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_POSITION;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_TABLE_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_ID;
 
 @Entity(tableName = ITEM_TABLE_NAME,
         indices = {@Index(ITEM_COLUMN_ID),

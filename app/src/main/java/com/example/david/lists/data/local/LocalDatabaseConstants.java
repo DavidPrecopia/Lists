@@ -1,7 +1,7 @@
-package com.example.david.lists.database;
+package com.example.david.lists.data.local;
 
-public final class DatabaseContract {
-    private DatabaseContract() {
+public final class LocalDatabaseConstants {
+    private LocalDatabaseConstants() {
     }
 
     static final String DATABASE_NAME = "lists.db";

@@ -3,8 +3,8 @@ package com.example.david.lists.ui.adapaters;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 

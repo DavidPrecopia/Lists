@@ -1,4 +1,4 @@
-package com.example.david.lists.datamodel;
+package com.example.david.lists.data.datamodel;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -6,10 +6,10 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_ID;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_NAME;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN_POSITION;
-import static com.example.david.lists.database.DatabaseContract.USER_LIST_TABLE_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_ID;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_NAME;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_POSITION;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_TABLE_NAME;
 
 @Entity(tableName = USER_LIST_TABLE_NAME,
         indices = {@Index(USER_LIST_COLUMN_ID),

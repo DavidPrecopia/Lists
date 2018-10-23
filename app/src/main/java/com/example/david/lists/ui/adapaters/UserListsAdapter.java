@@ -4,8 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 

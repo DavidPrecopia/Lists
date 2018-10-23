@@ -3,8 +3,8 @@ package com.example.david.lists.ui.view;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
 
 /**
  * This provides a uniform way to pass information about an

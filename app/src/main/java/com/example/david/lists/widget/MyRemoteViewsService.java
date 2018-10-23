@@ -7,9 +7,9 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.david.lists.R;
-import com.example.david.lists.datamodel.Item;
-import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.model.Model;
+import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;

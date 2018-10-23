@@ -1,12 +1,10 @@
-package com.example.david.lists.widget;
+package com.example.david.lists.widget.configactivity;
 
 import android.app.Application;
 
 import com.example.david.lists.R;
-import com.example.david.lists.datamodel.UserList;
-import com.example.david.lists.model.IModelContract;
-import com.example.david.lists.ui.view.EditingInfo;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
+import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.model.IModelContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -23,12 +20,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
-/**
- * Needs to implement {@link IViewModelContract} so it can
- * instantiate RecyclerView Adapters.
- */
 public final class WidgetConfigViewModel extends AndroidViewModel
-        implements IViewModelContract {
+        implements IWidgetConfigViewModelContract {
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
@@ -145,100 +138,5 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
-    }
-
-
-    // UNSUPPORTED METHODS
-
-    @Override
-    public void addButtonClicked() {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void add(String title) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void dragging(int fromPosition, int toPosition) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void movePermanently(int newPosition) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void edit(int position) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void changeTitle(int id, String newTitle) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void delete(int position) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void swipedLeft(int position) {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void undoRecentDeletion() {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void deletionNotificationTimedOut() {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public void refresh() {
-        unsupportedMethodException();
-    }
-
-    @Override
-    public ItemTouchHelper getItemTouchHelper() {
-        unsupportedMethodException();
-        return null;
-    }
-
-    @Override
-    public LiveData<String> getToolbarTitle() {
-        unsupportedMethodException();
-        return null;
-    }
-
-    @Override
-    public LiveData<String> getEventNotifyUserOfDeletion() {
-        unsupportedMethodException();
-        return null;
-    }
-
-    @Override
-    public LiveData<String> getEventAdd() {
-        unsupportedMethodException();
-        return null;
-    }
-
-    @Override
-    public LiveData<EditingInfo> getEventEdit() {
-        unsupportedMethodException();
-        return null;
-    }
-
-
-    private void unsupportedMethodException() {
-        throw new UnsupportedOperationException(
-                "This method is not supported by " + WidgetConfigViewModel.class.getSimpleName()
-        );
     }
 }

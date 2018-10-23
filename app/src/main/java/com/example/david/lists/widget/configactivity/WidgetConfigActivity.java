@@ -1,4 +1,4 @@
-package com.example.david.lists.widget;
+package com.example.david.lists.widget.configactivity;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -9,10 +9,11 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-import com.example.david.lists.datamodel.UserList;
 import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilViewModelFactory;
+import com.example.david.lists.widget.WidgetRemoteView;
 
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
-    private WidgetConfigViewModel viewModel;
+    private IWidgetConfigViewModelContract viewModel;
     private ActivityWidgetConfigBinding binding;
 
     private static final int INVALID_WIDGET_ID = AppWidgetManager.INVALID_APPWIDGET_ID;
