@@ -28,7 +28,7 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        local = LocalDatabase.getInstance(application).getListDao();
+        local = LocalDatabase.getInstance(application).getLocalDao();
     }
 
 
@@ -44,8 +44,8 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void addList(UserList list) {
-        local.addList(list);
+    public void addUserList(UserList userList) {
+        local.addUserList(userList);
     }
 
     @Override
@@ -55,8 +55,8 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void deleteList(List<Integer> listIds) {
-        local.deleteList(listIds);
+    public void deleteUserList(List<Integer> userListId) {
+        local.deleteList(userListId);
     }
 
     @Override
@@ -66,8 +66,8 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void changeListTitle(int listId, String newTitle) {
-        local.changeListTitle(listId, newTitle);
+    public void changeUserListTitle(int userListId, String newTitle) {
+        local.changeListTitle(userListId, newTitle);
     }
 
     @Override
@@ -77,12 +77,12 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void moveUserListPosition(int listId, int oldPosition, int newPosition) {
+    public void moveUserListPosition(int userListId, int oldPosition, int newPosition) {
         if (oldPosition == newPosition) {
             return;
         }
         updatePositions(R.string.displaying_user_list, oldPosition, newPosition);
-        local.moveListPosition(listId, newPosition);
+        local.moveListPosition(userListId, newPosition);
     }
 
     @Override
@@ -139,7 +139,7 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public void forceRefreshItems(int listId) {
+    public void forceRefreshItems(int userListId) {
         throw new UnsupportedOperationException();
     }
 }

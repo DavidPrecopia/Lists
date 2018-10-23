@@ -139,7 +139,7 @@ public final class UserListViewModel extends AndroidViewModel
     public void add(String title) {
         Timber.d("add - userLists size - %s", userLists.size());
         completableIoAccess(Completable.fromAction(() ->
-                model.addList(new UserList(title, this.userLists.size())))
+                model.addUserList(new UserList(title, this.userLists.size())))
         );
     }
 
@@ -171,7 +171,7 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public void changeTitle(int listId, String newTitle) {
         completableIoAccess(Completable.fromAction(() ->
-                model.changeListTitle(listId, newTitle))
+                model.changeUserListTitle(listId, newTitle))
         );
     }
 
@@ -217,7 +217,7 @@ public final class UserListViewModel extends AndroidViewModel
         // before fromAction executes.
         List<Integer> userListsIds = new ArrayList<>(getUserListsIds());
         completableIoAccess(Completable.fromAction(() ->
-                model.deleteList(userListsIds))
+                model.deleteUserList(userListsIds))
         );
         tempUserLists.clear();
     }

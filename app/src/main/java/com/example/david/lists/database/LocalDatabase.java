@@ -25,5 +25,5 @@ public abstract class LocalDatabase extends RoomDatabase {
         return instance;
     }
 
-    public abstract LocalDao getListDao();
+    public abstract LocalDao getLocalDao();
 }

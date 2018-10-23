@@ -34,7 +34,7 @@ public interface LocalDao {
 
 
     @Insert(onConflict = REPLACE)
-    void addList(UserList list);
+    void addUserList(UserList list);
 
     @Insert(onConflict = REPLACE)
     void addItem(Item item);

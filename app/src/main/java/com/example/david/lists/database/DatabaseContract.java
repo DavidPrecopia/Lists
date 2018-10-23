@@ -4,7 +4,7 @@ public final class DatabaseContract {
     private DatabaseContract() {
     }
 
-    public static final String DATABASE_NAME = "lists.db";
+    static final String DATABASE_NAME = "lists.db";
 
     // UserList
     public static final String USER_LIST_TABLE_NAME = "user_lists";
@@ -18,7 +18,4 @@ public final class DatabaseContract {
     public static final String ITEM_COLUMN_NAME = "name";
     public static final String ITEM_COLUMN_POSITION = "position";
     public static final String ITEM_COLUMN_LIST_ID = "list_id";
-
-    // Miscellaneous
-    static final String SORT_BY_ASCENDING = "ACS";
 }

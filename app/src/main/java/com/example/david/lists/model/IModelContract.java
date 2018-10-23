@@ -12,23 +12,23 @@ public interface IModelContract {
 
     Flowable<List<Item>> getUserListItems(int listId);
 
-    void addList(UserList list);
+    void addUserList(UserList userList);
 
     void addItem(Item item);
 
-    void deleteList(List<Integer> listId);
+    void deleteUserList(List<Integer> userListId);
 
     void deleteItem(List<Integer> itemId);
 
-    void changeListTitle(int listId, String newName);
+    void changeUserListTitle(int userListId, String newName);
 
     void changeItemTitle(int itemId, String newName);
 
-    void moveUserListPosition(int listId, int oldPosition, int newPosition);
+    void moveUserListPosition(int userListId, int oldPosition, int newPosition);
 
     void moveItemPosition(int itemId, int oldPosition, int newPosition);
 
     void forceRefreshUserLists();
 
-    void forceRefreshItems(int listId);
+    void forceRefreshItems(int userListId);
 }

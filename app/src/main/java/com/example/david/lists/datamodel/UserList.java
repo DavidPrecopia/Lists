@@ -23,10 +23,10 @@ public final class UserList {
     private int id;
 
     @ColumnInfo(name = USER_LIST_COLUMN_NAME)
-    private final String title;
+    private String title;
 
     @ColumnInfo(name = USER_LIST_COLUMN_POSITION)
-    private final int position;
+    private int position;
 
 
     public UserList(int id, String title, int position) {
@@ -39,6 +39,10 @@ public final class UserList {
     public UserList(String title, int position) {
         this.title = title;
         this.position = position;
+    }
+
+    @Ignore
+    public UserList() {
     }
 
 

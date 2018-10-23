@@ -35,13 +35,13 @@ public final class Item {
     private int id;
 
     @ColumnInfo(name = ITEM_COLUMN_NAME)
-    private final String title;
+    private String title;
 
     @ColumnInfo(name = ITEM_COLUMN_POSITION)
-    private final int position;
+    private int position;
 
     @ColumnInfo(name = ITEM_COLUMN_LIST_ID)
-    private final int listId;
+    private int listId;
 
 
     public Item(int id, String title, int position, int listId) {
@@ -56,6 +56,10 @@ public final class Item {
         this.title = title;
         this.position = position;
         this.listId = listId;
+    }
+
+    @Ignore
+    public Item() {
     }
 
 
