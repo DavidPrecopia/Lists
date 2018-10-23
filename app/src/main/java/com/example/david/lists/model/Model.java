@@ -3,8 +3,8 @@ package com.example.david.lists.model;
 import android.app.Application;
 
 import com.example.david.lists.R;
-import com.example.david.lists.database.ListsDao;
-import com.example.david.lists.database.ListsDatabase;
+import com.example.david.lists.database.LocalDao;
+import com.example.david.lists.database.LocalDatabase;
 import com.example.david.lists.datamodel.Item;
 import com.example.david.lists.datamodel.UserList;
 
@@ -14,7 +14,7 @@ import io.reactivex.Flowable;
 
 public final class Model implements IModelContract {
 
-    private final ListsDao dao;
+    private final LocalDao local;
 
     private static volatile Model instance;
 
@@ -28,51 +28,51 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        dao = ListsDatabase.getInstance(application).getListDao();
+        local = LocalDatabase.getInstance(application).getListDao();
     }
 
 
     @Override
     public Flowable<List<UserList>> getAllLists() {
-        return dao.getAllLists();
+        return local.getAllLists();
     }
 
     @Override
     public Flowable<List<Item>> getUserListItems(int listId) {
-        return dao.getListItems(listId);
+        return local.getListItems(listId);
     }
 
 
     @Override
     public void addList(UserList list) {
-        dao.addList(list);
+        local.addList(list);
     }
 
     @Override
     public void addItem(Item item) {
-        dao.addItem(item);
+        local.addItem(item);
     }
 
 
     @Override
     public void deleteList(List<Integer> listIds) {
-        dao.deleteList(listIds);
+        local.deleteList(listIds);
     }
 
     @Override
     public void deleteItem(List<Integer> itemIds) {
-        dao.deleteItem(itemIds);
+        local.deleteItem(itemIds);
     }
 
 
     @Override
     public void changeListTitle(int listId, String newTitle) {
-        dao.changeListTitle(listId, newTitle);
+        local.changeListTitle(listId, newTitle);
     }
 
     @Override
     public void changeItemTitle(int itemId, String newTitle) {
-        dao.changeItemTitle(itemId, newTitle);
+        local.changeItemTitle(itemId, newTitle);
     }
 
 
@@ -82,7 +82,7 @@ public final class Model implements IModelContract {
             return;
         }
         updatePositions(R.string.displaying_user_list, oldPosition, newPosition);
-        dao.moveListPosition(listId, newPosition);
+        local.moveListPosition(listId, newPosition);
     }
 
     @Override
@@ -91,7 +91,7 @@ public final class Model implements IModelContract {
             return;
         }
         updatePositions(R.string.displaying_item, oldPosition, newPosition);
-        dao.moveItemPosition(itemId, newPosition);
+        local.moveItemPosition(itemId, newPosition);
     }
 
     /**
@@ -113,10 +113,10 @@ public final class Model implements IModelContract {
     private void decrementPosition(int typeResId, int correctedPosition, int newPosition) {
         switch (typeResId) {
             case R.string.displaying_user_list:
-                dao.updateUserListPositionsDecrement(correctedPosition, newPosition);
+                local.updateUserListPositionsDecrement(correctedPosition, newPosition);
                 break;
             case R.string.displaying_item:
-                dao.updateItemPositionsDecrement(correctedPosition, newPosition);
+                local.updateItemPositionsDecrement(correctedPosition, newPosition);
                 break;
         }
     }
@@ -124,10 +124,10 @@ public final class Model implements IModelContract {
     private void incrementPosition(int typeResId, int correctedPosition, int newPosition) {
         switch (typeResId) {
             case R.string.displaying_user_list:
-                dao.updateUserListPositionsIncrement(correctedPosition, newPosition);
+                local.updateUserListPositionsIncrement(correctedPosition, newPosition);
                 break;
             case R.string.displaying_item:
-                dao.updateItemPositionsIncrement(correctedPosition, newPosition);
+                local.updateItemPositionsIncrement(correctedPosition, newPosition);
                 break;
         }
     }

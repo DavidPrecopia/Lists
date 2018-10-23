@@ -22,7 +22,7 @@ import static com.example.david.lists.database.DatabaseContract.USER_LIST_COLUMN
 import static com.example.david.lists.database.DatabaseContract.USER_LIST_TABLE_NAME;
 
 @Dao
-public interface ListsDao {
+public interface LocalDao {
     @Query("SELECT * FROM " + USER_LIST_TABLE_NAME
             + " ORDER BY " + USER_LIST_COLUMN_POSITION)
     Flowable<List<UserList>> getAllLists();

@@ -10,20 +10,20 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 @Database(entities = {UserList.class, Item.class}, version = 1, exportSchema = false)
-public abstract class ListsDatabase extends RoomDatabase {
+public abstract class LocalDatabase extends RoomDatabase {
 
-    private static volatile ListsDatabase instance;
+    private static volatile LocalDatabase instance;
 
-    public static ListsDatabase getInstance(Application application) {
+    public static LocalDatabase getInstance(Application application) {
         if (instance == null) {
-            synchronized (ListsDatabase.class) {
+            synchronized (LocalDatabase.class) {
                 instance = Room.databaseBuilder(
-                        application, ListsDatabase.class, DatabaseContract.DATABASE_NAME
+                        application, LocalDatabase.class, DatabaseContract.DATABASE_NAME
                 ).build();
             }
         }
         return instance;
     }
 
-    public abstract ListsDao getListDao();
+    public abstract LocalDao getListDao();
 }
