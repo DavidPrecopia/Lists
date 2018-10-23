@@ -9,6 +9,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_ID;
@@ -25,19 +26,26 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIS
 public interface LocalDao {
     @Query("SELECT * FROM " + USER_LIST_TABLE_NAME
             + " ORDER BY " + USER_LIST_COLUMN_POSITION)
-    Flowable<List<UserList>> getAllLists();
+    Flowable<List<UserList>> getAllUserLists();
 
     @Query("SELECT * FROM " + ITEM_TABLE_NAME
-            + " WHERE " + ITEM_COLUMN_LIST_ID + " = :listId"
+            + " WHERE " + ITEM_COLUMN_LIST_ID + " = :userListId"
             + " ORDER BY " + ITEM_COLUMN_POSITION)
-    Flowable<List<Item>> getListItems(int listId);
+    Flowable<List<Item>> getAllItems(int userListId);
+
+
+    @Query("SELECT * FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :rowId")
+    UserList getUserList(long rowId);
+
+    @Query("SELECT * FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " = :rowId")
+    Single<Item> getItem(long rowId);
 
 
     @Insert(onConflict = REPLACE)
-    void addUserList(UserList list);
+    long addUserList(UserList list);
 
     @Insert(onConflict = REPLACE)
-    void addItem(Item item);
+    long addItem(Item item);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME

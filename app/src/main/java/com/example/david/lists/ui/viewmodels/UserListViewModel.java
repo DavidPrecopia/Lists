@@ -137,7 +137,6 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        Timber.d("add - userLists size - %s", userLists.size());
         completableIoAccess(Completable.fromAction(() ->
                 model.addUserList(new UserList(title, this.userLists.size())))
         );

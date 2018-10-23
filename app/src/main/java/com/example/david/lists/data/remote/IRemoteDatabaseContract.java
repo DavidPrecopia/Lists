@@ -1,5 +1,7 @@
 package com.example.david.lists.data.remote;
 
-public interface IRemoteDatabaseContract {
+import com.example.david.lists.data.datamodel.UserList;
 
+public interface IRemoteDatabaseContract {
+    void addUserList(UserList userList);
 }
