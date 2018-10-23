@@ -1,15 +1,13 @@
 package com.example.david.lists.data.remote;
 
-import android.app.Application;
-
+import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import timber.log.Timber;
 
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.TESTING_COLLECTION_NAME;
+import static com.example.david.lists.data.remote.RemoteDatabaseConstants.TESTING_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteDatabaseConstants.TESTING_SUB_COLLECTION;
 
 public final class RemoteDatabase implements IRemoteDatabaseContract {
 
@@ -17,38 +15,38 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
     private static RemoteDatabase instance;
 
-    public static RemoteDatabase getInstance(Application application) {
+    public static RemoteDatabase getInstance() {
         if (instance == null) {
-            instance = new RemoteDatabase(application);
+            instance = new RemoteDatabase();
         }
         return instance;
     }
 
-    private RemoteDatabase(Application application) {
+    private RemoteDatabase() {
         firestore = FirebaseFirestore.getInstance();
     }
 
 
     @Override
     public void addUserList(UserList userList) {
-        firestore.collection(TESTING_COLLECTION_NAME)
-                .document(userList.getTitle())
+        firestore.collection(TESTING_COLLECTION)
+                .document(intToString(userList.getId()))
                 .set(userList)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Timber.i("UserList set was successful");
-                    } else {
-                        Timber.e(task.getException());
-                    }
-                });
+                .addOnFailureListener(Timber::e);
+    }
+
+    @Override
+    public void addItem(Item item) {
+        firestore.collection(TESTING_COLLECTION)
+                .document(intToString(item.getListId()))
+                .collection(TESTING_SUB_COLLECTION)
+                .document(intToString(item.getId()))
+                .set(item)
+                .addOnFailureListener(Timber::e);
     }
 
 
-    private boolean haveException(FirebaseFirestoreException exception) {
-        return exception != null;
-    }
-
-    private boolean validSnapshot(DocumentSnapshot documentSnapshot) {
-        return documentSnapshot != null && documentSnapshot.exists();
+    private String intToString(int id) {
+        return String.valueOf(id);
     }
 }

@@ -33,7 +33,7 @@ public final class Model implements IModelContract {
 
     private Model(Application application) {
         local = LocalDatabase.getInstance(application).getLocalDao();
-        remote = RemoteDatabase.getInstance(application);
+        remote = RemoteDatabase.getInstance();
     }
 
 
@@ -50,18 +50,25 @@ public final class Model implements IModelContract {
 
     @Override
     public void addUserList(UserList userList) {
-        long rowId = local.addUserList(userList);
-        if (rowId == -1) {
-            invalidRowId();
+        long id = local.addUserList(userList);
+        if (id == -1) {
+            invalidId();
         } else {
-            remote.addUserList(local.getUserList(rowId));
+            userList.setId(longToInt(id));
+            remote.addUserList(userList);
         }
     }
 
 
     @Override
     public void addItem(Item item) {
-        local.addItem(item);
+        long id = local.addItem(item);
+        if (id == -1) {
+            invalidId();
+        } else {
+            item.setId(longToInt(id));
+            remote.addItem(item);
+        }
     }
 
 
@@ -155,7 +162,11 @@ public final class Model implements IModelContract {
     }
 
 
-    private void invalidRowId() {
+    private void invalidId() {
         Timber.e("Returned row iD is invalid");
+    }
+
+    private int longToInt(long id) {
+        return (int) id;
     }
 }

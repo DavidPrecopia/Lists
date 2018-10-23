@@ -39,8 +39,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$androidXVersion"
     implementation "androidx.legacy:legacy-support-v4:$androidXVersion"
-    implementation "com.google.android.material:material:$androidXVersion"
 
+    implementation "com.google.android.material:material:$androidXVersion"
     implementation "androidx.recyclerview:recyclerview:$androidXVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 

@@ -9,7 +9,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_COLUMN_ID;
@@ -32,13 +31,6 @@ public interface LocalDao {
             + " WHERE " + ITEM_COLUMN_LIST_ID + " = :userListId"
             + " ORDER BY " + ITEM_COLUMN_POSITION)
     Flowable<List<Item>> getAllItems(int userListId);
-
-
-    @Query("SELECT * FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " = :rowId")
-    UserList getUserList(long rowId);
-
-    @Query("SELECT * FROM " + ITEM_TABLE_NAME + " WHERE " + ITEM_COLUMN_ID + " = :rowId")
-    Single<Item> getItem(long rowId);
 
 
     @Insert(onConflict = REPLACE)
