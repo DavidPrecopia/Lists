@@ -60,6 +60,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation "io.reactivex.rxjava2:rxjava:2.2.2"
 
+    //
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.1.0'
+
     // Timber
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
 

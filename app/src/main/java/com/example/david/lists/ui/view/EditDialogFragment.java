@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.DialogFragmentSharedBinding;
-import com.example.david.lists.util.UtilSoftKeyboard;
+
+import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,7 +65,7 @@ public final class EditDialogFragment extends DialogFragment {
         setConfirmButtonText();
         confirmClickListener();
         cancelClickListener();
-        UtilSoftKeyboard.show(this);
+        UIUtil.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
     private void setEditText() {
@@ -109,7 +110,7 @@ public final class EditDialogFragment extends DialogFragment {
 
     @Override
     public void dismiss() {
-        UtilSoftKeyboard.hide(this);
+        UIUtil.hideKeyboard(getContext(), binding.getRoot());
         super.dismiss();
     }
 
