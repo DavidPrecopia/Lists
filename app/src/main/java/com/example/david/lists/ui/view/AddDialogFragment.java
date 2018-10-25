@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.DialogFragmentSharedBinding;
@@ -58,6 +59,7 @@ public final class AddDialogFragment extends DialogFragment {
         setConfirmButtonText();
         confirmClickListener();
         cancelClickListener();
+        editTextListener();
         UIUtil.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
@@ -70,19 +72,33 @@ public final class AddDialogFragment extends DialogFragment {
     }
 
     private void confirmClickListener() {
-        binding.buttonConfirm.setOnClickListener(view -> {
-            String title = binding.textInputEditText.getText().toString();
-            if (emptyInput(title)) {
-                showError();
-            } else {
-                dialogListener.add(title);
-                dismiss();
-            }
-        });
+        binding.buttonConfirm.setOnClickListener(view -> processInput());
     }
 
     private void cancelClickListener() {
         binding.buttonCancel.setOnClickListener(view -> dismiss());
+    }
+
+    private void editTextListener() {
+        binding.textInputEditText.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                processInput();
+                handled = true;
+            }
+            return handled;
+        });
+    }
+
+
+    private void processInput() {
+        String title = binding.textInputEditText.getText().toString();
+        if (emptyInput(title)) {
+            showError();
+        } else {
+            dialogListener.add(title);
+            dismiss();
+        }
     }
 
 

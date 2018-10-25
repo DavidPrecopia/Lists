@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.DialogFragmentSharedBinding;
@@ -56,6 +57,7 @@ public final class EditDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_fragment_shared, container, false);
         setStyle(STYLE_NO_TITLE, R.style.DialogStyle);
+        getDialog().setTitle("sdfsdf");
         init();
         return binding.getRoot();
     }
@@ -65,6 +67,7 @@ public final class EditDialogFragment extends DialogFragment {
         setConfirmButtonText();
         confirmClickListener();
         cancelClickListener();
+        editTextListener();
         UIUtil.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
@@ -77,21 +80,35 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
     private void confirmClickListener() {
-        binding.buttonConfirm.setOnClickListener(view -> {
-            String newTitle = binding.textInputEditText.getText().toString();
-            if (emptyInput(newTitle)) {
-                showError(getString(R.string.error_empty_title_text_field));
-            } else if (titleUnchanged(newTitle)) {
-                showError(getString(R.string.error_title_unchanged));
-            } else {
-                dialogListener.edit(editingInfo.getId(), newTitle);
-                dismiss();
-            }
-        });
+        binding.buttonConfirm.setOnClickListener(view -> processInput());
     }
 
     private void cancelClickListener() {
         binding.buttonCancel.setOnClickListener(view -> dismiss());
+    }
+
+    private void editTextListener() {
+        binding.textInputEditText.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                processInput();
+                handled = true;
+            }
+            return handled;
+        });
+    }
+
+
+    private void processInput() {
+        String newTitle = binding.textInputEditText.getText().toString();
+        if (emptyInput(newTitle)) {
+            showError(getString(R.string.error_empty_title_text_field));
+        } else if (titleUnchanged(newTitle)) {
+            showError(getString(R.string.error_title_unchanged));
+        } else {
+            dialogListener.edit(editingInfo.getId(), newTitle);
+            dismiss();
+        }
     }
 
 
@@ -113,6 +130,7 @@ public final class EditDialogFragment extends DialogFragment {
         UIUtil.hideKeyboard(getContext(), binding.getRoot());
         super.dismiss();
     }
+
 
     public interface EditDialogFragmentListener {
         void edit(int id, String newTitle);
