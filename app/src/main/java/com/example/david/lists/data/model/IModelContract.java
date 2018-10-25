@@ -16,9 +16,9 @@ public interface IModelContract {
 
     void addItem(Item item);
 
-    void deleteUserList(List<Integer> userListId);
+    void deleteUserLists(List<UserList> userLists);
 
-    void deleteItem(List<Integer> itemId);
+    void deleteItems(List<Item> items);
 
     void changeUserListTitle(int userListId, String newName);
 

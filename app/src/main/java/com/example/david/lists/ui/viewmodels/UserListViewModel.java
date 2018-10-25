@@ -195,7 +195,7 @@ public final class UserListViewModel extends AndroidViewModel
     public void undoRecentDeletion() {
         if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             throw new UnsupportedOperationException(
-                    getStringResource(R.string.error_invalid_deletion_undo)
+                    getStringResource(R.string.error_invalid_action_undo_deletion)
             );
         }
         reAdd();
@@ -212,21 +212,14 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void deletionNotificationTimedOut() {
-        // There is a possibility that tempUserLists is nullified,
-        // before fromAction executes.
-        List<Integer> userListsIds = new ArrayList<>(getUserListsIds());
-        completableIoAccess(Completable.fromAction(() ->
-                model.deleteUserList(userListsIds))
-        );
-        tempUserLists.clear();
-    }
-
-    private List<Integer> getUserListsIds() {
-        List<Integer> userListsIds = new ArrayList<>();
-        for (UserList userList : tempUserLists) {
-            userListsIds.add(userList.getId());
+        if (tempUserLists.isEmpty()) {
+            return;
         }
-        return userListsIds;
+        List<UserList> userLists = new ArrayList<>(tempUserLists);
+        completableIoAccess(Completable.fromAction(() ->
+                model.deleteUserLists(userLists)
+        ));
+        tempUserLists.clear();
     }
 
 

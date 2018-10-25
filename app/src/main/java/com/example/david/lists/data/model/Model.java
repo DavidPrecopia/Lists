@@ -10,6 +10,7 @@ import com.example.david.lists.data.local.LocalDatabase;
 import com.example.david.lists.data.remote.IRemoteDatabaseContract;
 import com.example.david.lists.data.remote.RemoteDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -43,8 +44,8 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public Flowable<List<Item>> getUserListItems(int listId) {
-        return local.getAllItems(listId);
+    public Flowable<List<Item>> getUserListItems(int userListId) {
+        return local.getAllItems(userListId);
     }
 
 
@@ -59,7 +60,6 @@ public final class Model implements IModelContract {
         }
     }
 
-
     @Override
     public void addItem(Item item) {
         long id = local.addItem(item);
@@ -73,13 +73,32 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void deleteUserList(List<Integer> userListId) {
-        local.deleteList(userListId);
+    public void deleteUserLists(List<UserList> userLists) {
+        local.deleteList(getUserListsIds(userLists));
+        remote.deleteUserLists(userLists);
+    }
+
+    private List<Integer> getUserListsIds(List<UserList> userLists) {
+        List<Integer> userListsIds = new ArrayList<>();
+        for (UserList userList : userLists) {
+            userListsIds.add(userList.getId());
+        }
+        return userListsIds;
     }
 
     @Override
-    public void deleteItem(List<Integer> itemIds) {
-        local.deleteItem(itemIds);
+    public void deleteItems(List<Item> items) {
+        Timber.d(String.valueOf(items.size()));
+        local.deleteItem(getItemIds(items));
+        remote.deleteItems(items);
+    }
+
+    private List<Integer> getItemIds(List<Item> items) {
+        List<Integer> itemIds = new ArrayList<>();
+        for (Item item : items) {
+            itemIds.add(item.getId());
+        }
+        return itemIds;
     }
 
 

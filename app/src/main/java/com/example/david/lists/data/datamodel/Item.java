@@ -41,21 +41,21 @@ public final class Item {
     private int position;
 
     @ColumnInfo(name = ITEM_COLUMN_LIST_ID)
-    private int listId;
+    private int userListId;
 
 
-    public Item(int id, String title, int position, int listId) {
+    public Item(int id, String title, int position, int userListId) {
         this.id = id;
         this.title = title;
         this.position = position;
-        this.listId = listId;
+        this.userListId = userListId;
     }
 
     @Ignore
-    public Item(String title, int position, int listId) {
+    public Item(String title, int position, int userListId) {
         this.title = title;
         this.position = position;
-        this.listId = listId;
+        this.userListId = userListId;
     }
 
     @Ignore
@@ -79,7 +79,7 @@ public final class Item {
         return position;
     }
 
-    public int getListId() {
-        return listId;
+    public int getUserListId() {
+        return userListId;
     }
 }

@@ -4,7 +4,6 @@ final class RemoteDatabaseConstants {
     private RemoteDatabaseConstants() {
     }
 
-    static final String TESTING_COLLECTION = "user_lists_testing";
-
-    static final String TESTING_SUB_COLLECTION = "user_list_items";
+    static final String USER_LISTS_COLLECTION = "user_lists_collection";
+    static final String ITEMS_COLLECTION = "items_collection";
 }
