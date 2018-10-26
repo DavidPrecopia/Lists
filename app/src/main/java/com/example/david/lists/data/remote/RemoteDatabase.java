@@ -104,6 +104,20 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
     }
 
 
+    @Override
+    public void renameUserList(int userListId, String newName) {
+        getUserListDocument(userListId)
+                .update("title", newName)
+                .addOnFailureListener(this::onFailure);
+    }
+
+    @Override
+    public void renameItem(int itemId, String newName) {
+        getItemDocument(itemId)
+                .update("title", newName)
+                .addOnFailureListener(this::onFailure);
+    }
+
     private DocumentReference getUserListDocument(int userListId) {
         return userListsCollection.document(intToString(userListId));
     }

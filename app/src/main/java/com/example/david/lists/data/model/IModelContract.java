@@ -20,9 +20,9 @@ public interface IModelContract {
 
     void deleteItems(List<Item> items);
 
-    void changeUserListTitle(int userListId, String newName);
+    void renameUserList(int userListId, String newName);
 
-    void changeItemTitle(int itemId, String newName);
+    void renameItem(int itemId, String newName);
 
     void moveUserListPosition(int userListId, int oldPosition, int newPosition);
 

@@ -43,12 +43,12 @@ public interface LocalDao {
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + USER_LIST_COLUMN_NAME + " = :newTitle"
             + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    void changeListTitle(int listId, String newTitle);
+    void renameUserList(int listId, String newTitle);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + ITEM_COLUMN_NAME + " = :newTitle"
             + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    void changeItemTitle(int itemId, String newTitle);
+    void renameItem(int itemId, String newTitle);
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + USER_LIST_COLUMN_ID + " IN (:listIds)")

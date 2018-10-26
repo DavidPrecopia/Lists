@@ -170,7 +170,7 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public void changeTitle(int listId, String newTitle) {
         completableIoAccess(Completable.fromAction(() ->
-                model.changeUserListTitle(listId, newTitle))
+                model.renameUserList(listId, newTitle))
         );
     }
 

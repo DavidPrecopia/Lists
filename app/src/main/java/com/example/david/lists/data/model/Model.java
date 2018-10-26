@@ -103,13 +103,15 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void changeUserListTitle(int userListId, String newTitle) {
-        local.changeListTitle(userListId, newTitle);
+    public void renameUserList(int userListId, String newTitle) {
+        local.renameUserList(userListId, newTitle);
+        remote.renameUserList(userListId, newTitle);
     }
 
     @Override
-    public void changeItemTitle(int itemId, String newTitle) {
-        local.changeItemTitle(itemId, newTitle);
+    public void renameItem(int itemId, String newTitle) {
+        local.renameItem(itemId, newTitle);
+        remote.renameItem(itemId, newTitle);
     }
 
 

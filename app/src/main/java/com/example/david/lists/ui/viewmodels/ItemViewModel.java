@@ -169,7 +169,7 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void changeTitle(int idemId, String newTitle) {
         completableIoAccess(Completable.fromAction(() ->
-                model.changeItemTitle(idemId, newTitle))
+                model.renameItem(idemId, newTitle))
         );
     }
 

@@ -13,4 +13,8 @@ public interface IRemoteDatabaseContract {
     void deleteUserLists(List<UserList> userList);
 
     void deleteItems(List<Item> item);
+
+    void renameUserList(int userListId, String newName);
+
+    void renameItem(int itemId, String newName);
 }
