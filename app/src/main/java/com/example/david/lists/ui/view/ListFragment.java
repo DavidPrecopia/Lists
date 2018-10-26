@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;

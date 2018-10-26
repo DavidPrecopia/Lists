@@ -1,10 +1,7 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.data.datamodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.datamodel.UserList;
 
 /**
  * This provides a uniform way to pass information about an
@@ -35,7 +32,7 @@ public final class EditingInfo implements Parcelable {
     }
 
 
-    // Parcelable code
+    // Parcelable implementation below
 
     private EditingInfo(Parcel in) {
         id = in.readInt();

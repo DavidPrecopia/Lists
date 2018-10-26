@@ -2,6 +2,7 @@
 <resources>
     <string name="hint_add_user_list">List\'s name</string>
     <string name="hint_add_item">Item\'s name</string>
+    <string name="hint_edit">Rename</string>
 
     <string name="button_text_cancel">Cancel</string>
     <string name="button_text_confirm_add">Add</string>

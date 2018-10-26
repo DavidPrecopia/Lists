@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.DialogFragmentSharedBinding;
 
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
@@ -64,6 +65,7 @@ public final class EditDialogFragment extends DialogFragment {
 
     private void init() {
         setEditText();
+        setHint();
         setConfirmButtonText();
         confirmClickListener();
         cancelClickListener();
@@ -73,6 +75,10 @@ public final class EditDialogFragment extends DialogFragment {
 
     private void setEditText() {
         binding.textInputEditText.setText(editingInfo.getTitle());
+    }
+
+    private void setHint() {
+        binding.textInputLayout.setHint(getString(R.string.hint_edit));
     }
 
     private void setConfirmButtonText() {
