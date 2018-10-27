@@ -2,7 +2,6 @@ package com.example.david.lists.data.model;
 
 import android.app.Application;
 
-import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.LocalDao;
@@ -14,12 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import timber.log.Timber;
 
 public final class Model implements IModelContract {
 
     private final LocalDao local;
     private final IRemoteDatabaseContract remote;
+
+    private static final String TYPE_USER_LIST = "type_user_list";
+    private static final String TYPE_ITEM = "type_item";
 
     private static volatile Model instance;
 
@@ -52,23 +53,17 @@ public final class Model implements IModelContract {
     @Override
     public void addUserList(UserList userList) {
         long id = local.addUserList(userList);
-        if (id == -1) {
-            invalidId();
-        } else {
-            userList.setId(longToInt(id));
-            remote.addUserList(userList);
-        }
+
+        userList.setId(longToInt(id));
+        remote.addUserList(userList);
     }
 
     @Override
     public void addItem(Item item) {
         long id = local.addItem(item);
-        if (id == -1) {
-            invalidId();
-        } else {
-            item.setId(longToInt(id));
-            remote.addItem(item);
-        }
+
+        item.setId(longToInt(id));
+        remote.addItem(item);
     }
 
 
@@ -88,7 +83,6 @@ public final class Model implements IModelContract {
 
     @Override
     public void deleteItems(List<Item> items) {
-        Timber.d(String.valueOf(items.size()));
         local.deleteItem(getItemIds(items));
         remote.deleteItems(items);
     }
@@ -116,57 +110,72 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void moveUserListPosition(int userListId, int oldPosition, int newPosition) {
-        if (oldPosition == newPosition) {
+    public void updateUserListPosition(int userListId, int oldPosition, int newPosition) {
+        if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
-        updatePositions(R.string.displaying_user_list, oldPosition, newPosition);
-        local.moveListPosition(userListId, newPosition);
+        processPositionChange(TYPE_USER_LIST, userListId, oldPosition, newPosition);
     }
 
     @Override
-    public void moveItemPosition(int itemId, int oldPosition, int newPosition) {
-        if (oldPosition == newPosition) {
+    public void updateItemPosition(int itemId, int oldPosition, int newPosition) {
+        if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
-        updatePositions(R.string.displaying_item, oldPosition, newPosition);
-        local.moveItemPosition(itemId, newPosition);
+        processPositionChange(TYPE_ITEM, itemId, oldPosition, newPosition);
+    }
+
+    private boolean positionNotChanged(int oldPosition, int newPosition) {
+        return oldPosition == newPosition;
     }
 
     /**
-     * I'm using the same method for both types in order to keep the logic DRY.
-     * <p>
-     * I'm decrementing oldPosition so the moved row is excluded from update operations.
-     * This assumes that this method is invoked prior to the moved row being updated.
+     * Using the same method for both types in order to keep the logic DRY.
+     * <em>Incrementing/decrementing oldPosition</em>
+     * so the moved row is excluded from the update operation.
      */
-    private void updatePositions(int typeResId, int oldPosition, int newPosition) {
-        int correctedPosition = oldPosition - 1;
-
+    private void processPositionChange(String type, int id, int oldPosition, int newPosition) {
         if (newPosition > oldPosition) {
-            decrementPosition(typeResId, correctedPosition, newPosition);
+            decrementPosition(type, id, (oldPosition + 1), newPosition);
         } else if (newPosition < oldPosition) {
-            incrementPosition(typeResId, correctedPosition, newPosition);
+            incrementPosition(type, id, (oldPosition - 1), newPosition);
+        }
+        updateLocalPosition(type, id, newPosition);
+    }
+
+    private void decrementPosition(String type,int id, int oldPosition, int newPosition) {
+        switch (type) {
+            case TYPE_USER_LIST:
+                local.updateUserListPositionsDecrement(oldPosition, newPosition);
+                remote.updateUserListPositionsDecrement(id, oldPosition, newPosition);
+                break;
+            case TYPE_ITEM:
+                local.updateItemPositionsDecrement(oldPosition, newPosition);
+                remote.updateItemPositionsDecrement(id, oldPosition, newPosition);
+                break;
         }
     }
 
-    private void decrementPosition(int typeResId, int correctedPosition, int newPosition) {
-        switch (typeResId) {
-            case R.string.displaying_user_list:
-                local.updateUserListPositionsDecrement(correctedPosition, newPosition);
+    private void incrementPosition(String type, int id, int oldPosition, int newPosition) {
+        switch (type) {
+            case TYPE_USER_LIST:
+                local.updateUserListPositionsIncrement(oldPosition, newPosition);
+                remote.updateUserListPositionsIncrement(id, oldPosition, newPosition);
                 break;
-            case R.string.displaying_item:
-                local.updateItemPositionsDecrement(correctedPosition, newPosition);
+            case TYPE_ITEM:
+                local.updateItemPositionsIncrement(oldPosition, newPosition);
+                remote.updateItemPositionsIncrement(id, oldPosition, newPosition);
                 break;
         }
     }
 
-    private void incrementPosition(int typeResId, int correctedPosition, int newPosition) {
-        switch (typeResId) {
-            case R.string.displaying_user_list:
-                local.updateUserListPositionsIncrement(correctedPosition, newPosition);
+    private void updateLocalPosition(String type, int id, int newPosition) {
+        switch (type) {
+            case TYPE_USER_LIST:
+                local.updateUserListPosition(id, newPosition);
                 break;
-            case R.string.displaying_item:
-                local.updateItemPositionsIncrement(correctedPosition, newPosition);
+            case TYPE_ITEM:
+                local.updateItemPosition(id, newPosition);
                 break;
         }
     }
@@ -182,10 +191,6 @@ public final class Model implements IModelContract {
         throw new UnsupportedOperationException();
     }
 
-
-    private void invalidId() {
-        Timber.e("Returned row iD is invalid");
-    }
 
     private int longToInt(long id) {
         return (int) id;

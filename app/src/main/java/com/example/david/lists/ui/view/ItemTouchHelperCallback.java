@@ -71,7 +71,7 @@ public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
         if (postMove) {
-            viewModel.movePermanently(viewHolder.getAdapterPosition());
+            viewModel.movedPermanently(viewHolder.getAdapterPosition());
         }
     }
 

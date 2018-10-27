@@ -16,7 +16,7 @@ public interface IViewModelContract {
 
     void dragging(int fromPosition, int toPosition);
 
-    void movePermanently(int newPosition);
+    void movedPermanently(int newPosition);
 
     void edit(int position);
 

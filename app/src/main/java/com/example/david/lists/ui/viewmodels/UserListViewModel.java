@@ -150,10 +150,10 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     @Override
-    public void movePermanently(int newPosition) {
+    public void movedPermanently(int newPosition) {
         UserList userList = userLists.get(newPosition);
         completableIoAccess(Completable.fromAction(() ->
-                model.moveUserListPosition(
+                model.updateUserListPosition(
                         userList.getId(),
                         userList.getPosition(),
                         newPosition

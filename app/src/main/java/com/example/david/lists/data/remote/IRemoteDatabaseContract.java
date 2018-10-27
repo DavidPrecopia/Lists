@@ -17,4 +17,12 @@ public interface IRemoteDatabaseContract {
     void renameUserList(int userListId, String newName);
 
     void renameItem(int itemId, String newName);
+
+    void updateUserListPositionsIncrement(int userListId, int oldPosition, int newPosition);
+
+    void updateUserListPositionsDecrement(int userListId, int oldPosition, int newPosition);
+
+    void updateItemPositionsIncrement(int itemId, int oldPosition, int newPosition);
+
+    void updateItemPositionsDecrement(int itemId, int oldPosition, int newPosition);
 }

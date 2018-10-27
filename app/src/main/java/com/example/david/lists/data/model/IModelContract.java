@@ -24,9 +24,9 @@ public interface IModelContract {
 
     void renameItem(int itemId, String newName);
 
-    void moveUserListPosition(int userListId, int oldPosition, int newPosition);
+    void updateUserListPosition(int userListId, int oldPosition, int newPosition);
 
-    void moveItemPosition(int itemId, int oldPosition, int newPosition);
+    void updateItemPosition(int itemId, int oldPosition, int newPosition);
 
     void forceRefreshUserLists();
 

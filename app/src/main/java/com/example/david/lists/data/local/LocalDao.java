@@ -60,24 +60,24 @@ public interface LocalDao {
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + USER_LIST_COLUMN_POSITION + " = :newPosition"
-            + " WHERE " + USER_LIST_COLUMN_ID + " = :listId")
-    void moveListPosition(int listId, int newPosition);
+            + " WHERE " + USER_LIST_COLUMN_ID + " = :userListId")
+    void updateUserListPosition(int userListId, int newPosition);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + ITEM_COLUMN_POSITION + " = :newPosition"
             + " WHERE " + ITEM_COLUMN_ID + " = :itemId")
-    void moveItemPosition(int itemId, int newPosition);
+    void updateItemPosition(int itemId, int newPosition);
 
-
-    @Query("UPDATE " + USER_LIST_TABLE_NAME
-            + " SET " + USER_LIST_COLUMN_POSITION + " = " + USER_LIST_COLUMN_POSITION + " - 1"
-            + " WHERE " + USER_LIST_COLUMN_POSITION + " BETWEEN :oldPosition AND :newPosition")
-    void updateUserListPositionsDecrement(int oldPosition, int newPosition);
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + USER_LIST_COLUMN_POSITION + " = " + USER_LIST_COLUMN_POSITION + " + 1"
             + " WHERE " + USER_LIST_COLUMN_POSITION + " BETWEEN :newPosition AND :oldPosition")
     void updateUserListPositionsIncrement(int oldPosition, int newPosition);
+
+    @Query("UPDATE " + USER_LIST_TABLE_NAME
+            + " SET " + USER_LIST_COLUMN_POSITION + " = " + USER_LIST_COLUMN_POSITION + " - 1"
+            + " WHERE " + USER_LIST_COLUMN_POSITION + " BETWEEN :oldPosition AND :newPosition")
+    void updateUserListPositionsDecrement(int oldPosition, int newPosition);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + ITEM_COLUMN_POSITION + " = " + ITEM_COLUMN_POSITION + " + 1"

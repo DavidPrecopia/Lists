@@ -12,6 +12,7 @@ import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -140,23 +141,26 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void add(String title) {
         completableIoAccess(Completable.fromAction(() ->
-                model.addItem(new Item(title, tempItemList.size(), this.listId)))
+                model.addItem(new Item(title, itemList.size(), this.listId)))
         );
     }
 
 
     @Override
     public void dragging(int fromPosition, int toPosition) {
+        Collections.swap(itemList, fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
     }
 
     @Override
-    public void movePermanently(int newPosition) {
+    public void movedPermanently(int newPosition) {
         Item item = itemList.get(newPosition);
-        model.moveItemPosition(
-                item.getId(),
-                item.getPosition(),
-                newPosition
+        completableIoAccess(Completable.fromAction(() ->
+                model.updateItemPosition(
+                        item.getId(),
+                        item.getPosition(),
+                        newPosition
+                ))
         );
     }
 
