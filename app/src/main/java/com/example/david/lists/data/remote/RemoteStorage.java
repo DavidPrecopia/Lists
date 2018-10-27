@@ -22,22 +22,22 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 
-public final class RemoteDatabase implements IRemoteDatabaseContract {
+public final class RemoteStorage implements IRemoteStorageContract {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
-    private static RemoteDatabase instance;
+    private static RemoteStorage instance;
 
-    public static RemoteDatabase getInstance() {
+    public static IRemoteStorageContract getInstance() {
         if (instance == null) {
-            instance = new RemoteDatabase();
+            instance = new RemoteStorage();
         }
         return instance;
     }
 
-    private RemoteDatabase() {
+    private RemoteStorage() {
         firestore = FirebaseFirestore.getInstance();
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
@@ -45,18 +45,20 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
 
     @Override
-    public void addUserList(UserList userList) {
-        getUserListDocument(userList.getId())
-                .set(userList)
-                .addOnFailureListener(this::onFailure);
+    public String addUserList(UserList userList) {
+        return add(userListsCollection, userList);
     }
 
-
     @Override
-    public void addItem(Item item) {
-        getItemDocument(item.getId())
-                .set(item)
-                .addOnFailureListener(this::onFailure);
+    public String addItem(Item item) {
+        return add(itemsCollection, item);
+    }
+
+    private String add(CollectionReference collectionReference, Object object) {
+        DocumentReference documentRef = collectionReference.document();
+        String id = documentRef.getId();
+        documentRef.set(object).addOnFailureListener(this::onFailure);
+        return id;
     }
 
 

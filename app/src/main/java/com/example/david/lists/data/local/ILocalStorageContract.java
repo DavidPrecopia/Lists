@@ -1,11 +1,17 @@
-package com.example.david.lists.data.remote;
+package com.example.david.lists.data.local;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
-public interface IRemoteDatabaseContract {
+import io.reactivex.Flowable;
+
+public interface ILocalStorageContract {
+    Flowable<List<UserList>> getAllUserLists();
+
+    Flowable<List<Item>> getAllItems(int userListId);
+
     void addUserList(UserList userList);
 
     void addItem(Item item);

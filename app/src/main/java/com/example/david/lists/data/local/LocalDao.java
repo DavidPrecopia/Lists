@@ -31,16 +31,16 @@ public interface LocalDao {
 
 
     @Insert(onConflict = REPLACE)
-    long addUserList(UserList list);
+    void addUserList(UserList list);
 
     @Insert(onConflict = REPLACE)
-    long addItem(Item item);
+    void addItem(Item item);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
-            + " WHERE " + FIELD_ID + " = :listId")
-    void renameUserList(int listId, String newTitle);
+            + " WHERE " + FIELD_ID + " = :userListId")
+    void renameUserList(int userListId, String newTitle);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
@@ -48,8 +48,8 @@ public interface LocalDao {
     void renameItem(int itemId, String newTitle);
 
 
-    @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:listIds)")
-    void deleteList(List<Integer> listIds);
+    @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:userListIds)")
+    void deleteUserList(List<Integer> userListIds);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:itemIds)")
     void deleteItem(List<Integer> itemIds);

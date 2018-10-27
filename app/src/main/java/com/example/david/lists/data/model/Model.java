@@ -4,27 +4,26 @@ import android.app.Application;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.local.LocalDao;
-import com.example.david.lists.data.local.LocalDatabase;
-import com.example.david.lists.data.remote.IRemoteDatabaseContract;
-import com.example.david.lists.data.remote.RemoteDatabase;
+import com.example.david.lists.data.local.ILocalStorageContract;
+import com.example.david.lists.data.local.LocalStorage;
+import com.example.david.lists.data.remote.IRemoteStorageContract;
+import com.example.david.lists.data.remote.RemoteStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 
 public final class Model implements IModelContract {
 
-    private final LocalDao local;
-    private final IRemoteDatabaseContract remote;
+    private final ILocalStorageContract local;
+    private final IRemoteStorageContract remote;
 
     private static final String TYPE_USER_LIST = "type_user_list";
     private static final String TYPE_ITEM = "type_item";
 
     private static volatile Model instance;
 
-    public static Model getInstance(Application application) {
+    public static IModelContract getInstance(Application application) {
         if (instance == null) {
             synchronized (Model.class) {
                 instance = new Model(application);
@@ -34,8 +33,8 @@ public final class Model implements IModelContract {
     }
 
     private Model(Application application) {
-        local = LocalDatabase.getInstance(application).getLocalDao();
-        remote = RemoteDatabase.getInstance();
+        local = LocalStorage.getInstance(application);
+        remote = RemoteStorage.getInstance();
     }
 
 
@@ -52,47 +51,27 @@ public final class Model implements IModelContract {
 
     @Override
     public void addUserList(UserList userList) {
-        long id = local.addUserList(userList);
-
-        userList.setId(longToInt(id));
-        remote.addUserList(userList);
+        local.addUserList(userList);
+        String testingID = remote.addUserList(userList);
     }
 
     @Override
     public void addItem(Item item) {
-        long id = local.addItem(item);
-
-        item.setId(longToInt(id));
-        remote.addItem(item);
+        local.addItem(item);
+        String testingID = remote.addItem(item);
     }
 
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        local.deleteList(getUserListsIds(userLists));
+        local.deleteUserLists(userLists);
         remote.deleteUserLists(userLists);
-    }
-
-    private List<Integer> getUserListsIds(List<UserList> userLists) {
-        List<Integer> userListsIds = new ArrayList<>();
-        for (UserList userList : userLists) {
-            userListsIds.add(userList.getId());
-        }
-        return userListsIds;
     }
 
     @Override
     public void deleteItems(List<Item> items) {
-        local.deleteItem(getItemIds(items));
+        local.deleteItems(items);
         remote.deleteItems(items);
-    }
-
-    private List<Integer> getItemIds(List<Item> items) {
-        List<Integer> itemIds = new ArrayList<>();
-        for (Item item : items) {
-            itemIds.add(item.getId());
-        }
-        return itemIds;
     }
 
 
@@ -140,17 +119,16 @@ public final class Model implements IModelContract {
         } else if (newPosition < oldPosition) {
             incrementPosition(type, id, (oldPosition - 1), newPosition);
         }
-        updateLocalPosition(type, id, newPosition);
     }
 
-    private void decrementPosition(String type,int id, int oldPosition, int newPosition) {
+    private void decrementPosition(String type, int id, int oldPosition, int newPosition) {
         switch (type) {
             case TYPE_USER_LIST:
-                local.updateUserListPositionsDecrement(oldPosition, newPosition);
+                local.updateUserListPositionsDecrement(id, oldPosition, newPosition);
                 remote.updateUserListPositionsDecrement(id, oldPosition, newPosition);
                 break;
             case TYPE_ITEM:
-                local.updateItemPositionsDecrement(oldPosition, newPosition);
+                local.updateItemPositionsDecrement(id, oldPosition, newPosition);
                 remote.updateItemPositionsDecrement(id, oldPosition, newPosition);
                 break;
         }
@@ -159,23 +137,12 @@ public final class Model implements IModelContract {
     private void incrementPosition(String type, int id, int oldPosition, int newPosition) {
         switch (type) {
             case TYPE_USER_LIST:
-                local.updateUserListPositionsIncrement(oldPosition, newPosition);
+                local.updateUserListPositionsIncrement(id, oldPosition, newPosition);
                 remote.updateUserListPositionsIncrement(id, oldPosition, newPosition);
                 break;
             case TYPE_ITEM:
-                local.updateItemPositionsIncrement(oldPosition, newPosition);
+                local.updateItemPositionsIncrement(id, oldPosition, newPosition);
                 remote.updateItemPositionsIncrement(id, oldPosition, newPosition);
-                break;
-        }
-    }
-
-    private void updateLocalPosition(String type, int id, int newPosition) {
-        switch (type) {
-            case TYPE_USER_LIST:
-                local.updateUserListPosition(id, newPosition);
-                break;
-            case TYPE_ITEM:
-                local.updateItemPosition(id, newPosition);
                 break;
         }
     }
@@ -189,10 +156,5 @@ public final class Model implements IModelContract {
     @Override
     public void forceRefreshItems(int userListId) {
         throw new UnsupportedOperationException();
-    }
-
-
-    private int longToInt(long id) {
-        return (int) id;
     }
 }
