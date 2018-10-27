@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import timber.log.Timber;
 
 public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
@@ -70,7 +69,6 @@ public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
      */
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        Timber.d("clearView");
         super.clearView(recyclerView, viewHolder);
         if (postMove) {
             viewModel.movePermanently(viewHolder.getAdapterPosition());
