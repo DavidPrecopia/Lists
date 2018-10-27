@@ -12,12 +12,13 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import timber.log.Timber;
 
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.FIELD_POSITION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.FIELD_TITLE;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.FIELD_USER_LIST_ID;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 
@@ -86,7 +87,7 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
     private void prepareToBatchDeleteItems(List<Integer> userListIds) {
         for (Integer userListId : userListIds) {
             itemsCollection
-                    .whereEqualTo(FIELD_USER_LIST_ID, userListId)
+                    .whereEqualTo(FIELD_ID, userListId)
                     .get()
                     .addOnSuccessListener(this::batchDeleteItems)
                     .addOnFailureListener(this::onFailure);
@@ -184,7 +185,7 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
             WriteBatch batch = firestore.batch();
             for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                 Timber.d("decrement -- %s", queryDocumentSnapshots.size());
-                int updatedPosition = snapshot.getLong(FIELD_POSITION).intValue() - 1;
+                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() - 1;
                 batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
             }
             batch.update(movedDocument, FIELD_POSITION, newPosition);
@@ -198,7 +199,7 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
             WriteBatch batch = firestore.batch();
             for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                 Timber.d("increment -- %s", queryDocumentSnapshots.size());
-                int updatedPosition = snapshot.getLong(FIELD_POSITION).intValue() + 1;
+                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() + 1;
                 batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
             }
             batch.update(movedDocument, FIELD_POSITION, newPosition);

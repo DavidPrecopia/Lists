@@ -1,31 +1,36 @@
 package com.example.david.lists.data.datamodel;
 
+import com.example.david.lists.data.local.LocalDatabaseConstants;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_ID;
-import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_NAME;
-import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_COLUMN_POSITION;
-import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_TABLE_NAME;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 
-@Entity(tableName = USER_LIST_TABLE_NAME,
-        indices = {@Index(USER_LIST_COLUMN_ID),
-                @Index(USER_LIST_COLUMN_POSITION)
+/**
+ * Field names need to kept be in sync with
+ * {@link DataModelFieldConstants}.
+ */
+@Entity(tableName = LocalDatabaseConstants.USER_LIST_TABLE_NAME,
+        indices = {@Index(FIELD_ID),
+                @Index(FIELD_POSITION)
         }
 )
 public final class UserList {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = USER_LIST_COLUMN_ID)
+    @ColumnInfo(name = FIELD_ID)
     private int id;
 
-    @ColumnInfo(name = USER_LIST_COLUMN_NAME)
+    @ColumnInfo(name = FIELD_TITLE)
     private String title;
 
-    @ColumnInfo(name = USER_LIST_COLUMN_POSITION)
+    @ColumnInfo(name = FIELD_POSITION)
     private int position;
 
 
