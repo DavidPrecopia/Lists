@@ -100,7 +100,7 @@ public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
         canvas.drawRect(getBackground(dX, itemView), paint);
         canvas.drawBitmap(
-                drawableToBitmap(context, R.drawable.ic_delete_white_16dp),
+                drawableToBitmap(context),
                 null,
                 getIconDestination(itemView, width),
                 paint
@@ -120,8 +120,8 @@ public final class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
 
-    private Bitmap drawableToBitmap(Context context, int drawableResId) {
-        Drawable drawable = ContextCompat.getDrawable(context, drawableResId);
+    private Bitmap drawableToBitmap(Context context) {
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete_white_16dp);
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());

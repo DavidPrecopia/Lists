@@ -11,5 +11,4 @@
     <string name="title_widget_config_activity">Select a list</string>
 
     <string name="content_description_widget_settings">content_description_widget_settings</string>
-    <string name="error_widget_nothing_selected">Nothing selected</string>
 </resources>
