@@ -23,7 +23,7 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_R
  * {@link DataModelFieldConstants}.
  */
 @Entity(tableName = LocalDatabaseConstants.ITEM_TABLE_NAME,
-        indices = {@Index(FIELD_ID),
+        indices = {@Index(value = FIELD_ID, unique = true),
                 @Index(FIELD_POSITION),
                 @Index(FIELD_ITEM_USER_LIST_ID)
         },
