@@ -36,9 +36,9 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_R
         ))
 public final class Item {
 
-    @Exclude
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ROW_ID)
+    @Exclude
     private int rowId;
 
     @ColumnInfo(name = FIELD_ID)

@@ -55,9 +55,11 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private String add(CollectionReference collectionReference, Object object) {
-        DocumentReference documentRef = collectionReference.document();
-        String id = documentRef.getId();
-        documentRef.set(object).addOnFailureListener(this::onFailure);
+        final DocumentReference documentRef = collectionReference.document();
+        final String id = documentRef.getId();
+        documentRef.set(object)
+                .addOnSuccessListener(aVoid -> documentRef.update(FIELD_ID, id))
+                .addOnFailureListener(this::onFailure);
         return id;
     }
 
