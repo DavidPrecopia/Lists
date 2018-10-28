@@ -51,12 +51,14 @@ public final class Model implements IModelContract {
 
     @Override
     public void addUserList(UserList userList) {
+        validateObject(userList);
         String id = remote.addUserList(userList);
         local.addUserList(new UserList(id, userList));
     }
 
     @Override
     public void addItem(Item item) {
+        validateObject(item);
         String id = remote.addItem(item);
         local.addItem(new Item(id, item));
     }
@@ -64,12 +66,14 @@ public final class Model implements IModelContract {
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
+        validateList(userLists);
         local.deleteUserLists(userLists);
         remote.deleteUserLists(userLists);
     }
 
     @Override
     public void deleteItems(List<Item> items) {
+        validateList(items);
         local.deleteItems(items);
         remote.deleteItems(items);
     }
@@ -92,7 +96,11 @@ public final class Model implements IModelContract {
     public void updateUserListPosition(UserList userList, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
+        } else {
+            validateObject(userList);
+            validatePositions(oldPosition, newPosition);
         }
+
         processUserListPositionChange(userList, oldPosition, newPosition);
     }
 
@@ -110,7 +118,11 @@ public final class Model implements IModelContract {
     public void updateItemPosition(Item item, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
+        } else {
+            validateObject(item);
+            validatePositions(oldPosition, newPosition);
         }
+
         processItemPositionChange(item, oldPosition, newPosition);
     }
 
@@ -145,5 +157,30 @@ public final class Model implements IModelContract {
     @Override
     public void forceRefreshItems(String userListId) {
         throw new UnsupportedOperationException();
+    }
+
+
+    private void validateObject(Object object) {
+        if (object == null) {
+            nullObjectException();
+        }
+    }
+
+    private void validateList(List list) {
+        if (list == null) {
+            nullObjectException();
+        } else if (list.isEmpty()) {
+            throw new IllegalArgumentException("Passed List is empty");
+        }
+    }
+
+    private void validatePositions(int positionOne, int positionTwo) {
+        if (positionOne < 0 || positionTwo < 0) {
+            throw new IllegalArgumentException("One or both positions are less then 0");
+        }
+    }
+
+    private void nullObjectException() {
+        throw new IllegalArgumentException("Parameter cannot be null");
     }
 }
