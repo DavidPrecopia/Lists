@@ -25,7 +25,6 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_R
 )
 public final class UserList {
 
-    @Exclude
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ROW_ID)
     private int rowId;
@@ -58,6 +57,7 @@ public final class UserList {
     }
 
 
+    @Exclude
     public int getRowId() {
         return rowId;
     }

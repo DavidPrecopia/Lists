@@ -38,7 +38,6 @@ public final class Item {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ROW_ID)
-    @Exclude
     private int rowId;
 
     @ColumnInfo(name = FIELD_ID)
@@ -74,6 +73,7 @@ public final class Item {
     }
 
 
+    @Exclude
     public int getRowId() {
         return rowId;
     }
