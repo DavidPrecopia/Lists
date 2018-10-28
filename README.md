@@ -2,6 +2,8 @@
 
 Keep track of tasks across multiple devices.
 
+This is my capstone project in Udacity's Android Developer Nanodegree.
+
 **Features**
 
 - Automatic backs-up all of your lists to the cloud.
@@ -16,8 +18,6 @@ Keep track of tasks across multiple devices.
 - Accessibility support:
   - Right-to-Left languages
   - Keyboard navigation
-
-This is the capstone project in Udacity's Android Developer Nanodegree.
 
 # Resources
 
