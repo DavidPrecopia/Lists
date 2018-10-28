@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 public interface ILocalStorageContract {
     Flowable<List<UserList>> getAllUserLists();
 
-    Flowable<List<Item>> getAllItems(int userListId);
+    Flowable<List<Item>> getAllItems(String userListId);
 
     void addUserList(UserList userList);
 
@@ -20,15 +20,15 @@ public interface ILocalStorageContract {
 
     void deleteItems(List<Item> item);
 
-    void renameUserList(int userListId, String newName);
+    void renameUserList(String userListId, String newName);
 
-    void renameItem(int itemId, String newName);
+    void renameItem(String itemId, String newName);
 
-    void updateUserListPositionsIncrement(int userListId, int oldPosition, int newPosition);
+    void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition);
 
-    void updateUserListPositionsDecrement(int userListId, int oldPosition, int newPosition);
+    void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition);
 
-    void updateItemPositionsIncrement(int itemId, int oldPosition, int newPosition);
+    void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition);
 
-    void updateItemPositionsDecrement(int itemId, int oldPosition, int newPosition);
+    void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition);
 }

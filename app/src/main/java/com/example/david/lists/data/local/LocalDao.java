@@ -27,7 +27,7 @@ public interface LocalDao {
     @Query("SELECT * FROM " + ITEM_TABLE_NAME
             + " WHERE " + FIELD_ITEM_USER_LIST_ID + " = :userListId"
             + " ORDER BY " + FIELD_POSITION)
-    Flowable<List<Item>> getAllItems(int userListId);
+    Flowable<List<Item>> getAllItems(String userListId);
 
 
     @Insert(onConflict = REPLACE)
@@ -40,30 +40,30 @@ public interface LocalDao {
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
             + " WHERE " + FIELD_ID + " = :userListId")
-    void renameUserList(int userListId, String newTitle);
+    void renameUserList(String userListId, String newTitle);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
             + " WHERE " + FIELD_ID + " = :itemId")
-    void renameItem(int itemId, String newTitle);
+    void renameItem(String itemId, String newTitle);
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:userListIds)")
-    void deleteUserList(List<Integer> userListIds);
+    void deleteUserList(List<String> userListIds);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:itemIds)")
-    void deleteItem(List<Integer> itemIds);
+    void deleteItem(List<String> itemIds);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_POSITION + " = :newPosition"
             + " WHERE " + FIELD_ID + " = :userListId")
-    void updateUserListPosition(int userListId, int newPosition);
+    void updateUserListPosition(String userListId, int newPosition);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_POSITION + " = :newPosition"
             + " WHERE " + FIELD_ID + " = :itemId")
-    void updateItemPosition(int itemId, int newPosition);
+    void updateItemPosition(String itemId, int newPosition);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME

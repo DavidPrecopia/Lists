@@ -20,7 +20,7 @@ public interface IViewModelContract {
 
     void edit(int position);
 
-    void changeTitle(int id, String newTitle);
+    void changeTitle(String id, String newTitle);
 
     void delete(int position);
 

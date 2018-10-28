@@ -112,11 +112,11 @@ public class WidgetConfigActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveDetails(int id, String title) {
+    private void saveDetails(String id, String title) {
         SharedPreferences.Editor editor = getSharedPreferences(
                 getSharedPrefName(getApplicationContext()), MODE_PRIVATE
         ).edit();
-        editor.putInt(getSharedPrefKeyId(getApplicationContext(), widgetId), id);
+        editor.putString(getSharedPrefKeyId(getApplicationContext(), widgetId), id);
         editor.putString(getSharedPrefKeyTitle(getApplicationContext(), widgetId), title);
         editor.apply();
     }

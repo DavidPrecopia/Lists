@@ -34,7 +34,7 @@ public final class ItemViewModel extends AndroidViewModel
         implements IViewModelContract,
         ItemTouchHelperCallback.IStartDragListener {
 
-    private final int listId;
+    private final String listId;
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
@@ -53,7 +53,7 @@ public final class ItemViewModel extends AndroidViewModel
     private List<Item> tempItemList;
     private int tempItemPosition = -1;
 
-    public ItemViewModel(@NonNull Application application, IModelContract model, int listId, String listTitle) {
+    public ItemViewModel(@NonNull Application application, IModelContract model, String listId, String listTitle) {
         super(application);
         this.listId = listId;
         itemList = new ArrayList<>();
@@ -171,7 +171,7 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public void changeTitle(int idemId, String newTitle) {
+    public void changeTitle(String idemId, String newTitle) {
         completableIoAccess(Completable.fromAction(() ->
                 model.renameItem(idemId, newTitle))
         );

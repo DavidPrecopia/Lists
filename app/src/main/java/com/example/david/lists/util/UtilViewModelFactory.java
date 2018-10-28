@@ -34,7 +34,7 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
             return (T) new UserListViewModel(application, model);
         } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
             //noinspection unchecked
-            return (T) new ItemViewModel(application, model, getListId(), getListTitle());
+            return (T) new ItemViewModel(application, model, getUserListId(), getListTitle());
         } else if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
             //noinspection unchecked
             return (T) new WidgetConfigViewModel(application, model);
@@ -43,10 +43,10 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
     }
 
 
-    private int getListId() {
-        return getSharedPreferences().getInt(
+    private String getUserListId() {
+        return getSharedPreferences().getString(
                 getStringResource(R.string.key_shared_pref_user_list_id),
-                -1
+                ""
         );
     }
 

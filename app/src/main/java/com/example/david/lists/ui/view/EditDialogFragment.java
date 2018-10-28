@@ -138,6 +138,6 @@ public final class EditDialogFragment extends DialogFragment {
 
 
     public interface EditDialogFragmentListener {
-        void edit(int id, String newTitle);
+        void edit(String id, String newTitle);
     }
 }

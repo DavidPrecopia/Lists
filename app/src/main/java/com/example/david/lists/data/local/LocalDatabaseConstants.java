@@ -18,4 +18,6 @@ public final class LocalDatabaseConstants {
      * {@link Item}
      */
     public static final String ITEM_TABLE_NAME = "items";
+
+    public static final String COLUMN_ROW_ID = "row_id";
 }

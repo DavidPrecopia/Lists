@@ -58,7 +58,7 @@ public final class WidgetRemoteView {
 
     private void putTitleIntentExtras(Intent intent) {
         Bundle bundle = new Bundle();
-        bundle.putInt(getIntentKeyId(context), getListId());
+        bundle.putString(getIntentKeyId(context), getListId());
         bundle.putString(getIntentKeyTitle(context), getListTitle());
         intent.putExtra(getIntentBundleName(context), bundle);
     }
@@ -102,8 +102,8 @@ public final class WidgetRemoteView {
         );
     }
 
-    private int getListId() {
-        return getSharedPrefs().getInt(getSharedPrefKeyId(context, appWidgetId), -1);
+    private String getListId() {
+        return getSharedPrefs().getString(getSharedPrefKeyId(context, appWidgetId), "");
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.david.lists.data.datamodel;
 
 import com.example.david.lists.data.local.LocalDatabaseConstants;
+import com.google.firebase.firestore.Exclude;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -11,21 +12,26 @@ import androidx.room.PrimaryKey;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
 
 /**
  * Field names need to kept be in sync with
  * {@link DataModelFieldConstants}.
  */
 @Entity(tableName = LocalDatabaseConstants.USER_LIST_TABLE_NAME,
-        indices = {@Index(FIELD_ID),
+        indices = {@Index(value = FIELD_ID, unique = true),
                 @Index(FIELD_POSITION)
         }
 )
 public final class UserList {
 
+    @Exclude
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = COLUMN_ROW_ID)
+    private int rowId;
+
     @ColumnInfo(name = FIELD_ID)
-    private int id;
+    private String id;
 
     @ColumnInfo(name = FIELD_TITLE)
     private String title;
@@ -34,7 +40,8 @@ public final class UserList {
     private int position;
 
 
-    public UserList(int id, String title, int position) {
+    public UserList(int rowId, String id, String title, int position) {
+        this.rowId = rowId;
         this.id = id;
         this.title = title;
         this.position = position;
@@ -51,11 +58,15 @@ public final class UserList {
     }
 
 
-    public int getId() {
+    public int getRowId() {
+        return rowId;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

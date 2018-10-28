@@ -10,7 +10,7 @@ import io.reactivex.Flowable;
 public interface IModelContract {
     Flowable<List<UserList>> getAllLists();
 
-    Flowable<List<Item>> getUserListItems(int userListId);
+    Flowable<List<Item>> getUserListItems(String userListId);
 
     void addUserList(UserList userList);
 
@@ -20,15 +20,15 @@ public interface IModelContract {
 
     void deleteItems(List<Item> items);
 
-    void renameUserList(int userListId, String newName);
+    void renameUserList(String userListId, String newName);
 
-    void renameItem(int itemId, String newName);
+    void renameItem(String itemId, String newName);
 
-    void updateUserListPosition(int userListId, int oldPosition, int newPosition);
+    void updateUserListPosition(String userListId, int oldPosition, int newPosition);
 
-    void updateItemPosition(int itemId, int oldPosition, int newPosition);
+    void updateItemPosition(String itemId, int oldPosition, int newPosition);
 
     void forceRefreshUserLists();
 
-    void forceRefreshItems(int userListId);
+    void forceRefreshItems(String userListId);
 }

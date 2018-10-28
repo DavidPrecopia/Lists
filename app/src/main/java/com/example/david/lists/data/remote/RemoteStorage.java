@@ -68,16 +68,16 @@ public final class RemoteStorage implements IRemoteStorageContract {
      */
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        List<Integer> userListIds = batchDeleteUserLists(userLists);
+        List<String> userListIds = batchDeleteUserLists(userLists);
         prepareToBatchDeleteItems(userListIds);
     }
 
-    private List<Integer> batchDeleteUserLists(List<UserList> userLists) {
-        List<Integer> userListIds = new ArrayList<>();
+    private List<String> batchDeleteUserLists(List<UserList> userLists) {
+        List<String> userListIds = new ArrayList<>();
 
         WriteBatch writeBatch = firestore.batch();
         for (UserList userList : userLists) {
-            int id = userList.getId();
+            String id = userList.getId();
             userListIds.add(id);
             writeBatch.delete(getUserListDocument(id));
         }
@@ -86,8 +86,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return userListIds;
     }
 
-    private void prepareToBatchDeleteItems(List<Integer> userListIds) {
-        for (Integer userListId : userListIds) {
+    private void prepareToBatchDeleteItems(List<String> userListIds) {
+        for (String userListId : userListIds) {
             itemsCollection
                     .whereEqualTo(FIELD_ID, userListId)
                     .get()
@@ -116,14 +116,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void renameUserList(int userListId, String newName) {
+    public void renameUserList(String userListId, String newName) {
         getUserListDocument(userListId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
     }
 
     @Override
-    public void renameItem(int itemId, String newName) {
+    public void renameItem(String itemId, String newName) {
         getItemDocument(itemId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
@@ -131,7 +131,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void updateUserListPositionsDecrement(int userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition) {
         updatePositions(
                 userListsCollection,
                 decrementPositions(getUserListDocument(userListId), newPosition),
@@ -141,7 +141,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     @Override
-    public void updateUserListPositionsIncrement(int userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition) {
         updatePositions(
                 userListsCollection,
                 incrementPositions(getUserListDocument(userListId), newPosition),
@@ -151,7 +151,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     @Override
-    public void updateItemPositionsDecrement(int itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition) {
         updatePositions(
                 itemsCollection,
                 decrementPositions(getItemDocument(itemId), newPosition),
@@ -161,7 +161,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     @Override
-    public void updateItemPositionsIncrement(int itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition) {
         updatePositions(
                 itemsCollection,
                 incrementPositions(getItemDocument(itemId), newPosition),
@@ -210,18 +210,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
-    private DocumentReference getUserListDocument(int userListId) {
-        return userListsCollection.document(intToString(userListId));
+    private DocumentReference getUserListDocument(String userListId) {
+        return userListsCollection.document(userListId);
     }
 
-    private DocumentReference getItemDocument(int itemId) {
-        return itemsCollection.document(intToString(itemId));
+    private DocumentReference getItemDocument(String itemId) {
+        return itemsCollection.document(itemId);
     }
 
-
-    private String intToString(int id) {
-        return String.valueOf(id);
-    }
 
     private void onFailure(Exception exception) {
         Timber.e(exception);

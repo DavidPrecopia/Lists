@@ -8,7 +8,7 @@ import android.os.Parcelable;
  * {@link UserList} or {@link Item} that is being edited.
  */
 public final class EditingInfo implements Parcelable {
-    private final int id;
+    private final String id;
     private final String title;
 
 
@@ -23,7 +23,7 @@ public final class EditingInfo implements Parcelable {
     }
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -35,7 +35,7 @@ public final class EditingInfo implements Parcelable {
     // Parcelable implementation below
 
     private EditingInfo(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         title = in.readString();
     }
 
@@ -58,7 +58,7 @@ public final class EditingInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(title);
     }
 }

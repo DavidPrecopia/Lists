@@ -34,7 +34,7 @@ public final class LocalStorage implements ILocalStorageContract {
     }
 
     @Override
-    public Flowable<List<Item>> getAllItems(int userListId) {
+    public Flowable<List<Item>> getAllItems(String userListId) {
         return dao.getAllItems(userListId);
     }
 
@@ -55,8 +55,8 @@ public final class LocalStorage implements ILocalStorageContract {
         dao.deleteUserList(getUserListsIds(userList));
     }
 
-    private List<Integer> getUserListsIds(List<UserList> userLists) {
-        List<Integer> userListsIds = new ArrayList<>();
+    private List<String> getUserListsIds(List<UserList> userLists) {
+        List<String> userListsIds = new ArrayList<>();
         for (UserList userList : userLists) {
             userListsIds.add(userList.getId());
         }
@@ -68,8 +68,8 @@ public final class LocalStorage implements ILocalStorageContract {
         dao.deleteItem(getItemIds(item));
     }
 
-    private List<Integer> getItemIds(List<Item> items) {
-        List<Integer> itemIds = new ArrayList<>();
+    private List<String> getItemIds(List<Item> items) {
+        List<String> itemIds = new ArrayList<>();
         for (Item item : items) {
             itemIds.add(item.getId());
         }
@@ -78,45 +78,45 @@ public final class LocalStorage implements ILocalStorageContract {
 
 
     @Override
-    public void renameUserList(int userListId, String newName) {
+    public void renameUserList(String userListId, String newName) {
         dao.renameUserList(userListId, newName);
     }
 
     @Override
-    public void renameItem(int itemId, String newName) {
+    public void renameItem(String itemId, String newName) {
         dao.renameItem(itemId, newName);
     }
 
 
     @Override
-    public void updateUserListPositionsIncrement(int userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition) {
         dao.updateUserListPositionsIncrement(oldPosition, newPosition);
         updateUserListPosition(userListId, newPosition);
     }
 
     @Override
-    public void updateUserListPositionsDecrement(int userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition) {
         dao.updateUserListPositionsDecrement(oldPosition, newPosition);
         updateUserListPosition(userListId, newPosition);
     }
 
-    private void updateUserListPosition(int userListId, int newPosition) {
+    private void updateUserListPosition(String userListId, int newPosition) {
         dao.updateUserListPosition(userListId, newPosition);
     }
 
     @Override
-    public void updateItemPositionsIncrement(int itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition) {
         dao.updateItemPositionsIncrement(oldPosition, newPosition);
         updateItemPosition(itemId, newPosition);
     }
 
     @Override
-    public void updateItemPositionsDecrement(int itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition) {
         dao.updateItemPositionsDecrement(oldPosition, newPosition);
         updateItemPosition(itemId, newPosition);
     }
 
-    private void updateItemPosition(int itemId, int newPosition) {
+    private void updateItemPosition(String itemId, int newPosition) {
         dao.updateItemPosition(itemId, newPosition);
     }
 }

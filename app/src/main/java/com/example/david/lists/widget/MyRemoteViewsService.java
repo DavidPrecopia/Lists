@@ -24,7 +24,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new MyRemoteViewsFactory(
-                intent.getIntExtra(getApplication().getString(R.string.widget_key_intent_user_list_id), -1),
+                intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
                 Model.getInstance(getApplication()),
                 getApplication(),
@@ -36,7 +36,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
     private class MyRemoteViewsFactory implements RemoteViewsFactory {
 
         private final List<Item> itemList;
-        private final int userListId;
+        private final String userListId;
 
         private final IModelContract model;
         private final CompositeDisposable disposable;
@@ -45,7 +45,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
         private final AppWidgetManager appWidgetManager;
         private final int widgetId;
 
-        MyRemoteViewsFactory(int userListId, int widgetId, IModelContract model, Application application, AppWidgetManager appWidgetManager) {
+        MyRemoteViewsFactory(String userListId, int widgetId, IModelContract model, Application application, AppWidgetManager appWidgetManager) {
             this.application = application;
             itemList = new ArrayList<>();
             this.userListId = userListId;

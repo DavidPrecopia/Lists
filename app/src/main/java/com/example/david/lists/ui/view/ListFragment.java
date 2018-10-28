@@ -214,7 +214,7 @@ public class ListFragment extends Fragment
     }
 
     @Override
-    public void edit(int id, String newTitle) {
+    public void edit(String id, String newTitle) {
         viewModel.changeTitle(id, newTitle);
     }
 

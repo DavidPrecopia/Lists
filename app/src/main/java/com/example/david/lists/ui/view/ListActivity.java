@@ -76,7 +76,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void processWidgetBundle(Bundle widgetBundle) {
         saveUserListDetails(
-                widgetBundle.getInt(getIntentKeyId(getApplicationContext())),
+                widgetBundle.getString(getIntentKeyId(getApplicationContext())),
                 widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
         );
         addFragment(
@@ -92,10 +92,10 @@ public class ListActivity extends AppCompatActivity {
         );
     }
 
-    private void saveUserListDetails(int id, String title) {
+    private void saveUserListDetails(String id, String title) {
         SharedPreferences.Editor editor =
                 getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
-        editor.putInt(getString(R.string.key_shared_pref_user_list_id), id);
+        editor.putString(getString(R.string.key_shared_pref_user_list_id), id);
         editor.putString(getString(R.string.key_shared_pref_user_list_title), title);
         editor.apply();
     }

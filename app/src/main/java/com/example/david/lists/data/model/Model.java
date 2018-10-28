@@ -44,7 +44,7 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public Flowable<List<Item>> getUserListItems(int userListId) {
+    public Flowable<List<Item>> getUserListItems(String userListId) {
         return local.getAllItems(userListId);
     }
 
@@ -76,20 +76,20 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void renameUserList(int userListId, String newTitle) {
+    public void renameUserList(String userListId, String newTitle) {
         local.renameUserList(userListId, newTitle);
         remote.renameUserList(userListId, newTitle);
     }
 
     @Override
-    public void renameItem(int itemId, String newTitle) {
+    public void renameItem(String itemId, String newTitle) {
         local.renameItem(itemId, newTitle);
         remote.renameItem(itemId, newTitle);
     }
 
 
     @Override
-    public void updateUserListPosition(int userListId, int oldPosition, int newPosition) {
+    public void updateUserListPosition(String userListId, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
@@ -97,7 +97,7 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public void updateItemPosition(int itemId, int oldPosition, int newPosition) {
+    public void updateItemPosition(String itemId, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
@@ -113,7 +113,7 @@ public final class Model implements IModelContract {
      * <em>Incrementing/decrementing oldPosition</em>
      * so the moved row is excluded from the update operation.
      */
-    private void processPositionChange(String type, int id, int oldPosition, int newPosition) {
+    private void processPositionChange(String type, String id, int oldPosition, int newPosition) {
         if (newPosition > oldPosition) {
             decrementPosition(type, id, (oldPosition + 1), newPosition);
         } else if (newPosition < oldPosition) {
@@ -121,7 +121,7 @@ public final class Model implements IModelContract {
         }
     }
 
-    private void decrementPosition(String type, int id, int oldPosition, int newPosition) {
+    private void decrementPosition(String type, String id, int oldPosition, int newPosition) {
         switch (type) {
             case TYPE_USER_LIST:
                 local.updateUserListPositionsDecrement(id, oldPosition, newPosition);
@@ -134,7 +134,7 @@ public final class Model implements IModelContract {
         }
     }
 
-    private void incrementPosition(String type, int id, int oldPosition, int newPosition) {
+    private void incrementPosition(String type, String id, int oldPosition, int newPosition) {
         switch (type) {
             case TYPE_USER_LIST:
                 local.updateUserListPositionsIncrement(id, oldPosition, newPosition);
@@ -154,7 +154,7 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public void forceRefreshItems(int userListId) {
+    public void forceRefreshItems(String userListId) {
         throw new UnsupportedOperationException();
     }
 }
