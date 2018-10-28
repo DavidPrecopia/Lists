@@ -157,7 +157,7 @@ public final class ItemViewModel extends AndroidViewModel
         Item item = itemList.get(newPosition);
         completableIoAccess(Completable.fromAction(() ->
                 model.updateItemPosition(
-                        item.getId(),
+                        item,
                         item.getPosition(),
                         newPosition
                 ))

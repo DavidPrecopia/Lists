@@ -24,11 +24,11 @@ public interface ILocalStorageContract {
 
     void renameItem(String itemId, String newName);
 
-    void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition);
+    void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition);
 
-    void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition);
+    void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition);
 
-    void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition);
+    void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition);
 
-    void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition);
+    void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition);
 }

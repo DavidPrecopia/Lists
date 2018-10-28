@@ -89,15 +89,15 @@ public final class LocalStorage implements ILocalStorageContract {
 
 
     @Override
-    public void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
         dao.updateUserListPositionsIncrement(oldPosition, newPosition);
-        updateUserListPosition(userListId, newPosition);
+        updateUserListPosition(userList.getId(), newPosition);
     }
 
     @Override
-    public void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition) {
+    public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
         dao.updateUserListPositionsDecrement(oldPosition, newPosition);
-        updateUserListPosition(userListId, newPosition);
+        updateUserListPosition(userList.getId(), newPosition);
     }
 
     private void updateUserListPosition(String userListId, int newPosition) {
@@ -105,15 +105,15 @@ public final class LocalStorage implements ILocalStorageContract {
     }
 
     @Override
-    public void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
         dao.updateItemPositionsIncrement(oldPosition, newPosition);
-        updateItemPosition(itemId, newPosition);
+        updateItemPosition(item.getId(), newPosition);
     }
 
     @Override
-    public void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition) {
+    public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
         dao.updateItemPositionsDecrement(oldPosition, newPosition);
-        updateItemPosition(itemId, newPosition);
+        updateItemPosition(item.getId(), newPosition);
     }
 
     private void updateItemPosition(String itemId, int newPosition) {

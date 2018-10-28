@@ -154,7 +154,7 @@ public final class UserListViewModel extends AndroidViewModel
         UserList userList = userLists.get(newPosition);
         completableIoAccess(Completable.fromAction(() ->
                 model.updateUserListPosition(
-                        userList.getId(),
+                        userList,
                         userList.getPosition(),
                         newPosition
                 ))

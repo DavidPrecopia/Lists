@@ -17,6 +17,7 @@ import java.util.Objects;
 import timber.log.Timber;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
@@ -133,49 +134,63 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void updateUserListPositionsDecrement(String userListId, int oldPosition, int newPosition) {
-        updatePositions(
+    public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
+        updateUserListPositions(
                 userListsCollection,
-                decrementPositions(getUserListDocument(userListId), newPosition),
+                decrementPositions(getUserListDocument(userList.getId()), newPosition),
                 oldPosition,
                 newPosition
         );
     }
 
     @Override
-    public void updateUserListPositionsIncrement(String userListId, int oldPosition, int newPosition) {
-        updatePositions(
+    public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
+        updateUserListPositions(
                 userListsCollection,
-                incrementPositions(getUserListDocument(userListId), newPosition),
+                incrementPositions(getUserListDocument(userList.getId()), newPosition),
                 oldPosition,
                 newPosition
         );
     }
 
-    @Override
-    public void updateItemPositionsDecrement(String itemId, int oldPosition, int newPosition) {
-        updatePositions(
-                itemsCollection,
-                decrementPositions(getItemDocument(itemId), newPosition),
-                oldPosition,
-                newPosition
-        );
-    }
-
-    @Override
-    public void updateItemPositionsIncrement(String itemId, int oldPosition, int newPosition) {
-        updatePositions(
-                itemsCollection,
-                incrementPositions(getItemDocument(itemId), newPosition),
-                oldPosition,
-                newPosition
-        );
-    }
-
-    private void updatePositions(CollectionReference collectionReference, OnSuccessListener<QuerySnapshot> successListener, int oldPosition, int newPosition) {
-        int lowerPosition = oldPosition < newPosition ? oldPosition : newPosition;
-        int higherPosition = oldPosition > newPosition ? oldPosition : newPosition;
+    private void updateUserListPositions(CollectionReference collectionReference, OnSuccessListener<QuerySnapshot> successListener, int oldPosition, int newPosition) {
+        int lowerPosition = getLowerPosition(oldPosition, newPosition);
+        int higherPosition = getHigherPosition(oldPosition, newPosition);
         collectionReference
+                .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
+                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition)
+                .get()
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(this::onFailure);
+    }
+
+    @Override
+    public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
+        updateItemPositions(
+                item.getUserListId(),
+                itemsCollection,
+                decrementPositions(getItemDocument(item.getId()), newPosition),
+                oldPosition,
+                newPosition
+        );
+    }
+
+    @Override
+    public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
+        updateItemPositions(
+                item.getUserListId(),
+                itemsCollection,
+                incrementPositions(getItemDocument(item.getId()), newPosition),
+                oldPosition,
+                newPosition
+        );
+    }
+
+    private void updateItemPositions(String userListId, CollectionReference collectionReference, OnSuccessListener<QuerySnapshot> successListener, int oldPosition, int newPosition) {
+        int lowerPosition = getLowerPosition(oldPosition, newPosition);
+        int higherPosition = getHigherPosition(oldPosition, newPosition);
+        collectionReference
+                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition)
                 .get()
@@ -209,6 +224,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
             batch.update(movedDocument, FIELD_POSITION, newPosition);
             batch.commit().addOnFailureListener(this::onFailure);
         };
+    }
+
+    private int getLowerPosition(int oldPosition, int newPosition) {
+        return oldPosition < newPosition ? oldPosition : newPosition;
+    }
+
+    private int getHigherPosition(int oldPosition, int newPosition) {
+        return oldPosition > newPosition ? oldPosition : newPosition;
     }
 
 

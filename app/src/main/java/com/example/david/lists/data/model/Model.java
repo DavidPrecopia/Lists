@@ -92,62 +92,51 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void updateUserListPosition(String userListId, int oldPosition, int newPosition) {
+    public void updateUserListPosition(UserList userList, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
-        processPositionChange(TYPE_USER_LIST, userListId, oldPosition, newPosition);
+        processUserListPositionChange(userList, oldPosition, newPosition);
+    }
+
+    private void processUserListPositionChange(UserList userList, int oldPosition, int newPosition) {
+        if (shouldDecrement(oldPosition, newPosition)) {
+            local.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
+            remote.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
+        } else if (shouldIncrement(oldPosition, newPosition)) {
+            local.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
+            remote.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
+        }
     }
 
     @Override
-    public void updateItemPosition(String itemId, int oldPosition, int newPosition) {
+    public void updateItemPosition(Item item, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
         }
-        processPositionChange(TYPE_ITEM, itemId, oldPosition, newPosition);
+        processItemPositionChange(item, oldPosition, newPosition);
+    }
+
+    private void processItemPositionChange(Item item, int oldPosition, int newPosition) {
+        if (shouldDecrement(oldPosition, newPosition)) {
+            local.updateItemPositionsDecrement(item, oldPosition, newPosition);
+            remote.updateItemPositionsDecrement(item, oldPosition, newPosition);
+        } else if (shouldIncrement(oldPosition, newPosition)) {
+            local.updateItemPositionsIncrement(item, oldPosition, newPosition);
+            remote.updateItemPositionsIncrement(item, oldPosition, newPosition);
+        }
     }
 
     private boolean positionNotChanged(int oldPosition, int newPosition) {
         return oldPosition == newPosition;
     }
 
-    /**
-     * Using the same method for both types in order to keep the logic DRY.
-     * <em>Incrementing/decrementing oldPosition</em>
-     * so the moved row is excluded from the update operation.
-     */
-    private void processPositionChange(String type, String id, int oldPosition, int newPosition) {
-        if (newPosition > oldPosition) {
-            decrementPosition(type, id, (oldPosition + 1), newPosition);
-        } else if (newPosition < oldPosition) {
-            incrementPosition(type, id, (oldPosition - 1), newPosition);
-        }
+    private boolean shouldIncrement(int oldPosition, int newPosition) {
+        return newPosition < oldPosition;
     }
 
-    private void decrementPosition(String type, String id, int oldPosition, int newPosition) {
-        switch (type) {
-            case TYPE_USER_LIST:
-                local.updateUserListPositionsDecrement(id, oldPosition, newPosition);
-                remote.updateUserListPositionsDecrement(id, oldPosition, newPosition);
-                break;
-            case TYPE_ITEM:
-                local.updateItemPositionsDecrement(id, oldPosition, newPosition);
-                remote.updateItemPositionsDecrement(id, oldPosition, newPosition);
-                break;
-        }
-    }
-
-    private void incrementPosition(String type, String id, int oldPosition, int newPosition) {
-        switch (type) {
-            case TYPE_USER_LIST:
-                local.updateUserListPositionsIncrement(id, oldPosition, newPosition);
-                remote.updateUserListPositionsIncrement(id, oldPosition, newPosition);
-                break;
-            case TYPE_ITEM:
-                local.updateItemPositionsIncrement(id, oldPosition, newPosition);
-                remote.updateItemPositionsIncrement(id, oldPosition, newPosition);
-                break;
-        }
+    private boolean shouldDecrement(int oldPosition, int newPosition) {
+        return newPosition > oldPosition;
     }
 
 
