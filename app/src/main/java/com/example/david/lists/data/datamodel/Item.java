@@ -69,6 +69,14 @@ public final class Item {
     }
 
     @Ignore
+    public Item(String id, Item item) {
+        this.id = id;
+        this.title = item.title;
+        this.position = item.position;
+        this.userListId = item.userListId;
+    }
+
+    @Ignore
     public Item() {
     }
 
@@ -80,10 +88,6 @@ public final class Item {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitle() {

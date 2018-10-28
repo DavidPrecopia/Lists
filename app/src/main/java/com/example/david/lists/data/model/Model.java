@@ -52,16 +52,13 @@ public final class Model implements IModelContract {
     @Override
     public void addUserList(UserList userList) {
         String id = remote.addUserList(userList);
-        userList.setId(id);
-        local.addUserList(userList);
-
+        local.addUserList(new UserList(id, userList));
     }
 
     @Override
     public void addItem(Item item) {
         String id = remote.addItem(item);
-        item.setId(id);
-        local.addItem(item);
+        local.addItem(new Item(id, item));
     }
 
 

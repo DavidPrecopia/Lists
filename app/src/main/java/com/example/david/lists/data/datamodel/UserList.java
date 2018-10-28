@@ -53,6 +53,13 @@ public final class UserList {
     }
 
     @Ignore
+    public UserList(String id, UserList userList) {
+        this.id = id;
+        this.title = userList.title;
+        this.position = userList.position;
+    }
+
+    @Ignore
     public UserList() {
     }
 
@@ -64,10 +71,6 @@ public final class UserList {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitle() {
