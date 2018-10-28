@@ -19,7 +19,7 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
 
 /**
- * Field names need to kept be in sync with
+ * Field names need to match the constants in
  * {@link DataModelFieldConstants}.
  */
 @Entity(tableName = LocalDatabaseConstants.ITEM_TABLE_NAME,
