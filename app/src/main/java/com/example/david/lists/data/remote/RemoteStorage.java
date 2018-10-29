@@ -200,10 +200,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private OnSuccessListener<QuerySnapshot> decrementPositions(DocumentReference movedDocument, int newPosition) {
         return queryDocumentSnapshots -> {
-            Timber.d("decrement");
             WriteBatch batch = firestore.batch();
             for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                Timber.d("decrement -- %s", queryDocumentSnapshots.size());
                 int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() - 1;
                 batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
             }
@@ -214,10 +212,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private OnSuccessListener<QuerySnapshot> incrementPositions(DocumentReference movedDocument, int newPosition) {
         return queryDocumentSnapshots -> {
-            Timber.d("increment");
             WriteBatch batch = firestore.batch();
             for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                Timber.d("increment -- %s", queryDocumentSnapshots.size());
                 int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() + 1;
                 batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
             }
