@@ -20,6 +20,10 @@ public interface ILocalStorageContract {
 
     void deleteItems(List<Item> item);
 
+    void updateUserList(UserList userList);
+
+    void updateItem(Item item);
+
     void renameUserList(String userListId, String newName);
 
     void renameItem(String itemId, String newName);

@@ -31,7 +31,7 @@ public final class Model implements IModelContract {
 
     private Model(Application application) {
         local = LocalStorage.getInstance(application);
-        remote = RemoteStorage.getInstance();
+        remote = RemoteStorage.getInstance(application);
     }
 
 
