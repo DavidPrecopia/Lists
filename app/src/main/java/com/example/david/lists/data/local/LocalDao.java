@@ -2,8 +2,8 @@ package com.example.david.lists.data.local;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.util.MyUtil;
 
-import java.util.Collections;
 import java.util.List;
 
 import androidx.room.Dao;
@@ -33,22 +33,22 @@ abstract class LocalDao {
 
 
     @Insert(onConflict = REPLACE)
-    abstract void addUserList(UserList userList);
+    abstract void addUserList(List<UserList> userList);
 
     @Insert(onConflict = REPLACE)
-    abstract void addItem(Item item);
+    abstract void addItem(List<Item> item);
 
 
     @Transaction
-    void updateUserList(UserList userList) {
-        deleteUserList(Collections.singletonList(userList.getId()));
-        addUserList(userList);
+    void updateUserList(List<UserList> userLists) {
+        deleteUserList(MyUtil.getUserListsIds(userLists));
+        addUserList(userLists);
     }
 
     @Transaction
-    void updateItem(Item item) {
-        deleteItem(Collections.singletonList(item.getId()));
-        addItem(item);
+    void updateItem(List<Item> items) {
+        deleteItem(MyUtil.getItemIds(items));
+        addItem(items);
     }
 
 

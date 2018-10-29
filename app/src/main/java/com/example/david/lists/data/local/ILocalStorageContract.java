@@ -12,17 +12,17 @@ public interface ILocalStorageContract {
 
     Flowable<List<Item>> getAllItems(String userListId);
 
-    void addUserList(UserList userList);
+    void addUserList(List<UserList> userList);
 
-    void addItem(Item item);
+    void addItems(List<Item> item);
 
-    void deleteUserLists(List<UserList> userList);
+    void deleteUserLists(List<UserList> userLists);
 
-    void deleteItems(List<Item> item);
+    void deleteItems(List<Item> items);
 
-    void updateUserList(UserList userList);
+    void updateUserList(List<UserList> userLists);
 
-    void updateItem(Item item);
+    void updateItem(List<Item> items);
 
     void renameUserList(String userListId, String newName);
 

@@ -9,6 +9,7 @@ import com.example.david.lists.data.local.LocalStorage;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
 import com.example.david.lists.data.remote.RemoteStorage;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -50,14 +51,18 @@ public final class Model implements IModelContract {
     public void addUserList(UserList userList) {
         validateObject(userList);
         String id = remote.addUserList(userList);
-        local.addUserList(new UserList(id, userList));
+        local.addUserList(
+                Collections.singletonList(new UserList(id, userList))
+        );
     }
 
     @Override
     public void addItem(Item item) {
         validateObject(item);
         String id = remote.addItem(item);
-        local.addItem(new Item(id, item));
+        local.addItems(
+                Collections.singletonList(new Item(id, item))
+        );
     }
 
 

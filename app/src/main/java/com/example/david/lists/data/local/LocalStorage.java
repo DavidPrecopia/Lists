@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.util.MyUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -40,50 +40,34 @@ public final class LocalStorage implements ILocalStorageContract {
 
 
     @Override
-    public void addUserList(UserList userList) {
+    public void addUserList(List<UserList> userList) {
         dao.addUserList(userList);
     }
 
     @Override
-    public void addItem(Item item) {
+    public void addItems(List<Item> item) {
         dao.addItem(item);
     }
 
 
     @Override
-    public void deleteUserLists(List<UserList> userList) {
-        dao.deleteUserList(getUserListsIds(userList));
-    }
-
-    private List<String> getUserListsIds(List<UserList> userLists) {
-        List<String> userListsIds = new ArrayList<>();
-        for (UserList userList : userLists) {
-            userListsIds.add(userList.getId());
-        }
-        return userListsIds;
+    public void deleteUserLists(List<UserList> userLists) {
+        dao.deleteUserList(MyUtil.getUserListsIds(userLists));
     }
 
     @Override
-    public void deleteItems(List<Item> item) {
-        dao.deleteItem(getItemIds(item));
-    }
-
-    private List<String> getItemIds(List<Item> items) {
-        List<String> itemIds = new ArrayList<>();
-        for (Item item : items) {
-            itemIds.add(item.getId());
-        }
-        return itemIds;
+    public void deleteItems(List<Item> items) {
+        dao.deleteItem(MyUtil.getItemIds(items));
     }
 
 
     @Override
-    public void updateUserList(UserList userList) {
+    public void updateUserList(List<UserList> userList) {
         dao.updateUserList(userList);
     }
 
     @Override
-    public void updateItem(Item item) {
+    public void updateItem(List<Item> item) {
         dao.updateItem(item);
     }
 

@@ -19,7 +19,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,42 +89,58 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void processUserListSnapshot(QuerySnapshot queryDocumentSnapshots) {
+        List<UserList> added = new ArrayList<>();
+        List<UserList> modified = new ArrayList<>();
+        List<UserList> removed = new ArrayList<>();
         for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-            Timber.i("For-Loop");
             switch (change.getType()) {
                 case ADDED:
-                    Timber.i("ADDED");
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.addUserList(
-                                    getUserListFromDocument(change.getDocument())
-                            ))
-                    );
+                    added.add(getUserListFromDocument(change.getDocument()));
                     break;
                 case MODIFIED:
-                    Timber.i("MOD");
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.updateUserList(
-                                    getUserListFromDocument(change.getDocument())
-                            )
-                    ));
+                    modified.add(getUserListFromDocument(change.getDocument()));
                     break;
                 case REMOVED:
-                    Timber.i("REMOVED");
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.deleteUserLists(
-                                    Collections.singletonList(
-                                            getUserListFromDocument(change.getDocument())
-                                    )
-                            )
-                    ));
+                    removed.add(getUserListFromDocument(change.getDocument()));
                     break;
             }
         }
+        localAddUserLists(added);
+        localModifyUserList(modified);
+        localDeleteUserList(removed);
     }
 
     private UserList getUserListFromDocument(DocumentSnapshot document) {
         return document.toObject(UserList.class);
     }
+
+    private void localAddUserLists(List<UserList> added) {
+        if (added.isEmpty()) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.addUserList(added))
+        );
+    }
+
+    private void localModifyUserList(List<UserList> modified) {
+        if (modified.isEmpty()) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.updateUserList(modified))
+        );
+    }
+
+    private void localDeleteUserList(List<UserList> removed) {
+        if (removed.isEmpty()) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.deleteUserLists(removed))
+        );
+    }
+
 
     private EventListener<QuerySnapshot> itemsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
@@ -138,37 +153,56 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void processItemSnapshot(QuerySnapshot queryDocumentSnapshots) {
+        List<Item> added = new ArrayList<>();
+        List<Item> modified = new ArrayList<>();
+        List<Item> removed = new ArrayList<>();
         for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
             switch (change.getType()) {
                 case ADDED:
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.addItem(
-                                    getItemFromDocument(change.getDocument())
-                            ))
-                    );
+                    added.add(getItemFromDocument(change.getDocument()));
                     break;
                 case MODIFIED:
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.updateItem(
-                                    getItemFromDocument(change.getDocument())
-                            )
-                    ));
+                    modified.add(getItemFromDocument(change.getDocument()));
                     break;
                 case REMOVED:
-                    completableIoAccess(Completable.fromAction(() ->
-                            localStorage.deleteItems(
-                                    Collections.singletonList(
-                                            getItemFromDocument(change.getDocument())
-                                    )
-                            )
-                    ));
+                    removed.add(getItemFromDocument(change.getDocument()));
                     break;
             }
         }
+        localAddItems(added);
+        localModifyItem(modified);
+        localDeleteItem(removed);
     }
 
     private Item getItemFromDocument(DocumentSnapshot document) {
         return document.toObject(Item.class);
+    }
+
+    private void localAddItems(List<Item> added) {
+        if (added == null) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.addItems(added)
+        ));
+    }
+
+    private void localModifyItem(List<Item> modified) {
+        if (modified == null) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.updateItem(modified)
+        ));
+    }
+
+    private void localDeleteItem(List<Item> removed) {
+        if (removed == null) {
+            return;
+        }
+        completableIoAccess(Completable.fromAction(() ->
+                localStorage.deleteItems(removed)
+        ));
     }
 
     private boolean shouldReturn(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -178,9 +212,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
         } else if (initialResponsePayload) {
             initialResponsePayload = false;
             return true;
-        } else{
-            // If this Snapshot listener is being invoked modification,
-            // ignore it.
+        } else {
+            // If this Snapshot listener is being invoked because
+            // of a local modification, ignore it.
             return queryDocumentSnapshots.getMetadata().hasPendingWrites();
         }
     }
