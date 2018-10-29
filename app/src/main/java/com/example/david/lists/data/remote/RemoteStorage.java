@@ -4,10 +4,14 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SnapshotMetadata;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
@@ -42,26 +46,100 @@ public final class RemoteStorage implements IRemoteStorageContract {
         firestore = FirebaseFirestore.getInstance();
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
+
+        init();
+    }
+
+
+    private void init() {
+        userListsCollection.addSnapshotListener(MetadataChanges.INCLUDE, userListsCollectionListener());
+        itemsCollection.addSnapshotListener(MetadataChanges.INCLUDE, itemsCollectionListener());
+    }
+
+    private EventListener<QuerySnapshot> userListsCollectionListener() {
+        return (queryDocumentSnapshots, e) -> {
+//            Timber.i("userListsCollectionListener");
+
+            if (e != null) {
+                onFailure(e);
+            }
+            processMetadata(queryDocumentSnapshots.getMetadata());
+
+            for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+                Timber.i("Start of for-loop");
+                switch (change.getType()) {
+                    case ADDED:
+                        Timber.i("Added");
+                        break;
+                    case MODIFIED:
+                        Timber.i("Modified");
+                        break;
+                    case REMOVED:
+                        Timber.i("Removed");
+                        break;
+                }
+            }
+        };
+    }
+
+    private EventListener<QuerySnapshot> itemsCollectionListener() {
+        return (queryDocumentSnapshots, e) -> {
+//            Timber.i("itemsCollectionListener");
+
+            if (e != null) {
+                onFailure(e);
+            }
+            processMetadata(queryDocumentSnapshots.getMetadata());
+
+            for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+                Timber.i("Start of for-loop");
+                switch (change.getType()) {
+                    case ADDED:
+                        Timber.i("Added");
+                        break;
+                    case MODIFIED:
+                        Timber.i("Modified");
+                        break;
+                    case REMOVED:
+                        Timber.i("Removed");
+                        break;
+                }
+            }
+        };
+    }
+
+    private void processMetadata(SnapshotMetadata metadata) {
+//        if (metadata.hasPendingWrites()) {
+//            Timber.i("Pending writes");
+//        } else {
+//            Timber.i("Does NOT have pending writes");
+//        }
+
+//        Timber.i("Metadata - is from cache: %s", metadata.isFromCache());
+
+        Timber.i("Has pending writes: %s", metadata.hasPendingWrites());
     }
 
 
     @Override
     public String addUserList(UserList userList) {
-        return add(userListsCollection, userList);
+        DocumentReference documentRef = userListsCollection.document();
+        String id = documentRef.getId();
+        add(documentRef, new UserList(id, userList));
+        return id;
     }
 
     @Override
     public String addItem(Item item) {
-        return add(itemsCollection, item);
+        final DocumentReference documentRef = itemsCollection.document();
+        final String id = documentRef.getId();
+        add(documentRef, new Item(id, item));
+        return id;
     }
 
-    private String add(CollectionReference collectionReference, Object object) {
-        final DocumentReference documentRef = collectionReference.document();
-        final String id = documentRef.getId();
+    private void add(DocumentReference documentRef, Object object) {
         documentRef.set(object)
-                .addOnSuccessListener(aVoid -> documentRef.update(FIELD_ID, id))
                 .addOnFailureListener(this::onFailure);
-        return id;
     }
 
 
