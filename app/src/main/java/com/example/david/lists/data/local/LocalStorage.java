@@ -90,33 +90,21 @@ public final class LocalStorage implements ILocalStorageContract {
 
     @Override
     public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
-        dao.updateUserListPositionsIncrement(oldPosition, newPosition);
-        updateUserListPosition(userList.getId(), newPosition);
+        dao.updateUserListPositionsIncrementTransaction(userList.getId(), oldPosition, newPosition);
     }
 
     @Override
     public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
-        dao.updateUserListPositionsDecrement(oldPosition, newPosition);
-        updateUserListPosition(userList.getId(), newPosition);
-    }
-
-    private void updateUserListPosition(String userListId, int newPosition) {
-        dao.updateUserListPosition(userListId, newPosition);
+        dao.updateUserListPositionsDecrementTransaction(userList.getId(), oldPosition, newPosition);
     }
 
     @Override
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
-        dao.updateItemPositionsIncrement(oldPosition, newPosition);
-        updateItemPosition(item.getId(), newPosition);
+        dao.updateItemPositionsIncrementTransaction(item.getId(), oldPosition, newPosition);
     }
 
     @Override
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
-        dao.updateItemPositionsDecrement(oldPosition, newPosition);
-        updateItemPosition(item.getId(), newPosition);
-    }
-
-    private void updateItemPosition(String itemId, int newPosition) {
-        dao.updateItemPosition(itemId, newPosition);
+        dao.updateItemPositionsDecrementTransaction(item.getId(), oldPosition, newPosition);
     }
 }

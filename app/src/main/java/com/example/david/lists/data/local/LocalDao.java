@@ -8,6 +8,7 @@ import java.util.List;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import io.reactivex.Flowable;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
@@ -19,70 +20,94 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.ITEM_TAB
 import static com.example.david.lists.data.local.LocalDatabaseConstants.USER_LIST_TABLE_NAME;
 
 @Dao
-public interface LocalDao {
+abstract class LocalDao {
     @Query("SELECT * FROM " + USER_LIST_TABLE_NAME
             + " ORDER BY " + FIELD_POSITION)
-    Flowable<List<UserList>> getAllUserLists();
+    abstract Flowable<List<UserList>> getAllUserLists();
 
     @Query("SELECT * FROM " + ITEM_TABLE_NAME
             + " WHERE " + FIELD_ITEM_USER_LIST_ID + " = :userListId"
             + " ORDER BY " + FIELD_POSITION)
-    Flowable<List<Item>> getAllItems(String userListId);
+    abstract Flowable<List<Item>> getAllItems(String userListId);
 
 
     @Insert(onConflict = REPLACE)
-    void addUserList(UserList list);
+    abstract void addUserList(UserList list);
 
     @Insert(onConflict = REPLACE)
-    void addItem(Item item);
+    abstract void addItem(Item item);
 
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
             + " WHERE " + FIELD_ID + " = :userListId")
-    void renameUserList(String userListId, String newTitle);
+    abstract void renameUserList(String userListId, String newTitle);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_TITLE + " = :newTitle"
             + " WHERE " + FIELD_ID + " = :itemId")
-    void renameItem(String itemId, String newTitle);
+    abstract void renameItem(String itemId, String newTitle);
 
 
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:userListIds)")
-    void deleteUserList(List<String> userListIds);
+    abstract void deleteUserList(List<String> userListIds);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:itemIds)")
-    void deleteItem(List<String> itemIds);
+    abstract void deleteItem(List<String> itemIds);
 
 
-    @Query("UPDATE " + USER_LIST_TABLE_NAME
-            + " SET " + FIELD_POSITION + " = :newPosition"
-            + " WHERE " + FIELD_ID + " = :userListId")
-    void updateUserListPosition(String userListId, int newPosition);
+    @Transaction
+    void updateUserListPositionsIncrementTransaction(String userListId, int oldPosition, int newPosition) {
+        incrementUserListPosition(oldPosition, newPosition);
+        updateUserListPosition(userListId, newPosition);
+    }
 
-    @Query("UPDATE " + ITEM_TABLE_NAME
-            + " SET " + FIELD_POSITION + " = :newPosition"
-            + " WHERE " + FIELD_ID + " = :itemId")
-    void updateItemPosition(String itemId, int newPosition);
-
+    @Transaction
+    void updateUserListPositionsDecrementTransaction(String userListId, int oldPosition, int newPosition) {
+        decrementUserListPosition(oldPosition, newPosition);
+        updateUserListPosition(userListId, newPosition);
+    }
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_POSITION + " = " + FIELD_POSITION + " + 1"
             + " WHERE " + FIELD_POSITION + " BETWEEN :newPosition AND :oldPosition")
-    void updateUserListPositionsIncrement(int oldPosition, int newPosition);
+    abstract void incrementUserListPosition(int oldPosition, int newPosition);
 
     @Query("UPDATE " + USER_LIST_TABLE_NAME
             + " SET " + FIELD_POSITION + " = " + FIELD_POSITION + " - 1"
             + " WHERE " + FIELD_POSITION + " BETWEEN :oldPosition AND :newPosition")
-    void updateUserListPositionsDecrement(int oldPosition, int newPosition);
+    abstract void decrementUserListPosition(int oldPosition, int newPosition);
+
+    @Query("UPDATE " + USER_LIST_TABLE_NAME
+            + " SET " + FIELD_POSITION + " = :newPosition"
+            + " WHERE " + FIELD_ID + " = :userListId")
+    abstract void updateUserListPosition(String userListId, int newPosition);
+
+
+    @Transaction
+    void updateItemPositionsIncrementTransaction(String itemId, int oldPosition, int newPosition) {
+        incrementItemPosition(oldPosition, newPosition);
+        updateItemPosition(itemId, newPosition);
+    }
+
+    @Transaction
+    void updateItemPositionsDecrementTransaction(String itemId, int oldPosition, int newPosition) {
+        decrementItemPosition(oldPosition, newPosition);
+        updateItemPosition(itemId, newPosition);
+    }
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_POSITION + " = " + FIELD_POSITION + " + 1"
             + " WHERE " + FIELD_POSITION + " BETWEEN :oldPosition AND :newPosition")
-    void updateItemPositionsIncrement(int oldPosition, int newPosition);
+    abstract void incrementItemPosition(int oldPosition, int newPosition);
 
     @Query("UPDATE " + ITEM_TABLE_NAME
             + " SET " + FIELD_POSITION + " = " + FIELD_POSITION + " - 1"
             + " WHERE " + FIELD_POSITION + " BETWEEN :oldPosition AND :newPosition")
-    void updateItemPositionsDecrement(int oldPosition, int newPosition);
+    abstract void decrementItemPosition(int oldPosition, int newPosition);
+
+    @Query("UPDATE " + ITEM_TABLE_NAME
+            + " SET " + FIELD_POSITION + " = :newPosition"
+            + " WHERE " + FIELD_ID + " = :itemId")
+    abstract void updateItemPosition(String itemId, int newPosition);
 }
