@@ -1,7 +1,11 @@
 package com.example.david.lists.data.remote;
 
+import android.app.Application;
+
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.local.ILocalStorageContract;
+import com.example.david.lists.data.local.LocalStorage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -9,15 +13,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SnapshotMetadata;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Completable;
 import timber.log.Timber;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
@@ -26,6 +31,7 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
+import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
@@ -33,19 +39,22 @@ public final class RemoteStorage implements IRemoteStorageContract {
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
+    private final ILocalStorageContract localStorage;
+
     private static RemoteStorage instance;
 
-    public static IRemoteStorageContract getInstance() {
+    public static IRemoteStorageContract getInstance(Application application) {
         if (instance == null) {
-            instance = new RemoteStorage();
+            instance = new RemoteStorage(application);
         }
         return instance;
     }
 
-    private RemoteStorage() {
+    private RemoteStorage(Application application) {
         firestore = FirebaseFirestore.getInstance();
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
+        localStorage = LocalStorage.getInstance(application);
 
         init();
     }
@@ -58,66 +67,77 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> userListsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
-//            Timber.i("userListsCollectionListener");
-
-            if (e != null) {
-                onFailure(e);
+            if (evaluateData(queryDocumentSnapshots, e)) {
+                return;
             }
-            processMetadata(queryDocumentSnapshots.getMetadata());
 
             for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-                Timber.i("Start of for-loop");
                 switch (change.getType()) {
                     case ADDED:
-                        Timber.i("Added");
+                        completableIoAccess(Completable.fromAction(() ->
+                                localStorage.addUserList(
+                                        getUserListFromDocument(change.getDocument())
+                                ))
+                        );
                         break;
                     case MODIFIED:
-                        Timber.i("Modified");
+                        completableIoAccess(Completable.fromAction(() ->
+                            localStorage.updateUserList(
+                                    getUserListFromDocument(change.getDocument())
+                            )
+                        ));
                         break;
                     case REMOVED:
-                        Timber.i("Removed");
+
                         break;
                 }
             }
         };
+    }
+
+    private UserList getUserListFromDocument(DocumentSnapshot document) {
+        return document.toObject(UserList.class);
     }
 
     private EventListener<QuerySnapshot> itemsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
-//            Timber.i("itemsCollectionListener");
-
-            if (e != null) {
-                onFailure(e);
+            if (evaluateData(queryDocumentSnapshots, e)) {
+                return;
             }
-            processMetadata(queryDocumentSnapshots.getMetadata());
 
             for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-                Timber.i("Start of for-loop");
                 switch (change.getType()) {
                     case ADDED:
-                        Timber.i("Added");
+                        completableIoAccess(Completable.fromAction(() ->
+                                localStorage.addItem(
+                                        getItemFromDocument(change.getDocument())
+                                ))
+                        );
                         break;
                     case MODIFIED:
-                        Timber.i("Modified");
+                        completableIoAccess(Completable.fromAction(() ->
+                                localStorage.updateItem(
+                                        getItemFromDocument(change.getDocument())
+                                )
+                        ));
                         break;
                     case REMOVED:
-                        Timber.i("Removed");
+
                         break;
                 }
             }
         };
     }
 
-    private void processMetadata(SnapshotMetadata metadata) {
-//        if (metadata.hasPendingWrites()) {
-//            Timber.i("Pending writes");
-//        } else {
-//            Timber.i("Does NOT have pending writes");
-//        }
+    private Item getItemFromDocument(DocumentSnapshot document) {
+        return document.toObject(Item.class);
+    }
 
-//        Timber.i("Metadata - is from cache: %s", metadata.isFromCache());
-
-        Timber.i("Has pending writes: %s", metadata.hasPendingWrites());
+    private boolean evaluateData(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+        if (e != null) {
+            onFailure(e);
+            return true;
+        } else return queryDocumentSnapshots.getMetadata().hasPendingWrites();
     }
 
 
