@@ -42,6 +42,17 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private final ILocalStorageContract localStorage;
 
+    /**
+     * When SnapshotListener first subscribes to a Collection,
+     * Firestore response with all Documents in that Collection regardless
+     * of whether or not they were modified.
+     * This flag keeps track of whether or not this is that initial payload.
+     * This device will be notified of any and all modifications that
+     * occurred when this device was offline post the initial payload.
+     */
+    private static Boolean initialResponsePayload;
+
+
     private static RemoteStorage instance;
 
     public static IRemoteStorageContract getInstance(Application application) {
@@ -57,6 +68,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
         localStorage = LocalStorage.getInstance(application);
 
+        initialResponsePayload = true;
+
         init();
     }
 
@@ -68,17 +81,20 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> userListsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
-            if (evaluateData(queryDocumentSnapshots, e)) {
+            if (shouldReturn(queryDocumentSnapshots, e)) {
                 return;
             }
+            assert queryDocumentSnapshots != null;
             processUserListSnapshot(queryDocumentSnapshots);
         };
     }
 
     private void processUserListSnapshot(QuerySnapshot queryDocumentSnapshots) {
         for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+            Timber.i("For-Loop");
             switch (change.getType()) {
                 case ADDED:
+                    Timber.i("ADDED");
                     completableIoAccess(Completable.fromAction(() ->
                             localStorage.addUserList(
                                     getUserListFromDocument(change.getDocument())
@@ -86,6 +102,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
                     );
                     break;
                 case MODIFIED:
+                    Timber.i("MOD");
                     completableIoAccess(Completable.fromAction(() ->
                             localStorage.updateUserList(
                                     getUserListFromDocument(change.getDocument())
@@ -93,6 +110,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
                     ));
                     break;
                 case REMOVED:
+                    Timber.i("REMOVED");
                     completableIoAccess(Completable.fromAction(() ->
                             localStorage.deleteUserLists(
                                     Collections.singletonList(
@@ -111,9 +129,10 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> itemsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
-            if (evaluateData(queryDocumentSnapshots, e)) {
+            if (shouldReturn(queryDocumentSnapshots, e)) {
                 return;
             }
+            assert queryDocumentSnapshots != null;
             processItemSnapshot(queryDocumentSnapshots);
         };
     }
@@ -152,11 +171,18 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return document.toObject(Item.class);
     }
 
-    private boolean evaluateData(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+    private boolean shouldReturn(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
         if (e != null) {
             onFailure(e);
             return true;
-        } else return queryDocumentSnapshots.getMetadata().hasPendingWrites();
+        } else if (initialResponsePayload) {
+            initialResponsePayload = false;
+            return true;
+        } else{
+            // If this Snapshot listener is being invoked modification,
+            // ignore it.
+            return queryDocumentSnapshots.getMetadata().hasPendingWrites();
+        }
     }
 
 

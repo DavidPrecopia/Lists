@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import timber.log.Timber;
 
 public final class LocalStorage implements ILocalStorageContract {
 
@@ -42,13 +41,11 @@ public final class LocalStorage implements ILocalStorageContract {
 
     @Override
     public void addUserList(UserList userList) {
-        Timber.d("addUserList");
         dao.addUserList(userList);
     }
 
     @Override
     public void addItem(Item item) {
-        Timber.d("addItem");
         dao.addItem(item);
     }
 
