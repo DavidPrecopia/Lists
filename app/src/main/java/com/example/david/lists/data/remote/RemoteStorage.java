@@ -19,6 +19,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,29 +71,38 @@ public final class RemoteStorage implements IRemoteStorageContract {
             if (evaluateData(queryDocumentSnapshots, e)) {
                 return;
             }
+            processUserListSnapshot(queryDocumentSnapshots);
+        };
+    }
 
-            for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-                switch (change.getType()) {
-                    case ADDED:
-                        completableIoAccess(Completable.fromAction(() ->
-                                localStorage.addUserList(
-                                        getUserListFromDocument(change.getDocument())
-                                ))
-                        );
-                        break;
-                    case MODIFIED:
-                        completableIoAccess(Completable.fromAction(() ->
+    private void processUserListSnapshot(QuerySnapshot queryDocumentSnapshots) {
+        for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+            switch (change.getType()) {
+                case ADDED:
+                    completableIoAccess(Completable.fromAction(() ->
+                            localStorage.addUserList(
+                                    getUserListFromDocument(change.getDocument())
+                            ))
+                    );
+                    break;
+                case MODIFIED:
+                    completableIoAccess(Completable.fromAction(() ->
                             localStorage.updateUserList(
                                     getUserListFromDocument(change.getDocument())
                             )
-                        ));
-                        break;
-                    case REMOVED:
-
-                        break;
-                }
+                    ));
+                    break;
+                case REMOVED:
+                    completableIoAccess(Completable.fromAction(() ->
+                            localStorage.deleteUserLists(
+                                    Collections.singletonList(
+                                            getUserListFromDocument(change.getDocument())
+                                    )
+                            )
+                    ));
+                    break;
             }
-        };
+        }
     }
 
     private UserList getUserListFromDocument(DocumentSnapshot document) {
@@ -104,29 +114,38 @@ public final class RemoteStorage implements IRemoteStorageContract {
             if (evaluateData(queryDocumentSnapshots, e)) {
                 return;
             }
-
-            for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-                switch (change.getType()) {
-                    case ADDED:
-                        completableIoAccess(Completable.fromAction(() ->
-                                localStorage.addItem(
-                                        getItemFromDocument(change.getDocument())
-                                ))
-                        );
-                        break;
-                    case MODIFIED:
-                        completableIoAccess(Completable.fromAction(() ->
-                                localStorage.updateItem(
-                                        getItemFromDocument(change.getDocument())
-                                )
-                        ));
-                        break;
-                    case REMOVED:
-
-                        break;
-                }
-            }
+            processItemSnapshot(queryDocumentSnapshots);
         };
+    }
+
+    private void processItemSnapshot(QuerySnapshot queryDocumentSnapshots) {
+        for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+            switch (change.getType()) {
+                case ADDED:
+                    completableIoAccess(Completable.fromAction(() ->
+                            localStorage.addItem(
+                                    getItemFromDocument(change.getDocument())
+                            ))
+                    );
+                    break;
+                case MODIFIED:
+                    completableIoAccess(Completable.fromAction(() ->
+                            localStorage.updateItem(
+                                    getItemFromDocument(change.getDocument())
+                            )
+                    ));
+                    break;
+                case REMOVED:
+                    completableIoAccess(Completable.fromAction(() ->
+                            localStorage.deleteItems(
+                                    Collections.singletonList(
+                                            getItemFromDocument(change.getDocument())
+                                    )
+                            )
+                    ));
+                    break;
+            }
+        }
     }
 
     private Item getItemFromDocument(DocumentSnapshot document) {
