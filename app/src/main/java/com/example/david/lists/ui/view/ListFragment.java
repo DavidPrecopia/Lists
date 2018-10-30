@@ -23,7 +23,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import timber.log.Timber;
 
 public class ListFragment extends Fragment
@@ -83,7 +82,6 @@ public class ListFragment extends Fragment
         initRecyclerView();
         initToolbar();
         initFab();
-        initSwipeRefresh();
     }
 
     private void observeViewModel() {
@@ -166,15 +164,6 @@ public class ListFragment extends Fragment
     }
 
 
-    private void initSwipeRefresh() {
-        SwipeRefreshLayout swipeRefresh = binding.swipeRefreshLayout;
-        swipeRefresh.setOnRefreshListener(() -> {
-            viewModel.refresh();
-            swipeRefresh.setRefreshing(false);
-        });
-    }
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_log_out, menu);
@@ -245,14 +234,14 @@ public class ListFragment extends Fragment
     private void showLoading() {
         hideError();
         binding.progressBar.setVisibility(View.VISIBLE);
-        binding.swipeRefreshLayout.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
         binding.fab.hide();
     }
 
     private void hideLoading() {
         hideError();
         binding.progressBar.setVisibility(View.GONE);
-        binding.swipeRefreshLayout.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
         binding.fab.show();
     }
 

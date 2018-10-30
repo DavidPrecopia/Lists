@@ -151,17 +151,6 @@ public final class Model implements IModelContract {
     }
 
 
-    @Override
-    public void forceRefreshUserLists() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void forceRefreshItems(String userListId) {
-        throw new UnsupportedOperationException();
-    }
-
-
     private void validateObject(Object object) {
         if (object == null) {
             nullObjectException();

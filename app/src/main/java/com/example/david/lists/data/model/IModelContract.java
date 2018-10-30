@@ -27,8 +27,4 @@ public interface IModelContract {
     void updateUserListPosition(UserList userList, int oldPosition, int newPosition);
 
     void updateItemPosition(Item item, int oldPosition, int newPosition);
-
-    void forceRefreshUserLists();
-
-    void forceRefreshItems(String userListId);
 }

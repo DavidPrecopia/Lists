@@ -231,12 +231,6 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
-    public void refresh() {
-        Timber.i("refresh");
-    }
-
-
-    @Override
     public RecyclerView.Adapter getAdapter() {
         return adapter;
     }

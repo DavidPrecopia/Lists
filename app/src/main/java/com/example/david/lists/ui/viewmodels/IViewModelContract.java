@@ -30,8 +30,6 @@ public interface IViewModelContract {
 
     void deletionNotificationTimedOut();
 
-    void refresh();
-
     RecyclerView.Adapter getAdapter();
 
     ItemTouchHelper getItemTouchHelper();
