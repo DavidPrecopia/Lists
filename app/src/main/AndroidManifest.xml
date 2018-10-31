@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.view.ListActivity">
+        <activity
+            android:name=".ui.view.ListActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,8 +26,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.view.AuthenticateActivity"
+            android:launchMode="singleTop" />
 
-        <receiver android:name="com.example.david.lists.widget.MyAppWidgetProvider">
+        <receiver android:name=".widget.MyAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -36,11 +41,11 @@
         </receiver>
 
         <service
-            android:name="com.example.david.lists.widget.MyRemoteViewsService"
+            android:name=".widget.MyRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name="com.example.david.lists.widget.configactivity.WidgetConfigActivity"
+            android:name=".widget.configactivity.WidgetConfigActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
