@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -30,19 +31,10 @@
     </style>
 
 
-    <style name="ButtonColor">
-        <item name="backgroundTint">@color/colorPrimary</item>
-        <item name="rippleColor">@color/colorAccent</item>
-    </style>
-
     <style name="TitleTextStyle">
         <item name="android:textAppearance">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="HintTextAppearance" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/darkGray</item>
     </style>
 
     <style name="ErrorTextViewStyle">
@@ -55,15 +47,12 @@
     </style>
 
 
-    <style name="FirebaseUIAuthStyle" parent="FirebaseUI">
-        <!-- Required for sign-in flow styling -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimary</item>
+    <style name="ButtonColor">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="rippleColor">@color/colorAccent</item>
+    </style>
 
-        <!--<item name="colorControlNormal">@color/material_green_500</item>-->
-        <!--<item name="colorControlActivated">@color/material_lime_a700</item>-->
-        <!--<item name="colorControlHighlight">@color/material_green_a200</item>-->
-        <!--<item name="android:windowBackground">@color/material_green_50</item>-->
+    <style name="HintTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/darkGray</item>
     </style>
 </resources>
