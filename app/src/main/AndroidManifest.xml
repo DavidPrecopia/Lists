@@ -26,10 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.view.AuthenticateActivity"
-            android:launchMode="singleTop" />
-
         <receiver android:name=".widget.MyAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

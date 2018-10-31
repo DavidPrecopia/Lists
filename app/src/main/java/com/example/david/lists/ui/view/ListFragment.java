@@ -209,7 +209,7 @@ public class ListFragment extends Fragment
 
 
     private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.coordinatorLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
                 .addCallback(new Snackbar.Callback() {
                     @Override
