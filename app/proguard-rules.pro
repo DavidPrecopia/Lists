@@ -29,3 +29,7 @@
 -keep public class com.example.david.lists.ui.view.ListActivity
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigActivity
 -keep public class com.example.david.lists.widget.MyAppWidgetProvider
+
+# Per Firebase Authentication
+-keepattributes Signature
+-keepattributes *Annotation*
