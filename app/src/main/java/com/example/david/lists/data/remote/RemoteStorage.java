@@ -15,6 +15,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
@@ -312,65 +313,57 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
-        updateUserListPositions(
-                userListsCollection,
-                decrementPositions(getUserListDocument(userList.getId()), newPosition),
-                oldPosition,
-                newPosition
+        updatePositions(
+                getUserListUpdatePositionsQuery(oldPosition, newPosition),
+                decrementPositions(getUserListDocument(userList.getId()), newPosition)
         );
     }
 
     @Override
     public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
-        updateUserListPositions(
-                userListsCollection,
-                incrementPositions(getUserListDocument(userList.getId()), newPosition),
-                oldPosition,
-                newPosition
+        updatePositions(
+                getUserListUpdatePositionsQuery(oldPosition, newPosition),
+                incrementPositions(getUserListDocument(userList.getId()), newPosition)
         );
     }
 
-    private void updateUserListPositions(CollectionReference collectionReference, OnSuccessListener<QuerySnapshot> successListener, int oldPosition, int newPosition) {
+    private Query getUserListUpdatePositionsQuery(int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
-        collectionReference
+        return userListsCollection
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition)
-                .get()
-                .addOnSuccessListener(successListener)
-                .addOnFailureListener(this::onFailure);
+                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
     }
 
     @Override
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
-        updateItemPositions(
-                item.getUserListId(),
-                itemsCollection,
-                decrementPositions(getItemDocument(item.getId()), newPosition),
-                oldPosition,
-                newPosition
+        updatePositions(
+                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
+                decrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
+
 
     @Override
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
-        updateItemPositions(
-                item.getUserListId(),
-                itemsCollection,
-                incrementPositions(getItemDocument(item.getId()), newPosition),
-                oldPosition,
-                newPosition
+        updatePositions(
+                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
+                incrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
 
-    private void updateItemPositions(String userListId, CollectionReference collectionReference, OnSuccessListener<QuerySnapshot> successListener, int oldPosition, int newPosition) {
+    private Query getItemsUpdatePositionsQuery(String userListId, int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
-        collectionReference
+        return itemsCollection
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition)
-                .get()
+                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
+    }
+
+
+    private void updatePositions(Query query, OnSuccessListener<QuerySnapshot> successListener) {
+        query.get()
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(this::onFailure);
     }
