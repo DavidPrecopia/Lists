@@ -157,7 +157,6 @@ public class ListActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESPONSE_CODE_AUTH) {
             processAuthResult(IdpResponse.fromResultIntent(data), resultCode);
-            hideFragment();
         }
     }
 
