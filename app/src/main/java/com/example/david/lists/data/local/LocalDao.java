@@ -124,4 +124,8 @@ abstract class LocalDao {
             + " SET " + FIELD_POSITION + " = :newPosition"
             + " WHERE " + FIELD_ID + " = :itemId")
     abstract void updateItemPosition(String itemId, int newPosition);
+
+
+    @Query("DELETE FROM " + USER_LIST_TABLE_NAME)
+    abstract void deleteDatabase();
 }

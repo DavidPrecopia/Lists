@@ -13,6 +13,7 @@ import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
+import com.example.david.lists.util.MyUtil;
 import com.example.david.lists.util.UtilRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,14 +34,16 @@ public class ListFragment extends Fragment
     private FragmentListBinding binding;
 
     private static final String ARG_KEY_DISPLAYING = "displaying_key";
+    private static final String ARG_KEY_DISPLAY_MENU = "display_menu_key";
 
     public ListFragment() {
     }
 
-    static ListFragment newInstance(String displaying) {
+    static ListFragment newInstance(String displaying, boolean displayOverflowMenu) {
         ListFragment fragment = new ListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_DISPLAYING, displaying);
+        bundle.putBoolean(ARG_KEY_DISPLAY_MENU, displayOverflowMenu);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -49,7 +52,7 @@ public class ListFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(getArguments().getBoolean(ARG_KEY_DISPLAY_MENU));
         initViewModel();
     }
 
@@ -104,6 +107,7 @@ public class ListFragment extends Fragment
             if (display) {
                 showLoading();
             } else {
+                Timber.d("observeDisplayLoading - display: %s", display);
                 hideLoading();
             }
         });
@@ -166,18 +170,24 @@ public class ListFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_log_out, menu);
+        inflater.inflate(getMenuResource(), menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private int getMenuResource() {
+        return MyUtil.userIsAnonymous() ?
+                R.menu.menu_sign_in :
+                R.menu.menu_sign_out;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_id_log_out:
-                Timber.i("Log out");
+            case R.id.menu_id_sign_in:
+                viewModel.signIn();
                 break;
-            case R.id.menu_id_log_in:
-                Timber.i("Log in");
+            case R.id.menu_id_sign_out:
+                viewModel.signOut();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -239,6 +249,7 @@ public class ListFragment extends Fragment
     }
 
     private void hideLoading() {
+        Timber.d("hideLoading");
         hideError();
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);

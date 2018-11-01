@@ -231,6 +231,22 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
+    public void signIn() {
+        throwUnsupportedOperation("");
+    }
+
+    @Override
+    public void signOut() {
+        throwUnsupportedOperation("");
+    }
+
+    @Override
+    public void successfullySignedOut() {
+        throwUnsupportedOperation("");
+    }
+
+
+    @Override
     public RecyclerView.Adapter getAdapter() {
         return adapter;
     }
@@ -276,11 +292,27 @@ public final class ItemViewModel extends AndroidViewModel
         return eventEdit;
     }
 
+    @Override
+    public LiveData<Void> getEventSignOut() {
+        throwUnsupportedOperation("");
+        return null;
+    }
+
+    @Override
+    public LiveData<Void> getEventSignIn() {
+        throwUnsupportedOperation("");
+        return null;
+    }
+
 
     private void cannotOpenUserListException() {
-        throw new UnsupportedOperationException(
+        throwUnsupportedOperation(
                 getStringResource(R.string.error_cannot_open_user_list)
         );
+    }
+
+    private void throwUnsupportedOperation(String message) {
+        throw new UnsupportedOperationException(message);
     }
 
     private String getStringResource(int resId) {

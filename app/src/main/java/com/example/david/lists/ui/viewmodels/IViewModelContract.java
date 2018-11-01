@@ -30,6 +30,12 @@ public interface IViewModelContract {
 
     void deletionNotificationTimedOut();
 
+    void signIn();
+
+    void signOut();
+
+    void successfullySignedOut();
+
     RecyclerView.Adapter getAdapter();
 
     ItemTouchHelper getItemTouchHelper();
@@ -47,4 +53,8 @@ public interface IViewModelContract {
     LiveData<String> getEventAdd();
 
     LiveData<EditingInfo> getEventEdit();
+
+    LiveData<Void> getEventSignOut();
+
+    LiveData<Void> getEventSignIn();
 }

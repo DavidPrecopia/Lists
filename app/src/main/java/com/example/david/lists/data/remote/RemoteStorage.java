@@ -7,6 +7,8 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.ILocalStorageContract;
 import com.example.david.lists.data.local.LocalStorage;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,7 +52,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
      * This device will be notified of any and all modifications that
      * occurred when this device was offline post the initial payload.
      */
-    private static Boolean initialResponsePayload;
+    private static boolean initialResponsePayload;
 
 
     private static RemoteStorage instance;
@@ -78,6 +80,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
         userListsCollection.addSnapshotListener(MetadataChanges.INCLUDE, userListsCollectionListener());
         itemsCollection.addSnapshotListener(MetadataChanges.INCLUDE, itemsCollectionListener());
     }
+
 
     private EventListener<QuerySnapshot> userListsCollectionListener() {
         return (queryDocumentSnapshots, e) -> {
@@ -210,6 +213,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
         if (e != null) {
             onFailure(e);
             return true;
+        } else if (existingUser()) {
+            return false;
         } else if (initialResponsePayload) {
             initialResponsePayload = false;
             return true;
@@ -220,6 +225,13 @@ public final class RemoteStorage implements IRemoteStorageContract {
         }
     }
 
+    private boolean existingUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return false;
+        }
+        return user.getMetadata().getCreationTimestamp() != user.getMetadata().getLastSignInTimestamp();
+    }
 
     @Override
     public String addUserList(UserList userList) {

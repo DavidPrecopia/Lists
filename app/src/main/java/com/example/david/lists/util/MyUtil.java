@@ -2,12 +2,17 @@ package com.example.david.lists.util;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class MyUtil {
     private MyUtil() {
+    }
+
+    public static boolean userIsAnonymous() {
+        return FirebaseAuth.getInstance().getCurrentUser().isAnonymous();
     }
 
     public static List<String> getUserListsIds(List<UserList> userLists) {

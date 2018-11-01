@@ -35,4 +35,6 @@ public interface ILocalStorageContract {
     void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition);
 
     void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition);
+
+    void deleteAllLocalStorage();
 }

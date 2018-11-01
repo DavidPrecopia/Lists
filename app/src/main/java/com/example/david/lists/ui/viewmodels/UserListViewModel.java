@@ -8,6 +8,7 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
+import com.example.david.lists.util.MyUtil;
 import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public final class UserListViewModel extends AndroidViewModel
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
+    private final SingleLiveEvent<Void> eventSignOut;
+    private final SingleLiveEvent<Void> eventSignIn;
+
     private List<UserList> tempUserLists;
     private int tempUserListPosition = -1;
 
@@ -65,6 +69,9 @@ public final class UserListViewModel extends AndroidViewModel
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
+        eventSignOut = new SingleLiveEvent<>();
+        eventSignIn = new SingleLiveEvent<>();
+
         this.tempUserLists = new ArrayList<>();
 
         init();
@@ -121,6 +128,7 @@ public final class UserListViewModel extends AndroidViewModel
         } else {
             adapter.swapData(userLists);
             eventDisplayLoading.setValue(false);
+            Timber.d("Post swap data & stop loading");
         }
     }
 
@@ -230,6 +238,27 @@ public final class UserListViewModel extends AndroidViewModel
 
 
     @Override
+    public void signIn() {
+        if (MyUtil.userIsAnonymous()) {
+            eventSignIn.call();
+        } else {
+            throw new UnsupportedOperationException(
+                    getStringResource(R.string.error_sign_in_when_not_anonymous)
+            );
+        }
+    }
+
+    @Override
+    public void signOut() {
+        eventSignOut.call();
+    }
+
+    @Override
+    public void successfullySignedOut() {
+        completableIoAccess(Completable.fromAction(model::clearLocalData));
+    }
+
+    @Override
     public RecyclerView.Adapter getAdapter() {
         return adapter;
     }
@@ -272,6 +301,16 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public LiveData<EditingInfo> getEventEdit() {
         return eventEdit;
+    }
+
+    @Override
+    public LiveData<Void> getEventSignOut() {
+        return eventSignOut;
+    }
+
+    @Override
+    public LiveData<Void> getEventSignIn() {
+        return eventSignIn;
     }
 
 

@@ -26,6 +26,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
@@ -79,15 +80,16 @@ public class ListActivity extends AppCompatActivity {
 
     private void observeViewModel() {
         viewModel.getEventOpenUserList().observe(this, this::openUserList);
+        viewModel.getEventSignOut().observe(this, aVoid -> signOut());
+        viewModel.getEventSignIn().observe(this, aVoid -> signIn());
     }
-
 
     private void initView() {
         if (getIntent().getExtras() != null) {
             processIntentExtras(getIntent().getExtras());
         }
         if (newActivity) {
-            addFragment(ListFragment.newInstance(getString(R.string.displaying_user_list)));
+            addFragment(getUserListFragment());
         }
     }
 
@@ -104,22 +106,17 @@ public class ListActivity extends AppCompatActivity {
                 widgetBundle.getString(getIntentKeyId(getApplicationContext())),
                 widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
         );
-        addFragment(
-                ListFragment.newInstance(getString(R.string.displaying_item))
-        );
+        addFragment(getItemFragment());
     }
 
 
     private void openUserList(UserList userList) {
         saveUserListDetails(userList.getId(), userList.getTitle());
-        addFragmentToBackStack(
-                ListFragment.newInstance(getString(R.string.displaying_item))
-        );
+        addFragmentToBackStack(getItemFragment());
     }
 
     private void saveUserListDetails(String id, String title) {
-        SharedPreferences.Editor editor =
-                getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPrefsEditor(R.string.key_shared_prefs_name);
         editor.putString(getString(R.string.key_shared_pref_user_list_id), id);
         editor.putString(getString(R.string.key_shared_pref_user_list_title), title);
         editor.apply();
@@ -141,6 +138,18 @@ public class ListActivity extends AppCompatActivity {
     }
 
 
+    private ListFragment getUserListFragment() {
+        return ListFragment.newInstance(
+                getString(R.string.displaying_user_list),
+                true
+        );
+    }
+
+    private ListFragment getItemFragment() {
+        return ListFragment.newInstance(getString(R.string.displaying_item), false);
+    }
+
+
     private void showFragment() {
         binding.progressBar.setVisibility(View.GONE);
         binding.fragmentHolder.setVisibility(View.VISIBLE);
@@ -149,6 +158,11 @@ public class ListActivity extends AppCompatActivity {
     private void hideFragment() {
         binding.fragmentHolder.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
+    }
+
+
+    private SharedPreferences.Editor getSharedPrefsEditor(int keyResId) {
+        return getSharedPreferences(getString(keyResId), MODE_PRIVATE).edit();
     }
 
 
@@ -211,8 +225,8 @@ public class ListActivity extends AppCompatActivity {
     @SuppressLint("RestrictedApi")
     private void processAuthResult(IdpResponse response, int resultCode) {
         if (resultCode == RESULT_OK) {
-            initLayout();
             toastMessage(R.string.msg_welcome_user);
+            initLayout();
             return;
         }
 
@@ -225,6 +239,34 @@ public class ListActivity extends AppCompatActivity {
         }
         finish();
     }
+
+
+    private void signOut() {
+        AuthUI.getInstance().signOut(this)
+                .addOnSuccessListener(aVoid ->
+                        successfullySignedOut()
+                )
+                .addOnFailureListener(this::failedToSignOut);
+    }
+
+    private void successfullySignedOut() {
+        toastMessage(R.string.msg_successful_signed_out);
+        viewModel.successfullySignedOut();
+        fragmentManager.popBackStackImmediate();
+        verifyUser(true);
+    }
+
+    private void failedToSignOut(Exception e) {
+        Timber.e(e);
+        toastMessage(R.string.error_experienced_signing_out);
+        // TODO Cancel process
+    }
+
+
+    private void signIn() {
+        // TODO Implement
+    }
+
 
     private void toastMessage(int stringResId) {
         Toast.makeText(this, stringResId, Toast.LENGTH_LONG).show();

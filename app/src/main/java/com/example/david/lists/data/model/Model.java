@@ -174,4 +174,10 @@ public final class Model implements IModelContract {
     private void nullObjectException() {
         throw new IllegalArgumentException("Parameter cannot be null");
     }
+
+
+    @Override
+    public void clearLocalData() {
+        local.deleteAllLocalStorage();
+    }
 }

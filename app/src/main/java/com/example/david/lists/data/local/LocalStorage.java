@@ -102,4 +102,13 @@ public final class LocalStorage implements ILocalStorageContract {
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
         dao.updateItemPositionsDecrementTransaction(item.getId(), oldPosition, newPosition);
     }
+
+
+    /**
+     * <em>WARNING:</em> this method will delete <i>all</i> rows in the database.
+     */
+    @Override
+    public void deleteAllLocalStorage() {
+        dao.deleteDatabase();
+    }
 }
