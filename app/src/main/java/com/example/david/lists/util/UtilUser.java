@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UtilUser {
 
-    private static final long ONE_MINUTE = 6000;
+    private static final long FIVE_MINUTES = 30_000;
 
     private UtilUser() {
     }
@@ -14,12 +14,16 @@ public class UtilUser {
         return FirebaseAuth.getInstance().getCurrentUser().isAnonymous();
     }
 
+    public static boolean signedOut() {
+        return FirebaseAuth.getInstance().getCurrentUser() == null;
+    }
+
     public static boolean recentlySignedIn() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return false;
         long timeSeparation = Math.abs(
                 user.getMetadata().getLastSignInTimestamp() - System.currentTimeMillis()
         );
-        return timeSeparation <= ONE_MINUTE;
+        return timeSeparation <= FIVE_MINUTES;
     }
 }

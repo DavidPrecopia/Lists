@@ -184,9 +184,11 @@ public final class RemoteStorage implements IRemoteStorageContract {
         if (e != null) {
             onFailure(e);
             return true;
+        } if (UtilUser.recentlySignedIn()) {
+            return false;
         } else if (initialResponsePayload) {
             initialResponsePayload = false;
-            return !UtilUser.recentlySignedIn();
+            return true;
         } else {
             // If this Snapshot listener is being invoked because
             // of a local modification, ignore it.

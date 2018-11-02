@@ -12,10 +12,10 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
+import com.example.david.lists.util.UtilUser;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +39,6 @@ public class ListActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
 
-    private FirebaseAuth auth;
     private static final int RESPONSE_CODE_AUTH = 100;
 
     private boolean newActivity;
@@ -53,7 +52,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void verifyUser(boolean newActivity) {
         initFields(newActivity);
-        if (auth.getCurrentUser() == null) {
+        if (UtilUser.signedOut()) {
             openAuthentication();
         } else {
             initLayout();
@@ -61,7 +60,6 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void initFields(boolean newActivity) {
-        auth = FirebaseAuth.getInstance();
         fragmentManager = getSupportFragmentManager();
         this.newActivity = newActivity;
     }
@@ -239,17 +237,15 @@ public class ListActivity extends AppCompatActivity {
 
     private void signOut() {
         AuthUI.getInstance().signOut(this)
-                .addOnSuccessListener(aVoid ->
-                        successfullySignedOut()
-                )
+                .addOnSuccessListener(aVoid -> successfullySignedOut())
                 .addOnFailureListener(this::failedToSignOut);
     }
 
     private void successfullySignedOut() {
         toastMessage(R.string.msg_successful_signed_out);
         viewModel.successfullySignedOut();
-        fragmentManager.popBackStackImmediate();
-        verifyUser(true);
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        verifyUser(false);
     }
 
     private void failedToSignOut(Exception e) {

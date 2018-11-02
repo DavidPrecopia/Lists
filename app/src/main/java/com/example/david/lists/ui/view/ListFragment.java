@@ -89,8 +89,8 @@ public class ListFragment extends Fragment
 
     private void observeViewModel() {
         observeToolbarTitle();
-        observeDisplayLoading();
         observeError();
+        observeDisplayLoading();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
@@ -102,19 +102,22 @@ public class ListFragment extends Fragment
         );
     }
 
-    private void observeDisplayLoading() {
-        viewModel.getEventDisplayLoading().observe(this, display -> {
-            if (display) {
-                showLoading();
-            } else {
-                Timber.d("observeDisplayLoading - display: %s", display);
-                hideLoading();
-            }
+    private void observeError() {
+        viewModel.getEventDisplayError().observe(this, message -> {
+            Timber.i("Display error callback");
+            showError(message);
         });
     }
 
-    private void observeError() {
-        viewModel.getEventDisplayError().observe(this, this::showError);
+    private void observeDisplayLoading() {
+        viewModel.getEventDisplayLoading().observe(this, display -> {
+            Timber.i("Display loading callback");
+            if (display) {
+                showLoading();
+            } else {
+                hideLoading();
+            }
+        });
     }
 
     private void observeEventNotifyUserOfDeletion() {
@@ -249,7 +252,6 @@ public class ListFragment extends Fragment
     }
 
     private void hideLoading() {
-        Timber.d("hideLoading");
         hideError();
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
