@@ -15,10 +15,6 @@ allprojects {
         google()
         jcenter()
     }
-    ext {
-        androidXVersion = "1.0.0"
-        lifecycleExtensionsVersion = "2.0.0"
-    }
 }
 
 task clean(type: Delete) {

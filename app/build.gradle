@@ -41,22 +41,25 @@ android {
 }
 
 dependencies {
+    def androidLibraries = "1.0.0"
+    def lifecycleExtensions = "2.0.0"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // It appears that I do not need these.
-//    implementation "androidx.appcompat:appcompat:$androidXVersion"
-//    implementation "androidx.legacy:legacy-support-v4:$androidXVersion"
+//    implementation "androidx.appcompat:appcompat:$androidLibraries"
+//    implementation "androidx.legacy:legacy-support-v4:$androidLibraries"
 
-    implementation "com.google.android.material:material:$androidXVersion"
-    implementation "androidx.recyclerview:recyclerview:$androidXVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation "com.google.android.material:material:$androidLibraries"
+    implementation "androidx.recyclerview:recyclerview:$androidLibraries"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // LiveData and ViewModel
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensionsVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensions"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensions"
     // Room
-    implementation "androidx.room:room-runtime:$lifecycleExtensionsVersion"
-    annotationProcessor "androidx.room:room-compiler:$lifecycleExtensionsVersion"
-    implementation "androidx.room:room-rxjava2:$lifecycleExtensionsVersion"
+    implementation "androidx.room:room-runtime:$lifecycleExtensions"
+    annotationProcessor "androidx.room:room-compiler:$lifecycleExtensions"
+    implementation "androidx.room:room-rxjava2:$lifecycleExtensions"
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.4'
@@ -64,7 +67,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:16.0.5'
-    implementation ('com.firebaseui:firebase-ui-auth:4.2.1')
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
 
     // RxJava
