@@ -54,7 +54,6 @@ public class ListActivity extends AppCompatActivity {
     private void verifyUser(boolean newActivity) {
         initFields(newActivity);
         if (auth.getCurrentUser() == null) {
-            hideFragment();
             openAuthentication();
         } else {
             initLayout();
@@ -116,7 +115,8 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void saveUserListDetails(String id, String title) {
-        SharedPreferences.Editor editor = getSharedPrefsEditor(R.string.key_shared_prefs_name);
+        SharedPreferences.Editor editor =
+                getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
         editor.putString(getString(R.string.key_shared_pref_user_list_id), id);
         editor.putString(getString(R.string.key_shared_pref_user_list_title), title);
         editor.apply();
@@ -161,11 +161,6 @@ public class ListActivity extends AppCompatActivity {
     }
 
 
-    private SharedPreferences.Editor getSharedPrefsEditor(int keyResId) {
-        return getSharedPreferences(getString(keyResId), MODE_PRIVATE).edit();
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -197,6 +192,7 @@ public class ListActivity extends AppCompatActivity {
 
 
     private void openAuthentication() {
+        hideFragment();
         startActivityForResult(
                 getAuthIntent(),
                 RESPONSE_CODE_AUTH
@@ -259,12 +255,12 @@ public class ListActivity extends AppCompatActivity {
     private void failedToSignOut(Exception e) {
         Timber.e(e);
         toastMessage(R.string.error_experienced_signing_out);
-        // TODO Cancel process
     }
 
 
     private void signIn() {
-        // TODO Implement
+        fragmentManager.popBackStack();
+        openAuthentication();
     }
 
 
