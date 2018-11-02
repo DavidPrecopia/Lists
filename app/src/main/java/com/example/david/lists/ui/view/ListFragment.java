@@ -13,8 +13,8 @@ import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
-import com.example.david.lists.util.MyUtil;
 import com.example.david.lists.util.UtilRecyclerView;
+import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -175,7 +175,7 @@ public class ListFragment extends Fragment
     }
 
     private int getMenuResource() {
-        return MyUtil.userIsAnonymous() ?
+        return UtilUser.userIsAnonymous() ?
                 R.menu.menu_sign_in :
                 R.menu.menu_sign_out;
     }

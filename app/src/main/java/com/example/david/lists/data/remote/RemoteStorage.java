@@ -6,8 +6,7 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.ILocalStorageContract;
 import com.example.david.lists.data.local.LocalStorage;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.david.lists.util.UtilUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -53,7 +52,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
         initialResponsePayload = true;
     }
 
-
     private EventListener<QuerySnapshot> userListsListener() {
         return (queryDocumentSnapshots, e) -> {
             if (shouldReturn(queryDocumentSnapshots, e)) {
@@ -63,6 +61,17 @@ public final class RemoteStorage implements IRemoteStorageContract {
             processUserListSnapshot(queryDocumentSnapshots);
         };
     }
+
+    private EventListener<QuerySnapshot> itemsListener() {
+        return (queryDocumentSnapshots, e) -> {
+            if (shouldReturn(queryDocumentSnapshots, e)) {
+                return;
+            }
+            assert queryDocumentSnapshots != null;
+            processItemSnapshot(queryDocumentSnapshots);
+        };
+    }
+
 
     private void processUserListSnapshot(QuerySnapshot queryDocumentSnapshots) {
         List<UserList> added = new ArrayList<>();
@@ -117,16 +126,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
         );
     }
 
-
-    private EventListener<QuerySnapshot> itemsListener() {
-        return (queryDocumentSnapshots, e) -> {
-            if (shouldReturn(queryDocumentSnapshots, e)) {
-                return;
-            }
-            assert queryDocumentSnapshots != null;
-            processItemSnapshot(queryDocumentSnapshots);
-        };
-    }
 
     private void processItemSnapshot(QuerySnapshot queryDocumentSnapshots) {
         List<Item> added = new ArrayList<>();
@@ -185,24 +184,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
         if (e != null) {
             onFailure(e);
             return true;
-        } else if (existingUser()) {
-            return false;
         } else if (initialResponsePayload) {
             initialResponsePayload = false;
-            return true;
+            return !UtilUser.recentlySignedIn();
         } else {
             // If this Snapshot listener is being invoked because
             // of a local modification, ignore it.
             return queryDocumentSnapshots.getMetadata().hasPendingWrites();
         }
-    }
-
-    private boolean existingUser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            return false;
-        }
-        return user.getMetadata().getCreationTimestamp() != user.getMetadata().getLastSignInTimestamp();
     }
 
 

@@ -8,8 +8,8 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.util.MyUtil;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -239,7 +239,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void signIn() {
-        if (MyUtil.userIsAnonymous()) {
+        if (UtilUser.userIsAnonymous()) {
             eventSignIn.call();
         } else {
             throw new UnsupportedOperationException(
