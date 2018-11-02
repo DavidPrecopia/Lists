@@ -6,42 +6,25 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.ILocalStorageContract;
 import com.example.david.lists.data.local.LocalStorage;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.Completable;
 import timber.log.Timber;
 
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
-    private final FirebaseFirestore firestore;
-    private final CollectionReference userListsCollection;
-    private final CollectionReference itemsCollection;
-
+    private final RemoteDao dao;
     private final ILocalStorageContract localStorage;
 
     /**
@@ -65,24 +48,13 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private RemoteStorage(Application application) {
-        firestore = FirebaseFirestore.getInstance();
-        userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
-        itemsCollection = firestore.collection(ITEMS_COLLECTION);
+        dao = RemoteDao.getInstance(userListsListener(), itemsListener());
         localStorage = LocalStorage.getInstance(application);
-
         initialResponsePayload = true;
-
-        init();
     }
 
 
-    private void init() {
-        userListsCollection.addSnapshotListener(MetadataChanges.INCLUDE, userListsCollectionListener());
-        itemsCollection.addSnapshotListener(MetadataChanges.INCLUDE, itemsCollectionListener());
-    }
-
-
-    private EventListener<QuerySnapshot> userListsCollectionListener() {
+    private EventListener<QuerySnapshot> userListsListener() {
         return (queryDocumentSnapshots, e) -> {
             if (shouldReturn(queryDocumentSnapshots, e)) {
                 return;
@@ -146,7 +118,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
-    private EventListener<QuerySnapshot> itemsCollectionListener() {
+    private EventListener<QuerySnapshot> itemsListener() {
         return (queryDocumentSnapshots, e) -> {
             if (shouldReturn(queryDocumentSnapshots, e)) {
                 return;
@@ -233,192 +205,59 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return user.getMetadata().getCreationTimestamp() != user.getMetadata().getLastSignInTimestamp();
     }
 
+
     @Override
     public String addUserList(UserList userList) {
-        DocumentReference documentRef = userListsCollection.document();
-        String id = documentRef.getId();
-        add(documentRef, new UserList(id, userList));
-        return id;
+        return dao.addUserList(userList);
     }
 
     @Override
     public String addItem(Item item) {
-        final DocumentReference documentRef = itemsCollection.document();
-        final String id = documentRef.getId();
-        add(documentRef, new Item(id, item));
-        return id;
-    }
-
-    private void add(DocumentReference documentRef, Object object) {
-        documentRef.set(object)
-                .addOnFailureListener(this::onFailure);
+        return dao.addItem(item);
     }
 
 
-    /**
-     * Batch deletion of {@link UserList} and {@link Item} are separate
-     * so I can easily refactor to Cloud Functions down the road.
-     */
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        List<String> userListIds = batchDeleteUserLists(userLists);
-        prepareToBatchDeleteItems(userListIds);
+        dao.deleteUserLists(userLists);
     }
-
-    private List<String> batchDeleteUserLists(List<UserList> userLists) {
-        List<String> userListIds = new ArrayList<>();
-
-        WriteBatch writeBatch = firestore.batch();
-        for (UserList userList : userLists) {
-            String id = userList.getId();
-            userListIds.add(id);
-            writeBatch.delete(getUserListDocument(id));
-        }
-        writeBatch.commit().addOnFailureListener(this::onFailure);
-
-        return userListIds;
-    }
-
-    private void prepareToBatchDeleteItems(List<String> userListIds) {
-        for (String userListId : userListIds) {
-            itemsCollection
-                    .whereEqualTo(FIELD_ID, userListId)
-                    .get()
-                    .addOnSuccessListener(this::batchDeleteItems)
-                    .addOnFailureListener(this::onFailure);
-        }
-    }
-
-    private void batchDeleteItems(QuerySnapshot queryDocumentSnapshots) {
-        WriteBatch batch = firestore.batch();
-        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-            batch.delete(snapshot.getReference());
-        }
-        batch.commit().addOnFailureListener(this::onFailure);
-    }
-
 
     @Override
     public void deleteItems(List<Item> items) {
-        WriteBatch batch = firestore.batch();
-        for (Item item : items) {
-            batch.delete(getItemDocument(item.getId()));
-        }
-        batch.commit().addOnFailureListener(this::onFailure);
+        dao.deleteItems(items);
     }
 
 
     @Override
     public void renameUserList(String userListId, String newName) {
-        getUserListDocument(userListId)
-                .update(FIELD_TITLE, newName)
-                .addOnFailureListener(this::onFailure);
+        dao.renameUserList(userListId, newName);
     }
 
     @Override
     public void renameItem(String itemId, String newName) {
-        getItemDocument(itemId)
-                .update(FIELD_TITLE, newName)
-                .addOnFailureListener(this::onFailure);
+        dao.renameItem(itemId, newName);
     }
 
 
     @Override
     public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
-        updatePositions(
-                getUserListUpdatePositionsQuery(oldPosition, newPosition),
-                decrementPositions(getUserListDocument(userList.getId()), newPosition)
-        );
+        dao.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
     }
 
     @Override
     public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
-        updatePositions(
-                getUserListUpdatePositionsQuery(oldPosition, newPosition),
-                incrementPositions(getUserListDocument(userList.getId()), newPosition)
-        );
-    }
-
-    private Query getUserListUpdatePositionsQuery(int oldPosition, int newPosition) {
-        int lowerPosition = getLowerPosition(oldPosition, newPosition);
-        int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return userListsCollection
-                .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
+        dao.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
     }
 
     @Override
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
-        updatePositions(
-                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                decrementPositions(getItemDocument(item.getId()), newPosition)
-        );
+        dao.updateItemPositionsDecrement(item, oldPosition, newPosition);
     }
 
 
     @Override
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
-        updatePositions(
-                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                incrementPositions(getItemDocument(item.getId()), newPosition)
-        );
-    }
-
-    private Query getItemsUpdatePositionsQuery(String userListId, int oldPosition, int newPosition) {
-        int lowerPosition = getLowerPosition(oldPosition, newPosition);
-        int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return itemsCollection
-                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
-                .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
-    }
-
-
-    private void updatePositions(Query query, OnSuccessListener<QuerySnapshot> successListener) {
-        query.get()
-                .addOnSuccessListener(successListener)
-                .addOnFailureListener(this::onFailure);
-    }
-
-    private OnSuccessListener<QuerySnapshot> decrementPositions(DocumentReference movedDocument, int newPosition) {
-        return queryDocumentSnapshots -> {
-            WriteBatch batch = firestore.batch();
-            for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() - 1;
-                batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
-            }
-            batch.update(movedDocument, FIELD_POSITION, newPosition);
-            batch.commit().addOnFailureListener(this::onFailure);
-        };
-    }
-
-    private OnSuccessListener<QuerySnapshot> incrementPositions(DocumentReference movedDocument, int newPosition) {
-        return queryDocumentSnapshots -> {
-            WriteBatch batch = firestore.batch();
-            for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() + 1;
-                batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
-            }
-            batch.update(movedDocument, FIELD_POSITION, newPosition);
-            batch.commit().addOnFailureListener(this::onFailure);
-        };
-    }
-
-    private int getLowerPosition(int oldPosition, int newPosition) {
-        return oldPosition < newPosition ? oldPosition : newPosition;
-    }
-
-    private int getHigherPosition(int oldPosition, int newPosition) {
-        return oldPosition > newPosition ? oldPosition : newPosition;
-    }
-
-
-    private DocumentReference getUserListDocument(String userListId) {
-        return userListsCollection.document(userListId);
-    }
-
-    private DocumentReference getItemDocument(String itemId) {
-        return itemsCollection.document(itemId);
+        dao.updateItemPositionsIncrement(item, oldPosition, newPosition);
     }
 
 
