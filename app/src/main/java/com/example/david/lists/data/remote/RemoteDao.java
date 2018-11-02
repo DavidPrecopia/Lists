@@ -8,6 +8,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -44,6 +45,12 @@ final class RemoteDao {
 
     private RemoteDao(EventListener<QuerySnapshot> userListsListener, EventListener<QuerySnapshot> itemsListener) {
         firestore = FirebaseFirestore.getInstance();
+        // Receiving the same message as: https://github.com/invertase/react-native-firebase/issues/1131
+        firestore.setFirestoreSettings(
+                new FirebaseFirestoreSettings.Builder().setTimestampsInSnapshotsEnabled(true).build()
+        );
+
+
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
         init(userListsListener, itemsListener);
