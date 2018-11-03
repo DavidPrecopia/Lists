@@ -2,6 +2,7 @@ package com.example.david.lists.data.remote;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -62,18 +63,18 @@ final class RemoteDao {
     }
 
 
-    String addUserList(UserList userList) {
+    UserList addUserList(UserList userList) {
         DocumentReference documentRef = userListsCollection.document();
-        String id = documentRef.getId();
-        add(documentRef, new UserList(id, userList));
-        return id;
+        UserList newUserList = new UserList(documentRef.getId(), UtilUser.getUserId(), userList);
+        add(documentRef, newUserList);
+        return newUserList;
     }
 
-    String addItem(Item item) {
-        final DocumentReference documentRef = itemsCollection.document();
-        final String id = documentRef.getId();
-        add(documentRef, new Item(id, item));
-        return id;
+    Item addItem(Item item) {
+        DocumentReference documentRef = itemsCollection.document();
+        Item newItem = new Item(documentRef.getId(), UtilUser.getUserId(), item);
+        add(documentRef, newItem);
+        return newItem;
     }
 
     private void add(DocumentReference documentRef, Object object) {

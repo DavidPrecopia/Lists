@@ -244,7 +244,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void signIn() {
-        if (UtilUser.userIsAnonymous()) {
+        if (UtilUser.isAnonymous()) {
             eventSignIn.call();
         } else {
             throw new UnsupportedOperationException(

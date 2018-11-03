@@ -6,9 +6,9 @@ import com.example.david.lists.data.datamodel.UserList;
 import java.util.List;
 
 public interface IRemoteStorageContract {
-    String addUserList(UserList userList);
+    UserList addUserList(UserList userList);
 
-    String addItem(Item item);
+    Item addItem(Item item);
 
     void deleteUserLists(List<UserList> userList);
 

@@ -10,8 +10,12 @@ public class UtilUser {
     private UtilUser() {
     }
 
-    public static boolean userIsAnonymous() {
+    public static boolean isAnonymous() {
         return FirebaseAuth.getInstance().getCurrentUser().isAnonymous();
+    }
+
+    public static String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public static boolean signedOut() {

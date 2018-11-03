@@ -50,18 +50,16 @@ public final class Model implements IModelContract {
     @Override
     public void addUserList(UserList userList) {
         validateObject(userList);
-        String id = remote.addUserList(userList);
         local.addUserList(
-                Collections.singletonList(new UserList(id, userList))
+                Collections.singletonList(remote.addUserList(userList))
         );
     }
 
     @Override
     public void addItem(Item item) {
         validateObject(item);
-        String id = remote.addItem(item);
         local.addItems(
-                Collections.singletonList(new Item(id, item))
+                Collections.singletonList(remote.addItem(item))
         );
     }
 

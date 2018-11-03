@@ -16,11 +16,11 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
 
 /**
- * Field names need to match the constants in
- * {@link DataModelFieldConstants}.
+ * Field names need to match the constants in {@link DataModelFieldConstants}.
  */
 @Entity(tableName = LocalDatabaseConstants.ITEM_TABLE_NAME,
         indices = {@Index(value = FIELD_ID, unique = true),
@@ -43,6 +43,9 @@ public final class Item {
     @ColumnInfo(name = FIELD_ID)
     private String id;
 
+    @ColumnInfo(name = FIELD_USER_ID)
+    private String userId;
+
     @ColumnInfo(name = FIELD_TITLE)
     private String title;
 
@@ -53,9 +56,10 @@ public final class Item {
     private String userListId;
 
 
-    public Item(int rowId, String id, String title, int position, String userListId) {
+    public Item(int rowId, String id, String userId, String title, int position, String userListId) {
         this.rowId = rowId;
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.position = position;
         this.userListId = userListId;
@@ -69,8 +73,9 @@ public final class Item {
     }
 
     @Ignore
-    public Item(String id, Item item) {
+    public Item(String id, String userId, Item item) {
         this.id = id;
+        this.userId = userId;
         this.title = item.title;
         this.position = item.position;
         this.userListId = item.userListId;
@@ -88,6 +93,10 @@ public final class Item {
 
     public String getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getTitle() {

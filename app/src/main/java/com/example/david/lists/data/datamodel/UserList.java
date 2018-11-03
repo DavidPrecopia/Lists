@@ -12,11 +12,11 @@ import androidx.room.PrimaryKey;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
 
 /**
- * Field names need to match the constants in
- * {@link DataModelFieldConstants}.
+ * Field names need to match the constants in {@link DataModelFieldConstants}.
  */
 @Entity(tableName = LocalDatabaseConstants.USER_LIST_TABLE_NAME,
         indices = {@Index(value = FIELD_ID, unique = true),
@@ -32,6 +32,9 @@ public final class UserList {
     @ColumnInfo(name = FIELD_ID)
     private String id;
 
+    @ColumnInfo(name = FIELD_USER_ID)
+    private String userId;
+
     @ColumnInfo(name = FIELD_TITLE)
     private String title;
 
@@ -39,9 +42,10 @@ public final class UserList {
     private int position;
 
 
-    public UserList(int rowId, String id, String title, int position) {
+    public UserList(int rowId, String id, String userId, String title, int position) {
         this.rowId = rowId;
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.position = position;
     }
@@ -53,8 +57,9 @@ public final class UserList {
     }
 
     @Ignore
-    public UserList(String id, UserList userList) {
+    public UserList(String id, String userId, UserList userList) {
         this.id = id;
+        this.userId = userId;
         this.title = userList.title;
         this.position = userList.position;
     }
@@ -71,6 +76,10 @@ public final class UserList {
 
     public String getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getTitle() {

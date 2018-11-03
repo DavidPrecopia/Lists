@@ -178,7 +178,7 @@ public class ListFragment extends Fragment
     }
 
     private int getMenuResource() {
-        return UtilUser.userIsAnonymous() ?
+        return UtilUser.isAnonymous() ?
                 R.menu.menu_sign_in :
                 R.menu.menu_sign_out;
     }

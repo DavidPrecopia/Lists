@@ -198,12 +198,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public String addUserList(UserList userList) {
+    public UserList addUserList(UserList userList) {
         return dao.addUserList(userList);
     }
 
     @Override
-    public String addItem(Item item) {
+    public Item addItem(Item item) {
         return dao.addItem(item);
     }
 
