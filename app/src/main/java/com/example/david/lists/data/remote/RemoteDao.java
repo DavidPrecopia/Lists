@@ -2,7 +2,6 @@ package com.example.david.lists.data.remote;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,8 +24,10 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
+import static com.example.david.lists.util.UtilUser.getUserId;
 
 final class RemoteDao {
 
@@ -58,21 +59,25 @@ final class RemoteDao {
     }
 
     private void init(EventListener<QuerySnapshot> userListsListener, EventListener<QuerySnapshot> itemsListener) {
-        userListsCollection.addSnapshotListener(MetadataChanges.INCLUDE, userListsListener);
-        itemsCollection.addSnapshotListener(MetadataChanges.INCLUDE, itemsListener);
+        userListsCollection
+                .whereEqualTo(FIELD_USER_ID, getUserId())
+                .addSnapshotListener(MetadataChanges.INCLUDE, userListsListener);
+        itemsCollection
+                .whereEqualTo(FIELD_USER_ID, getUserId())
+                .addSnapshotListener(MetadataChanges.INCLUDE, itemsListener);
     }
 
 
     UserList addUserList(UserList userList) {
         DocumentReference documentRef = userListsCollection.document();
-        UserList newUserList = new UserList(documentRef.getId(), UtilUser.getUserId(), userList);
+        UserList newUserList = new UserList(documentRef.getId(), getUserId(), userList);
         add(documentRef, newUserList);
         return newUserList;
     }
 
     Item addItem(Item item) {
         DocumentReference documentRef = itemsCollection.document();
-        Item newItem = new Item(documentRef.getId(), UtilUser.getUserId(), item);
+        Item newItem = new Item(documentRef.getId(), getUserId(), item);
         add(documentRef, newItem);
         return newItem;
     }
@@ -109,6 +114,7 @@ final class RemoteDao {
     private void prepareToBatchDeleteItems(List<String> userListIds) {
         for (String userListId : userListIds) {
             itemsCollection
+                    .whereEqualTo(FIELD_USER_ID, getUserId())
                     .whereEqualTo(FIELD_ID, userListId)
                     .get()
                     .addOnSuccessListener(this::batchDeleteItems)
@@ -165,6 +171,7 @@ final class RemoteDao {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
         return userListsCollection
+                .whereEqualTo(FIELD_USER_ID, getUserId())
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
     }
@@ -188,6 +195,7 @@ final class RemoteDao {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
         return itemsCollection
+                .whereEqualTo(FIELD_USER_ID, getUserId())
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
