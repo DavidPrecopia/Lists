@@ -9,9 +9,8 @@
         <item name="colorControlActivated">@color/colorAccent</item>
         <!--Ripple color-->
         <item name="colorControlHighlight">@color/colorAccent</item>
-        <!--Activity's background-->
-        <!--<item name="android:windowBackground">@color/white</item>-->
-        <!--<item name="android:textColorSecondary">@color/darkGray</item>-->
+        <!--Activity's background - it is black on some devices-->
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
 
