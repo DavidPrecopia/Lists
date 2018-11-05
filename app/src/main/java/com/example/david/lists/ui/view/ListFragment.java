@@ -24,6 +24,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import timber.log.Timber;
 
 public class ListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
@@ -93,6 +94,7 @@ public class ListFragment extends Fragment
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
+        observeEventFinish();
     }
 
     private void observeToolbarTitle() {
@@ -125,6 +127,13 @@ public class ListFragment extends Fragment
 
     private void observeEventEdit() {
         viewModel.getEventEdit().observe(this, this::openEditDialog);
+    }
+
+    private void observeEventFinish() {
+        viewModel.getEventFinish().observe(this, aVoid -> {
+            Timber.d("Event finished");
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
     }
 
 

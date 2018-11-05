@@ -48,7 +48,10 @@ final class RemoteDao {
         firestore = FirebaseFirestore.getInstance();
         // Receiving the same message as: https://github.com/invertase/react-native-firebase/issues/1131
         firestore.setFirestoreSettings(
-                new FirebaseFirestoreSettings.Builder().setTimestampsInSnapshotsEnabled(true).build()
+                new FirebaseFirestoreSettings.Builder()
+                        .setPersistenceEnabled(true)
+                        .setTimestampsInSnapshotsEnabled(true)
+                        .build()
         );
 
 

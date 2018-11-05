@@ -5,6 +5,7 @@ import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
 public interface IModelContract {
@@ -27,6 +28,8 @@ public interface IModelContract {
     void updateUserListPosition(UserList userList, int oldPosition, int newPosition);
 
     void updateItemPosition(Item item, int oldPosition, int newPosition);
+
+    LiveData<List<UserList>> getEventUserListDeleted();
 
     void clearLocalData();
 }

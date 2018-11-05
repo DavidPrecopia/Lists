@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Completable;
@@ -51,6 +52,9 @@ public final class ItemViewModel extends AndroidViewModel
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
+    private Observer<List<UserList>> modelObserver;
+    private final SingleLiveEvent<Void> eventFinish;
+
     private List<Item> tempItemList;
     private int tempItemPosition = -1;
 
@@ -69,6 +73,7 @@ public final class ItemViewModel extends AndroidViewModel
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
         tempItemList = new ArrayList<>();
+        eventFinish = new SingleLiveEvent<>();
 
         init(listTitle);
     }
@@ -77,9 +82,22 @@ public final class ItemViewModel extends AndroidViewModel
     private void init(String listTitle) {
         eventDisplayLoading.setValue(true);
         toolbarTitle.setValue(listTitle);
+        observeModel();
         getItems();
     }
 
+
+    private void observeModel() {
+        modelObserver = userLists -> {
+            for (UserList userList : userLists) {
+                if (userList.getId().equals(this.listId)) {
+                    Timber.i("Listening to User ID: %s", userList.getId());
+                    eventFinish.call();
+                }
+            }
+        };
+        model.getEventUserListDeleted().observeForever(modelObserver);
+    }
 
     private void getItems() {
         disposable.add(model.getUserListItems(listId)
@@ -309,6 +327,11 @@ public final class ItemViewModel extends AndroidViewModel
         return null;
     }
 
+    @Override
+    public LiveData<Void> getEventFinish() {
+        return eventFinish;
+    }
+
 
     private void cannotOpenUserListException() {
         throwUnsupportedOperation(
@@ -328,5 +351,6 @@ public final class ItemViewModel extends AndroidViewModel
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+        model.getEventUserListDeleted().removeObserver(modelObserver);
     }
 }

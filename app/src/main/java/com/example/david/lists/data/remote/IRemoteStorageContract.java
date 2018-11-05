@@ -5,6 +5,8 @@ import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+
 public interface IRemoteStorageContract {
     UserList addUserList(UserList userList);
 
@@ -25,4 +27,6 @@ public interface IRemoteStorageContract {
     void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition);
 
     void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition);
+
+    LiveData<List<UserList>> getEventUserListDeleted();
 }

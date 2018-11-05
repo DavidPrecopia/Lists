@@ -6,6 +6,7 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.ILocalStorageContract;
 import com.example.david.lists.data.local.LocalStorage;
+import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import io.reactivex.Completable;
 import timber.log.Timber;
 
@@ -36,6 +38,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
      */
     private static boolean initialResponsePayload;
 
+    private final SingleLiveEvent<List<UserList>> eventDeleteUserLists;
+
 
     private static RemoteStorage instance;
 
@@ -50,6 +54,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
         dao = RemoteDao.getInstance(userListsListener(), itemsListener());
         localStorage = LocalStorage.getInstance(application);
         initialResponsePayload = true;
+        eventDeleteUserLists = new SingleLiveEvent<>();
     }
 
     private EventListener<QuerySnapshot> userListsListener() {
@@ -124,6 +129,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
         completableIoAccess(Completable.fromAction(() ->
                 localStorage.deleteUserLists(removed))
         );
+        eventDeleteUserLists.setValue(removed);
     }
 
 
@@ -185,6 +191,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
             onFailure(e);
             return true;
         } if (UtilUser.recentlySignedIn()) {
+            initialResponsePayload = false;
             return false;
         } else if (initialResponsePayload) {
             initialResponsePayload = false;
@@ -249,6 +256,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
         dao.updateItemPositionsIncrement(item, oldPosition, newPosition);
+    }
+
+
+    @Override
+    public LiveData<List<UserList>> getEventUserListDeleted() {
+        return eventDeleteUserLists;
     }
 
 

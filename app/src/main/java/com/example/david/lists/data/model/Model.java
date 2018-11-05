@@ -12,6 +12,7 @@ import com.example.david.lists.data.remote.RemoteStorage;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
 public final class Model implements IModelContract {
@@ -168,6 +169,13 @@ public final class Model implements IModelContract {
             throw new IllegalArgumentException("One or both positions are less then 0");
         }
     }
+
+
+    @Override
+    public LiveData<List<UserList>> getEventUserListDeleted() {
+        return remote.getEventUserListDeleted();
+    }
+
 
     private void nullObjectException() {
         throw new IllegalArgumentException("Parameter cannot be null");

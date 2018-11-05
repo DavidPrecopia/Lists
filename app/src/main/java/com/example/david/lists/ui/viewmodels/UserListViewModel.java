@@ -316,6 +316,12 @@ public final class UserListViewModel extends AndroidViewModel
         return eventSignIn;
     }
 
+    @Override
+    public LiveData<Void> getEventFinish() {
+        return new LiveData<Void>() {
+        };
+    }
+
 
     private String getStringResource(int resId) {
         return getApplication().getString(resId);

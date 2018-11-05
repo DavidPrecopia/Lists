@@ -57,4 +57,6 @@ public interface IViewModelContract {
     LiveData<Void> getEventSignOut();
 
     LiveData<Void> getEventSignIn();
+
+    LiveData<Void> getEventFinish();
 }

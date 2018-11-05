@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UtilUser {
 
-    private static final long FIVE_MINUTES = 30_000;
+    private static final long ONE_MINUTES = 6000;
 
     private UtilUser() {
     }
@@ -28,6 +28,6 @@ public class UtilUser {
         long timeSeparation = Math.abs(
                 user.getMetadata().getLastSignInTimestamp() - System.currentTimeMillis()
         );
-        return timeSeparation <= FIVE_MINUTES;
+        return timeSeparation <= ONE_MINUTES;
     }
 }
