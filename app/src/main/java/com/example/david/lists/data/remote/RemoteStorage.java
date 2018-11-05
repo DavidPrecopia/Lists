@@ -154,7 +154,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void localAddItems(List<Item> added) {
-        if (added == null) {
+        if (added.isEmpty()) {
             return;
         }
         completableIoAccess(Completable.fromAction(() ->
@@ -163,7 +163,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void localModifyItem(List<Item> modified) {
-        if (modified == null) {
+        if (modified.isEmpty()) {
             return;
         }
         completableIoAccess(Completable.fromAction(() ->
@@ -172,7 +172,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void localDeleteItem(List<Item> removed) {
-        if (removed == null) {
+        if (removed.isEmpty()) {
             return;
         }
         completableIoAccess(Completable.fromAction(() ->
