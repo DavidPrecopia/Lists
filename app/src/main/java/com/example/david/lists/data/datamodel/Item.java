@@ -5,13 +5,10 @@ import com.google.firebase.firestore.Exclude;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import static androidx.room.ForeignKey.CASCADE;
-import static androidx.room.ForeignKey.RESTRICT;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
@@ -26,14 +23,8 @@ import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_R
         indices = {@Index(value = FIELD_ID, unique = true),
                 @Index(FIELD_POSITION),
                 @Index(FIELD_ITEM_USER_LIST_ID)
-        },
-        foreignKeys = @ForeignKey(
-                entity = UserList.class,
-                parentColumns = FIELD_ID,
-                childColumns = FIELD_ITEM_USER_LIST_ID,
-                onUpdate = RESTRICT,
-                onDelete = CASCADE
-        ))
+        })
+
 public final class Item {
 
     @PrimaryKey(autoGenerate = true)
