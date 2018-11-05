@@ -10,6 +10,7 @@ import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,14 +117,18 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     private void updateUi() {
+        if (UtilUser.signedOut()) {
+            return;
+        }
+
         if (itemList.isEmpty()) {
             eventDisplayError.setValue(
                     getStringResource(R.string.error_msg_empty_list)
             );
         } else {
-            adapter.swapData(itemList);
             eventDisplayLoading.setValue(false);
         }
+        adapter.swapData(itemList);
     }
 
 

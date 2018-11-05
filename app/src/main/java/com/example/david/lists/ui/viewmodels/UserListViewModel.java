@@ -129,12 +129,10 @@ public final class UserListViewModel extends AndroidViewModel
             eventDisplayError.setValue(
                     getStringResource(R.string.error_msg_no_user_lists)
             );
-            Timber.i("Post set display error");
         } else {
-            adapter.swapData(userLists);
             eventDisplayLoading.setValue(false);
-            Timber.i("Post set display loading == false");
         }
+        adapter.swapData(userLists);
     }
 
 
