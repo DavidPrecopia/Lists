@@ -24,7 +24,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import timber.log.Timber;
 
 public class ListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
@@ -103,15 +102,11 @@ public class ListFragment extends Fragment
     }
 
     private void observeError() {
-        viewModel.getEventDisplayError().observe(this, message -> {
-            Timber.i("Display error callback");
-            showError(message);
-        });
+        viewModel.getEventDisplayError().observe(this, this::showError);
     }
 
     private void observeDisplayLoading() {
         viewModel.getEventDisplayLoading().observe(this, display -> {
-            Timber.i("Display loading callback");
             if (display) {
                 showLoading();
             } else {

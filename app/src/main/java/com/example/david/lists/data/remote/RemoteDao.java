@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
@@ -115,7 +114,7 @@ final class RemoteDao {
         for (String userListId : userListIds) {
             itemsCollection
                     .whereEqualTo(FIELD_USER_ID, getUserId())
-                    .whereEqualTo(FIELD_ID, userListId)
+                    .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                     .get()
                     .addOnSuccessListener(this::batchDeleteItems)
                     .addOnFailureListener(this::onFailure);
