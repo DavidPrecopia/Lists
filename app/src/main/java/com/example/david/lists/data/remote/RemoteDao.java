@@ -3,12 +3,14 @@ package com.example.david.lists.data.remote;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,6 +36,12 @@ final class RemoteDao {
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
+    private final EventListener<QuerySnapshot> userListsListener;
+    private final EventListener<QuerySnapshot> itemsListener;
+
+    private ListenerRegistration userListsSnapshotListener;
+    private ListenerRegistration itemsSnapshotListener;
+
 
     private static volatile RemoteDao remoteDao;
 
@@ -46,25 +54,38 @@ final class RemoteDao {
 
     private RemoteDao(EventListener<QuerySnapshot> userListsListener, EventListener<QuerySnapshot> itemsListener) {
         firestore = FirebaseFirestore.getInstance();
-        // Receiving the same message as: https://github.com/invertase/react-native-firebase/issues/1131
-        firestore.setFirestoreSettings(
-                new FirebaseFirestoreSettings.Builder()
-                        .setPersistenceEnabled(true)
-                        .setTimestampsInSnapshotsEnabled(true)
-                        .build()
+        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(false)
+                .setTimestampsInSnapshotsEnabled(true)
+                .build()
         );
-
-
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
-        init(userListsListener, itemsListener);
+        this.userListsListener = userListsListener;
+        this.itemsListener = itemsListener;
+
+        init();
     }
 
-    private void init(EventListener<QuerySnapshot> userListsListener, EventListener<QuerySnapshot> itemsListener) {
-        userListsCollection
+    private void init() {
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                if (userListsSnapshotListener == null || itemsSnapshotListener == null) {
+                    return;
+                }
+                userListsSnapshotListener.remove();
+                itemsSnapshotListener.remove();
+            } else {
+                initSnapshotListeners();
+            }
+        });
+    }
+
+    private void initSnapshotListeners() {
+        userListsSnapshotListener = userListsCollection
                 .whereEqualTo(FIELD_USER_ID, getUserId())
                 .addSnapshotListener(MetadataChanges.INCLUDE, userListsListener);
-        itemsCollection
+        itemsSnapshotListener = itemsCollection
                 .whereEqualTo(FIELD_USER_ID, getUserId())
                 .addSnapshotListener(MetadataChanges.INCLUDE, itemsListener);
     }

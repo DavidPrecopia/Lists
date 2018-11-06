@@ -19,6 +19,7 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import io.reactivex.Completable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
@@ -126,10 +127,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
         if (removed.isEmpty()) {
             return;
         }
-        completableIoAccess(Completable.fromAction(() ->
+        Completable.fromAction(() ->
                 localStorage.deleteUserLists(removed))
-        );
-        eventDeleteUserLists.setValue(removed);
+                .doOnSubscribe(disposable -> eventDeleteUserLists.postValue(removed))
+                .doOnError(Timber::e)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
 

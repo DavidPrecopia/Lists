@@ -121,10 +121,6 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     private void updateUi() {
-        if (UtilUser.signedOut()) {
-            return;
-        }
-
         if (userLists.isEmpty()) {
             eventDisplayError.setValue(
                     getStringResource(R.string.error_msg_no_user_lists)

@@ -20,6 +20,7 @@ public final class Model implements IModelContract {
     private final ILocalStorageContract local;
     private final IRemoteStorageContract remote;
 
+
     private static volatile Model instance;
 
     public static IModelContract getInstance(Application application) {

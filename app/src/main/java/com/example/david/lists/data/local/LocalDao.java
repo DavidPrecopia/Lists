@@ -41,13 +41,13 @@ abstract class LocalDao {
 
     @Transaction
     void updateUserList(List<UserList> userLists) {
-        deleteUserList(MyUtil.getUserListsIds(userLists));
+        deleteUserLists(MyUtil.getUserListsIds(userLists));
         addUserList(userLists);
     }
 
     @Transaction
     void updateItem(List<Item> items) {
-        deleteItem(MyUtil.getItemIds(items));
+        deleteItems(MyUtil.getItemIds(items));
         addItem(items);
     }
 
@@ -63,11 +63,20 @@ abstract class LocalDao {
     abstract void renameItem(String itemId, String newTitle);
 
 
+    @Transaction
+    void deleteUserListsAndItemsTransaction(List<String> userListIds) {
+        deleteUserLists(userListIds);
+        deleteItemsByUserList(userListIds);
+    }
+
     @Query("DELETE FROM " + USER_LIST_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:userListIds)")
-    abstract void deleteUserList(List<String> userListIds);
+    abstract void deleteUserLists(List<String> userListIds);
 
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:itemIds)")
-    abstract void deleteItem(List<String> itemIds);
+    abstract void deleteItems(List<String> itemIds);
+
+    @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ITEM_USER_LIST_ID + " = (:userListIds)")
+    abstract void deleteItemsByUserList(List<String> userListIds);
 
 
     @Transaction

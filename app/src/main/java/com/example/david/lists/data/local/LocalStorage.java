@@ -14,6 +14,7 @@ public final class LocalStorage implements ILocalStorageContract {
 
     private final LocalDao dao;
 
+
     private static volatile LocalStorage instance;
 
     public static ILocalStorageContract getInstance(Application application) {
@@ -52,12 +53,12 @@ public final class LocalStorage implements ILocalStorageContract {
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        dao.deleteUserList(MyUtil.getUserListsIds(userLists));
+        dao.deleteUserListsAndItemsTransaction(MyUtil.getUserListsIds(userLists));
     }
 
     @Override
     public void deleteItems(List<Item> items) {
-        dao.deleteItem(MyUtil.getItemIds(items));
+        dao.deleteItems(MyUtil.getItemIds(items));
     }
 
 
