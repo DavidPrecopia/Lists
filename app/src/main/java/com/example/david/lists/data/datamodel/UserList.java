@@ -3,6 +3,7 @@ package com.example.david.lists.data.datamodel;
 import com.example.david.lists.data.local.LocalDatabaseConstants;
 import com.google.firebase.firestore.Exclude;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -30,15 +31,19 @@ public final class UserList {
     private int rowId;
 
     @ColumnInfo(name = FIELD_ID)
+    @NonNull
     private String id;
 
     @ColumnInfo(name = FIELD_USER_ID)
+    @NonNull
     private String userId;
 
     @ColumnInfo(name = FIELD_TITLE)
+    @NonNull
     private String title;
 
     @ColumnInfo(name = FIELD_POSITION)
+    @NonNull
     private int position;
 
 
