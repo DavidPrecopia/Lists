@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="error_msg_generic" translatable="false">An error has occurred</string>
-    <string name="error_msg_no_network_connection" translatable="false">No internet connection</string>
+    <string name="error_msg_generic">An error has occurred</string>
+    <string name="error_msg_no_network_connection">No internet connection</string>
 
-    <string name="error_msg_no_user_lists" translatable="false">No lists created</string>
-    <string name="error_msg_empty_list" translatable="false">List is empty</string>
+    <string name="error_msg_no_user_lists">No lists created</string>
+    <string name="error_msg_empty_list">List is empty</string>
 
-    <string name="error_invalid_action_undo_deletion">No recent deletions</string>
-    <string name="error_cannot_open_user_list">Cannot open a UserList from within a UserList</string>
+    <string name="error_invalid_action_undo_deletion" translatable="false">No recent deletions</string>
+    <string name="error_cannot_open_user_list" translatable="false">Cannot open a UserList from within a UserList</string>
 </resources>

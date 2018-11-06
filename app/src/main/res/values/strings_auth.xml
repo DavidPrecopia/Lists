@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="msg_welcome_user" translatable="false">Welcome!</string>
-    <string name="msg_sign_in_cancelled" translatable="false">Sign-in cancelled</string>
-    <string name="msg_successful_signed_out" translatable="false">Successfully signed-out</string>
+    <string name="msg_welcome_user">Welcome!</string>
+    <string name="msg_sign_in_cancelled">Sign-in cancelled</string>
+    <string name="msg_successful_signed_out">Successfully signed-out</string>
 
-    <string name="error_experienced_signing_out" translatable="false">An error occurred</string>
-    <string name="error_sign_in_when_not_anonymous">User should only be able to sign-in if they are anonymous</string>
+    <string name="error_experienced_signing_out">An error occurred</string>
+    <string name="error_sign_in_when_not_anonymous" translatable="false">User should only be able to sign-in if they are anonymous</string>
 </resources>
