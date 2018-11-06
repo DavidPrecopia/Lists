@@ -6,7 +6,4 @@
 
     <string name="error_experienced_signing_out" translatable="false">An error occurred</string>
     <string name="error_sign_in_when_not_anonymous">User should only be able to sign-in if they are anonymous</string>
-
-    <string name="auth_shared_pref_name">authentication_shared_preferences_name</string>
-    <string name="auth_shared_pref_key_new_sign_in">auth_shared_pref_key_sign_in</string>
 </resources>

@@ -55,7 +55,7 @@ public final class ItemViewModel extends AndroidViewModel
     private Observer<List<UserList>> modelObserver;
     private final SingleLiveEvent<Void> eventFinish;
 
-    private List<Item> tempItemList;
+    private final List<Item> tempItemList;
     private int tempItemPosition = -1;
 
     public ItemViewModel(@NonNull Application application, IModelContract model, String listId, String listTitle) {

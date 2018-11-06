@@ -3,7 +3,6 @@
 
     <string name="content_description_fab_add_list" translatable="false">Add a list</string>
     <string name="content_description_list_item_drag" translatable="false">Hold to drag</string>
-    <string name="content_description_list_item_edit" translatable="false">Edit name</string>
     <string name="content_description_list_overflow_menu" translatable="false">Overflow menu</string>
 
     <string name="message_list_deletion" translatable="false">List deleted</string>

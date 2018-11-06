@@ -52,7 +52,7 @@ public final class UserListViewModel extends AndroidViewModel
     private final SingleLiveEvent<Void> eventSignOut;
     private final SingleLiveEvent<Void> eventSignIn;
 
-    private List<UserList> tempUserLists;
+    private final List<UserList> tempUserLists;
     private int tempUserListPosition = -1;
 
     public UserListViewModel(@NonNull Application application, IModelContract model) {
