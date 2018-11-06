@@ -10,3 +10,4 @@
 .externalNativeBuild
 /app/google-services.json
 lists_keystore.jks
+keystore.properties
