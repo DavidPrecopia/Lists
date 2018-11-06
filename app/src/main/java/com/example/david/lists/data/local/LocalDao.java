@@ -75,7 +75,7 @@ abstract class LocalDao {
     @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ID + " IN (:itemIds)")
     abstract void deleteItems(List<String> itemIds);
 
-    @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ITEM_USER_LIST_ID + " = (:userListIds)")
+    @Query("DELETE FROM " + ITEM_TABLE_NAME + " WHERE " + FIELD_ITEM_USER_LIST_ID + " IN (:userListIds)")
     abstract void deleteItemsByUserList(List<String> userListIds);
 
 
