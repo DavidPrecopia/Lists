@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,8 @@ public class ListFragment extends Fragment
     private IViewModelContract viewModel;
     private FragmentListBinding binding;
 
+    private boolean displayUpNavigation;
+
     private static final String ARG_KEY_DISPLAYING = "displaying_key";
     private static final String ARG_KEY_DISPLAY_MENU = "display_menu_key";
 
@@ -60,11 +63,13 @@ public class ListFragment extends Fragment
         String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
         assert currentlyDisplaying != null;
         if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
+            displayUpNavigation = false;
             viewModel = UtilListViewModels.getUserListViewModel(
                     (ListActivity) getActivity(),
                     getActivity().getApplication()
             );
         } else if (currentlyDisplaying.equals(getStringResource(R.string.displaying_item))) {
+            displayUpNavigation = true;
             viewModel = UtilListViewModels.getItemViewModel(
                     this,
                     getActivity().getApplication()
@@ -146,8 +151,13 @@ public class ListFragment extends Fragment
     }
 
 
+    @SuppressLint("RestrictedApi")
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setDefaultDisplayHomeAsUpEnabled(displayUpNavigation);
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setDisplayHomeAsUpEnabled(displayUpNavigation);
     }
 
     private void initFab() {
