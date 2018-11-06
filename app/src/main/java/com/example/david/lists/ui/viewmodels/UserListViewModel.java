@@ -2,6 +2,7 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
@@ -102,7 +103,9 @@ public final class UserListViewModel extends AndroidViewModel
 
             @Override
             public void onError(Throwable t) {
-                Timber.e(t);
+                if (BuildConfig.DEBUG) {
+                    Timber.e(t);
+                }
                 eventDisplayError.setValue(
                         getStringResource(R.string.error_msg_generic)
                 );

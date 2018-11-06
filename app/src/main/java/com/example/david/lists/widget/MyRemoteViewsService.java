@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.model.IModelContract;
@@ -76,7 +77,9 @@ public class MyRemoteViewsService extends RemoteViewsService {
 
                 @Override
                 public void onError(Throwable t) {
-                    Timber.e(t);
+                    if (BuildConfig.DEBUG) {
+                        Timber.e(t);
+                    }
                 }
 
                 @Override

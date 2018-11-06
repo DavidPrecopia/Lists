@@ -16,6 +16,8 @@
 
 package com.example.david.lists.util;
 
+import com.example.david.lists.BuildConfig;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidx.annotation.MainThread;
@@ -49,7 +51,9 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     @Override
     public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {
         if (hasActiveObservers()) {
-            Timber.tag(TAG).w("Multiple observers registered but only one will be notified of changes.");
+            if (BuildConfig.DEBUG) {
+                Timber.tag(TAG).w("Multiple observers registered but only one will be notified of changes.");
+            }
         }
 
         // Observe the internal MutableLiveData

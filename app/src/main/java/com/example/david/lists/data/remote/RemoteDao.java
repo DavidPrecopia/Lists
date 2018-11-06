@@ -1,5 +1,6 @@
 package com.example.david.lists.data.remote;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -274,6 +275,8 @@ final class RemoteDao {
 
 
     private void onFailure(Exception exception) {
-        Timber.e(exception);
+        if (BuildConfig.DEBUG) {
+            Timber.e(exception);
+        }
     }
 }

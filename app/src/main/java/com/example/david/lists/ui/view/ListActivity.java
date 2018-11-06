@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
@@ -249,7 +250,9 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void failedToSignOut(Exception e) {
-        Timber.e(e);
+        if (BuildConfig.DEBUG) {
+            Timber.e(e);
+        }
         toastMessage(R.string.error_experienced_signing_out);
     }
 

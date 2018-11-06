@@ -2,6 +2,7 @@ package com.example.david.lists.data.remote;
 
 import android.app.Application;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.local.ILocalStorageContract;
@@ -130,7 +131,11 @@ public final class RemoteStorage implements IRemoteStorageContract {
         Completable.fromAction(() ->
                 localStorage.deleteUserLists(removed))
                 .doOnSubscribe(disposable -> eventDeleteUserLists.postValue(removed))
-                .doOnError(Timber::e)
+                .doOnError(throwable -> {
+                    if (BuildConfig.DEBUG) {
+                        Timber.e(throwable);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
@@ -269,6 +274,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     private void onFailure(Exception exception) {
-        Timber.e(exception);
+        if (BuildConfig.DEBUG) {
+            Timber.e(exception);
+        }
     }
 }
