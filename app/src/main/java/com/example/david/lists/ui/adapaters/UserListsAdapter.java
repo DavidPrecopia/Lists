@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.adapaters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +102,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             binding.tvTitle.setText(userList.getTitle());
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
             binding.ivDrag.setOnTouchListener(
                     getDragTouchListener(this, startDragListener)
