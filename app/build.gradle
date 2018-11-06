@@ -4,22 +4,16 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.david.lists"
-
         minSdkVersion 19
         targetSdkVersion 28
-
         versionCode 1
         versionName "1.0"
-
-        resConfigs "en"
         vectorDrawables.useSupportLibrary = true
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled true
-            // https://developer.android.com/studio/build/shrink-code#shrink-resources
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -41,13 +35,10 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     def androidLibraries = "1.0.0"
     def lifecycleExtensions = "2.0.0"
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // It appears that I do not need these.
-//    implementation "androidx.appcompat:appcompat:$androidLibraries"
-//    implementation "androidx.legacy:legacy-support-v4:$androidLibraries"
 
     implementation "com.google.android.material:material:$androidLibraries"
     implementation "androidx.recyclerview:recyclerview:$androidLibraries"

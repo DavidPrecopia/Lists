@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hint_add_user_list">List\'s name</string>
-    <string name="hint_add_item">Item\'s name</string>
-    <string name="hint_edit">Rename</string>
+    <string name="hint_add_user_list" translatable="false">List\'s name</string>
+    <string name="hint_add_item" translatable="false">Item\'s name</string>
+    <string name="hint_edit" translatable="false">Rename</string>
 
-    <string name="button_text_cancel">Cancel</string>
-    <string name="button_text_confirm_add">Add</string>
-    <string name="button_text_confirm_edit">Apply</string>
+    <string name="button_text_cancel" translatable="false">Cancel</string>
+    <string name="button_text_confirm_add" translatable="false">Add</string>
+    <string name="button_text_confirm_edit" translatable="false">Apply</string>
 
-    <string name="error_empty_title_text_field">Cannot be empty</string>
-    <string name="error_title_unchanged">Title is unchanged</string>
+    <string name="error_empty_title_text_field" translatable="false">Cannot be empty</string>
+    <string name="error_title_unchanged" translatable="false">Title is unchanged</string>
 </resources>

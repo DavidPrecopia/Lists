@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Lists</string>
+    <string name="app_name" translatable="false">Lists</string>
 
-    <string name="content_description_fab_add_list">Add a list</string>
-    <string name="content_description_list_item_drag">Hold to drag</string>
-    <string name="content_description_list_item_edit">Edit name</string>
-    <string name="content_description_list_overflow_menu">Overflow menu</string>
+    <string name="content_description_fab_add_list" translatable="false">Add a list</string>
+    <string name="content_description_list_item_drag" translatable="false">Hold to drag</string>
+    <string name="content_description_list_item_edit" translatable="false">Edit name</string>
+    <string name="content_description_list_overflow_menu" translatable="false">Overflow menu</string>
 
-    <string name="message_list_deletion">List deleted</string>
-    <string name="message_item_deletion">Item deleted</string>
-    <string name="message_undo">Undo</string>
+    <string name="message_list_deletion" translatable="false">List deleted</string>
+    <string name="message_item_deletion" translatable="false">Item deleted</string>
+    <string name="message_undo" translatable="false">Undo</string>
 
     <!--Used by multiple UI classes-->
     <string name="displaying_user_list">100</string>

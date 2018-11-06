@@ -8,7 +8,7 @@
     <string name="widget_key_intent_user_list_id">widget_intent_id_key</string>
     <string name="widget_key_intent_user_list_title">widget_intent_title_key</string>
 
-    <string name="title_widget_config_activity">Select a list</string>
+    <string name="title_widget_config_activity" translatable="false">Select a list</string>
 
-    <string name="content_description_widget_settings">content_description_widget_settings</string>
+    <string name="content_description_widget_settings" translatable="false">content_description_widget_settings</string>
 </resources>
