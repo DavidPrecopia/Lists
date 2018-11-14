@@ -3,6 +3,7 @@ package com.example.david.lists.util;
 import android.app.Application;
 
 import com.example.david.lists.BuildConfig;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,14 +15,29 @@ public final class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initTimber();
+        initLeakCanary();
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
+
+    private void initTimber() {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new NotLoggingTree());
         }
-
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
+
+    private void initLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+    }
+
 
     private class NotLoggingTree extends Timber.Tree {
         @Override
