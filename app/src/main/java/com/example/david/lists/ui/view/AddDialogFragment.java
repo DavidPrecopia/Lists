@@ -10,8 +10,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.DialogFragmentSharedBinding;
-
-import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
+import com.example.david.lists.util.UtilSoftKeyboard;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +44,6 @@ public final class AddDialogFragment extends DialogFragment {
         dialogListener = (AddDialogFragmentListener) getTargetFragment();
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_fragment_shared, container, false);
@@ -60,7 +58,7 @@ public final class AddDialogFragment extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        UIUtil.showKeyboardInDialog(getDialog(), binding.textInputEditText);
+        UtilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
     private void setHint() {
@@ -104,7 +102,7 @@ public final class AddDialogFragment extends DialogFragment {
 
     @Override
     public void dismiss() {
-        UIUtil.hideKeyboard(getContext(), binding.getRoot());
+        UtilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
         super.dismiss();
     }
 
