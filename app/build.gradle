@@ -62,10 +62,6 @@ dependencies {
     // LiveData and ViewModel
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensions"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensions"
-    // Room
-    implementation "androidx.room:room-runtime:$lifecycleExtensions"
-    annotationProcessor "androidx.room:room-compiler:$lifecycleExtensions"
-    implementation "androidx.room:room-rxjava2:$lifecycleExtensions"
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.5'

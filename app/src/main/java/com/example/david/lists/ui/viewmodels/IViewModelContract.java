@@ -34,8 +34,6 @@ public interface IViewModelContract {
 
     void signOut();
 
-    void successfullySignedOut();
-
     RecyclerView.Adapter getAdapter();
 
     ItemTouchHelper getItemTouchHelper();

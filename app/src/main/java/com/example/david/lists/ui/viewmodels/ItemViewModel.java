@@ -263,11 +263,6 @@ public final class ItemViewModel extends AndroidViewModel
         throwUnsupportedOperation("");
     }
 
-    @Override
-    public void successfullySignedOut() {
-        throwUnsupportedOperation("");
-    }
-
 
     @Override
     public RecyclerView.Adapter getAdapter() {

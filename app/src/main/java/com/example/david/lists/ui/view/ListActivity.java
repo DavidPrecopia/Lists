@@ -244,7 +244,6 @@ public class ListActivity extends AppCompatActivity {
 
     private void successfullySignedOut() {
         toastMessage(R.string.msg_successful_signed_out);
-        viewModel.successfullySignedOut();
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         verifyUser(false);
     }

@@ -30,6 +30,4 @@ public interface IModelContract {
     void updateItemPosition(Item item, int oldPosition, int newPosition);
 
     LiveData<List<UserList>> getEventUserListDeleted();
-
-    void clearLocalData();
 }

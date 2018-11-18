@@ -27,7 +27,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
         return new MyRemoteViewsFactory(
                 intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
-                Model.getInstance(getApplication()),
+                Model.getInstance(),
                 getApplication(),
                 AppWidgetManager.getInstance(getApplicationContext())
         );

@@ -8,9 +8,9 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 
 public interface IRemoteStorageContract {
-    UserList addUserList(UserList userList);
+    void addUserList(UserList userList);
 
-    Item addItem(Item item);
+    void addItem(Item item);
 
     void deleteUserLists(List<UserList> userList);
 

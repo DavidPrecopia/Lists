@@ -1,67 +1,31 @@
 package com.example.david.lists.data.datamodel;
 
-import com.example.david.lists.data.local.LocalDatabaseConstants;
-import com.google.firebase.firestore.Exclude;
-
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
-import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
-
 /**
  * Field names need to match the constants in {@link DataModelFieldConstants}.
  */
-@Entity(tableName = LocalDatabaseConstants.USER_LIST_TABLE_NAME,
-        indices = {@Index(value = FIELD_ID, unique = true),
-                @Index(FIELD_POSITION)
-        }
-)
 public final class UserList {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = COLUMN_ROW_ID)
-    private int rowId;
-
-    @ColumnInfo(name = FIELD_ID)
-    @NonNull
     private String id;
 
-    @ColumnInfo(name = FIELD_USER_ID)
-    @NonNull
     private String userId;
 
-    @ColumnInfo(name = FIELD_TITLE)
-    @NonNull
     private String title;
 
-    @ColumnInfo(name = FIELD_POSITION)
-    @NonNull
     private int position;
 
 
-    public UserList(int rowId, String id, String userId, String title, int position) {
-        this.rowId = rowId;
+    public UserList(String id, String userId, String title, int position) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.position = position;
     }
 
-    @Ignore
     public UserList(String title, int position) {
         this.title = title;
         this.position = position;
     }
 
-    @Ignore
     public UserList(String id, String userId, UserList userList) {
         this.id = id;
         this.userId = userId;
@@ -69,15 +33,9 @@ public final class UserList {
         this.position = userList.position;
     }
 
-    @Ignore
     public UserList() {
     }
 
-
-    @Exclude
-    public int getRowId() {
-        return rowId;
-    }
 
     public String getId() {
         return id;

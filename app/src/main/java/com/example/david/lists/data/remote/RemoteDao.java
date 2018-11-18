@@ -92,18 +92,16 @@ final class RemoteDao {
     }
 
 
-    UserList addUserList(UserList userList) {
+    void addUserList(UserList userList) {
         DocumentReference documentRef = userListsCollection.document();
         UserList newUserList = new UserList(documentRef.getId(), getUserId(), userList);
         add(documentRef, newUserList);
-        return newUserList;
     }
 
-    Item addItem(Item item) {
+    void addItem(Item item) {
         DocumentReference documentRef = itemsCollection.document();
         Item newItem = new Item(documentRef.getId(), getUserId(), item);
         add(documentRef, newItem);
-        return newItem;
     }
 
     private void add(DocumentReference documentRef, Object object) {
@@ -112,10 +110,6 @@ final class RemoteDao {
     }
 
 
-    /**
-     * Batch deletion of {@link UserList} and {@link Item} are separate
-     * so I can easily refactor to Cloud Functions down the road.
-     */
     void deleteUserLists(List<UserList> userLists) {
         List<String> userListIds = batchDeleteUserLists(userLists);
         prepareToBatchDeleteItems(userListIds);

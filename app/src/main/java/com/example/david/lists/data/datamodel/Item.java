@@ -1,60 +1,22 @@
 package com.example.david.lists.data.datamodel;
 
-import com.example.david.lists.data.local.LocalDatabaseConstants;
-import com.google.firebase.firestore.Exclude;
-
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
-import static com.example.david.lists.data.local.LocalDatabaseConstants.COLUMN_ROW_ID;
-
 /**
  * Field names need to match the constants in {@link DataModelFieldConstants}.
  */
-@Entity(tableName = LocalDatabaseConstants.ITEM_TABLE_NAME,
-        indices = {@Index(value = FIELD_ID, unique = true),
-                @Index(FIELD_POSITION),
-                @Index(FIELD_ITEM_USER_LIST_ID)
-        })
-
 public final class Item {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = COLUMN_ROW_ID)
-    private int rowId;
-
-    @ColumnInfo(name = FIELD_ID)
-    @NonNull
     private String id;
 
-    @ColumnInfo(name = FIELD_USER_ID)
-    @NonNull
     private String userId;
 
-    @ColumnInfo(name = FIELD_TITLE)
-    @NonNull
     private String title;
 
-    @ColumnInfo(name = FIELD_POSITION)
-    @NonNull
     private int position;
 
-    @ColumnInfo(name = FIELD_ITEM_USER_LIST_ID)
-    @NonNull
     private String userListId;
 
 
-    public Item(int rowId, String id, String userId, String title, int position, String userListId) {
-        this.rowId = rowId;
+    public Item(String id, String userId, String title, int position, String userListId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -62,14 +24,12 @@ public final class Item {
         this.userListId = userListId;
     }
 
-    @Ignore
     public Item(String title, int position, String userListId) {
         this.title = title;
         this.position = position;
         this.userListId = userListId;
     }
 
-    @Ignore
     public Item(String id, String userId, Item item) {
         this.id = id;
         this.userId = userId;
@@ -78,15 +38,9 @@ public final class Item {
         this.userListId = item.userListId;
     }
 
-    @Ignore
     public Item() {
     }
 
-
-    @Exclude
-    public int getRowId() {
-        return rowId;
-    }
 
     public String getId() {
         return id;

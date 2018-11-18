@@ -23,7 +23,7 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
     public UtilViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
-        this.model = Model.getInstance(application);
+        this.model = Model.getInstance();
     }
 
     @NonNull

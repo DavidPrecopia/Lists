@@ -1,11 +1,7 @@
 package com.example.david.lists.data.model;
 
-import android.app.Application;
-
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.local.ILocalStorageContract;
-import com.example.david.lists.data.local.LocalStorage;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
 import com.example.david.lists.data.remote.RemoteStorage;
 
@@ -17,79 +13,70 @@ import io.reactivex.Flowable;
 
 public final class Model implements IModelContract {
 
-    private final ILocalStorageContract local;
     private final IRemoteStorageContract remote;
 
 
     private static volatile Model instance;
 
-    public static IModelContract getInstance(Application application) {
+    public static IModelContract getInstance() {
         if (instance == null) {
             synchronized (Model.class) {
-                instance = new Model(application);
+                instance = new Model();
             }
         }
         return instance;
     }
 
-    private Model(Application application) {
-        local = LocalStorage.getInstance(application);
-        remote = RemoteStorage.getInstance(application);
+    private Model() {
+        remote = RemoteStorage.getInstance();
     }
 
 
     @Override
     public Flowable<List<UserList>> getAllLists() {
-        return local.getAllUserLists();
+        return null;
     }
 
+    // TODO Initialize a Snapshot listener for Items
     @Override
     public Flowable<List<Item>> getUserListItems(String userListId) {
-        return local.getAllItems(userListId);
+        return null;
     }
 
 
     @Override
     public void addUserList(UserList userList) {
         validateObject(userList);
-        local.addUserList(
-                Collections.singletonList(remote.addUserList(userList))
-        );
+        remote.addUserList(userList);
     }
 
     @Override
     public void addItem(Item item) {
         validateObject(item);
-        local.addItems(
-                Collections.singletonList(remote.addItem(item))
-        );
+        remote.addItem(item);
     }
 
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
         validateList(userLists);
-        local.deleteUserLists(userLists);
         remote.deleteUserLists(userLists);
     }
 
     @Override
     public void deleteItems(List<Item> items) {
         validateList(items);
-        local.deleteItems(items);
         remote.deleteItems(items);
     }
 
 
     @Override
     public void renameUserList(String userListId, String newTitle) {
-        local.renameUserList(userListId, newTitle);
         remote.renameUserList(userListId, newTitle);
     }
 
     @Override
     public void renameItem(String itemId, String newTitle) {
-        local.renameItem(itemId, newTitle);
         remote.renameItem(itemId, newTitle);
     }
 
@@ -108,10 +95,8 @@ public final class Model implements IModelContract {
 
     private void processUserListPositionChange(UserList userList, int oldPosition, int newPosition) {
         if (shouldDecrement(oldPosition, newPosition)) {
-            local.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
             remote.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
         } else if (shouldIncrement(oldPosition, newPosition)) {
-            local.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
             remote.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
         }
     }
@@ -130,10 +115,8 @@ public final class Model implements IModelContract {
 
     private void processItemPositionChange(Item item, int oldPosition, int newPosition) {
         if (shouldDecrement(oldPosition, newPosition)) {
-            local.updateItemPositionsDecrement(item, oldPosition, newPosition);
             remote.updateItemPositionsDecrement(item, oldPosition, newPosition);
         } else if (shouldIncrement(oldPosition, newPosition)) {
-            local.updateItemPositionsIncrement(item, oldPosition, newPosition);
             remote.updateItemPositionsIncrement(item, oldPosition, newPosition);
         }
     }
@@ -180,11 +163,5 @@ public final class Model implements IModelContract {
 
     private void nullObjectException() {
         throw new IllegalArgumentException("Parameter cannot be null");
-    }
-
-
-    @Override
-    public void clearLocalData() {
-        local.deleteAllLocalStorage();
     }
 }

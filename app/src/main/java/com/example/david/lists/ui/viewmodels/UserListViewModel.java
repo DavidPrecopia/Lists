@@ -255,10 +255,6 @@ public final class UserListViewModel extends AndroidViewModel
         eventSignOut.call();
     }
 
-    @Override
-    public void successfullySignedOut() {
-        completableIoAccess(Completable.fromAction(model::clearLocalData));
-    }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
