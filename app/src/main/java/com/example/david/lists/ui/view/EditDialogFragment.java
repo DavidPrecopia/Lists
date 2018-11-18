@@ -103,7 +103,7 @@ public final class EditDialogFragment extends DialogFragment {
 
 
     private void processInput() {
-        String newTitle = binding.textInputEditText.getText().toString();
+        String newTitle = binding.textInputEditText.getText().toString().trim();
         if (emptyInput(newTitle)) {
             showError(getString(R.string.error_empty_title_text_field));
         } else if (titleUnchanged(newTitle)) {

@@ -90,7 +90,7 @@ public final class AddDialogFragment extends DialogFragment {
 
 
     private void processInput() {
-        String title = binding.textInputEditText.getText().toString();
+        String title = binding.textInputEditText.getText().toString().trim();
         if (emptyInput(title)) {
             showError();
         } else {
