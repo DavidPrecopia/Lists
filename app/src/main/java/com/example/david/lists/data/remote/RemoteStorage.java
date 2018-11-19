@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import androidx.lifecycle.LiveData;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
 import timber.log.Timber;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
@@ -38,7 +40,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
-    // TODO Update when UserList is deleted
     private final SingleLiveEvent<List<UserList>> eventDeleteUserLists;
 
 
@@ -67,34 +68,52 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public Flowable<List<UserList>> getUserLists() {
         return Flowable.create(
-                emitter -> userListsCollection
-                        .whereEqualTo(FIELD_USER_ID, getUserId())
-                        .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
-                            if (e != null) {
-                                emitter.onError(e);
-                                return;
-                            }
-                            emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
-                        }),
+                this::userListQuerySnapshot,
                 BackpressureStrategy.BUFFER
         );
+    }
+
+    private ListenerRegistration userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
+        return userListsCollection
+                .whereEqualTo(FIELD_USER_ID, getUserId())
+                .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        emitter.onError(e);
+                        return;
+                    } else if (queryDocumentSnapshots == null) {
+                        if (BuildConfig.DEBUG) {
+                            Timber.e("QueryDocumentSnapshot is null");
+                        }
+                        return;
+                    }
+                    emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
+                });
     }
 
     @Override
     public Flowable<List<Item>> getItems(String userListId) {
         return Flowable.create(
-                emitter -> itemsCollection
-                        .whereEqualTo(FIELD_USER_ID, getUserId())
-                        .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                        .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
-                            if (e != null) {
-                                emitter.onError(e);
-                                return;
-                            }
-                            emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
-                        }),
+                emitter -> itemQuerySnapshot(emitter, userListId),
                 BackpressureStrategy.BUFFER
         );
+    }
+
+    private ListenerRegistration itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
+        return itemsCollection
+                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
+                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        emitter.onError(e);
+                        return;
+                    } else if (queryDocumentSnapshots == null) {
+                        if (BuildConfig.DEBUG) {
+                            Timber.e("QueryDocumentSnapshot is null");
+                        }
+                        return;
+                    }
+                    emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
+                });
     }
 
 

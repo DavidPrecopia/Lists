@@ -22,14 +22,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
-
-import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 public final class UserListViewModel extends AndroidViewModel
         implements IViewModelContract,
@@ -147,9 +144,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        completableIoAccess(Completable.fromAction(() ->
-                model.addUserList(new UserList(title, this.userLists.size())))
-        );
+        model.addUserList(new UserList(title, this.userLists.size()));
     }
 
 
@@ -162,12 +157,10 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public void movedPermanently(int newPosition) {
         UserList userList = userLists.get(newPosition);
-        completableIoAccess(Completable.fromAction(() ->
-                model.updateUserListPosition(
-                        userList,
-                        userList.getPosition(),
-                        newPosition
-                ))
+        model.updateUserListPosition(
+                userList,
+                userList.getPosition(),
+                newPosition
         );
     }
 
@@ -179,9 +172,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(String listId, String newTitle) {
-        completableIoAccess(Completable.fromAction(() ->
-                model.renameUserList(listId, newTitle))
-        );
+        model.renameUserList(listId, newTitle);
     }
 
 
@@ -226,9 +217,7 @@ public final class UserListViewModel extends AndroidViewModel
             return;
         }
         List<UserList> userLists = new ArrayList<>(tempUserLists);
-        completableIoAccess(Completable.fromAction(() ->
-                model.deleteUserLists(userLists)
-        ));
+        model.deleteUserLists(userLists);
         tempUserLists.clear();
     }
 

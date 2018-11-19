@@ -23,14 +23,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
-
-import static com.example.david.lists.util.UtilRxJava.completableIoAccess;
 
 public final class ItemViewModel extends AndroidViewModel
         implements IViewModelContract,
@@ -163,9 +160,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        completableIoAccess(Completable.fromAction(() ->
-                model.addItem(new Item(title, itemList.size(), this.listId)))
-        );
+        model.addItem(new Item(title, itemList.size(), this.listId));
     }
 
 
@@ -178,12 +173,10 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void movedPermanently(int newPosition) {
         Item item = itemList.get(newPosition);
-        completableIoAccess(Completable.fromAction(() ->
-                model.updateItemPosition(
-                        item,
-                        item.getPosition(),
-                        newPosition
-                ))
+        model.updateItemPosition(
+                item,
+                item.getPosition(),
+                newPosition
         );
     }
 
@@ -195,9 +188,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(String idemId, String newTitle) {
-        completableIoAccess(Completable.fromAction(() ->
-                model.renameItem(idemId, newTitle))
-        );
+        model.renameItem(idemId, newTitle);
     }
 
 
@@ -241,9 +232,7 @@ public final class ItemViewModel extends AndroidViewModel
             return;
         }
         List<Item> items = new ArrayList<>(tempItemList);
-        completableIoAccess(Completable.fromAction(() ->
-                model.deleteItems(items)
-        ));
+        model.deleteItems(items);
         tempItemList.clear();
     }
 
