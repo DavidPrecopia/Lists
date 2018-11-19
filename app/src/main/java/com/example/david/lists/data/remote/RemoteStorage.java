@@ -35,7 +35,6 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
-import static com.example.david.lists.util.UtilUser.getUserId;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
@@ -84,6 +83,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
             }
         });
     }
+
 
     @Override
     public Flowable<List<UserList>> getUserLists() {
@@ -325,6 +325,11 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private DocumentReference getItemDocument(String itemId) {
         return itemsCollection.document(itemId);
+    }
+
+
+    private String getUserId() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
 
