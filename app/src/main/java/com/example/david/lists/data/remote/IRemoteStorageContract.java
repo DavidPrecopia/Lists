@@ -6,8 +6,13 @@ import com.example.david.lists.data.datamodel.UserList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import io.reactivex.Flowable;
 
 public interface IRemoteStorageContract {
+    Flowable<List<UserList>> getUserLists();
+
+    Flowable<List<Item>> getItems(String userListId);
+
     void addUserList(UserList userList);
 
     void addItem(Item item);

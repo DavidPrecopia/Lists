@@ -5,7 +5,6 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
 import com.example.david.lists.data.remote.RemoteStorage;
 
-import java.util.Collections;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -34,13 +33,12 @@ public final class Model implements IModelContract {
 
     @Override
     public Flowable<List<UserList>> getAllLists() {
-        return null;
+        return remote.getUserLists();
     }
 
-    // TODO Initialize a Snapshot listener for Items
     @Override
     public Flowable<List<Item>> getUserListItems(String userListId) {
-        return null;
+        return remote.getItems(userListId);
     }
 
 

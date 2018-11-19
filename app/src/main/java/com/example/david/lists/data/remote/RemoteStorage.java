@@ -6,12 +6,11 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
@@ -21,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 import androidx.lifecycle.LiveData;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import timber.log.Timber;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
@@ -61,6 +62,39 @@ public final class RemoteStorage implements IRemoteStorageContract {
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
 
         eventDeleteUserLists = new SingleLiveEvent<>();
+    }
+
+    @Override
+    public Flowable<List<UserList>> getUserLists() {
+        return Flowable.create(
+                emitter -> userListsCollection
+                        .whereEqualTo(FIELD_USER_ID, getUserId())
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
+                            if (e != null) {
+                                emitter.onError(e);
+                                return;
+                            }
+                            emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
+                        }),
+                BackpressureStrategy.BUFFER
+        );
+    }
+
+    @Override
+    public Flowable<List<Item>> getItems(String userListId) {
+        return Flowable.create(
+                emitter -> itemsCollection
+                        .whereEqualTo(FIELD_USER_ID, getUserId())
+                        .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
+                            if (e != null) {
+                                emitter.onError(e);
+                                return;
+                            }
+                            emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
+                        }),
+                BackpressureStrategy.BUFFER
+        );
     }
 
 
