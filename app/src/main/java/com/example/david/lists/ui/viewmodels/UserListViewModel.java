@@ -94,15 +94,14 @@ public final class UserListViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
+                if (BuildConfig.DEBUG) Timber.i("onNext");
                 updateUserList(userLists);
                 updateUi();
             }
 
             @Override
             public void onError(Throwable t) {
-                if (BuildConfig.DEBUG) {
-                    Timber.e(t);
-                }
+                if (BuildConfig.DEBUG) Timber.e(t);
                 eventDisplayError.setValue(
                         getStringResource(R.string.error_msg_generic)
                 );

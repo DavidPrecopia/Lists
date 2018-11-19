@@ -4,10 +4,13 @@ import com.example.david.lists.BuildConfig;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -40,6 +43,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
+    private ListenerRegistration userListsSnapshotListener;
+    private ListenerRegistration itemsSnapshotListener;
+
     private final SingleLiveEvent<List<UserList>> eventDeleteUserLists;
 
 
@@ -61,8 +67,22 @@ public final class RemoteStorage implements IRemoteStorageContract {
         );
         userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
         itemsCollection = firestore.collection(ITEMS_COLLECTION);
-
         eventDeleteUserLists = new SingleLiveEvent<>();
+
+        init();
+    }
+
+    private void init() {
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            if (UtilUser.signedOut()) {
+                if (userListsSnapshotListener != null) {
+                    userListsSnapshotListener.remove();
+                }
+                if (itemsSnapshotListener != null) {
+                    itemsSnapshotListener.remove();
+                }
+            }
+        });
     }
 
     @Override
@@ -73,22 +93,26 @@ public final class RemoteStorage implements IRemoteStorageContract {
         );
     }
 
-    private ListenerRegistration userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
-        return userListsCollection
+    private void userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
+        this.userListsSnapshotListener = userListsCollection
                 .whereEqualTo(FIELD_USER_ID, getUserId())
-                .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        emitter.onError(e);
-                        return;
-                    } else if (queryDocumentSnapshots == null) {
-                        if (BuildConfig.DEBUG) {
-                            Timber.e("QueryDocumentSnapshot is null");
-                        }
-                        return;
-                    }
-                    emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
-                });
+                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                .addSnapshotListener(MetadataChanges.INCLUDE, getUserListSnapshot(emitter));
     }
+
+    private EventListener<QuerySnapshot> getUserListSnapshot(FlowableEmitter<List<UserList>> emitter) {
+        return (queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                emitter.onError(e);
+                return;
+            } else if (queryDocumentSnapshots == null) {
+                if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
+                return;
+            }
+            emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
+        };
+    }
+
 
     @Override
     public Flowable<List<Item>> getItems(String userListId) {
@@ -98,22 +122,24 @@ public final class RemoteStorage implements IRemoteStorageContract {
         );
     }
 
-    private ListenerRegistration itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
-        return itemsCollection
+    private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
+        this.itemsSnapshotListener = itemsCollection
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, (queryDocumentSnapshots, e) -> {
-                    if (e != null) {
-                        emitter.onError(e);
-                        return;
-                    } else if (queryDocumentSnapshots == null) {
-                        if (BuildConfig.DEBUG) {
-                            Timber.e("QueryDocumentSnapshot is null");
-                        }
-                        return;
-                    }
-                    emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
-                });
+                .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
+    }
+
+    private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {
+        return (queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                emitter.onError(e);
+                return;
+            } else if (queryDocumentSnapshots == null) {
+                if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
+                return;
+            }
+            emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
+        };
     }
 
 
@@ -309,8 +335,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     private void onFailure(Exception exception) {
-        if (BuildConfig.DEBUG) {
-            Timber.e(exception);
-        }
+        if (BuildConfig.DEBUG) Timber.e(exception);
     }
 }

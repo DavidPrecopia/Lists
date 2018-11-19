@@ -2,6 +2,7 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
 
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
@@ -108,13 +109,14 @@ public final class ItemViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
+                if (BuildConfig.DEBUG) Timber.i("onNext");
                 updaterItemsList(itemList);
                 updateUi();
             }
 
             @Override
             public void onError(Throwable t) {
-                Timber.e(t);
+                if (BuildConfig.DEBUG) Timber.e(t);
                 eventDisplayError.setValue(
                         getStringResource(R.string.error_msg_generic)
                 );
