@@ -26,7 +26,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import timber.log.Timber;
 
 public class MyListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
@@ -74,7 +73,6 @@ public class MyListFragment extends Fragment
 
     private void initViewModel() {
         String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
-        assert currentlyDisplaying != null;
         if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
             displayUpNavigation = false;
             viewModel = UtilListViewModels.getUserListViewModel(
@@ -161,7 +159,6 @@ public class MyListFragment extends Fragment
 
     private void observeEventFinish() {
         viewModel.getEventFinish().observe(this, aVoid -> {
-            Timber.d("Event finished");
             getActivity().getSupportFragmentManager().popBackStack();
         });
     }

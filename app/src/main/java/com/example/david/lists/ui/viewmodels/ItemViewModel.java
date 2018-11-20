@@ -267,8 +267,8 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public LiveData<UserList> getEventOpenUserList() {
-        cannotOpenUserListException();
-        return null;
+        return new LiveData<UserList>() {
+        };
     }
 
     @Override
@@ -298,14 +298,14 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public LiveData<Void> getEventSignOut() {
-        throwUnsupportedOperation("");
-        return null;
+        return new LiveData<Void>() {
+        };
     }
 
     @Override
     public LiveData<Void> getEventSignIn() {
-        throwUnsupportedOperation("");
-        return null;
+        return new LiveData<Void>() {
+        };
     }
 
     @Override
