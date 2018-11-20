@@ -26,7 +26,7 @@
 -keep public class com.firebase.ui.auth.data.client.AuthUiInitProvider
 -keep public class com.google.firebase.iid.FirebaseInstanceIdService
 -keep public class androidx.lifecycle.ProcessLifecycleOwnerInitializer
--keep public class com.example.david.lists.ui.view.ListActivity
+-keep public class com.example.david.lists.ui.view.MainActivity
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigActivity
 -keep public class com.example.david.lists.widget.MyAppWidgetProvider
 -keepclassmembers class com.example.david.lists.data.datamodel.** { *; }

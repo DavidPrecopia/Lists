@@ -28,7 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
-public class ListFragment extends Fragment
+public class MyListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener {
 
@@ -52,11 +52,11 @@ public class ListFragment extends Fragment
     private static final String ARG_KEY_DISPLAYING = "displaying_key";
     private static final String ARG_KEY_DISPLAY_MENU = "display_menu_key";
 
-    public ListFragment() {
+    public MyListFragment() {
     }
 
-    static ListFragment newInstance(String displaying, boolean displayOverflowMenu) {
-        ListFragment fragment = new ListFragment();
+    static MyListFragment newInstance(String displaying, boolean displayOverflowMenu) {
+        MyListFragment fragment = new MyListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_DISPLAYING, displaying);
         bundle.putBoolean(ARG_KEY_DISPLAY_MENU, displayOverflowMenu);

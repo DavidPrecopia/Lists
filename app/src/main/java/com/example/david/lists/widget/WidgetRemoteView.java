@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
-import com.example.david.lists.ui.view.ListActivity;
+import com.example.david.lists.ui.view.MainActivity;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
@@ -48,7 +48,7 @@ public final class WidgetRemoteView {
 
 
     private void setTitlePendingIntent() {
-        Intent intent = new Intent(context, ListActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         putTitleIntentExtras(intent);
         remoteViews.setOnClickPendingIntent(
                 R.id.widget_tv_title,

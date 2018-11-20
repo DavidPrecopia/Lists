@@ -31,7 +31,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
-public class ListActivity extends AppCompatActivity implements ListFragment.ListFragmentListener {
+public class MainActivity extends AppCompatActivity implements MyListFragment.ListFragmentListener {
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
@@ -115,15 +115,15 @@ public class ListActivity extends AppCompatActivity implements ListFragment.List
     }
 
 
-    private ListFragment getUserListFragment() {
-        return ListFragment.newInstance(
+    private MyListFragment getUserListFragment() {
+        return MyListFragment.newInstance(
                 getString(R.string.displaying_user_list),
                 true
         );
     }
 
-    private ListFragment getItemFragment() {
-        return ListFragment.newInstance(getString(R.string.displaying_item), false);
+    private MyListFragment getItemFragment() {
+        return MyListFragment.newInstance(getString(R.string.displaying_item), false);
     }
 
 
@@ -141,10 +141,10 @@ public class ListActivity extends AppCompatActivity implements ListFragment.List
     @Override
     public void messages(int message) {
         switch (message) {
-            case ListFragment.ListFragmentListener.SIGN_OUT:
+            case MyListFragment.ListFragmentListener.SIGN_OUT:
                 signOut();
                 break;
-            case ListFragment.ListFragmentListener.SIGN_IN:
+            case MyListFragment.ListFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:
