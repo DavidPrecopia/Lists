@@ -5,6 +5,7 @@
       <w>firebase</w>
       <w>firestore</w>
       <w>remoteviews</w>
+      <w>snackbar</w>
     </words>
   </dictionary>
 </component>

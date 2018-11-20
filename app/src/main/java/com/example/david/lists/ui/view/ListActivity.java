@@ -11,8 +11,6 @@ import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
-import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilUser;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -33,9 +31,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
-public class ListActivity extends AppCompatActivity {
-
-    private IViewModelContract viewModel;
+public class ListActivity extends AppCompatActivity implements ListFragment.ListFragmentListener {
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
@@ -67,19 +63,7 @@ public class ListActivity extends AppCompatActivity {
 
     private void initLayout() {
         showFragment();
-        initViewModel();
-        observeViewModel();
         initView();
-    }
-
-    private void initViewModel() {
-        viewModel = UtilListViewModels.getUserListViewModel(this, getApplication());
-    }
-
-    private void observeViewModel() {
-        viewModel.getEventOpenUserList().observe(this, this::openUserList);
-        viewModel.getEventSignOut().observe(this, aVoid -> signOut());
-        viewModel.getEventSignIn().observe(this, aVoid -> signIn());
     }
 
     private void initView() {
@@ -105,12 +89,6 @@ public class ListActivity extends AppCompatActivity {
                 widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
         );
         addFragment(getItemFragment());
-    }
-
-
-    private void openUserList(UserList userList) {
-        saveUserListDetails(userList.getId(), userList.getTitle());
-        addFragmentToBackStack(getItemFragment());
     }
 
     private void saveUserListDetails(String id, String title) {
@@ -157,6 +135,27 @@ public class ListActivity extends AppCompatActivity {
     private void hideFragment() {
         binding.fragmentHolder.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void messages(int message) {
+        switch (message) {
+            case ListFragment.ListFragmentListener.SIGN_OUT:
+                signOut();
+                break;
+            case ListFragment.ListFragmentListener.SIGN_IN:
+                signIn();
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public void openUserList(UserList userList) {
+        saveUserListDetails(userList.getId(), userList.getTitle());
+        addFragmentToBackStack(getItemFragment());
     }
 
 
@@ -244,14 +243,14 @@ public class ListActivity extends AppCompatActivity {
 
     private void successfullySignedOut() {
         toastMessage(R.string.msg_successful_signed_out);
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        verifyUser(false);
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+        verifyUser(true);
     }
 
     private void failedToSignOut(Exception e) {
-        if (BuildConfig.DEBUG) {
-            Timber.e(e);
-        }
+        if (BuildConfig.DEBUG) Timber.e(e);
         toastMessage(R.string.error_experienced_signing_out);
     }
 
@@ -263,10 +262,10 @@ public class ListActivity extends AppCompatActivity {
 
 
     private void toastMessage(int stringResId) {
-        Toast.makeText(this, stringResId, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, stringResId, Toast.LENGTH_SHORT).show();
     }
 
     private void toastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

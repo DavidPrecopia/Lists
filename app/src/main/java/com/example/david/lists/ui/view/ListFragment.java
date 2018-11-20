@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
@@ -31,7 +32,19 @@ public class ListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener {
 
+
+    interface ListFragmentListener {
+        int SIGN_OUT = 100;
+        int SIGN_IN = 200;
+
+        void messages(int message);
+
+        void openUserList(UserList userList);
+    }
+
+
     private IViewModelContract viewModel;
+    private ListFragmentListener listFragmentListener;
     private FragmentListBinding binding;
 
     private boolean displayUpNavigation;
@@ -65,7 +78,7 @@ public class ListFragment extends Fragment
         if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
             displayUpNavigation = false;
             viewModel = UtilListViewModels.getUserListViewModel(
-                    (ListActivity) getActivity(),
+                    this,
                     getActivity().getApplication()
             );
         } else if (currentlyDisplaying.equals(getStringResource(R.string.displaying_item))) {
@@ -86,6 +99,7 @@ public class ListFragment extends Fragment
     }
 
     private void initView() {
+        this.listFragmentListener = (ListFragmentListener) getActivity();
         observeViewModel();
         initRecyclerView();
         initToolbar();
@@ -100,7 +114,18 @@ public class ListFragment extends Fragment
         observeEventAdd();
         observeEventEdit();
         observeEventFinish();
+        observeAccountEvents();
     }
+
+    private void observeAccountEvents() {
+        viewModel.getEventOpenUserList().observe(this, userList ->
+                listFragmentListener.openUserList(userList));
+        viewModel.getEventSignOut().observe(this, aVoid ->
+                listFragmentListener.messages(ListFragmentListener.SIGN_OUT));
+        viewModel.getEventSignIn().observe(this, aVoid ->
+                listFragmentListener.messages(ListFragmentListener.SIGN_IN));
+    }
+
 
     private void observeToolbarTitle() {
         viewModel.getToolbarTitle().observe(this, title ->
