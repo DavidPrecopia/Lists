@@ -19,7 +19,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +31,6 @@ import timber.log.Timber;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
@@ -162,41 +160,11 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        List<String> userListIds = batchDeleteUserLists(userLists);
-        prepareToBatchDeleteItems(userListIds);
-    }
-
-    private List<String> batchDeleteUserLists(List<UserList> userLists) {
-        List<String> userListIds = new ArrayList<>();
-
         WriteBatch writeBatch = firestore.batch();
         for (UserList userList : userLists) {
-            String id = userList.getId();
-            userListIds.add(id);
-            writeBatch.delete(getUserListDocument(id));
+            writeBatch.delete(getUserListDocument(userList.getId()));
         }
         writeBatch.commit().addOnFailureListener(this::onFailure);
-
-        return userListIds;
-    }
-
-    private void prepareToBatchDeleteItems(List<String> userListIds) {
-        for (String userListId : userListIds) {
-            getItemCollection(userListId)
-                    .whereEqualTo(FIELD_USER_ID, getUserId())
-                    .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
-                    .get()
-                    .addOnSuccessListener(this::batchDeleteItems)
-                    .addOnFailureListener(this::onFailure);
-        }
-    }
-
-    private void batchDeleteItems(QuerySnapshot queryDocumentSnapshots) {
-        WriteBatch batch = firestore.batch();
-        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-            batch.delete(snapshot.getReference());
-        }
-        batch.commit().addOnFailureListener(this::onFailure);
     }
 
     @Override
@@ -244,7 +212,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
         return userListsCollection
-                .whereEqualTo(FIELD_USER_ID, getUserId())
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
     }
@@ -270,7 +237,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
         return getItemCollection(userListId)
-                .whereEqualTo(FIELD_USER_ID, getUserId())
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
