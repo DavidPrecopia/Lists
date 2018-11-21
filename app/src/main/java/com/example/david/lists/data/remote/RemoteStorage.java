@@ -34,13 +34,13 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_USER_ID;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
-    private final CollectionReference itemsCollection;
 
     private ListenerRegistration userListsSnapshotListener;
     private ListenerRegistration itemsSnapshotListener;
@@ -64,8 +64,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .setTimestampsInSnapshotsEnabled(true)
                 .build()
         );
-        userListsCollection = firestore.collection(USER_LISTS_COLLECTION);
-        itemsCollection = firestore.collection(ITEMS_COLLECTION);
+        userListsCollection = firestore.collection(USER_COLLECTION).document(getUserId()).collection(USER_LISTS_COLLECTION);
         eventDeleteUserLists = new SingleLiveEvent<>();
 
         init();
@@ -95,7 +94,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private void userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
         this.userListsSnapshotListener = userListsCollection
-                .whereEqualTo(FIELD_USER_ID, getUserId())
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getUserListSnapshot(emitter));
     }
@@ -123,8 +121,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
-        this.itemsSnapshotListener = itemsCollection
-                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
+        this.itemsSnapshotListener = getItemCollection(userListId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
     }
@@ -152,7 +149,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void addItem(Item item) {
-        DocumentReference documentRef = itemsCollection.document();
+        DocumentReference documentRef = getItemCollection(item.getUserListId()).document();
         Item newItem = new Item(documentRef.getId(), getUserId(), item);
         add(documentRef, newItem);
     }
@@ -185,7 +182,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private void prepareToBatchDeleteItems(List<String> userListIds) {
         for (String userListId : userListIds) {
-            itemsCollection
+            getItemCollection(userListId)
                     .whereEqualTo(FIELD_USER_ID, getUserId())
                     .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                     .get()
@@ -206,7 +203,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void deleteItems(List<Item> items) {
         WriteBatch batch = firestore.batch();
         for (Item item : items) {
-            batch.delete(getItemDocument(item.getId()));
+            batch.delete(getItemDocument(item.getUserListId(), item.getId()));
         }
         batch.commit().addOnFailureListener(this::onFailure);
     }
@@ -220,8 +217,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     @Override
-    public void renameItem(String itemId, String newName) {
-        getItemDocument(itemId)
+    public void renameItem(String userListId, String itemId, String newName) {
+        getItemDocument(userListId, itemId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
     }
@@ -257,7 +254,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
                 getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                decrementPositions(getItemDocument(item.getId()), newPosition)
+                decrementPositions(getItemDocument(item.getUserListId(), item.getId()), newPosition)
         );
     }
 
@@ -265,14 +262,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
                 getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                incrementPositions(getItemDocument(item.getId()), newPosition)
+                incrementPositions(getItemDocument(item.getUserListId(),item.getId()), newPosition)
         );
     }
 
     private Query getItemsUpdatePositionsQuery(String userListId, int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return itemsCollection
+        return getItemCollection(userListId)
                 .whereEqualTo(FIELD_USER_ID, getUserId())
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
@@ -323,8 +320,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return userListsCollection.document(userListId);
     }
 
-    private DocumentReference getItemDocument(String itemId) {
-        return itemsCollection.document(itemId);
+    private DocumentReference getItemDocument(String userListId, String itemId) {
+        return getItemCollection(userListId).document(itemId);
+    }
+
+    private CollectionReference getItemCollection(String userListId) {
+        return userListsCollection.document(userListId).collection(ITEMS_COLLECTION);
     }
 
 

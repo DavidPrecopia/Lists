@@ -23,7 +23,7 @@ public interface IModelContract {
 
     void renameUserList(String userListId, String newName);
 
-    void renameItem(String itemId, String newName);
+    void renameItem(String userListId, String itemId, String newName);
 
     void updateUserListPosition(UserList userList, int oldPosition, int newPosition);
 

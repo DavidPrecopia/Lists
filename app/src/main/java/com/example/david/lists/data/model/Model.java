@@ -74,8 +74,8 @@ public final class Model implements IModelContract {
     }
 
     @Override
-    public void renameItem(String itemId, String newTitle) {
-        remote.renameItem(itemId, newTitle);
+    public void renameItem(String userListId, String itemId, String newTitle) {
+        remote.renameItem(userListId, itemId, newTitle);
     }
 
 

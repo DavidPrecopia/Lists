@@ -184,8 +184,8 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public void changeTitle(String idemId, String newTitle) {
-        model.renameItem(idemId, newTitle);
+    public void changeTitle(EditingInfo editingInfo, String newTitle) {
+        model.renameItem(editingInfo.getUserListId(), editingInfo.getId(), newTitle);
     }
 
 

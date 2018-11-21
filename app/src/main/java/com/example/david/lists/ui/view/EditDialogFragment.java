@@ -109,7 +109,7 @@ public final class EditDialogFragment extends DialogFragment {
         } else if (titleUnchanged(newTitle)) {
             showError(getString(R.string.error_title_unchanged));
         } else {
-            dialogListener.edit(editingInfo.getId(), newTitle);
+            dialogListener.edit(editingInfo, newTitle);
             dismiss();
         }
     }
@@ -136,6 +136,6 @@ public final class EditDialogFragment extends DialogFragment {
 
 
     public interface EditDialogFragmentListener {
-        void edit(String id, String newTitle);
+        void edit(EditingInfo editingInfo, String newTitle);
     }
 }

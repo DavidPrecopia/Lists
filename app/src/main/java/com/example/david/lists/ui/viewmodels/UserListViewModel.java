@@ -170,8 +170,8 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     @Override
-    public void changeTitle(String listId, String newTitle) {
-        model.renameUserList(listId, newTitle);
+    public void changeTitle(EditingInfo editingInfo, String newTitle) {
+        model.renameUserList(editingInfo.getId(), newTitle);
     }
 
 

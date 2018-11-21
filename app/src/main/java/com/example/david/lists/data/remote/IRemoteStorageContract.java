@@ -23,7 +23,7 @@ public interface IRemoteStorageContract {
 
     void renameUserList(String userListId, String newName);
 
-    void renameItem(String itemId, String newName);
+    void renameItem(String userListId, String itemId, String newName);
 
     void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition);
 
