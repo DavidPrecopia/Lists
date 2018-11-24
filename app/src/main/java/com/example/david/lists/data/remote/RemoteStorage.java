@@ -39,6 +39,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
+    private final CollectionReference itemsCollection;
 
     private ListenerRegistration userListsSnapshotListener;
     private ListenerRegistration itemsSnapshotListener;
@@ -62,7 +63,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .setTimestampsInSnapshotsEnabled(true)
                 .build()
         );
-        userListsCollection = firestore.collection(USER_COLLECTION).document(getUserId()).collection(USER_LISTS_COLLECTION);
+        DocumentReference userDoc = firestore.collection(USER_COLLECTION).document(getUserId());
+        userListsCollection = userDoc.collection(USER_LISTS_COLLECTION);
+        itemsCollection = userDoc.collection(ITEMS_COLLECTION);
         eventDeleteUserLists = new SingleLiveEvent<>();
 
         init();
@@ -119,7 +122,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
     private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
-        this.itemsSnapshotListener = getItemCollection(userListId)
+        this.itemsSnapshotListener = itemsCollection
+                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
     }
@@ -147,7 +151,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void addItem(Item item) {
-        DocumentReference documentRef = getItemCollection(item.getUserListId()).document();
+        DocumentReference documentRef = itemsCollection.document();
         Item newItem = new Item(documentRef.getId(), getUserId(), item);
         add(documentRef, newItem);
     }
@@ -171,7 +175,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void deleteItems(List<Item> items) {
         WriteBatch batch = firestore.batch();
         for (Item item : items) {
-            batch.delete(getItemDocument(item.getUserListId(), item.getId()));
+            batch.delete(getItemDocument(item.getId()));
         }
         batch.commit().addOnFailureListener(this::onFailure);
     }
@@ -186,7 +190,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void renameItem(String userListId, String itemId, String newName) {
-        getItemDocument(userListId, itemId)
+        getItemDocument(itemId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
     }
@@ -221,7 +225,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
                 getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                decrementPositions(getItemDocument(item.getUserListId(), item.getId()), newPosition)
+                decrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
 
@@ -229,14 +233,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
                 getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
-                incrementPositions(getItemDocument(item.getUserListId(),item.getId()), newPosition)
+                incrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
 
     private Query getItemsUpdatePositionsQuery(String userListId, int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return getItemCollection(userListId)
+        return itemsCollection
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
@@ -286,12 +290,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return userListsCollection.document(userListId);
     }
 
-    private DocumentReference getItemDocument(String userListId, String itemId) {
-        return getItemCollection(userListId).document(itemId);
-    }
-
-    private CollectionReference getItemCollection(String userListId) {
-        return userListsCollection.document(userListId).collection(ITEMS_COLLECTION);
+    private DocumentReference getItemDocument(String itemId) {
+        return itemsCollection.document(itemId);
     }
 
 
