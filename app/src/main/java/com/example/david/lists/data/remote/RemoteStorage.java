@@ -145,14 +145,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void addGroup(Group group) {
         DocumentReference documentRef = groupsCollection.document();
-        Group newGroup = new Group(documentRef.getId(), getUserId(), group);
+        Group newGroup = new Group(documentRef.getId(), group);
         add(documentRef, newGroup);
     }
 
     @Override
     public void addItem(Item item) {
         DocumentReference documentRef = itemsCollection.document();
-        Item newItem = new Item(documentRef.getId(), getUserId(), item);
+        Item newItem = new Item(documentRef.getId(), item);
         add(documentRef, newItem);
     }
 
