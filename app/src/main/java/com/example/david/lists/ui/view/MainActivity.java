@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.util.UtilUser;
 import com.firebase.ui.auth.AuthUI;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
             processIntentExtras(getIntent().getExtras());
         }
         if (newActivity) {
-            addFragment(getUserListFragment());
+            addFragment(getGroupFragment());
         }
     }
 
@@ -84,18 +84,18 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     }
 
     private void processWidgetBundle(Bundle widgetBundle) {
-        saveUserListDetails(
+        saveGroupDetails(
                 widgetBundle.getString(getIntentKeyId(getApplicationContext())),
                 widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
         );
         addFragment(getItemFragment());
     }
 
-    private void saveUserListDetails(String id, String title) {
+    private void saveGroupDetails(String id, String title) {
         SharedPreferences.Editor editor =
                 getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
-        editor.putString(getString(R.string.key_shared_pref_user_list_id), id);
-        editor.putString(getString(R.string.key_shared_pref_user_list_title), title);
+        editor.putString(getString(R.string.key_shared_pref_group_id), id);
+        editor.putString(getString(R.string.key_shared_pref_group_title), title);
         editor.apply();
     }
 
@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     }
 
 
-    private MyListFragment getUserListFragment() {
+    private MyListFragment getGroupFragment() {
         return MyListFragment.newInstance(
-                getString(R.string.displaying_user_list),
+                getString(R.string.displaying_group),
                 true
         );
     }
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     }
 
     @Override
-    public void openUserList(UserList userList) {
-        saveUserListDetails(userList.getId(), userList.getTitle());
+    public void openGroup(Group group) {
+        saveGroupDetails(group.getId(), group.getTitle());
         addFragmentToBackStack(getItemFragment());
     }
 

@@ -5,9 +5,9 @@ import android.app.Application;
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.ui.adapaters.UserListsAdapter;
+import com.example.david.lists.ui.adapaters.GroupAdapter;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilUser;
@@ -28,20 +28,20 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
-public final class UserListViewModel extends AndroidViewModel
+public final class GroupViewModel extends AndroidViewModel
         implements IViewModelContract,
         ItemTouchHelperCallback.IStartDragListener {
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
-    private final List<UserList> userLists;
-    private final UserListsAdapter adapter;
+    private final List<Group> groupList;
+    private final GroupAdapter adapter;
     private final ItemTouchHelper touchHelper;
 
     private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<UserList> eventOpenUserList;
+    private final SingleLiveEvent<Group> eventOpenGroup;
     private final SingleLiveEvent<String> eventDisplayError;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<String> eventAdd;
@@ -50,18 +50,18 @@ public final class UserListViewModel extends AndroidViewModel
     private final SingleLiveEvent<Void> eventSignOut;
     private final SingleLiveEvent<Void> eventSignIn;
 
-    private final List<UserList> tempUserLists;
-    private int tempUserListPosition = -1;
+    private final List<Group> tempGroups;
+    private int tempGroupPosition = -1;
 
-    public UserListViewModel(@NonNull Application application, IModelContract model) {
+    public GroupViewModel(@NonNull Application application, IModelContract model) {
         super(application);
         this.model = model;
         disposable = new CompositeDisposable();
-        adapter = new UserListsAdapter(this, this);
+        adapter = new GroupAdapter(this, this);
         touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
-        userLists = new ArrayList<>();
+        groupList = new ArrayList<>();
         toolbarTitle = new MutableLiveData<>();
-        eventOpenUserList = new SingleLiveEvent<>();
+        eventOpenGroup = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
@@ -70,7 +70,7 @@ public final class UserListViewModel extends AndroidViewModel
         eventSignOut = new SingleLiveEvent<>();
         eventSignIn = new SingleLiveEvent<>();
 
-        this.tempUserLists = new ArrayList<>();
+        this.tempGroups = new ArrayList<>();
 
         init();
     }
@@ -78,24 +78,24 @@ public final class UserListViewModel extends AndroidViewModel
     private void init() {
         toolbarTitle.setValue(getStringResource(R.string.app_name));
         eventDisplayLoading.setValue(true);
-        getAllUserLists();
+        getAllGroups();
     }
 
 
-    private void getAllUserLists() {
-        disposable.add(model.getAllLists()
+    private void getAllGroups() {
+        disposable.add(model.getAllGroups()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(userListsSubscriber())
+                .subscribeWith(groupsSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<UserList>> userListsSubscriber() {
-        return new DisposableSubscriber<List<UserList>>() {
+    private DisposableSubscriber<List<Group>> groupsSubscriber() {
+        return new DisposableSubscriber<List<Group>>() {
             @Override
-            public void onNext(List<UserList> userLists) {
+            public void onNext(List<Group> groups) {
                 if (BuildConfig.DEBUG) Timber.i("onNext");
-                updateUserList(userLists);
+                updateGroupList(groups);
                 updateUi();
             }
 
@@ -114,51 +114,51 @@ public final class UserListViewModel extends AndroidViewModel
         };
     }
 
-    private void updateUserList(List<UserList> userLists) {
-        this.userLists.clear();
-        this.userLists.addAll(userLists);
+    private void updateGroupList(List<Group> groups) {
+        this.groupList.clear();
+        this.groupList.addAll(groups);
     }
 
     private void updateUi() {
-        if (userLists.isEmpty()) {
+        if (groupList.isEmpty()) {
             eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_no_user_lists)
+                    getStringResource(R.string.error_msg_no_groups)
             );
         } else {
             eventDisplayLoading.setValue(false);
         }
-        adapter.swapData(userLists);
+        adapter.swapData(groupList);
     }
 
 
     @Override
-    public void userListClicked(UserList userList) {
-        eventOpenUserList.setValue(userList);
+    public void groupClicked(Group group) {
+        eventOpenGroup.setValue(group);
     }
 
     @Override
     public void addButtonClicked() {
-        eventAdd.setValue(getStringResource(R.string.hint_add_user_list));
+        eventAdd.setValue(getStringResource(R.string.hint_add_group));
     }
 
     @Override
     public void add(String title) {
-        model.addUserList(new UserList(title, this.userLists.size()));
+        model.addGroup(new Group(title, this.groupList.size()));
     }
 
 
     @Override
     public void dragging(int fromPosition, int toPosition) {
-        Collections.swap(userLists, fromPosition, toPosition);
+        Collections.swap(groupList, fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
     }
 
     @Override
     public void movedPermanently(int newPosition) {
-        UserList userList = userLists.get(newPosition);
-        model.updateUserListPosition(
-                userList,
-                userList.getPosition(),
+        Group group = groupList.get(newPosition);
+        model.updateGroupPosition(
+                group,
+                group.getPosition(),
                 newPosition
         );
     }
@@ -166,20 +166,20 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void edit(int position) {
-        eventEdit.setValue(new EditingInfo(userLists.get(position)));
+        eventEdit.setValue(new EditingInfo(groupList.get(position)));
     }
 
     @Override
     public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        model.renameUserList(editingInfo.getId(), newTitle);
+        model.renameGroup(editingInfo.getId(), newTitle);
     }
 
 
     @Override
     public void delete(int position) {
         adapter.remove(position);
-        tempUserLists.add(userLists.get(position));
-        tempUserListPosition = position;
+        tempGroups.add(groupList.get(position));
+        tempGroupPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_list_deletion)
@@ -193,7 +193,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void undoRecentDeletion() {
-        if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
+        if (tempGroups.isEmpty() || tempGroupPosition < 0) {
             throw new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
             );
@@ -202,22 +202,22 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     private void reAdd() {
-        int lastDeletedPosition = tempUserLists.size() - 1;
+        int lastDeletedPosition = tempGroups.size() - 1;
         adapter.reAdd(
-                tempUserListPosition,
-                tempUserLists.get(lastDeletedPosition)
+                tempGroupPosition,
+                tempGroups.get(lastDeletedPosition)
         );
-        tempUserLists.remove(lastDeletedPosition);
+        tempGroups.remove(lastDeletedPosition);
     }
 
     @Override
     public void deletionNotificationTimedOut() {
-        if (tempUserLists.isEmpty()) {
+        if (tempGroups.isEmpty()) {
             return;
         }
-        List<UserList> userLists = new ArrayList<>(tempUserLists);
-        model.deleteUserLists(userLists);
-        tempUserLists.clear();
+        List<Group> groups = new ArrayList<>(tempGroups);
+        model.deleteGroups(groups);
+        tempGroups.clear();
     }
 
 
@@ -260,8 +260,8 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<UserList> getEventOpenUserList() {
-        return eventOpenUserList;
+    public LiveData<Group> getEventOpenGroup() {
+        return eventOpenGroup;
     }
 
     @Override

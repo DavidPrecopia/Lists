@@ -13,12 +13,12 @@ public class UtilWidgetKeys {
     }
 
     public static String getSharedPrefKeyId(Context context, int appWidgetId) {
-        return context.getString(R.string.widget_key_shared_pref_user_list_id)
+        return context.getString(R.string.widget_key_shared_pref_group_id)
                 + appWidgetId;
     }
 
     public static String getSharedPrefKeyTitle(Context context, int appWidgetId) {
-        return context.getString(R.string.widget_key_shared_pref_user_list_title)
+        return context.getString(R.string.widget_key_shared_pref_group_title)
                 + appWidgetId;
     }
 
@@ -28,10 +28,10 @@ public class UtilWidgetKeys {
     }
 
     public static String getIntentKeyId(Context context) {
-        return context.getString(R.string.widget_key_intent_user_list_id);
+        return context.getString(R.string.widget_key_intent_group_id);
     }
 
     public static String getIntentKeyTitle(Context context) {
-        return context.getString(R.string.widget_key_intent_user_list_title);
+        return context.getString(R.string.widget_key_intent_group_title);
     }
 }

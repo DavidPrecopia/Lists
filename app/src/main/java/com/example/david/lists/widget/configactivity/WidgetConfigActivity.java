@@ -9,7 +9,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
 import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilViewModelFactory;
@@ -83,7 +83,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     private void observeViewModel() {
         observeEventDisplayingLoading();
         observeEventDisplayError();
-        observeEventUserListSelected();
+        observeEventGroupSelected();
     }
 
     private void observeEventDisplayingLoading() {
@@ -100,13 +100,13 @@ public class WidgetConfigActivity extends AppCompatActivity {
         viewModel.getEventDisplayError().observe(this, this::showError);
     }
 
-    private void observeEventUserListSelected() {
-        viewModel.getEventOpenUserList().observe(this, this::applySelection);
+    private void observeEventGroupSelected() {
+        viewModel.getEventSelectGroup().observe(this, this::applySelection);
     }
 
 
-    private void applySelection(UserList userList) {
-        saveDetails(userList.getId(), userList.getTitle());
+    private void applySelection(Group group) {
+        saveDetails(group.getId(), group.getTitle());
         resultsIntent(RESULT_OK);
         updateWidget();
         finish();

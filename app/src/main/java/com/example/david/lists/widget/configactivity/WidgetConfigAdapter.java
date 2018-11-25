@@ -4,7 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.WidgetListItemBinding;
 
 import java.util.ArrayList;
@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter.WidgetConfigViewHolder> {
 
-    private final List<UserList> userLists;
+    private final List<Group> groups;
 
     private final IWidgetConfigViewModelContract viewModel;
 
     WidgetConfigAdapter(IWidgetConfigViewModelContract viewModel) {
-        this.userLists = new ArrayList<>();
+        this.groups = new ArrayList<>();
         this.viewModel = viewModel;
     }
 
@@ -34,17 +34,17 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
 
     @Override
     public void onBindViewHolder(@NonNull WidgetConfigViewHolder holder, int position) {
-        holder.bindView(userLists.get(holder.getAdapterPosition()));
+        holder.bindView(groups.get(holder.getAdapterPosition()));
     }
 
     @Override
     public int getItemCount() {
-        return userLists.size();
+        return groups.size();
     }
 
-    void swapData(List<UserList> newUserLists) {
-        userLists.clear();
-        userLists.addAll(newUserLists);
+    void swapData(List<Group> newGroups) {
+        groups.clear();
+        groups.addAll(newGroups);
         notifyDataSetChanged();
     }
 
@@ -60,14 +60,14 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
             binding.getRoot().setOnClickListener(this);
         }
 
-        private void bindView(UserList userList) {
-            binding.widgetListItemTvTitle.setText(userList.getTitle());
+        private void bindView(Group group) {
+            binding.widgetListItemTvTitle.setText(group.getTitle());
         }
 
         @Override
         public void onClick(View v) {
-            viewModel.userListClicked(
-                    userLists.get(getAdapterPosition())
+            viewModel.groupClicked(
+                    groups.get(getAdapterPosition())
             );
         }
     }

@@ -3,7 +3,7 @@ package com.example.david.lists.widget.configactivity;
 import android.app.Application;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
 
 import java.util.ArrayList;
@@ -26,21 +26,21 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
-    private final List<UserList> userLists;
+    private final List<Group> groups;
     private final WidgetConfigAdapter adapter;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final MutableLiveData<UserList> eventOpenUserList;
+    private final MutableLiveData<Group> eventSelectedGroup;
     private final MutableLiveData<String> eventDisplayError;
 
     public WidgetConfigViewModel(@NonNull Application application, IModelContract model) {
         super(application);
         this.model = model;
         disposable = new CompositeDisposable();
-        userLists = new ArrayList<>();
+        groups = new ArrayList<>();
         adapter = new WidgetConfigAdapter(this);
         eventDisplayLoading = new MutableLiveData<>();
-        eventOpenUserList = new MutableLiveData<>();
+        eventSelectedGroup = new MutableLiveData<>();
         eventDisplayError = new MutableLiveData<>();
 
         init();
@@ -48,23 +48,23 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
     private void init() {
         eventDisplayLoading.setValue(true);
-        getAllUserLists();
+        getGroups();
     }
 
 
-    private void getAllUserLists() {
-        disposable.add(model.getAllLists()
+    private void getGroups() {
+        disposable.add(model.getAllGroups()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(userListsSubscriber())
+                .subscribeWith(groupsSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<UserList>> userListsSubscriber() {
-        return new DisposableSubscriber<List<UserList>>() {
+    private DisposableSubscriber<List<Group>> groupsSubscriber() {
+        return new DisposableSubscriber<List<Group>>() {
             @Override
-            public void onNext(List<UserList> userLists) {
-                updateUserList(userLists);
+            public void onNext(List<Group> groups) {
+                updateGroupList(groups);
                 updateUi();
             }
 
@@ -83,27 +83,26 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         };
     }
 
-    private void updateUserList(List<UserList> userLists) {
-        Timber.d("updateUserList");
-        this.userLists.clear();
-        this.userLists.addAll(userLists);
+    private void updateGroupList(List<Group> groups) {
+        this.groups.clear();
+        this.groups.addAll(groups);
     }
 
     private void updateUi() {
-        if (userLists.isEmpty()) {
+        if (groups.isEmpty()) {
             eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_no_user_lists)
+                    getStringResource(R.string.error_msg_no_groups)
             );
         } else {
-            adapter.swapData(userLists);
+            adapter.swapData(groups);
             eventDisplayLoading.setValue(false);
         }
     }
 
 
     @Override
-    public void userListClicked(UserList userList) {
-        eventOpenUserList.setValue(userList);
+    public void groupClicked(Group group) {
+        eventSelectedGroup.setValue(group);
     }
 
 
@@ -118,8 +117,8 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<UserList> getEventOpenUserList() {
-        return eventOpenUserList;
+    public LiveData<Group> getEventSelectGroup() {
+        return eventSelectedGroup;
     }
 
     @Override

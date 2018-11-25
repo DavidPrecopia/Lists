@@ -6,28 +6,25 @@ package com.example.david.lists.data.datamodel;
 public final class Item {
 
     private String id;
-
     private String userId;
-
     private String title;
-
     private int position;
 
-    private String userListId;
+    private String groupId;
 
 
-    public Item(String id, String userId, String title, int position, String userListId) {
+    public Item(String id, String userId, String title, int position, String groupId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.position = position;
-        this.userListId = userListId;
+        this.groupId = groupId;
     }
 
-    public Item(String title, int position, String userListId) {
+    public Item(String title, int position, String groupId) {
         this.title = title;
         this.position = position;
-        this.userListId = userListId;
+        this.groupId = groupId;
     }
 
     public Item(String id, String userId, Item item) {
@@ -35,7 +32,7 @@ public final class Item {
         this.userId = userId;
         this.title = item.title;
         this.position = item.position;
-        this.userListId = item.userListId;
+        this.groupId = item.groupId;
     }
 
     public Item() {
@@ -58,7 +55,7 @@ public final class Item {
         return position;
     }
 
-    public String getUserListId() {
-        return userListId;
+    public String getGroupId() {
+        return groupId;
     }
 }

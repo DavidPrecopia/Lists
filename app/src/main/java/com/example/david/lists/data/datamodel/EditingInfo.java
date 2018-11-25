@@ -5,24 +5,20 @@ import android.os.Parcelable;
 
 /**
  * This provides a uniform way to pass information about an
- * {@link UserList} or {@link Item} that is being edited.
+ * {@link Group} or {@link Item} that is being edited.
  */
 public final class EditingInfo implements Parcelable {
     private final String id;
     private final String title;
-    private final String userListId;
 
-
-    public EditingInfo(UserList userList) {
-        this.id = userList.getId();
-        this.title = userList.getTitle();
-        this.userListId = userList.getId();
+    public EditingInfo(Group group) {
+        this.id = group.getId();
+        this.title = group.getTitle();
     }
 
     public EditingInfo(Item item) {
         this.id = item.getId();
         this.title = item.getTitle();
-        this.userListId = item.getUserListId();
     }
 
 
@@ -34,17 +30,12 @@ public final class EditingInfo implements Parcelable {
         return title;
     }
 
-    public String getUserListId() {
-        return userListId;
-    }
-
 
     // Parcelable implementation below
 
     private EditingInfo(Parcel in) {
         id = in.readString();
         title = in.readString();
-        userListId = in.readString();
     }
 
     public static final Creator<EditingInfo> CREATOR = new Creator<EditingInfo>() {
@@ -68,6 +59,5 @@ public final class EditingInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(title);
-        dest.writeString(userListId);
     }
 }

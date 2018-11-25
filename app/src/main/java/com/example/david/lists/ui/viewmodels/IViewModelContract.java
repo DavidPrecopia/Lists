@@ -1,14 +1,14 @@
 package com.example.david.lists.ui.viewmodels;
 
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public interface IViewModelContract {
-    void userListClicked(UserList userList);
+    void groupClicked(Group group);
 
     void addButtonClicked();
 
@@ -40,7 +40,7 @@ public interface IViewModelContract {
 
     LiveData<String> getToolbarTitle();
 
-    LiveData<UserList> getEventOpenUserList();
+    LiveData<Group> getEventOpenGroup();
 
     LiveData<Boolean> getEventDisplayLoading();
 

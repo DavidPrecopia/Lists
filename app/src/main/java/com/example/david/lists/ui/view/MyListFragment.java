@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.FragmentListBinding;
 import com.example.david.lists.ui.viewmodels.IViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
@@ -38,7 +38,7 @@ public class MyListFragment extends Fragment
 
         void messages(int message);
 
-        void openUserList(UserList userList);
+        void openGroup(Group group);
     }
 
 
@@ -73,9 +73,9 @@ public class MyListFragment extends Fragment
 
     private void initViewModel() {
         String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
-        if (currentlyDisplaying.equals(getStringResource(R.string.displaying_user_list))) {
+        if (currentlyDisplaying.equals(getStringResource(R.string.displaying_group))) {
             displayUpNavigation = false;
-            viewModel = UtilListViewModels.getUserListViewModel(
+            viewModel = UtilListViewModels.getGroupViewModel(
                     this,
                     getActivity().getApplication()
             );
@@ -116,8 +116,8 @@ public class MyListFragment extends Fragment
     }
 
     private void observeAccountEvents() {
-        viewModel.getEventOpenUserList().observe(this, userList ->
-                listFragmentListener.openUserList(userList));
+        viewModel.getEventOpenGroup().observe(this, group ->
+                listFragmentListener.openGroup(group));
         viewModel.getEventSignOut().observe(this, aVoid ->
                 listFragmentListener.messages(ListFragmentListener.SIGN_OUT));
         viewModel.getEventSignIn().observe(this, aVoid ->

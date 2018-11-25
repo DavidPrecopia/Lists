@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import com.example.david.lists.R;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.data.model.Model;
+import com.example.david.lists.ui.viewmodels.GroupViewModel;
 import com.example.david.lists.ui.viewmodels.ItemViewModel;
-import com.example.david.lists.ui.viewmodels.UserListViewModel;
 import com.example.david.lists.widget.configactivity.WidgetConfigViewModel;
 
 import androidx.annotation.NonNull;
@@ -29,12 +29,12 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UserListViewModel.class)) {
+        if (modelClass.isAssignableFrom(GroupViewModel.class)) {
             //noinspection unchecked
-            return (T) new UserListViewModel(application, model);
+            return (T) new GroupViewModel(application, model);
         } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
             //noinspection unchecked
-            return (T) new ItemViewModel(application, model, getUserListId(), getListTitle());
+            return (T) new ItemViewModel(application, model, getGroupId(), getListTitle());
         } else if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
             //noinspection unchecked
             return (T) new WidgetConfigViewModel(application, model);
@@ -43,16 +43,16 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
     }
 
 
-    private String getUserListId() {
+    private String getGroupId() {
         return getSharedPreferences().getString(
-                getStringResource(R.string.key_shared_pref_user_list_id),
-                ""
+                getStringResource(R.string.key_shared_pref_group_id),
+                null
         );
     }
 
     private String getListTitle() {
         return getSharedPreferences().getString(
-                getStringResource(R.string.key_shared_pref_user_list_title),
+                getStringResource(R.string.key_shared_pref_group_title),
                 null
         );
     }

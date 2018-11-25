@@ -1,8 +1,8 @@
 package com.example.david.lists.data.remote;
 
 import com.example.david.lists.BuildConfig;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,23 +28,23 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import timber.log.Timber;
 
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_USER_LIST_ID;
+import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_GROUP_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.remote.RemoteDatabaseConstants.GROUPS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
 import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
     private final FirebaseFirestore firestore;
-    private final CollectionReference userListsCollection;
+    private final CollectionReference groupsCollection;
     private final CollectionReference itemsCollection;
 
-    private ListenerRegistration userListsSnapshotListener;
+    private ListenerRegistration groupsSnapshotListener;
     private ListenerRegistration itemsSnapshotListener;
 
-    private final SingleLiveEvent<List<UserList>> eventDeleteUserLists;
+    private final SingleLiveEvent<List<Group>> eventDeleteGroups;
 
 
     private static RemoteStorage instance;
@@ -64,9 +64,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .build()
         );
         DocumentReference userDoc = firestore.collection(USER_COLLECTION).document(getUserId());
-        userListsCollection = userDoc.collection(USER_LISTS_COLLECTION);
+        groupsCollection = userDoc.collection(GROUPS_COLLECTION);
         itemsCollection = userDoc.collection(ITEMS_COLLECTION);
-        eventDeleteUserLists = new SingleLiveEvent<>();
+        eventDeleteGroups = new SingleLiveEvent<>();
 
         init();
     }
@@ -74,8 +74,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
     private void init() {
         FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
             if (UtilUser.signedOut()) {
-                if (userListsSnapshotListener != null) {
-                    userListsSnapshotListener.remove();
+                if (groupsSnapshotListener != null) {
+                    groupsSnapshotListener.remove();
                 }
                 if (itemsSnapshotListener != null) {
                     itemsSnapshotListener.remove();
@@ -86,20 +86,20 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public Flowable<List<UserList>> getUserLists() {
+    public Flowable<List<Group>> getGroups() {
         return Flowable.create(
-                this::userListQuerySnapshot,
+                this::groupQuerySnapshot,
                 BackpressureStrategy.BUFFER
         );
     }
 
-    private void userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
-        this.userListsSnapshotListener = userListsCollection
+    private void groupQuerySnapshot(FlowableEmitter<List<Group>> emitter) {
+        this.groupsSnapshotListener = groupsCollection
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, getUserListSnapshot(emitter));
+                .addSnapshotListener(MetadataChanges.INCLUDE, getGroupSnapshotListener(emitter));
     }
 
-    private EventListener<QuerySnapshot> getUserListSnapshot(FlowableEmitter<List<UserList>> emitter) {
+    private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<Group>> emitter) {
         return (queryDocumentSnapshots, e) -> {
             if (e != null) {
                 emitter.onError(e);
@@ -108,22 +108,22 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
                 return;
             }
-            emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
+            emitter.onNext(queryDocumentSnapshots.toObjects(Group.class));
         };
     }
 
 
     @Override
-    public Flowable<List<Item>> getItems(String userListId) {
+    public Flowable<List<Item>> getItems(String groupId) {
         return Flowable.create(
-                emitter -> itemQuerySnapshot(emitter, userListId),
+                emitter -> itemQuerySnapshot(emitter, groupId),
                 BackpressureStrategy.BUFFER
         );
     }
 
-    private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
+    private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String groupId) {
         this.itemsSnapshotListener = itemsCollection
-                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
+                .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
     }
@@ -143,10 +143,10 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void addUserList(UserList userList) {
-        DocumentReference documentRef = userListsCollection.document();
-        UserList newUserList = new UserList(documentRef.getId(), getUserId(), userList);
-        add(documentRef, newUserList);
+    public void addGroup(Group group) {
+        DocumentReference documentRef = groupsCollection.document();
+        Group newGroup = new Group(documentRef.getId(), getUserId(), group);
+        add(documentRef, newGroup);
     }
 
     @Override
@@ -163,10 +163,10 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void deleteUserLists(List<UserList> userLists) {
+    public void deleteGroups(List<Group> groups) {
         WriteBatch writeBatch = firestore.batch();
-        for (UserList userList : userLists) {
-            writeBatch.delete(getUserListDocument(userList.getId()));
+        for (Group group : groups) {
+            writeBatch.delete(getGroupDocument(group.getId()));
         }
         writeBatch.commit().addOnFailureListener(this::onFailure);
     }
@@ -182,14 +182,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void renameUserList(String userListId, String newName) {
-        getUserListDocument(userListId)
+    public void renameGroup(String groupId, String newName) {
+        getGroupDocument(groupId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
     }
 
     @Override
-    public void renameItem(String userListId, String itemId, String newName) {
+    public void renameItem(String itemId, String newName) {
         getItemDocument(itemId)
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
@@ -197,25 +197,25 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void updateUserListPositionsDecrement(UserList userList, int oldPosition, int newPosition) {
+    public void updateGroupPositionsDecrement(Group group, int oldPosition, int newPosition) {
         updatePositions(
-                getUserListUpdatePositionsQuery(oldPosition, newPosition),
-                decrementPositions(getUserListDocument(userList.getId()), newPosition)
+                getGroupUpdatePositionsQuery(oldPosition, newPosition),
+                decrementPositions(getGroupDocument(group.getId()), newPosition)
         );
     }
 
     @Override
-    public void updateUserListPositionsIncrement(UserList userList, int oldPosition, int newPosition) {
+    public void updateGroupPositionsIncrement(Group group, int oldPosition, int newPosition) {
         updatePositions(
-                getUserListUpdatePositionsQuery(oldPosition, newPosition),
-                incrementPositions(getUserListDocument(userList.getId()), newPosition)
+                getGroupUpdatePositionsQuery(oldPosition, newPosition),
+                incrementPositions(getGroupDocument(group.getId()), newPosition)
         );
     }
 
-    private Query getUserListUpdatePositionsQuery(int oldPosition, int newPosition) {
+    private Query getGroupUpdatePositionsQuery(int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return userListsCollection
+        return groupsCollection
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
     }
@@ -224,7 +224,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
-                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
+                getItemsUpdatePositionsQuery(item.getGroupId(), oldPosition, newPosition),
                 decrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
@@ -232,16 +232,16 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
         updatePositions(
-                getItemsUpdatePositionsQuery(item.getUserListId(), oldPosition, newPosition),
+                getItemsUpdatePositionsQuery(item.getGroupId(), oldPosition, newPosition),
                 incrementPositions(getItemDocument(item.getId()), newPosition)
         );
     }
 
-    private Query getItemsUpdatePositionsQuery(String userListId, int oldPosition, int newPosition) {
+    private Query getItemsUpdatePositionsQuery(String groupId, int oldPosition, int newPosition) {
         int lowerPosition = getLowerPosition(oldPosition, newPosition);
         int higherPosition = getHigherPosition(oldPosition, newPosition);
         return itemsCollection
-                .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
+                .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
                 .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
                 .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
     }
@@ -286,8 +286,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
-    private DocumentReference getUserListDocument(String userListId) {
-        return userListsCollection.document(userListId);
+    private DocumentReference getGroupDocument(String groupId) {
+        return groupsCollection.document(groupId);
     }
 
     private DocumentReference getItemDocument(String itemId) {
@@ -301,8 +301,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public LiveData<List<UserList>> getEventUserListDeleted() {
-        return eventDeleteUserLists;
+    public LiveData<List<Group>> getEventGroupDeleted() {
+        return eventDeleteGroups;
     }
 
 

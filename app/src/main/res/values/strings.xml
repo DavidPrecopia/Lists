@@ -10,10 +10,10 @@
     <string name="message_undo">Undo</string>
 
     <!--Used by multiple UI classes-->
-    <string name="displaying_user_list" translatable="false">100</string>
+    <string name="displaying_group" translatable="false">100</string>
     <string name="displaying_item" translatable="false">200</string>
 
     <string name="key_shared_prefs_name" translatable="false">list_activity_shared_preferences_name</string>
-    <string name="key_shared_pref_user_list_title" translatable="false">user_list_title_key</string>
-    <string name="key_shared_pref_user_list_id" translatable="false">user_list_id_key</string>
+    <string name="key_shared_pref_group_title" translatable="false">group_title_key</string>
+    <string name="key_shared_pref_group_id" translatable="false">group_id_key</string>
 </resources>

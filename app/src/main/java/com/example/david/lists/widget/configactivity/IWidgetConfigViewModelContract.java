@@ -1,18 +1,18 @@
 package com.example.david.lists.widget.configactivity;
 
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Group;
 
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 interface IWidgetConfigViewModelContract {
-    void userListClicked(UserList userList);
+    void groupClicked(Group group);
 
     RecyclerView.Adapter getAdapter();
 
     LiveData<Boolean> getEventDisplayLoading();
 
-    LiveData<UserList> getEventOpenUserList();
+    LiveData<Group> getEventSelectGroup();
 
     LiveData<String> getEventDisplayError();
 }

@@ -5,8 +5,8 @@ import android.app.Application;
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.view.ItemTouchHelperCallback;
@@ -49,7 +49,7 @@ public final class ItemViewModel extends AndroidViewModel
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
-    private Observer<List<UserList>> modelObserver;
+    private Observer<List<Group>> modelObserver;
     private final SingleLiveEvent<Void> eventFinish;
 
     private final List<Item> tempItemList;
@@ -86,18 +86,18 @@ public final class ItemViewModel extends AndroidViewModel
 
     private void observeModel() {
         modelObserver = userLists -> {
-            for (UserList userList : userLists) {
-                if (userList.getId().equals(this.listId)) {
-                    Timber.i("Listening to User ID: %s", userList.getId());
+            for (Group group : userLists) {
+                if (group.getId().equals(this.listId)) {
+                    Timber.i("Listening to User ID: %s", group.getId());
                     eventFinish.call();
                 }
             }
         };
-        model.getEventUserListDeleted().observeForever(modelObserver);
+        model.getEventGroupDeleted().observeForever(modelObserver);
     }
 
     private void getItems() {
-        disposable.add(model.getUserListItems(listId)
+        disposable.add(model.getGroupItems(listId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListsSubscriber())
@@ -135,7 +135,7 @@ public final class ItemViewModel extends AndroidViewModel
     private void updateUi() {
         if (itemList.isEmpty()) {
             eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_empty_list)
+                    getStringResource(R.string.error_msg_empty_group)
             );
         } else {
             eventDisplayLoading.setValue(false);
@@ -145,7 +145,7 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
-    public void userListClicked(UserList userList) {
+    public void groupClicked(Group group) {
         cannotOpenUserListException();
     }
 
@@ -185,7 +185,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        model.renameItem(editingInfo.getUserListId(), editingInfo.getId(), newTitle);
+        model.renameItem(editingInfo.getId(), newTitle);
     }
 
 
@@ -266,8 +266,8 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<UserList> getEventOpenUserList() {
-        return new LiveData<UserList>() {
+    public LiveData<Group> getEventOpenGroup() {
+        return new LiveData<Group>() {
         };
     }
 
@@ -315,9 +315,7 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     private void cannotOpenUserListException() {
-        throwUnsupportedOperation(
-                getStringResource(R.string.error_cannot_open_user_list)
-        );
+        throwUnsupportedOperation("");
     }
 
     private void throwUnsupportedOperation(String message) {
@@ -332,6 +330,6 @@ public final class ItemViewModel extends AndroidViewModel
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
-        model.getEventUserListDeleted().removeObserver(modelObserver);
+        model.getEventGroupDeleted().removeObserver(modelObserver);
     }
 }

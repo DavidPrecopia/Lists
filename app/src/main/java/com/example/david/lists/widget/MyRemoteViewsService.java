@@ -25,7 +25,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new MyRemoteViewsFactory(
-                intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
+                intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_group_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
                 Model.getInstance(),
                 getApplication(),
@@ -37,7 +37,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
     private class MyRemoteViewsFactory implements RemoteViewsFactory {
 
         private final List<Item> itemList;
-        private final String userListId;
+        private final String groupId;
 
         private final IModelContract model;
         private final CompositeDisposable disposable;
@@ -46,10 +46,10 @@ public class MyRemoteViewsService extends RemoteViewsService {
         private final AppWidgetManager appWidgetManager;
         private final int widgetId;
 
-        MyRemoteViewsFactory(String userListId, int widgetId, IModelContract model, Application application, AppWidgetManager appWidgetManager) {
+        MyRemoteViewsFactory(String groupId, int widgetId, IModelContract model, Application application, AppWidgetManager appWidgetManager) {
             this.application = application;
             itemList = new ArrayList<>();
-            this.userListId = userListId;
+            this.groupId = groupId;
             this.model = model;
             this.disposable = new CompositeDisposable();
             this.appWidgetManager = appWidgetManager;
@@ -59,7 +59,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            disposable.add(model.getUserListItems(userListId)
+            disposable.add(model.getGroupItems(groupId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(itemListObserver())

@@ -1,7 +1,7 @@
 package com.example.david.lists.data.model;
 
+import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
 import com.example.david.lists.data.remote.RemoteStorage;
 
@@ -32,20 +32,20 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public Flowable<List<UserList>> getAllLists() {
-        return remote.getUserLists();
+    public Flowable<List<Group>> getAllGroups() {
+        return remote.getGroups();
     }
 
     @Override
-    public Flowable<List<Item>> getUserListItems(String userListId) {
-        return remote.getItems(userListId);
+    public Flowable<List<Item>> getGroupItems(String groupId) {
+        return remote.getItems(groupId);
     }
 
 
     @Override
-    public void addUserList(UserList userList) {
-        validateObject(userList);
-        remote.addUserList(userList);
+    public void addGroup(Group group) {
+        validateObject(group);
+        remote.addGroup(group);
     }
 
     @Override
@@ -56,9 +56,9 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void deleteUserLists(List<UserList> userLists) {
-        validateList(userLists);
-        remote.deleteUserLists(userLists);
+    public void deleteGroups(List<Group> groups) {
+        validateList(groups);
+        remote.deleteGroups(groups);
     }
 
     @Override
@@ -69,33 +69,33 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public void renameUserList(String userListId, String newTitle) {
-        remote.renameUserList(userListId, newTitle);
+    public void renameGroup(String groupId, String newTitle) {
+        remote.renameGroup(groupId, newTitle);
     }
 
     @Override
-    public void renameItem(String userListId, String itemId, String newTitle) {
-        remote.renameItem(userListId, itemId, newTitle);
+    public void renameItem(String itemId, String newTitle) {
+        remote.renameItem(itemId, newTitle);
     }
 
 
     @Override
-    public void updateUserListPosition(UserList userList, int oldPosition, int newPosition) {
+    public void updateGroupPosition(Group group, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
         } else {
-            validateObject(userList);
+            validateObject(group);
             validatePositions(oldPosition, newPosition);
         }
 
-        processUserListPositionChange(userList, oldPosition, newPosition);
+        processGroupPositionChange(group, oldPosition, newPosition);
     }
 
-    private void processUserListPositionChange(UserList userList, int oldPosition, int newPosition) {
+    private void processGroupPositionChange(Group group, int oldPosition, int newPosition) {
         if (shouldDecrement(oldPosition, newPosition)) {
-            remote.updateUserListPositionsDecrement(userList, oldPosition, newPosition);
+            remote.updateGroupPositionsDecrement(group, oldPosition, newPosition);
         } else if (shouldIncrement(oldPosition, newPosition)) {
-            remote.updateUserListPositionsIncrement(userList, oldPosition, newPosition);
+            remote.updateGroupPositionsIncrement(group, oldPosition, newPosition);
         }
     }
 
@@ -154,8 +154,8 @@ public final class Model implements IModelContract {
 
 
     @Override
-    public LiveData<List<UserList>> getEventUserListDeleted() {
-        return remote.getEventUserListDeleted();
+    public LiveData<List<Group>> getEventGroupDeleted() {
+        return remote.getEventGroupDeleted();
     }
 
 
