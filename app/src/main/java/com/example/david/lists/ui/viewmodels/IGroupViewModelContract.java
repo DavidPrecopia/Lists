@@ -7,24 +7,14 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public interface IViewModelContract {
+public interface IGroupViewModelContract {
     void groupClicked(Group group);
 
     void addButtonClicked();
 
     void add(String title);
 
-    void dragging(int fromPosition, int toPosition);
-
-    void movedPermanently(int newPosition);
-
-    void edit(int position);
-
     void changeTitle(EditingInfo editingInfo, String newTitle);
-
-    void delete(int position);
-
-    void swipedLeft(int position);
 
     void undoRecentDeletion();
 
@@ -37,8 +27,6 @@ public interface IViewModelContract {
     RecyclerView.Adapter getAdapter();
 
     ItemTouchHelper getItemTouchHelper();
-
-    LiveData<String> getToolbarTitle();
 
     LiveData<Group> getEventOpenGroup();
 
@@ -55,6 +43,4 @@ public interface IViewModelContract {
     LiveData<Void> getEventSignOut();
 
     LiveData<Void> getEventSignIn();
-
-    LiveData<Void> getEventFinish();
 }

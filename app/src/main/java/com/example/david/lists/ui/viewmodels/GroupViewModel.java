@@ -8,8 +8,9 @@ import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.GroupAdapter;
-import com.example.david.lists.ui.view.ItemTouchHelperCallback;
+import com.example.david.lists.ui.view.TouchHelperCallback;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilUser;
 
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 public final class GroupViewModel extends AndroidViewModel
-        implements IViewModelContract,
-        ItemTouchHelperCallback.IStartDragListener {
+        implements IGroupViewModelContract,
+        TouchHelperCallback.TouchCallback,
+        TouchHelperCallback.IStartDragListener,
+        UtilRecyclerView.PopUpMenuCallback {
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
@@ -39,7 +42,6 @@ public final class GroupViewModel extends AndroidViewModel
     private final GroupAdapter adapter;
     private final ItemTouchHelper touchHelper;
 
-    private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Group> eventOpenGroup;
     private final SingleLiveEvent<String> eventDisplayError;
@@ -57,10 +59,9 @@ public final class GroupViewModel extends AndroidViewModel
         super(application);
         this.model = model;
         disposable = new CompositeDisposable();
-        adapter = new GroupAdapter(this, this);
-        touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
+        adapter = new GroupAdapter(this, this, this);
+        touchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
         groupList = new ArrayList<>();
-        toolbarTitle = new MutableLiveData<>();
         eventOpenGroup = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
@@ -76,7 +77,6 @@ public final class GroupViewModel extends AndroidViewModel
     }
 
     private void init() {
-        toolbarTitle.setValue(getStringResource(R.string.app_name));
         eventDisplayLoading.setValue(true);
         getAllGroups();
     }
@@ -182,7 +182,7 @@ public final class GroupViewModel extends AndroidViewModel
         tempGroupPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
-                getStringResource(R.string.message_list_deletion)
+                getStringResource(R.string.message_group_deletion)
         );
     }
 
@@ -255,11 +255,6 @@ public final class GroupViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<String> getToolbarTitle() {
-        return toolbarTitle;
-    }
-
-    @Override
     public LiveData<Group> getEventOpenGroup() {
         return eventOpenGroup;
     }
@@ -297,12 +292,6 @@ public final class GroupViewModel extends AndroidViewModel
     @Override
     public LiveData<Void> getEventSignIn() {
         return eventSignIn;
-    }
-
-    @Override
-    public LiveData<Void> getEventFinish() {
-        return new LiveData<Void>() {
-        };
     }
 
 

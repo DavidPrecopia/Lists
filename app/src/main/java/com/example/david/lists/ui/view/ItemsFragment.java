@@ -3,20 +3,15 @@ package com.example.david.lists.ui.view;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.FragmentListBinding;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
+import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilRecyclerView;
-import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,38 +22,24 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyListFragment extends Fragment
+public class ItemsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener {
 
-
-    interface ListFragmentListener {
-        int SIGN_OUT = 100;
-        int SIGN_IN = 200;
-
-        void messages(int message);
-
-        void openGroup(Group group);
-    }
-
-
-    private IViewModelContract viewModel;
-    private ListFragmentListener listFragmentListener;
+    private IItemViewModelContract viewModel;
     private FragmentListBinding binding;
 
-    private boolean displayUpNavigation;
+    private static final String ARG_KEY_GROUP_ID = "group_id_key";
+    private static final String ARG_KEY_GROUP_TITLE = "group_title_key";
 
-    private static final String ARG_KEY_DISPLAYING = "displaying_key";
-    private static final String ARG_KEY_DISPLAY_MENU = "display_menu_key";
-
-    public MyListFragment() {
+    public ItemsFragment() {
     }
 
-    static MyListFragment newInstance(String displaying, boolean displayOverflowMenu) {
-        MyListFragment fragment = new MyListFragment();
+    static ItemsFragment newInstance(String groupId, String groupTitle) {
+        ItemsFragment fragment = new ItemsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_KEY_DISPLAYING, displaying);
-        bundle.putBoolean(ARG_KEY_DISPLAY_MENU, displayOverflowMenu);
+        bundle.putString(ARG_KEY_GROUP_ID, groupId);
+        bundle.putString(ARG_KEY_GROUP_TITLE, groupTitle);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,25 +48,15 @@ public class MyListFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(getArguments().getBoolean(ARG_KEY_DISPLAY_MENU));
         initViewModel();
     }
 
     private void initViewModel() {
-        String currentlyDisplaying = getArguments().getString(ARG_KEY_DISPLAYING);
-        if (currentlyDisplaying.equals(getStringResource(R.string.displaying_group))) {
-            displayUpNavigation = false;
-            viewModel = UtilListViewModels.getGroupViewModel(
-                    this,
-                    getActivity().getApplication()
-            );
-        } else if (currentlyDisplaying.equals(getStringResource(R.string.displaying_item))) {
-            displayUpNavigation = true;
-            viewModel = UtilListViewModels.getItemViewModel(
-                    this,
-                    getActivity().getApplication()
-            );
-        }
+        viewModel = UtilListViewModels.getItemViewModel(
+                this,
+                getActivity().getApplication(),
+                getArguments().getString(ARG_KEY_GROUP_ID)
+        );
     }
 
 
@@ -97,7 +68,6 @@ public class MyListFragment extends Fragment
     }
 
     private void initView() {
-        this.listFragmentListener = (ListFragmentListener) getActivity();
         observeViewModel();
         initRecyclerView();
         initToolbar();
@@ -105,30 +75,12 @@ public class MyListFragment extends Fragment
     }
 
     private void observeViewModel() {
-        observeToolbarTitle();
         observeError();
         observeDisplayLoading();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
         observeEventFinish();
-        observeAccountEvents();
-    }
-
-    private void observeAccountEvents() {
-        viewModel.getEventOpenGroup().observe(this, group ->
-                listFragmentListener.openGroup(group));
-        viewModel.getEventSignOut().observe(this, aVoid ->
-                listFragmentListener.messages(ListFragmentListener.SIGN_OUT));
-        viewModel.getEventSignIn().observe(this, aVoid ->
-                listFragmentListener.messages(ListFragmentListener.SIGN_IN));
-    }
-
-
-    private void observeToolbarTitle() {
-        viewModel.getToolbarTitle().observe(this, title ->
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title)
-        );
     }
 
     private void observeError() {
@@ -158,9 +110,9 @@ public class MyListFragment extends Fragment
     }
 
     private void observeEventFinish() {
-        viewModel.getEventFinish().observe(this, aVoid -> {
-            getActivity().getSupportFragmentManager().popBackStack();
-        });
+        viewModel.getEventFinish().observe(this, aVoid ->
+                getActivity().getSupportFragmentManager().popBackStack()
+        );
     }
 
 
@@ -176,10 +128,15 @@ public class MyListFragment extends Fragment
     @SuppressLint("RestrictedApi")
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
+
         ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setDefaultDisplayHomeAsUpEnabled(displayUpNavigation);
+                .setDefaultDisplayHomeAsUpEnabled(true);
+
         ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setDisplayHomeAsUpEnabled(displayUpNavigation);
+                .setDisplayHomeAsUpEnabled(true);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setTitle(getArguments().getString(ARG_KEY_GROUP_TITLE));
     }
 
     private void initFab() {
@@ -204,32 +161,6 @@ public class MyListFragment extends Fragment
                 }
             }
         });
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(getMenuResource(), menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private int getMenuResource() {
-        return UtilUser.isAnonymous() ?
-                R.menu.menu_sign_in :
-                R.menu.menu_sign_out;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_id_sign_in:
-                viewModel.signIn();
-                break;
-            case R.id.menu_id_sign_out:
-                viewModel.signOut();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -302,10 +233,5 @@ public class MyListFragment extends Fragment
 
     private void hideError() {
         binding.tvError.setVisibility(View.GONE);
-    }
-
-
-    private String getStringResource(int resId) {
-        return getActivity().getApplication().getString(resId);
     }
 }

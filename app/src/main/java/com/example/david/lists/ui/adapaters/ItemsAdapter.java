@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
+import com.example.david.lists.ui.view.TouchHelperCallback;
+import com.example.david.lists.util.UtilRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,14 +23,14 @@ import static com.example.david.lists.util.UtilRecyclerView.getPopupMenu;
 public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
 
     private final List<Item> itemsList;
-    private final ItemTouchHelperCallback.IStartDragListener startDragListener;
-    private final IViewModelContract viewModel;
 
-    public ItemsAdapter(
-            ItemTouchHelperCallback.IStartDragListener startDragListener,
-            IViewModelContract viewModel) {
+    private final TouchHelperCallback.IStartDragListener startDragListener;
+    private final UtilRecyclerView.PopUpMenuCallback popUpMenuCallback;
+
+    public ItemsAdapter(TouchHelperCallback.IStartDragListener startDragListener,
+                        UtilRecyclerView.PopUpMenuCallback popUpMenuCallback) {
         this.startDragListener = startDragListener;
-        this.viewModel = viewModel;
+        this.popUpMenuCallback = popUpMenuCallback;
         this.itemsList = new ArrayList<>();
     }
 
@@ -107,7 +107,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
         private void initPopupMenu() {
             PopupMenu popupMenu = getPopupMenu(
-                    getAdapterPosition(), binding.ivOverflowMenu, viewModel
+                    getAdapterPosition(), binding.ivOverflowMenu, popUpMenuCallback
             );
             binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }

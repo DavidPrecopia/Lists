@@ -9,8 +9,9 @@ import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
-import com.example.david.lists.ui.view.ItemTouchHelperCallback;
+import com.example.david.lists.ui.view.TouchHelperCallback;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,10 +31,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 public final class ItemViewModel extends AndroidViewModel
-        implements IViewModelContract,
-        ItemTouchHelperCallback.IStartDragListener {
+        implements IItemViewModelContract,
+        TouchHelperCallback.TouchCallback,
+        TouchHelperCallback.IStartDragListener,
+        UtilRecyclerView.PopUpMenuCallback {
 
-    private final String listId;
+    private final String groupId;
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
@@ -42,7 +45,6 @@ public final class ItemViewModel extends AndroidViewModel
     private final ItemsAdapter adapter;
     private final ItemTouchHelper touchHelper;
 
-    private final MutableLiveData<String> toolbarTitle;
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<String> eventDisplayError;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
@@ -55,15 +57,14 @@ public final class ItemViewModel extends AndroidViewModel
     private final List<Item> tempItemList;
     private int tempItemPosition = -1;
 
-    public ItemViewModel(@NonNull Application application, IModelContract model, String listId, String listTitle) {
+    public ItemViewModel(@NonNull Application application, IModelContract model, String groupId) {
         super(application);
-        this.listId = listId;
+        this.groupId = groupId;
         itemList = new ArrayList<>();
         this.model = model;
         disposable = new CompositeDisposable();
         adapter = new ItemsAdapter(this, this);
-        touchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(this));
-        toolbarTitle = new MutableLiveData<>();
+        touchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
@@ -72,13 +73,12 @@ public final class ItemViewModel extends AndroidViewModel
         tempItemList = new ArrayList<>();
         eventFinish = new SingleLiveEvent<>();
 
-        init(listTitle);
+        init();
     }
 
 
-    private void init(String listTitle) {
+    private void init() {
         eventDisplayLoading.setValue(true);
-        toolbarTitle.setValue(listTitle);
         observeModel();
         getItems();
     }
@@ -87,7 +87,7 @@ public final class ItemViewModel extends AndroidViewModel
     private void observeModel() {
         modelObserver = userLists -> {
             for (Group group : userLists) {
-                if (group.getId().equals(this.listId)) {
+                if (group.getId().equals(this.groupId)) {
                     Timber.i("Listening to User ID: %s", group.getId());
                     eventFinish.call();
                 }
@@ -97,7 +97,7 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     private void getItems() {
-        disposable.add(model.getGroupItems(listId)
+        disposable.add(model.getGroupItems(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListsSubscriber())
@@ -145,19 +145,13 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
-    public void groupClicked(Group group) {
-        cannotOpenUserListException();
-    }
-
-
-    @Override
     public void addButtonClicked() {
         eventAdd.setValue(getStringResource(R.string.hint_add_item));
     }
 
     @Override
     public void add(String title) {
-        model.addItem(new Item(title, itemList.size(), this.listId));
+        model.addItem(new Item(title, itemList.size(), this.groupId));
     }
 
 
@@ -240,17 +234,6 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
-    public void signIn() {
-        throwUnsupportedOperation("");
-    }
-
-    @Override
-    public void signOut() {
-        throwUnsupportedOperation("");
-    }
-
-
-    @Override
     public RecyclerView.Adapter getAdapter() {
         return adapter;
     }
@@ -258,17 +241,6 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public ItemTouchHelper getItemTouchHelper() {
         return touchHelper;
-    }
-
-    @Override
-    public LiveData<String> getToolbarTitle() {
-        return toolbarTitle;
-    }
-
-    @Override
-    public LiveData<Group> getEventOpenGroup() {
-        return new LiveData<Group>() {
-        };
     }
 
     @Override
@@ -297,34 +269,17 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<Void> getEventSignOut() {
-        return new LiveData<Void>() {
-        };
-    }
-
-    @Override
-    public LiveData<Void> getEventSignIn() {
-        return new LiveData<Void>() {
-        };
-    }
-
-    @Override
     public LiveData<Void> getEventFinish() {
-        return eventFinish;
+        return new LiveData<Void>() {
+        };
     }
 
 
-    private void cannotOpenUserListException() {
-        throwUnsupportedOperation("");
-    }
-
-    private void throwUnsupportedOperation(String message) {
-        throw new UnsupportedOperationException(message);
-    }
 
     private String getStringResource(int resId) {
         return getApplication().getString(resId);
     }
+
 
     @Override
     protected void onCleared() {

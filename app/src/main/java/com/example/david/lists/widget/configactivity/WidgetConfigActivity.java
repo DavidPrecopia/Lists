@@ -76,7 +76,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
 
     private void initViewModel() {
-        UtilViewModelFactory factory = new UtilViewModelFactory(getApplication());
+        UtilViewModelFactory factory = new UtilViewModelFactory(getApplication(), null);
         viewModel = ViewModelProviders.of(this, factory).get(WidgetConfigViewModel.class);
     }
 

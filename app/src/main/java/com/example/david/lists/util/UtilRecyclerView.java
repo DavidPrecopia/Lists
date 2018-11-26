@@ -4,8 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.david.lists.R;
-import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
+import com.example.david.lists.ui.view.TouchHelperCallback;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -13,6 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public final class UtilRecyclerView {
+
+
+    public interface PopUpMenuCallback {
+        void edit(int position);
+
+        void delete(int position);
+    }
+
+
     private UtilRecyclerView() {
     }
 
@@ -30,14 +38,15 @@ public final class UtilRecyclerView {
     }
 
 
-    public static PopupMenu getPopupMenu(int position, View anchor, IViewModelContract viewModel) {
+    public static PopupMenu getPopupMenu(int position, View anchor, PopUpMenuCallback viewModel) {
         PopupMenu popupMenu = new PopupMenu(anchor.getContext(), anchor);
         popupMenu.inflate(R.menu.popup_menu_list_item);
         popupMenu.setOnMenuItemClickListener(getMenuClickListener(position, viewModel));
         return popupMenu;
     }
 
-    private static PopupMenu.OnMenuItemClickListener getMenuClickListener(int position, IViewModelContract viewModel) {
+    private static PopupMenu.OnMenuItemClickListener getMenuClickListener(int position,
+                                                                          PopUpMenuCallback viewModel) {
         return item -> {
             switch (item.getItemId()) {
                 case R.id.menu_item_edit:
@@ -54,9 +63,8 @@ public final class UtilRecyclerView {
     }
 
 
-    public static View.OnTouchListener getDragTouchListener(
-            RecyclerView.ViewHolder viewHolder,
-            ItemTouchHelperCallback.IStartDragListener startDragListener) {
+    public static View.OnTouchListener getDragTouchListener(RecyclerView.ViewHolder viewHolder,
+                                                            TouchHelperCallback.IStartDragListener startDragListener) {
         return (view, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 startDragListener.requestDrag(viewHolder);

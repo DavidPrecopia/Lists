@@ -2,7 +2,6 @@ package com.example.david.lists.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -31,7 +30,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
-public class MainActivity extends AppCompatActivity implements MyListFragment.ListFragmentListener {
+public class MainActivity extends AppCompatActivity implements GroupsFragment.GroupFragmentListener {
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
@@ -84,19 +83,10 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     }
 
     private void processWidgetBundle(Bundle widgetBundle) {
-        saveGroupDetails(
+        addFragment(getItemsFragment(
                 widgetBundle.getString(getIntentKeyId(getApplicationContext())),
                 widgetBundle.getString(getIntentKeyTitle(getApplicationContext()))
-        );
-        addFragment(getItemFragment());
-    }
-
-    private void saveGroupDetails(String id, String title) {
-        SharedPreferences.Editor editor =
-                getSharedPreferences(getString(R.string.key_shared_prefs_name), MODE_PRIVATE).edit();
-        editor.putString(getString(R.string.key_shared_pref_group_id), id);
-        editor.putString(getString(R.string.key_shared_pref_group_title), title);
-        editor.apply();
+        ));
     }
 
 
@@ -115,15 +105,12 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     }
 
 
-    private MyListFragment getGroupFragment() {
-        return MyListFragment.newInstance(
-                getString(R.string.displaying_group),
-                true
-        );
+    private GroupsFragment getGroupFragment() {
+        return GroupsFragment.newInstance();
     }
 
-    private MyListFragment getItemFragment() {
-        return MyListFragment.newInstance(getString(R.string.displaying_item), false);
+    private ItemsFragment getItemsFragment(String groupId, String title) {
+        return ItemsFragment.newInstance(groupId, title);
     }
 
 
@@ -141,10 +128,10 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
     @Override
     public void messages(int message) {
         switch (message) {
-            case MyListFragment.ListFragmentListener.SIGN_OUT:
+            case GroupsFragment.GroupFragmentListener.SIGN_OUT:
                 signOut();
                 break;
-            case MyListFragment.ListFragmentListener.SIGN_IN:
+            case GroupsFragment.GroupFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:
@@ -154,8 +141,7 @@ public class MainActivity extends AppCompatActivity implements MyListFragment.Li
 
     @Override
     public void openGroup(Group group) {
-        saveGroupDetails(group.getId(), group.getTitle());
-        addFragmentToBackStack(getItemFragment());
+        addFragmentToBackStack(getItemsFragment(group.getId(), group.getTitle()));
     }
 
 

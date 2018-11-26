@@ -11,13 +11,13 @@ public final class UtilListViewModels {
     private UtilListViewModels() {
     }
 
-    public static IViewModelContract getGroupViewModel(Fragment fragment, Application application) {
-        UtilViewModelFactory factory = new UtilViewModelFactory(application);
+    public static IGroupViewModelContract getGroupViewModel(Fragment fragment, Application application) {
+        UtilViewModelFactory factory = new UtilViewModelFactory(application, null);
         return ViewModelProviders.of(fragment, factory).get(GroupViewModel.class);
     }
 
-    public static IViewModelContract getItemViewModel(Fragment fragment, Application application) {
-        UtilViewModelFactory factory = new UtilViewModelFactory(application);
+    public static IItemViewModelContract getItemViewModel(Fragment fragment, Application application, String groupId) {
+        UtilViewModelFactory factory = new UtilViewModelFactory(application, groupId);
         return ViewModelProviders.of(fragment, factory).get(ItemViewModel.class);
     }
 }

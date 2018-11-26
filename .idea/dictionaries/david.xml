@@ -4,8 +4,10 @@
       <w>configactivity</w>
       <w>firebase</w>
       <w>firestore</w>
+      <w>nanodegree</w>
       <w>remoteviews</w>
       <w>snackbar</w>
+      <w>udacity</w>
     </words>
   </dictionary>
 </component>

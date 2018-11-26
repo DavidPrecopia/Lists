@@ -5,15 +5,7 @@
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_overflow_menu">Overflow menu</string>
 
-    <string name="message_list_deletion">List deleted</string>
+    <string name="message_group_deletion">Group deleted</string>
     <string name="message_item_deletion">Item deleted</string>
     <string name="message_undo">Undo</string>
-
-    <!--Used by multiple UI classes-->
-    <string name="displaying_group" translatable="false">100</string>
-    <string name="displaying_item" translatable="false">200</string>
-
-    <string name="key_shared_prefs_name" translatable="false">list_activity_shared_preferences_name</string>
-    <string name="key_shared_pref_group_title" translatable="false">group_title_key</string>
-    <string name="key_shared_pref_group_id" translatable="false">group_id_key</string>
 </resources>

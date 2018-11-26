@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.view.ItemTouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IViewModelContract;
+import com.example.david.lists.ui.view.TouchHelperCallback;
+import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
+import com.example.david.lists.util.UtilRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +26,16 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
     private final List<Group> groups;
 
-    private final IViewModelContract viewModel;
-    private final ItemTouchHelperCallback.IStartDragListener startDragListener;
+    private final IGroupViewModelContract viewModel;
+    private final TouchHelperCallback.IStartDragListener startDragListener;
+    private final UtilRecyclerView.PopUpMenuCallback popUpMenuCallback;
 
-    public GroupAdapter(
-            IViewModelContract viewModel,
-            ItemTouchHelperCallback.IStartDragListener startDragListener) {
+    public GroupAdapter(IGroupViewModelContract viewModel,
+                        TouchHelperCallback.IStartDragListener startDragListener,
+                        UtilRecyclerView.PopUpMenuCallback popUpMenuCallback) {
         this.viewModel = viewModel;
         this.startDragListener = startDragListener;
+        this.popUpMenuCallback = popUpMenuCallback;
         groups = new ArrayList<>();
     }
 
@@ -111,7 +114,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
         private void initPopupMenu() {
             PopupMenu popupMenu = getPopupMenu(
-                    getAdapterPosition(), binding.ivOverflowMenu, viewModel
+                    getAdapterPosition(), binding.ivOverflowMenu, popUpMenuCallback
             );
             binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }
