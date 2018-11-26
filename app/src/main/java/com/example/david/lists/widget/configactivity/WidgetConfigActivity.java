@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilViewModelFactory;
 import com.example.david.lists.widget.WidgetRemoteView;
 
@@ -21,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
@@ -64,8 +65,21 @@ public class WidgetConfigActivity extends AppCompatActivity {
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        UtilRecyclerView.initLayoutManager(recyclerView);
+        initLayoutManager(recyclerView);
         recyclerView.setAdapter(viewModel.getAdapter());
+    }
+
+    private void initLayoutManager(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
+    }
+
+    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
+        );
     }
 
     private void initToolbar() {

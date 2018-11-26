@@ -248,10 +248,10 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.Gr
 
 
     private void toastMessage(int stringResId) {
-        Toast.makeText(this, stringResId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), stringResId, Toast.LENGTH_SHORT).show();
     }
 
     private void toastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

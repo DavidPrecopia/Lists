@@ -97,6 +97,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
         this.groupsSnapshotListener = groupsCollection
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getGroupSnapshotListener(emitter));
+
+        emitter.setCancellable(() -> {
+            if (groupsSnapshotListener != null) {
+                groupsSnapshotListener.remove();
+            }
+        });
     }
 
     private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<Group>> emitter) {
@@ -126,6 +132,13 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
+
+        emitter.setCancellable(() -> {
+            Timber.d("setCancellable");
+            if (itemsSnapshotListener != null) {
+                itemsSnapshotListener.remove();
+            }
+        });
     }
 
     private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {

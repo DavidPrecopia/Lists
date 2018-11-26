@@ -11,10 +11,9 @@ import android.view.ViewGroup;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
-import com.example.david.lists.databinding.FragmentListBinding;
+import com.example.david.lists.databinding.FragmentGroupsBinding;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
-import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -24,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GroupsFragment extends Fragment
@@ -42,8 +43,10 @@ public class GroupsFragment extends Fragment
 
 
     private IGroupViewModelContract viewModel;
+    private FragmentGroupsBinding binding;
+
     private GroupFragmentListener groupFragmentListener;
-    private FragmentListBinding binding;
+
 
     public GroupsFragment() {
     }
@@ -62,7 +65,7 @@ public class GroupsFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_groups, container, false);
         initView();
         return binding.getRoot();
     }
@@ -124,9 +127,22 @@ public class GroupsFragment extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        UtilRecyclerView.initLayoutManager(recyclerView);
+        initLayoutManager(recyclerView);
         viewModel.getItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(viewModel.getAdapter());
+    }
+
+    private void initLayoutManager(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
+    }
+
+    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
+        );
     }
 
 

@@ -19,11 +19,16 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
 
 
     public interface TouchCallback {
-        void dragging(int fromPosition, int toPosition);
 
+        void dragging(int fromPosition, int toPosition);
         void movedPermanently(int newPosition);
 
         void swipedLeft(int position);
+
+    }
+
+    public interface IStartDragListener {
+        void requestDrag(RecyclerView.ViewHolder viewHolder);
     }
 
 
@@ -137,10 +142,5 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
         drawable.draw(canvas);
 
         return bitmap;
-    }
-
-
-    public interface IStartDragListener {
-        void requestDrag(RecyclerView.ViewHolder viewHolder);
     }
 }

@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.databinding.FragmentListBinding;
+import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
-import com.example.david.lists.util.UtilRecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ItemsFragment extends Fragment
@@ -27,7 +28,7 @@ public class ItemsFragment extends Fragment
         EditDialogFragment.EditDialogFragmentListener {
 
     private IItemViewModelContract viewModel;
-    private FragmentListBinding binding;
+    private FragmentItemsBinding binding;
 
     private static final String ARG_KEY_GROUP_ID = "group_id_key";
     private static final String ARG_KEY_GROUP_TITLE = "group_title_key";
@@ -62,7 +63,7 @@ public class ItemsFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_items, container, false);
         initView();
         return binding.getRoot();
     }
@@ -119,10 +120,24 @@ public class ItemsFragment extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        UtilRecyclerView.initLayoutManager(recyclerView);
+        initLayoutManager(recyclerView);
         viewModel.getItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(viewModel.getAdapter());
     }
+
+    private void initLayoutManager(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
+    }
+
+    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
+        );
+    }
+
 
 
     @SuppressLint("RestrictedApi")

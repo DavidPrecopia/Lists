@@ -79,7 +79,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     private void init() {
         eventDisplayLoading.setValue(true);
-        observeModel();
+//        observeModel();
         getItems();
     }
 
@@ -88,7 +88,6 @@ public final class ItemViewModel extends AndroidViewModel
         modelObserver = userLists -> {
             for (Group group : userLists) {
                 if (group.getId().equals(this.groupId)) {
-                    Timber.i("Listening to User ID: %s", group.getId());
                     eventFinish.call();
                 }
             }
@@ -108,7 +107,6 @@ public final class ItemViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
-                if (BuildConfig.DEBUG) Timber.i("onNext");
                 updaterItemsList(itemList);
                 updateUi();
             }

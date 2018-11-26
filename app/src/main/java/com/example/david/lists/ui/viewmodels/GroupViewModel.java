@@ -94,7 +94,6 @@ public final class GroupViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Group>>() {
             @Override
             public void onNext(List<Group> groups) {
-                if (BuildConfig.DEBUG) Timber.i("onNext");
                 updateGroupList(groups);
                 updateUi();
             }
