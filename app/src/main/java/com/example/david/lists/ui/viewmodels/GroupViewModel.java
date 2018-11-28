@@ -100,10 +100,10 @@ public final class GroupViewModel extends AndroidViewModel
         };
     }
 
-    private void updateUi(List<Group> groups) {
-        this.groupList.setValue(groups);
+    private void updateUi(List<Group> newGroupList) {
+        this.groupList.setValue(newGroupList);
 
-        if (groups.isEmpty()) {
+        if (newGroupList.isEmpty()) {
             eventDisplayError.setValue(getStringResource(R.string.error_msg_no_groups));
         } else {
             eventDisplayLoading.setValue(false);

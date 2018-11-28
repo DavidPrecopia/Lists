@@ -113,13 +113,11 @@ public final class ItemViewModel extends AndroidViewModel
         };
     }
 
-    private void updateUi(List<Item> itemList) {
-        this.itemList.postValue(itemList);
+    private void updateUi(List<Item> newItemList) {
+        itemList.setValue(newItemList);
 
-        if (itemList.isEmpty()) {
-            eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_empty_group)
-            );
+        if (newItemList.isEmpty()) {
+            eventDisplayError.setValue(getStringResource(R.string.error_msg_empty_group));
         } else {
             eventDisplayLoading.setValue(false);
         }
