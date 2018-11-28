@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.ui.adapaters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,26 +18,21 @@ import androidx.recyclerview.widget.RecyclerView;
 public final class TouchHelperCallback extends ItemTouchHelper.Callback {
 
 
-    public interface TouchCallback {
-
+    public interface MovementCallback {
         void dragging(int fromPosition, int toPosition);
+
         void movedPermanently(int newPosition);
 
         void swipedLeft(int position);
-
-    }
-
-    public interface IStartDragListener {
-        void requestDrag(RecyclerView.ViewHolder viewHolder);
     }
 
 
-    private final TouchCallback touchCallback;
+    private final MovementCallback movementCallback;
 
     private boolean postMove = false;
 
-    public TouchHelperCallback(TouchCallback touchCallback) {
-        this.touchCallback = touchCallback;
+    public TouchHelperCallback(MovementCallback movementCallback) {
+        this.movementCallback = movementCallback;
     }
 
 
@@ -63,7 +58,7 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
         postMove = true;
-        touchCallback.dragging(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        movementCallback.dragging(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
@@ -74,7 +69,7 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
         final int position = viewHolder.getAdapterPosition();
         switch (direction) {
             case ItemTouchHelper.LEFT:
-                touchCallback.swipedLeft(position);
+                movementCallback.swipedLeft(position);
         }
     }
 
@@ -85,7 +80,7 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
         if (postMove) {
-            touchCallback.movedPermanently(viewHolder.getAdapterPosition());
+            movementCallback.movedPermanently(viewHolder.getAdapterPosition());
         }
     }
 

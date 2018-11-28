@@ -12,6 +12,8 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.FragmentGroupsBinding;
+import com.example.david.lists.ui.adapaters.GroupAdapter;
+import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
 import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilUser;
@@ -24,12 +26,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GroupsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
-        EditDialogFragment.EditDialogFragmentListener {
+        EditDialogFragment.EditDialogFragmentListener, TouchHelperCallback.MovementCallback {
 
 
     interface GroupFragmentListener {
@@ -44,6 +47,7 @@ public class GroupsFragment extends Fragment
 
     private IGroupViewModelContract viewModel;
     private FragmentGroupsBinding binding;
+    private GroupAdapter adapter;
 
     private GroupFragmentListener groupFragmentListener;
 
@@ -72,19 +76,24 @@ public class GroupsFragment extends Fragment
 
     private void initView() {
         this.groupFragmentListener = (GroupFragmentListener) getActivity();
-        observeViewModel();
         initRecyclerView();
+        observeViewModel();
         initToolbar();
         initFab();
     }
 
     private void observeViewModel() {
+        observeGroupList();
         observeError();
         observeDisplayLoading();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
         observeAccountEvents();
+    }
+
+    private void observeGroupList() {
+        viewModel.getGroupList().observe(this, groups -> adapter.swapData(groups));
     }
 
     private void observeAccountEvents() {
@@ -128,8 +137,10 @@ public class GroupsFragment extends Fragment
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         initLayoutManager(recyclerView);
-        viewModel.getItemTouchHelper().attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter(viewModel.getAdapter());
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        this.adapter = new GroupAdapter(viewModel, itemTouchHelper);
+        recyclerView.setAdapter(adapter);
     }
 
     private void initLayoutManager(RecyclerView recyclerView) {
@@ -228,7 +239,7 @@ public class GroupsFragment extends Fragment
 
     private void notifyDeletionSnackbar(String message) {
         Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion())
+                .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
                 .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
@@ -240,6 +251,22 @@ public class GroupsFragment extends Fragment
                     }
                 })
                 .show();
+    }
+
+
+    @Override
+    public void dragging(int fromPosition, int toPosition) {
+        viewModel.dragging(adapter, fromPosition, toPosition);
+    }
+
+    @Override
+    public void movedPermanently(int newPosition) {
+        viewModel.movedPermanently(adapter, newPosition);
+    }
+
+    @Override
+    public void swipedLeft(int position) {
+        viewModel.swipedLeft(adapter, position);
     }
 
 

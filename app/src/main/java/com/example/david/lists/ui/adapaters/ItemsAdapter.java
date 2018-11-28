@@ -1,16 +1,13 @@
 package com.example.david.lists.ui.adapaters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.view.TouchHelperCallback;
-import com.example.david.lists.util.UtilRecyclerView;
+import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,20 +15,21 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder> {
+public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>
+        implements IItemAdapterContract {
 
     private final List<Item> itemsList;
 
-    private final TouchHelperCallback.IStartDragListener startDragListener;
-    private final UtilRecyclerView.PopUpMenuCallback popUpMenuCallback;
+    private final IItemViewModelContract viewModel;
+    private final ItemTouchHelper itemTouchHelper;
 
-    public ItemsAdapter(TouchHelperCallback.IStartDragListener startDragListener,
-                        UtilRecyclerView.PopUpMenuCallback popUpMenuCallback) {
-        this.startDragListener = startDragListener;
-        this.popUpMenuCallback = popUpMenuCallback;
+    public ItemsAdapter(IItemViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
         this.itemsList = new ArrayList<>();
+        this.viewModel = viewModel;
+        this.itemTouchHelper = itemTouchHelper;
     }
 
     @NonNull
@@ -98,51 +96,42 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             binding.tvTitle.setText(item.getTitle());
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
             binding.ivDrag.setOnTouchListener(
-                    getDragTouchListener(this, startDragListener)
+                    (view, event) -> {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            itemTouchHelper.startDrag(this);
+                        }
+                        view.performClick();
+                        return true;
+                    }
             );
         }
 
         private void initPopupMenu() {
-            PopupMenu popupMenu = getPopupMenu(
-                    getAdapterPosition(), binding.ivOverflowMenu, popUpMenuCallback
-            );
+            PopupMenu popupMenu = getPopupMenu();
             binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }
 
-        private PopupMenu getPopupMenu(int position, View anchor, UtilRecyclerView.PopUpMenuCallback viewModel) {
-            PopupMenu popupMenu = new PopupMenu(anchor.getContext(), anchor);
+        private PopupMenu getPopupMenu() {
+            PopupMenu popupMenu = new PopupMenu(binding.ivOverflowMenu.getContext(), binding.ivOverflowMenu);
             popupMenu.inflate(R.menu.popup_menu_list_item);
-            popupMenu.setOnMenuItemClickListener(getMenuClickListener(position, viewModel));
+            popupMenu.setOnMenuItemClickListener(getMenuClickListener());
             return popupMenu;
         }
 
-        private PopupMenu.OnMenuItemClickListener getMenuClickListener(int position,
-                                                                       UtilRecyclerView.PopUpMenuCallback viewModel) {
+        private PopupMenu.OnMenuItemClickListener getMenuClickListener() {
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
-                        viewModel.edit(position);
+                        viewModel.edit(getAdapterPosition());
                         break;
                     case R.id.menu_item_delete:
-                        viewModel.delete(position);
+                        viewModel.delete(ItemsAdapter.this, getAdapterPosition());
                         break;
                     default:
                         return false;
                 }
-                return true;
-            };
-        }
-
-        private View.OnTouchListener getDragTouchListener(RecyclerView.ViewHolder viewHolder,
-                                                          TouchHelperCallback.IStartDragListener startDragListener) {
-            return (view, event) -> {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startDragListener.requestDrag(viewHolder);
-                }
-                view.performClick();
                 return true;
             };
         }

@@ -134,7 +134,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
 
         emitter.setCancellable(() -> {
-            Timber.d("setCancellable");
             if (itemsSnapshotListener != null) {
                 itemsSnapshotListener.remove();
             }

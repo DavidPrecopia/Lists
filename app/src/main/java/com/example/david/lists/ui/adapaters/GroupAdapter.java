@@ -1,6 +1,5 @@
 package com.example.david.lists.ui.adapaters;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,9 +8,7 @@ import android.view.ViewGroup;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.view.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
-import com.example.david.lists.util.UtilRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,22 +16,21 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder> {
+public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder>
+        implements IGroupAdapterContract {
 
     private final List<Group> groups;
 
     private final IGroupViewModelContract viewModel;
-    private final TouchHelperCallback.IStartDragListener startDragListener;
-    private final UtilRecyclerView.PopUpMenuCallback popUpMenuCallback;
+    private final ItemTouchHelper itemTouchHelper;
 
     public GroupAdapter(IGroupViewModelContract viewModel,
-                        TouchHelperCallback.IStartDragListener startDragListener,
-                        UtilRecyclerView.PopUpMenuCallback popUpMenuCallback) {
+                        ItemTouchHelper itemTouchHelper) {
         this.viewModel = viewModel;
-        this.startDragListener = startDragListener;
-        this.popUpMenuCallback = popUpMenuCallback;
+        this.itemTouchHelper = itemTouchHelper;
         groups = new ArrayList<>();
     }
 
@@ -65,16 +61,19 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
         notifyDataSetChanged();
     }
 
+    @Override
     public void move(int fromPosition, int toPosition) {
         Collections.swap(groups, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
+    @Override
     public void remove(int position) {
         groups.remove(position);
         notifyItemRemoved(position);
     }
 
+    @Override
     public void reAdd(int position, Group group) {
         groups.add(position, group);
         notifyItemInserted(position);
@@ -104,17 +103,19 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
             binding.tvTitle.setText(group.getTitle());
         }
 
-        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
-            binding.ivDrag.setOnTouchListener(
-                    getDragTouchListener(this, startDragListener)
+            binding.ivDrag.setOnTouchListener((view, event) -> {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            itemTouchHelper.startDrag(this);
+                        }
+                        view.performClick();
+                        return true;
+                    }
             );
         }
 
         private void initPopupMenu() {
-            PopupMenu popupMenu = getPopupMenu(
-                    getAdapterPosition(), binding.ivOverflowMenu, popUpMenuCallback
-            );
+            PopupMenu popupMenu = getPopupMenu();
             binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
         }
 
@@ -126,37 +127,25 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
             );
         }
 
-        private PopupMenu getPopupMenu(int position, View anchor, UtilRecyclerView.PopUpMenuCallback viewModel) {
-            PopupMenu popupMenu = new PopupMenu(anchor.getContext(), anchor);
+        private PopupMenu getPopupMenu() {
+            PopupMenu popupMenu = new PopupMenu(binding.ivDrag.getContext(), binding.ivDrag);
             popupMenu.inflate(R.menu.popup_menu_list_item);
-            popupMenu.setOnMenuItemClickListener(getMenuClickListener(position, viewModel));
+            popupMenu.setOnMenuItemClickListener(getMenuClickListener());
             return popupMenu;
         }
 
-        private PopupMenu.OnMenuItemClickListener getMenuClickListener(int position,
-                                                                       UtilRecyclerView.PopUpMenuCallback viewModel) {
+        private PopupMenu.OnMenuItemClickListener getMenuClickListener() {
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
-                        viewModel.edit(position);
+                        viewModel.edit(getAdapterPosition());
                         break;
                     case R.id.menu_item_delete:
-                        viewModel.delete(position);
+                        viewModel.delete(GroupAdapter.this, getAdapterPosition());
                         break;
                     default:
                         return false;
                 }
-                return true;
-            };
-        }
-
-        private View.OnTouchListener getDragTouchListener(RecyclerView.ViewHolder viewHolder,
-                                                         TouchHelperCallback.IStartDragListener startDragListener) {
-            return (view, event) -> {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startDragListener.requestDrag(viewHolder);
-                }
-                view.performClick();
                 return true;
             };
         }

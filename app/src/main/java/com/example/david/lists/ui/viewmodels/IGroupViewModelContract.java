@@ -2,10 +2,11 @@ package com.example.david.lists.ui.viewmodels;
 
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
+import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
+
+import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
 public interface IGroupViewModelContract {
     void groupClicked(Group group);
@@ -14,9 +15,19 @@ public interface IGroupViewModelContract {
 
     void add(String title);
 
+    void edit(int position);
+
     void changeTitle(EditingInfo editingInfo, String newTitle);
 
-    void undoRecentDeletion();
+    void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition);
+
+    void movedPermanently(IGroupAdapterContract adapter, int newPosition);
+
+    void swipedLeft(IGroupAdapterContract adapter, int position);
+
+    void delete(IGroupAdapterContract adapter, int position);
+
+    void undoRecentDeletion(IGroupAdapterContract adapter);
 
     void deletionNotificationTimedOut();
 
@@ -24,9 +35,8 @@ public interface IGroupViewModelContract {
 
     void signOut();
 
-    RecyclerView.Adapter getAdapter();
 
-    ItemTouchHelper getItemTouchHelper();
+    LiveData<List<Group>> getGroupList();
 
     LiveData<Group> getEventOpenGroup();
 

@@ -7,10 +7,8 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.ui.adapaters.GroupAdapter;
-import com.example.david.lists.ui.view.TouchHelperCallback;
+import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
-import com.example.david.lists.util.UtilRecyclerView;
 import com.example.david.lists.util.UtilUser;
 
 import java.util.ArrayList;
@@ -21,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -30,17 +26,12 @@ import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 public final class GroupViewModel extends AndroidViewModel
-        implements IGroupViewModelContract,
-        TouchHelperCallback.TouchCallback,
-        TouchHelperCallback.IStartDragListener,
-        UtilRecyclerView.PopUpMenuCallback {
+        implements IGroupViewModelContract {
+
+    private final MutableLiveData<List<Group>> groupList;
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
-
-    private final List<Group> groupList;
-    private final GroupAdapter adapter;
-    private final ItemTouchHelper touchHelper;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Group> eventOpenGroup;
@@ -53,15 +44,13 @@ public final class GroupViewModel extends AndroidViewModel
     private final SingleLiveEvent<Void> eventSignIn;
 
     private final List<Group> tempGroups;
-    private int tempGroupPosition = -1;
+    private int tempGroupPosition;
 
     public GroupViewModel(@NonNull Application application, IModelContract model) {
         super(application);
+        groupList = new MutableLiveData<>();
         this.model = model;
         disposable = new CompositeDisposable();
-        adapter = new GroupAdapter(this, this, this);
-        touchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
-        groupList = new ArrayList<>();
         eventOpenGroup = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
@@ -70,9 +59,8 @@ public final class GroupViewModel extends AndroidViewModel
         eventEdit = new SingleLiveEvent<>();
         eventSignOut = new SingleLiveEvent<>();
         eventSignIn = new SingleLiveEvent<>();
-
         this.tempGroups = new ArrayList<>();
-
+        this.tempGroupPosition = -1;
         init();
     }
 
@@ -94,8 +82,7 @@ public final class GroupViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Group>>() {
             @Override
             public void onNext(List<Group> groups) {
-                updateGroupList(groups);
-                updateUi();
+                updateUi(groups);
             }
 
             @Override
@@ -113,20 +100,14 @@ public final class GroupViewModel extends AndroidViewModel
         };
     }
 
-    private void updateGroupList(List<Group> groups) {
-        this.groupList.clear();
-        this.groupList.addAll(groups);
-    }
+    private void updateUi(List<Group> groups) {
+        this.groupList.setValue(groups);
 
-    private void updateUi() {
-        if (groupList.isEmpty()) {
-            eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_no_groups)
-            );
+        if (groups.isEmpty()) {
+            eventDisplayError.setValue(getStringResource(R.string.error_msg_no_groups));
         } else {
             eventDisplayLoading.setValue(false);
         }
-        adapter.swapData(groupList);
     }
 
 
@@ -142,30 +123,13 @@ public final class GroupViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        model.addGroup(new Group(title, this.groupList.size()));
-    }
-
-
-    @Override
-    public void dragging(int fromPosition, int toPosition) {
-        Collections.swap(groupList, fromPosition, toPosition);
-        adapter.move(fromPosition, toPosition);
-    }
-
-    @Override
-    public void movedPermanently(int newPosition) {
-        Group group = groupList.get(newPosition);
-        model.updateGroupPosition(
-                group,
-                group.getPosition(),
-                newPosition
-        );
+        model.addGroup(new Group(title, this.groupList.getValue().size()));
     }
 
 
     @Override
     public void edit(int position) {
-        eventEdit.setValue(new EditingInfo(groupList.get(position)));
+        eventEdit.setValue(new EditingInfo(groupList.getValue().get(position)));
     }
 
     @Override
@@ -173,11 +137,32 @@ public final class GroupViewModel extends AndroidViewModel
         model.renameGroup(editingInfo.getId(), newTitle);
     }
 
+    @Override
+    public void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition) {
+        Collections.swap(groupList.getValue(), fromPosition, toPosition);
+        adapter.move(fromPosition, toPosition);
+    }
 
     @Override
-    public void delete(int position) {
+    public void movedPermanently(IGroupAdapterContract adapter, int newPosition) {
+        Group group = groupList.getValue().get(newPosition);
+        model.updateGroupPosition(
+                group,
+                group.getPosition(),
+                newPosition
+        );
+    }
+
+    @Override
+    public void swipedLeft(IGroupAdapterContract adapter, int position) {
+        delete(adapter, position);
+    }
+
+
+    @Override
+    public void delete(IGroupAdapterContract adapter, int position) {
         adapter.remove(position);
-        tempGroups.add(groupList.get(position));
+        tempGroups.add(groupList.getValue().get(position));
         tempGroupPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
@@ -185,22 +170,18 @@ public final class GroupViewModel extends AndroidViewModel
         );
     }
 
-    @Override
-    public void swipedLeft(int position) {
-        delete(position);
-    }
 
     @Override
-    public void undoRecentDeletion() {
+    public void undoRecentDeletion(IGroupAdapterContract adapter) {
         if (tempGroups.isEmpty() || tempGroupPosition < 0) {
             throw new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
             );
         }
-        reAdd();
+        reAdd(adapter);
     }
 
-    private void reAdd() {
+    private void reAdd(IGroupAdapterContract adapter) {
         int lastDeletedPosition = tempGroups.size() - 1;
         adapter.reAdd(
                 tempGroupPosition,
@@ -217,12 +198,6 @@ public final class GroupViewModel extends AndroidViewModel
         List<Group> groups = new ArrayList<>(tempGroups);
         model.deleteGroups(groups);
         tempGroups.clear();
-    }
-
-
-    @Override
-    public void requestDrag(RecyclerView.ViewHolder viewHolder) {
-        touchHelper.startDrag(viewHolder);
     }
 
 
@@ -244,13 +219,8 @@ public final class GroupViewModel extends AndroidViewModel
 
 
     @Override
-    public RecyclerView.Adapter getAdapter() {
-        return adapter;
-    }
-
-    @Override
-    public ItemTouchHelper getItemTouchHelper() {
-        return touchHelper;
+    public LiveData<List<Group>> getGroupList() {
+        return groupList;
     }
 
     @Override
