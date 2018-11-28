@@ -128,7 +128,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
         }
 
         private PopupMenu getPopupMenu() {
-            PopupMenu popupMenu = new PopupMenu(binding.ivDrag.getContext(), binding.ivDrag);
+            PopupMenu popupMenu = new PopupMenu(binding.ivOverflowMenu.getContext(), binding.ivOverflowMenu);
             popupMenu.inflate(R.menu.popup_menu_list_item);
             popupMenu.setOnMenuItemClickListener(getMenuClickListener());
             return popupMenu;
