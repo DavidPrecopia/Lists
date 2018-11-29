@@ -5,4 +5,8 @@
 
     <string name="menu_item_title_edit">Edit</string>
     <string name="menu_item_title_delete">Delete</string>
+
+    <string name="menu_item_title_night_mode">Night Mode</string>
+    <string name="night_mode_shared_pref_name">night_mode_shared_pref_name</string>
+    <string name="night_mode_shared_pref_key">night_mode_shared_pref_key</string>
 </resources>

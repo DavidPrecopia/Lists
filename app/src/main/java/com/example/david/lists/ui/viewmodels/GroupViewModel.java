@@ -1,6 +1,9 @@
 package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.view.MenuItem;
 
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
@@ -9,6 +12,7 @@ import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.util.UtilUser;
 
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -202,6 +207,26 @@ public final class GroupViewModel extends AndroidViewModel
         tempGroups.clear();
     }
 
+
+    @Override
+    public void nightMode(MenuItem item) {
+        if (item.isChecked()) {
+            item.setChecked(false);
+            UtilNightMode.setDay();
+            setNightModePreference(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            item.setChecked(true);
+            UtilNightMode.setNight();
+            setNightModePreference(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+    }
+
+    private void setNightModePreference(int mode) {
+        SharedPreferences.Editor editor
+                = getApplication().getSharedPreferences(getStringResource(R.string.night_mode_shared_pref_name), Context.MODE_PRIVATE).edit();
+        editor.putInt(getStringResource(R.string.night_mode_shared_pref_key), mode);
+        editor.apply();
+    }
 
     @Override
     public void signIn() {

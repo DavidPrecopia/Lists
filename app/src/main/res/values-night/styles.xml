@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="AppThemeDay">
+    <style name="AppTheme" parent="AppThemeNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorError">@color/red</item>
     </style>
-
-    <style name="AppThemeDay" parent="Theme.MaterialComponents.Light.NoActionBar" />
-
-    <style name="AppThemeNight" parent="Theme.MaterialComponents.NoActionBar" />
 </resources>

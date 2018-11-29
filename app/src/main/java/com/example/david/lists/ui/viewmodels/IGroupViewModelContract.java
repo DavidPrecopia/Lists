@@ -1,5 +1,7 @@
 package com.example.david.lists.ui.viewmodels;
 
+import android.view.MenuItem;
+
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
@@ -30,6 +32,8 @@ public interface IGroupViewModelContract {
     void undoRecentDeletion(IGroupAdapterContract adapter);
 
     void deletionNotificationTimedOut();
+
+    void nightMode(MenuItem item);
 
     void signIn();
 

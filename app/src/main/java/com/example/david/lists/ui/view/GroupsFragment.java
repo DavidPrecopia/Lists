@@ -214,6 +214,10 @@ public class GroupsFragment extends Fragment
             case R.id.menu_id_sign_out:
                 viewModel.signOut();
                 break;
+            case R.id.menu_id_night_mode:
+                viewModel.nightMode(item);
+                getActivity().recreate();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
