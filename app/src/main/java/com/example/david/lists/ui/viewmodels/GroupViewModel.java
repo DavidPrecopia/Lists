@@ -35,7 +35,8 @@ public final class GroupViewModel extends AndroidViewModel
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Group> eventOpenGroup;
-    private final SingleLiveEvent<String> eventDisplayError;
+    private final SingleLiveEvent<Boolean> eventDisplayError;
+    private final SingleLiveEvent<String> errorMessage;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
@@ -54,6 +55,7 @@ public final class GroupViewModel extends AndroidViewModel
         eventOpenGroup = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
+        errorMessage = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
@@ -82,31 +84,31 @@ public final class GroupViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Group>>() {
             @Override
             public void onNext(List<Group> groups) {
-                updateUi(groups);
+                GroupViewModel.this.groupList.setValue(groups);
+                evaluateNewData(groups);
             }
 
             @Override
             public void onError(Throwable t) {
                 if (BuildConfig.DEBUG) Timber.e(t);
-                eventDisplayError.setValue(
-                        getStringResource(R.string.error_msg_generic)
-                );
+                errorMessage.setValue(getStringResource(R.string.error_msg_generic));
+                eventDisplayError.setValue(true);
             }
 
             @Override
             public void onComplete() {
-
             }
         };
     }
 
-    private void updateUi(List<Group> newGroupList) {
-        this.groupList.setValue(newGroupList);
+    private void evaluateNewData(List<Group> newGroupList) {
+        eventDisplayLoading.setValue(false);
 
         if (newGroupList.isEmpty()) {
-            eventDisplayError.setValue(getStringResource(R.string.error_msg_no_groups));
+            errorMessage.setValue(getStringResource(R.string.error_msg_no_groups));
+            eventDisplayError.setValue(true);
         } else {
-            eventDisplayLoading.setValue(false);
+            eventDisplayError.setValue(false);
         }
     }
 
@@ -220,6 +222,10 @@ public final class GroupViewModel extends AndroidViewModel
 
     @Override
     public LiveData<List<Group>> getGroupList() {
+        List<Group> value = groupList.getValue();
+        if (value != null) {
+            evaluateNewData(value);
+        }
         return groupList;
     }
 
@@ -234,8 +240,13 @@ public final class GroupViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<String> getEventDisplayError() {
+    public LiveData<Boolean> getEventDisplayError() {
         return eventDisplayError;
+    }
+
+    @Override
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
     }
 
     @Override

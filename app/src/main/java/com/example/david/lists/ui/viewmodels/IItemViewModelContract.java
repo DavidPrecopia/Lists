@@ -34,7 +34,9 @@ public interface IItemViewModelContract {
 
     LiveData<Boolean> getEventDisplayLoading();
 
-    LiveData<String> getEventDisplayError();
+    LiveData<String> getErrorMessage();
+
+    LiveData<Boolean> getEventDisplayError();
 
     LiveData<String> getEventNotifyUserOfDeletion();
 

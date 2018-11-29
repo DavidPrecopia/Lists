@@ -107,7 +107,13 @@ public class GroupsFragment extends Fragment
 
 
     private void observeError() {
-        viewModel.getEventDisplayError().observe(this, this::showError);
+        viewModel.getEventDisplayError().observe(this, display -> {
+            if (display) {
+                showError(viewModel.getErrorMessage().getValue());
+            } else {
+                hideError();
+            }
+        });
     }
 
     private void observeDisplayLoading() {
@@ -284,7 +290,6 @@ public class GroupsFragment extends Fragment
     }
 
     private void hideLoading() {
-        hideError();
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
         binding.fab.show();

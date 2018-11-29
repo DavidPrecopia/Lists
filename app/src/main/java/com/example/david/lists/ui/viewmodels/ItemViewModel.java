@@ -36,13 +36,14 @@ public final class ItemViewModel extends AndroidViewModel
     private final CompositeDisposable disposable;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<String> eventDisplayError;
+    private final SingleLiveEvent<Boolean> eventDisplayError;
+    private final SingleLiveEvent<String> errorMessage;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<EditingInfo> eventEdit;
+    private final SingleLiveEvent<Void> eventFinish;
 
     private Observer<List<Group>> modelObserver;
-    private final SingleLiveEvent<Void> eventFinish;
 
     private final List<Item> tempItemList;
     private int tempItemPosition;
@@ -55,6 +56,7 @@ public final class ItemViewModel extends AndroidViewModel
         disposable = new CompositeDisposable();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
+        errorMessage = new SingleLiveEvent<>();
         eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
@@ -96,15 +98,14 @@ public final class ItemViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
-                updateUi(itemList);
+                ItemViewModel.this.itemList.setValue(itemList);
+                evaluateNewData(itemList);
             }
 
             @Override
             public void onError(Throwable t) {
                 if (BuildConfig.DEBUG) Timber.e(t);
-                eventDisplayError.setValue(
-                        getStringResource(R.string.error_msg_generic)
-                );
+                errorMessage.setValue(getStringResource(R.string.error_msg_generic));
             }
 
             @Override
@@ -113,13 +114,14 @@ public final class ItemViewModel extends AndroidViewModel
         };
     }
 
-    private void updateUi(List<Item> newItemList) {
-        itemList.setValue(newItemList);
+    private void evaluateNewData(List<Item> newItemList) {
+        eventDisplayLoading.setValue(false);
 
         if (newItemList.isEmpty()) {
-            eventDisplayError.setValue(getStringResource(R.string.error_msg_empty_group));
+            errorMessage.setValue(getStringResource(R.string.error_msg_empty_group));
+            eventDisplayError.setValue(true);
         } else {
-            eventDisplayLoading.setValue(false);
+            eventDisplayError.setValue(false);
         }
     }
 
@@ -212,6 +214,10 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public LiveData<List<Item>> getItemList() {
+        List<Item> value = itemList.getValue();
+        if (value != null) {
+            evaluateNewData(value);
+        }
         return itemList;
     }
 
@@ -221,7 +227,12 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<String> getEventDisplayError() {
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    @Override
+    public LiveData<Boolean> getEventDisplayError() {
         return eventDisplayError;
     }
 

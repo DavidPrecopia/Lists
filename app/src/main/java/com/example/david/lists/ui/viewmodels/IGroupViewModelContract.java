@@ -42,7 +42,9 @@ public interface IGroupViewModelContract {
 
     LiveData<Boolean> getEventDisplayLoading();
 
-    LiveData<String> getEventDisplayError();
+    LiveData<Boolean> getEventDisplayError();
+
+    LiveData<String> getErrorMessage();
 
     LiveData<String> getEventNotifyUserOfDeletion();
 
