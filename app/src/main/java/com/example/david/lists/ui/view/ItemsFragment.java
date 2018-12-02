@@ -158,10 +158,8 @@ public class ItemsFragment extends Fragment
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setDisplayHomeAsUpEnabled(true);
-
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setTitle(getArguments().getString(ARG_KEY_GROUP_TITLE));
     }
