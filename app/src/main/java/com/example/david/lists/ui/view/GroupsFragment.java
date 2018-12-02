@@ -216,7 +216,6 @@ public class GroupsFragment extends Fragment
                 break;
             case R.id.menu_id_night_mode:
                 viewModel.nightMode(item);
-                getActivity().recreate();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -2,6 +2,7 @@ package com.example.david.lists.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -30,7 +31,9 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
-public class MainActivity extends AppCompatActivity implements GroupsFragment.GroupFragmentListener {
+public class MainActivity extends AppCompatActivity
+        implements GroupsFragment.GroupFragmentListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
     private FragmentManager fragmentManager;
@@ -38,6 +41,20 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.Gr
     private static final int RESPONSE_CODE_AUTH = 100;
 
     private boolean newActivity;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +188,13 @@ public class MainActivity extends AppCompatActivity implements GroupsFragment.Gr
             return false;
         } else {
             return super.onSupportNavigateUp();
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.night_mode_shared_pref_key))) {
+            recreate();
         }
     }
 
