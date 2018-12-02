@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="AppThemeNight">
+    <style name="AppTheme" parent="AppThemeNight" />
+
+    <style name="AppThemeNight" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -8,7 +10,7 @@
     </style>
 
 
-    <style name="ToolbarStyle" parent="ToolbarStyleNight"/>
+    <style name="ToolbarStyle" parent="ToolbarStyleNight" />
 
     <style name="ToolbarStyleNight">
         <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
@@ -20,7 +22,7 @@
     </style>
 
 
-    <style name="HintTextAppearance" parent="HintTextAppearanceNight"/>
+    <style name="HintTextAppearance" parent="HintTextAppearanceNight" />
 
     <style name="HintTextAppearanceNight" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/white</item>

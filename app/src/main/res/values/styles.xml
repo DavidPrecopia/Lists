@@ -1,13 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="AppThemeDay">
+    <style name="AppTheme" parent="AppThemeDay" />
+
+    <style name="AppThemeDay" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorError">@color/red</item>
     </style>
 
-    <style name="AppThemeDay" parent="Theme.MaterialComponents.Light.NoActionBar" />
 
-    <style name="AppThemeNight" parent="Theme.MaterialComponents.NoActionBar" />
+    <style name="AppBarStyle">
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="elevation">@dimen/elevation_app_bar</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="ToolbarStyleDay" />
+
+    <style name="ToolbarStyleDay">
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="layout_scrollFlags">scroll|enterAlways</item>
+        <item name="titleTextColor">@color/colorAccent</item>
+    </style>
+
+
+    <style name="DialogStyle" parent="Base.Theme.MaterialComponents.Dialog">
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+    </style>
+
+
+    <style name="TitleTextStyle">
+        <item name="android:textAppearance">
+            @style/Base.Widget.MaterialComponents.TextInputEditText
+        </item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ErrorTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableTop">@drawable/ic_error_24dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+
+    <style name="ButtonColor">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="rippleColor">@color/colorAccent</item>
+    </style>
+
+    <style name="HintTextAppearance" parent="HintTextAppearanceDay" />
+
+    <style name="HintTextAppearanceDay" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/darkGray</item>
+    </style>
 </resources>
