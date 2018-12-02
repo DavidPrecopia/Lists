@@ -10,4 +10,6 @@
     <color name="darkGray">#616161</color>
     <color name="lightGray">#424242</color>
     <color name="red">#D50000</color>
+
+    <color name="black_day_night">@color/black</color>
 </resources>
