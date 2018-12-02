@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -196,7 +198,14 @@ public class GroupsFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(getMenuResource(), menu);
+        menu.findItem(R.id.menu_id_night_mode).setChecked(nightModeEnabled());
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private boolean nightModeEnabled() {
+        return AppCompatDelegate.MODE_NIGHT_YES == getActivity()
+                .getSharedPreferences(getString(R.string.night_mode_shared_pref_name), Context.MODE_PRIVATE)
+                .getInt(getString(R.string.night_mode_shared_pref_key), -1);
     }
 
     private int getMenuResource() {
