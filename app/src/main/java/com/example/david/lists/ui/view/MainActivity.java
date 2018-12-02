@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity
     private void successfullySignedOut() {
         toastMessage(R.string.msg_successful_signed_out);
         for (Fragment fragment : fragmentManager.getFragments()) {
-            fragmentManager.beginTransaction().remove(fragment).commit();
+            fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
         }
         verifyUser(true);
     }
