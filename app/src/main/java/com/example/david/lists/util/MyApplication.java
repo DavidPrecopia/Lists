@@ -41,6 +41,7 @@ public final class MyApplication extends Application {
     private void setNightMode() {
         switch (getCurrentMode()) {
             case -1:
+                UtilNightMode.setDay();
                 break;
             case AppCompatDelegate.MODE_NIGHT_NO:
                 UtilNightMode.setDay();
