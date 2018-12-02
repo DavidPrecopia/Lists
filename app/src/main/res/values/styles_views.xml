@@ -7,7 +7,9 @@
         <item name="elevation">@dimen/elevation_app_bar</item>
     </style>
 
-    <style name="ToolbarStyle">
+    <style name="ToolbarStyle" parent="ToolbarStyleDay"/>
+
+    <style name="ToolbarStyleDay">
         <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
@@ -44,7 +46,9 @@
         <item name="rippleColor">@color/colorAccent</item>
     </style>
 
-    <style name="HintTextAppearance" parent="TextAppearance.AppCompat">
+    <style name="HintTextAppearance" parent="HintTextAppearanceDay"/>
+
+    <style name="HintTextAppearanceDay" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/darkGray</item>
     </style>
 </resources>
