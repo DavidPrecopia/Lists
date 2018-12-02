@@ -1,6 +1,5 @@
 package com.example.david.lists.ui.view;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -157,12 +156,8 @@ public class ItemsFragment extends Fragment
     }
 
 
-    @SuppressLint("RestrictedApi")
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setDefaultDisplayHomeAsUpEnabled(true);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setDisplayHomeAsUpEnabled(true);
