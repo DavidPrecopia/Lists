@@ -8,7 +8,9 @@ import com.example.david.lists.data.remote.RemoteStorage;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 public final class Model implements IModelContract {
 
@@ -45,37 +47,37 @@ public final class Model implements IModelContract {
     @Override
     public void addGroup(Group group) {
         validateObject(group);
-        remote.addGroup(group);
+        completableUtil(Completable.fromAction(() -> remote.addGroup(group)));
     }
 
     @Override
     public void addItem(Item item) {
         validateObject(item);
-        remote.addItem(item);
+        completableUtil(Completable.fromAction(() -> remote.addItem(item)));
     }
 
 
     @Override
     public void deleteGroups(List<Group> groups) {
         validateList(groups);
-        remote.deleteGroups(groups);
+        completableUtil(Completable.fromAction(() -> remote.deleteGroups(groups)));
     }
 
     @Override
     public void deleteItems(List<Item> items) {
         validateList(items);
-        remote.deleteItems(items);
+        completableUtil(Completable.fromAction(() -> remote.deleteItems(items)));
     }
 
 
     @Override
     public void renameGroup(String groupId, String newTitle) {
-        remote.renameGroup(groupId, newTitle);
+        completableUtil(Completable.fromAction(() -> remote.renameGroup(groupId, newTitle)));
     }
 
     @Override
     public void renameItem(String itemId, String newTitle) {
-        remote.renameItem(itemId, newTitle);
+        completableUtil(Completable.fromAction(() -> remote.renameItem(itemId, newTitle)));
     }
 
 
@@ -93,9 +95,13 @@ public final class Model implements IModelContract {
 
     private void processGroupPositionChange(Group group, int oldPosition, int newPosition) {
         if (shouldDecrement(oldPosition, newPosition)) {
-            remote.updateGroupPositionsDecrement(group, oldPosition, newPosition);
+            completableUtil(Completable.fromAction(() ->
+                    remote.updateGroupPositionsDecrement(group, oldPosition, newPosition)
+            ));
         } else if (shouldIncrement(oldPosition, newPosition)) {
-            remote.updateGroupPositionsIncrement(group, oldPosition, newPosition);
+            completableUtil(Completable.fromAction(() ->
+                    remote.updateGroupPositionsIncrement(group, oldPosition, newPosition)
+            ));
         }
     }
 
@@ -113,9 +119,13 @@ public final class Model implements IModelContract {
 
     private void processItemPositionChange(Item item, int oldPosition, int newPosition) {
         if (shouldDecrement(oldPosition, newPosition)) {
-            remote.updateItemPositionsDecrement(item, oldPosition, newPosition);
+            completableUtil(Completable.fromAction(() ->
+                    remote.updateItemPositionsDecrement(item, oldPosition, newPosition)
+            ));
         } else if (shouldIncrement(oldPosition, newPosition)) {
-            remote.updateItemPositionsIncrement(item, oldPosition, newPosition);
+            completableUtil(Completable.fromAction(() ->
+                    remote.updateItemPositionsIncrement(item, oldPosition, newPosition)
+            ));
         }
     }
 
@@ -158,6 +168,10 @@ public final class Model implements IModelContract {
         return remote.getEventGroupDeleted();
     }
 
+
+    private void completableUtil(Completable completable) {
+        completable.subscribeOn(Schedulers.io()).subscribe();
+    }
 
     private void nullObjectException() {
         throw new IllegalArgumentException("Parameter cannot be null");
