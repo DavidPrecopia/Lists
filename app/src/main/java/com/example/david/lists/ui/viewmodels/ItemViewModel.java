@@ -70,14 +70,14 @@ public final class ItemViewModel extends AndroidViewModel
 
     private void init() {
         eventDisplayLoading.setValue(true);
-//        observeModel();
+        observeModel();
         getItems();
     }
 
 
     private void observeModel() {
-        modelObserver = userLists -> {
-            for (Group group : userLists) {
+        modelObserver = groups -> {
+            for (Group group : groups) {
                 if (group.getId().equals(this.groupId)) {
                     eventFinish.call();
                 }
@@ -253,8 +253,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public LiveData<Void> getEventFinish() {
-        return new LiveData<Void>() {
-        };
+        return eventFinish;
     }
 
 

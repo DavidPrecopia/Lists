@@ -8,6 +8,7 @@ import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -114,8 +116,25 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
                 return;
             }
+            checkIfGroupDeleted(queryDocumentSnapshots);
             emitter.onNext(queryDocumentSnapshots.toObjects(Group.class));
         };
+    }
+
+    private void checkIfGroupDeleted(QuerySnapshot queryDocumentSnapshots) {
+        if (!eventDeleteGroups.hasObservers()) {
+            return;
+        }
+
+        List<Group> deletedGroups = new ArrayList<>();
+        for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
+            if (change.getType() == DocumentChange.Type.REMOVED) {
+                deletedGroups.add(change.getDocument().toObject(Group.class));
+            }
+        }
+        if (!deletedGroups.isEmpty()) {
+            eventDeleteGroups.postValue(deletedGroups);
+        }
     }
 
 
