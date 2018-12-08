@@ -1,6 +1,7 @@
 package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
@@ -79,6 +80,10 @@ public final class ItemViewModel extends AndroidViewModel
         modelObserver = groups -> {
             for (Group group : groups) {
                 if (group.getId().equals(this.groupId)) {
+                    Toast.makeText(getApplication(),
+                            getStringResource(R.string.message_group_deletion_parameter, group.getTitle()),
+                            Toast.LENGTH_LONG
+                    ).show();
                     eventFinish.call();
                 }
             }
@@ -259,6 +264,10 @@ public final class ItemViewModel extends AndroidViewModel
 
     private String getStringResource(int resId) {
         return getApplication().getString(resId);
+    }
+
+    private String getStringResource(int resId, Object object) {
+        return getApplication().getString(resId, object);
     }
 
 
