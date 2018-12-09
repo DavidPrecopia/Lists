@@ -30,7 +30,7 @@ final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewMo
             //noinspection unchecked
             return (T) new WidgetConfigViewModel(application, model, widgetId);
         } else {
-            throw new IllegalArgumentException("Invalid ViewModel");
+            throw new IllegalArgumentException();
         }
     }
 }
