@@ -49,7 +49,7 @@ public final class ItemViewModel extends AndroidViewModel
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    public ItemViewModel(@NonNull Application application, IModelContract model, String groupId) {
+    ItemViewModel(@NonNull Application application, IModelContract model, String groupId) {
         super(application);
         this.groupId = groupId;
         itemList = new MutableLiveData<>();

@@ -52,7 +52,7 @@ public final class GroupViewModel extends AndroidViewModel
     private final List<Group> tempGroups;
     private int tempGroupPosition;
 
-    public GroupViewModel(@NonNull Application application, IModelContract model) {
+    GroupViewModel(@NonNull Application application, IModelContract model) {
         super(application);
         groupList = new MutableLiveData<>();
         this.model = model;
