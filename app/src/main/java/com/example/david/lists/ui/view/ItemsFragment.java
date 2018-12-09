@@ -11,7 +11,8 @@ import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
-import com.example.david.lists.ui.viewmodels.UtilListViewModels;
+import com.example.david.lists.ui.viewmodels.ItemViewModel;
+import com.example.david.lists.ui.viewmodels.ItemViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,11 +59,11 @@ public class ItemsFragment extends Fragment
     }
 
     private void initViewModel() {
-        viewModel = UtilListViewModels.getItemViewModel(
-                this,
+        ItemViewModelFactory factory = new ItemViewModelFactory(
                 getActivity().getApplication(),
                 getArguments().getString(ARG_KEY_GROUP_ID)
         );
+        this.viewModel = ViewModelProviders.of(this, factory).get(ItemViewModel.class);
     }
 
 

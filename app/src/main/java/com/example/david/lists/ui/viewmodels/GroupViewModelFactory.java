@@ -9,12 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-final class GroupViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public final class GroupViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     private final Application application;
     private final IModelContract model;
 
-    GroupViewModelFactory(@NonNull Application application) {
+    public GroupViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
         this.model = Model.getInstance();

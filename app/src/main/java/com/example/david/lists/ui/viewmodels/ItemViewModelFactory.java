@@ -9,13 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-final class ItemViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public final class ItemViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     private final Application application;
     private final String groupId;
     private final IModelContract model;
 
-    ItemViewModelFactory(@NonNull Application application, String groupId) {
+    public ItemViewModelFactory(@NonNull Application application, String groupId) {
         super(application);
         this.application = application;
         this.groupId = groupId;

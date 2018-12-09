@@ -15,8 +15,9 @@ import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.FragmentGroupsBinding;
 import com.example.david.lists.ui.adapaters.GroupAdapter;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
+import com.example.david.lists.ui.viewmodels.GroupViewModel;
+import com.example.david.lists.ui.viewmodels.GroupViewModelFactory;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
-import com.example.david.lists.ui.viewmodels.UtilListViewModels;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +28,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,7 +68,12 @@ public class GroupsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        viewModel = UtilListViewModels.getGroupViewModel(this, getActivity().getApplication());
+        intiViewModel();
+    }
+
+    private void intiViewModel() {
+        GroupViewModelFactory factory = new GroupViewModelFactory(getActivity().getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(GroupViewModel.class);
     }
 
     @Override
