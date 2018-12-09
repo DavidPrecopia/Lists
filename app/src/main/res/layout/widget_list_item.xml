@@ -13,10 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingStart="@dimen/margin_normal"
-            android:paddingTop="@dimen/margin_normal"
-            android:paddingEnd="@dimen/margin_normal"
-            android:paddingBottom="@dimen/margin_normal"
+            android:padding="@dimen/margin_medium"
             android:textColor="@color/black"
             tools:text="This is a noticeably long title" />
 
