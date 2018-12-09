@@ -16,7 +16,7 @@ final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewMo
     private final int widgetId;
     private final IModelContract model;
 
-    public WidgetConfigViewModelFactory(@NonNull Application application, int widgetId) {
+    WidgetConfigViewModelFactory(@NonNull Application application, int widgetId) {
         super(application);
         this.application = application;
         this.widgetId = widgetId;
