@@ -44,7 +44,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final MutableLiveData<String> eventDisplayError;
     private final int widgetId;
 
-    public WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
+    WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
         super(application);
         this.model = model;
         this.widgetId = widgetId;
