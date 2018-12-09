@@ -2,17 +2,12 @@ package com.example.david.lists.widget.configactivity;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-import com.example.david.lists.util.UtilViewModelFactory;
-import com.example.david.lists.widget.WidgetRemoteView;
 
 import java.util.Objects;
 
@@ -23,10 +18,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
@@ -90,14 +81,14 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
 
     private void initViewModel() {
-        UtilViewModelFactory factory = new UtilViewModelFactory(getApplication(), null);
+        WidgetConfigViewModelFactory factory = new WidgetConfigViewModelFactory(getApplication(), this.widgetId);
         viewModel = ViewModelProviders.of(this, factory).get(WidgetConfigViewModel.class);
     }
 
     private void observeViewModel() {
         observeEventDisplayingLoading();
         observeEventDisplayError();
-        observeEventGroupSelected();
+        observeEventSuccessful();
     }
 
     private void observeEventDisplayingLoading() {
@@ -114,30 +105,14 @@ public class WidgetConfigActivity extends AppCompatActivity {
         viewModel.getEventDisplayError().observe(this, this::showError);
     }
 
-    private void observeEventGroupSelected() {
-        viewModel.getEventSelectGroup().observe(this, this::applySelection);
+
+    private void observeEventSuccessful() {
+        viewModel.getEventSuccessful().observe(this, aVoid -> successful());
     }
 
-
-    private void applySelection(Group group) {
-        saveDetails(group.getId(), group.getTitle());
+    private void successful() {
         resultsIntent(RESULT_OK);
-        updateWidget();
         finish();
-    }
-
-    private void saveDetails(String id, String title) {
-        SharedPreferences.Editor editor = getSharedPreferences(
-                getSharedPrefName(getApplicationContext()), MODE_PRIVATE
-        ).edit();
-        editor.putString(getSharedPrefKeyId(getApplicationContext(), widgetId), id);
-        editor.putString(getSharedPrefKeyTitle(getApplicationContext(), widgetId), title);
-        editor.apply();
-    }
-
-    private void updateWidget() {
-        RemoteViews remoteView = new WidgetRemoteView(getApplicationContext(), widgetId).updateWidget();
-        AppWidgetManager.getInstance(this).updateAppWidget(widgetId, remoteView);
     }
 
 

@@ -12,7 +12,7 @@ interface IWidgetConfigViewModelContract {
 
     LiveData<Boolean> getEventDisplayLoading();
 
-    LiveData<Group> getEventSelectGroup();
+    LiveData<Void> getEventSuccessful();
 
     LiveData<String> getEventDisplayError();
 }

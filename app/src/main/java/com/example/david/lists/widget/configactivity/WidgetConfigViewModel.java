@@ -1,10 +1,15 @@
 package com.example.david.lists.widget.configactivity;
 
 import android.app.Application;
+import android.appwidget.AppWidgetManager;
+import android.content.SharedPreferences;
+import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.widget.WidgetRemoteView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +25,11 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
+import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
+
 public final class WidgetConfigViewModel extends AndroidViewModel
         implements IWidgetConfigViewModelContract {
 
@@ -30,17 +40,19 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final WidgetConfigAdapter adapter;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final MutableLiveData<Group> eventSelectedGroup;
+    private final SingleLiveEvent<Void> eventSuccessful;
     private final MutableLiveData<String> eventDisplayError;
+    private final int widgetId;
 
-    public WidgetConfigViewModel(@NonNull Application application, IModelContract model) {
+    public WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
         super(application);
         this.model = model;
+        this.widgetId = widgetId;
         disposable = new CompositeDisposable();
         groups = new ArrayList<>();
         adapter = new WidgetConfigAdapter(this);
         eventDisplayLoading = new MutableLiveData<>();
-        eventSelectedGroup = new MutableLiveData<>();
+        eventSuccessful = new SingleLiveEvent<>();
         eventDisplayError = new MutableLiveData<>();
 
         init();
@@ -102,7 +114,23 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
     @Override
     public void groupClicked(Group group) {
-        eventSelectedGroup.setValue(group);
+        saveDetails(group.getId(), group.getTitle());
+        updateWidget();
+        eventSuccessful.call();
+    }
+
+    private void saveDetails(String id, String title) {
+        SharedPreferences.Editor editor = getApplication().getSharedPreferences(
+                getSharedPrefName(getApplication()), MODE_PRIVATE
+        ).edit();
+        editor.putString(getSharedPrefKeyId(getApplication(), widgetId), id);
+        editor.putString(getSharedPrefKeyTitle(getApplication(), widgetId), title);
+        editor.apply();
+    }
+
+    private void updateWidget() {
+        RemoteViews remoteView = new WidgetRemoteView(getApplication(), widgetId).updateWidget();
+        AppWidgetManager.getInstance(getApplication()).updateAppWidget(widgetId, remoteView);
     }
 
 
@@ -117,8 +145,8 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<Group> getEventSelectGroup() {
-        return eventSelectedGroup;
+    public LiveData<Void> getEventSuccessful() {
+        return eventSuccessful;
     }
 
     @Override

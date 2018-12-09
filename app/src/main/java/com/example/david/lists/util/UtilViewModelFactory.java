@@ -38,7 +38,7 @@ public final class UtilViewModelFactory extends ViewModelProvider.AndroidViewMod
             return (T) new ItemViewModel(application, model, groupId);
         } else if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
             //noinspection unchecked
-            return (T) new WidgetConfigViewModel(application, model);
+//            return (T) new WidgetConfigViewModel(application, model);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
