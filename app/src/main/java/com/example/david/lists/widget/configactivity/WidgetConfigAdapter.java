@@ -61,7 +61,7 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
         }
 
         private void bindView(Group group) {
-            binding.widgetListItemTvTitle.setText(group.getTitle());
+            binding.setGroup(group);
         }
 
         @Override
