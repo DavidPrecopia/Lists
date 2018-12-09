@@ -39,7 +39,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Void> eventSuccessful;
-    private final MutableLiveData<Boolean> eventDisplayError;
+    private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
     WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
@@ -50,7 +50,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         groups = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventSuccessful = new SingleLiveEvent<>();
-        eventDisplayError = new MutableLiveData<>();
+        eventDisplayError = new SingleLiveEvent<>();
         errorMessage = new SingleLiveEvent<>();
 
         init();
