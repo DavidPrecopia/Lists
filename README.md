@@ -1,3 +1,5 @@
+Copyright &copy; 2018 David M Precopia
+
 # Lists
 
 Keep track of tasks across multiple devices.
