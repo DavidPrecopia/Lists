@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.david.lists.data.datamodel.Group;
-import com.example.david.lists.databinding.WidgetListItemBinding;
+import com.example.david.lists.databinding.WidgetConfigListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
     @Override
     public WidgetConfigViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new WidgetConfigViewHolder(
-                WidgetListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
+                WidgetConfigListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
         );
     }
 
@@ -52,9 +52,9 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
     final class WidgetConfigViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private final WidgetListItemBinding binding;
+        private final WidgetConfigListItemBinding binding;
 
-        WidgetConfigViewHolder(WidgetListItemBinding binding) {
+        WidgetConfigViewHolder(WidgetConfigListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             binding.getRoot().setOnClickListener(this);

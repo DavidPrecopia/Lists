@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="group"
+            type="com.example.david.lists.data.datamodel.Group" />
+    </data>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/margin_medium"
+            android:padding="@dimen/margin_normal"
+            android:text="@{group.title}"
             android:textColor="@color/black"
             tools:text="This is a noticeably long title" />
 
