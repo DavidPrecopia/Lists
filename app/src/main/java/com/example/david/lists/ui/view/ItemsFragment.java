@@ -83,8 +83,8 @@ public class ItemsFragment extends Fragment
 
     private void observeViewModel() {
         observeItemList();
-        observeDisplayLoading();
-        observeError();
+        observeEventDisplayLoading();
+        observeEventDisplayError();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
@@ -95,7 +95,7 @@ public class ItemsFragment extends Fragment
         viewModel.getItemList().observe(this, items -> adapter.swapData(items));
     }
 
-    private void observeError() {
+    private void observeEventDisplayError() {
         viewModel.getEventDisplayError().observe(this, display -> {
             if (display) {
                 showError(viewModel.getErrorMessage().getValue());
@@ -105,7 +105,7 @@ public class ItemsFragment extends Fragment
         });
     }
 
-    private void observeDisplayLoading() {
+    private void observeEventDisplayLoading() {
         viewModel.getEventDisplayLoading().observe(this, display -> {
             if (display) {
                 showLoading();

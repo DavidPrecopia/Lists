@@ -93,8 +93,8 @@ public class GroupsFragment extends Fragment
 
     private void observeViewModel() {
         observeGroupList();
-        observeError();
-        observeDisplayLoading();
+        observeEventDisplayError();
+        observeEventDisplayLoading();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
@@ -115,7 +115,7 @@ public class GroupsFragment extends Fragment
     }
 
 
-    private void observeError() {
+    private void observeEventDisplayError() {
         viewModel.getEventDisplayError().observe(this, display -> {
             if (display) {
                 showError(viewModel.getErrorMessage().getValue());
@@ -125,7 +125,7 @@ public class GroupsFragment extends Fragment
         });
     }
 
-    private void observeDisplayLoading() {
+    private void observeEventDisplayLoading() {
         viewModel.getEventDisplayLoading().observe(this, display -> {
             if (display) {
                 showLoading();
