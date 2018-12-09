@@ -24,3 +24,7 @@ This is my capstone project in Udacity's Android Developer Nanodegree.
 **Icons**
 
 - https://material.io/tools/icons/?style=round
+
+# Copyright
+
+Copyright &copy; 2018 David M Precopia
