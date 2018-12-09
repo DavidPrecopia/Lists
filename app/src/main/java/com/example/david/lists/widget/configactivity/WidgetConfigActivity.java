@@ -26,6 +26,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
     private static final int INVALID_WIDGET_ID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int widgetId = INVALID_WIDGET_ID;
+    private WidgetConfigAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,8 @@ public class WidgetConfigActivity extends AppCompatActivity {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
         initLayoutManager(recyclerView);
-        recyclerView.setAdapter(viewModel.getAdapter());
+        adapter = new WidgetConfigAdapter(viewModel);
+        recyclerView.setAdapter(adapter);
     }
 
     private void initLayoutManager(RecyclerView recyclerView) {
@@ -86,9 +88,14 @@ public class WidgetConfigActivity extends AppCompatActivity {
     }
 
     private void observeViewModel() {
+        observeGroupList();
         observeEventDisplayingLoading();
         observeEventDisplayError();
         observeEventSuccessful();
+    }
+
+    private void observeGroupList() {
+        viewModel.getGroupList().observe(this, groups -> adapter.swapData(groups));
     }
 
     private void observeEventDisplayingLoading() {
@@ -102,7 +109,13 @@ public class WidgetConfigActivity extends AppCompatActivity {
     }
 
     private void observeEventDisplayError() {
-        viewModel.getEventDisplayError().observe(this, this::showError);
+        viewModel.getEventDisplayError().observe(this, display -> {
+            if (display) {
+                showError(viewModel.getErrorMessage().getValue());
+            } else {
+                hideError();
+            }
+        });
     }
 
 

@@ -11,14 +11,12 @@ import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.widget.WidgetRemoteView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -36,24 +34,24 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
-    private final List<Group> groups;
-    private final WidgetConfigAdapter adapter;
+    private final int widgetId;
+    private final MutableLiveData<List<Group>> groups;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Void> eventSuccessful;
-    private final MutableLiveData<String> eventDisplayError;
-    private final int widgetId;
+    private final MutableLiveData<Boolean> eventDisplayError;
+    private final SingleLiveEvent<String> errorMessage;
 
     WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
         super(application);
         this.model = model;
         this.widgetId = widgetId;
         disposable = new CompositeDisposable();
-        groups = new ArrayList<>();
-        adapter = new WidgetConfigAdapter(this);
+        groups = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventSuccessful = new SingleLiveEvent<>();
         eventDisplayError = new MutableLiveData<>();
+        errorMessage = new SingleLiveEvent<>();
 
         init();
     }
@@ -76,16 +74,15 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Group>>() {
             @Override
             public void onNext(List<Group> groups) {
-                updateGroupList(groups);
-                updateUi();
+                WidgetConfigViewModel.this.groups.setValue(groups);
+                evaluateNewData(groups);
             }
 
             @Override
             public void onError(Throwable t) {
                 Timber.e(t);
-                eventDisplayError.setValue(
-                        getStringResource(R.string.error_msg_generic)
-                );
+                errorMessage.setValue(getStringResource(R.string.error_msg_generic));
+                eventDisplayError.setValue(true);
             }
 
             @Override
@@ -95,19 +92,14 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         };
     }
 
-    private void updateGroupList(List<Group> groups) {
-        this.groups.clear();
-        this.groups.addAll(groups);
-    }
+    private void evaluateNewData(List<Group> newGroupList) {
+        eventDisplayLoading.setValue(false);
 
-    private void updateUi() {
-        if (groups.isEmpty()) {
-            eventDisplayError.setValue(
-                    getStringResource(R.string.error_msg_no_groups)
-            );
+        if (newGroupList.isEmpty()) {
+            errorMessage.setValue(getStringResource(R.string.error_msg_no_groups));
+            eventDisplayError.setValue(true);
         } else {
-            adapter.swapData(groups);
-            eventDisplayLoading.setValue(false);
+            eventDisplayError.setValue(false);
         }
     }
 
@@ -135,8 +127,12 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
 
     @Override
-    public RecyclerView.Adapter getAdapter() {
-        return adapter;
+    public LiveData<List<Group>> getGroupList() {
+        List<Group> value = groups.getValue();
+        if (value != null) {
+            evaluateNewData(value);
+        }
+        return groups;
     }
 
     @Override
@@ -150,10 +146,14 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     }
 
     @Override
-    public LiveData<String> getEventDisplayError() {
+    public LiveData<Boolean> getEventDisplayError() {
         return eventDisplayError;
     }
 
+    @Override
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
 
 
     private String getStringResource(int stringResId) {
