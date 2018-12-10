@@ -20,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 public final class AddDialogFragment extends DialogFragment {
 
     private DialogFragmentSharedBinding binding;
+    private UtilSoftKeyboard utilSoftKeyboard;
 
     private static final String ARG_KEY_HINT_TEXT = "hint_text_key";
 
@@ -58,7 +59,8 @@ public final class AddDialogFragment extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        UtilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
+        utilSoftKeyboard = new UtilSoftKeyboard();
+        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
     private void setHint() {
@@ -102,7 +104,7 @@ public final class AddDialogFragment extends DialogFragment {
 
     @Override
     public void dismiss() {
-        UtilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
+        utilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
         super.dismiss();
     }
 

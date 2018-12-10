@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment;
 public final class EditDialogFragment extends DialogFragment {
 
     private DialogFragmentSharedBinding binding;
+    private UtilSoftKeyboard utilSoftKeyboard;
 
     private EditingInfo editingInfo;
     private static final String ARG_KEY_EDITING_INFO = "edited_key";
@@ -67,7 +68,8 @@ public final class EditDialogFragment extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        UtilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
+        utilSoftKeyboard = new UtilSoftKeyboard();
+        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
     private void setEditText() {
@@ -130,7 +132,7 @@ public final class EditDialogFragment extends DialogFragment {
 
     @Override
     public void dismiss() {
-        UtilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
+        utilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
         super.dismiss();
     }
 
