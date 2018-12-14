@@ -59,8 +59,7 @@ public final class AddDialogFragment extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        utilSoftKeyboard = new UtilSoftKeyboard();
-        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
+        initSoftKeyboardUtil();
     }
 
     private void setHint() {
@@ -88,6 +87,11 @@ public final class AddDialogFragment extends DialogFragment {
             }
             return handled;
         });
+    }
+
+    private void initSoftKeyboardUtil() {
+        utilSoftKeyboard = new UtilSoftKeyboard();
+        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 
 
