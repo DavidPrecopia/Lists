@@ -29,7 +29,7 @@
         android:contentDescription="@string/content_description_widget_settings"
         android:paddingStart="@dimen/margin_normal"
         android:paddingEnd="@dimen/margin_normal"
-        android:src="@drawable/ic_settings_cog_white_18dp" />
+        android:src="@drawable/ic_settings_cog_white_24dp" />
 
 
     <FrameLayout
