@@ -199,7 +199,25 @@ public final class RemoteStorage implements IRemoteStorageContract {
         for (Group group : groups) {
             writeBatch.delete(getGroupDocument(group.getId()));
         }
-        writeBatch.commit().addOnFailureListener(this::onFailure);
+        writeBatch.commit()
+                .addOnSuccessListener(successfullyDeleteGroups())
+                .addOnFailureListener(this::onFailure);
+    }
+
+    private OnSuccessListener<Void> successfullyDeleteGroups() {
+        return aVoid -> groupsCollection
+                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int newPosition = 0;
+                    WriteBatch writeBatch = firestore.batch();
+                    for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                        writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+                        newPosition++;
+                    }
+                    writeBatch.commit();
+                })
+                .addOnFailureListener(this::onFailure);
     }
 
     @Override
@@ -208,7 +226,26 @@ public final class RemoteStorage implements IRemoteStorageContract {
         for (Item item : items) {
             batch.delete(getItemDocument(item.getId()));
         }
-        batch.commit().addOnFailureListener(this::onFailure);
+        batch.commit()
+                .addOnSuccessListener(successfullyDeleteItems(items.get(0).getGroupId()))
+                .addOnFailureListener(this::onFailure);
+    }
+
+    private OnSuccessListener<Void> successfullyDeleteItems(String groupId) {
+        return aVoid -> itemsCollection
+                .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
+                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int newPosition = 0;
+                    WriteBatch writeBatch = firestore.batch();
+                    for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                        writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+                        newPosition++;
+                    }
+                    writeBatch.commit();
+                })
+                .addOnFailureListener(this::onFailure);
     }
 
 
