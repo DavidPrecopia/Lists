@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error_msg_generic">An error has occurred</string>
-    <string name="error_msg_no_network_connection">No internet connection</string>
 
     <string name="error_msg_no_groups">No Groups created</string>
     <string name="error_msg_empty_group">Group is empty</string>

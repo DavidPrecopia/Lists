@@ -11,6 +11,4 @@
     <string name="title_widget_config_activity">Select a list</string>
 
     <string name="content_description_widget_settings">Widget settings</string>
-    
-    <string name="error_widget_async_task_cancelled" translatable="false">Widget AsyncTask cancelled</string>
 </resources>
