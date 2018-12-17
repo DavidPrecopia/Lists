@@ -239,7 +239,7 @@ public class ItemsFragment extends Fragment
 
     @Override
     public void movedPermanently(int newPosition) {
-        viewModel.movedPermanently(adapter, newPosition);
+        viewModel.movedPermanently(newPosition);
     }
 
     @Override

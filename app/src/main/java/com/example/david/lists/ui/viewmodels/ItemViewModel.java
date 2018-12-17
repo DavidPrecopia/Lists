@@ -160,7 +160,7 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     @Override
-    public void movedPermanently(IItemAdapterContract adapter, int newPosition) {
+    public void movedPermanently(int newPosition) {
         Item item = itemList.getValue().get(newPosition);
         model.updateItemPosition(
                 item,

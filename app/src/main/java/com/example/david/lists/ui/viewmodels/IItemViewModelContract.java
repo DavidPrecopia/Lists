@@ -19,7 +19,7 @@ public interface IItemViewModelContract {
 
     void dragging(IItemAdapterContract adapter, int fromPosition, int toPosition);
 
-    void movedPermanently(IItemAdapterContract adapter, int newPosition);
+    void movedPermanently(int newPosition);
 
     void swipedLeft(IItemAdapterContract adapter, int position);
 

@@ -151,7 +151,7 @@ public final class GroupViewModel extends AndroidViewModel
     }
 
     @Override
-    public void movedPermanently(IGroupAdapterContract adapter, int newPosition) {
+    public void movedPermanently(int newPosition) {
         Group group = groupList.getValue().get(newPosition);
         model.updateGroupPosition(
                 group,

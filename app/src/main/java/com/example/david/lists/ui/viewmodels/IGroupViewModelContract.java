@@ -23,7 +23,7 @@ public interface IGroupViewModelContract {
 
     void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition);
 
-    void movedPermanently(IGroupAdapterContract adapter, int newPosition);
+    void movedPermanently(int newPosition);
 
     void swipedLeft(IGroupAdapterContract adapter, int position);
 
