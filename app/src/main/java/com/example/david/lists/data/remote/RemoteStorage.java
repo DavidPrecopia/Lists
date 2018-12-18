@@ -113,7 +113,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 emitter.onError(e);
                 return;
             } else if (queryDocumentSnapshots == null) {
-                if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
+                if (BuildConfig.DEBUG) {
+                    Timber.e("QueryDocumentSnapshot is null");
+                }
                 return;
             }
             checkIfGroupDeleted(queryDocumentSnapshots);
@@ -375,6 +377,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     private void onFailure(Exception exception) {
-        if (BuildConfig.DEBUG) Timber.e(exception);
+        if (BuildConfig.DEBUG) {
+            Timber.e(exception);
+        }
     }
 }

@@ -260,7 +260,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void failedToSignOut(Exception e) {
-        if (BuildConfig.DEBUG) Timber.e(e);
+        if (BuildConfig.DEBUG) {
+            Timber.e(e);
+        }
         toastMessage(R.string.error_experienced_signing_out);
     }
 
