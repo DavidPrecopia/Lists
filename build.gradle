@@ -11,12 +11,32 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: 'checkstyle'
+
     repositories {
         google()
         mavenCentral()
         maven {
             url  "https://dl.bintray.com/firebaseui/firebase-ui"
         }
+    }
+
+    checkstyle {
+        toolVersion = '8.15'
+    }
+
+    task checkstyle(type: Checkstyle) {
+        // google_checks.xml copy from:
+        // https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml
+        configFile new File(rootDir, "tools/checkstyle/google_checks.xml")
+        configProperties.checkstyleSuppressionPath =
+                new File(rootDir, "tools/checkstyle/suppressions.xml").absolutePath
+        source 'src'
+        include '**/*.java'
+        exclude '**/gen/**'
+        exclude '**/R.java'
+        exclude '**/BuildConfig.java'
+        classpath = files()
     }
 }
 
