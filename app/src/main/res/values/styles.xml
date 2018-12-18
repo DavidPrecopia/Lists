@@ -35,6 +35,11 @@
     </style>
 
 
+    <!--
+        Setting TextInputEditText as the textAppearance causes the
+        text size to shrink to (roughly) 2sp - thus it needs to be
+        explicitly declared.
+    -->
     <style name="TitleTextStyle">
         <item name="android:textAppearance">
             @style/Base.Widget.MaterialComponents.TextInputEditText
