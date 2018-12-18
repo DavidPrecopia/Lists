@@ -216,9 +216,9 @@ public class GroupsFragment extends Fragment
     }
 
     private int getMenuResource() {
-        return UtilUser.isAnonymous() ?
-                R.menu.menu_sign_in :
-                R.menu.menu_sign_out;
+        return UtilUser.isAnonymous()
+                ? R.menu.menu_sign_in
+                : R.menu.menu_sign_out;
     }
 
     @Override
@@ -233,6 +233,8 @@ public class GroupsFragment extends Fragment
             case R.id.menu_id_night_mode:
                 viewModel.nightMode(item);
                 break;
+            default:
+                throw new IllegalArgumentException();
         }
         return super.onOptionsItemSelected(item);
     }
