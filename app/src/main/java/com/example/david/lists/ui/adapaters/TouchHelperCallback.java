@@ -70,11 +70,15 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
         switch (direction) {
             case ItemTouchHelper.LEFT:
                 movementCallback.swipedLeft(position);
+                break;
+            default:
+                // intentionally left blank
+                break;
         }
     }
 
     /**
-     * This is called post onMove <i>and</i> onSwiped
+     * This is called post onMove <i>and</i> onSwiped.
      */
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
