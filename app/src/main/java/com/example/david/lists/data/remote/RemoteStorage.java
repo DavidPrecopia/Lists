@@ -236,14 +236,16 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     @Override
     public void renameGroup(String groupId, String newName) {
-        getGroupDocument(groupId)
-                .update(FIELD_TITLE, newName)
-                .addOnFailureListener(this::onFailure);
+        rename(getGroupDocument(groupId), newName);
     }
 
     @Override
     public void renameItem(String itemId, String newName) {
-        getItemDocument(itemId)
+        rename(getItemDocument(itemId), newName);
+    }
+
+    private void rename(DocumentReference documentReference, String newName) {
+        documentReference
                 .update(FIELD_TITLE, newName)
                 .addOnFailureListener(this::onFailure);
     }
