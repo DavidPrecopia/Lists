@@ -90,19 +90,9 @@ public final class Model implements IModelContract {
             validatePositions(oldPosition, newPosition);
         }
 
-        processGroupPositionChange(group, oldPosition, newPosition);
-    }
-
-    private void processGroupPositionChange(Group group, int oldPosition, int newPosition) {
-        if (shouldDecrement(oldPosition, newPosition)) {
-            completableUtil(Completable.fromAction(() ->
-                    remote.updateGroupPositionsDecrement(group, oldPosition, newPosition)
-            ));
-        } else if (shouldIncrement(oldPosition, newPosition)) {
-            completableUtil(Completable.fromAction(() ->
-                    remote.updateGroupPositionsIncrement(group, oldPosition, newPosition)
-            ));
-        }
+        completableUtil(Completable.fromAction(() ->
+                remote.updateGroupPosition(group, newPosition)
+        ));
     }
 
     @Override
@@ -114,31 +104,13 @@ public final class Model implements IModelContract {
             validatePositions(oldPosition, newPosition);
         }
 
-        processItemPositionChange(item, oldPosition, newPosition);
-    }
-
-    private void processItemPositionChange(Item item, int oldPosition, int newPosition) {
-        if (shouldDecrement(oldPosition, newPosition)) {
-            completableUtil(Completable.fromAction(() ->
-                    remote.updateItemPositionsDecrement(item, oldPosition, newPosition)
-            ));
-        } else if (shouldIncrement(oldPosition, newPosition)) {
-            completableUtil(Completable.fromAction(() ->
-                    remote.updateItemPositionsIncrement(item, oldPosition, newPosition)
-            ));
-        }
+        completableUtil(Completable.fromAction(() ->
+                remote.updateItemPosition(item, newPosition)
+        ));
     }
 
     private boolean positionNotChanged(int oldPosition, int newPosition) {
         return oldPosition == newPosition;
-    }
-
-    private boolean shouldIncrement(int oldPosition, int newPosition) {
-        return newPosition < oldPosition;
-    }
-
-    private boolean shouldDecrement(int oldPosition, int newPosition) {
-        return newPosition > oldPosition;
     }
 
 

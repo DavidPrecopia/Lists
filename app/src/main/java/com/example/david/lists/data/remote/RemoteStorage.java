@@ -22,7 +22,6 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.lifecycle.LiveData;
 import io.reactivex.BackpressureStrategy;
@@ -118,16 +117,16 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 }
                 return;
             }
-            checkIfGroupDeleted(queryDocumentSnapshots);
+
+            if (eventDeleteGroups.hasObservers()) {
+                checkIfGroupDeleted(queryDocumentSnapshots);
+            }
+
             emitter.onNext(queryDocumentSnapshots.toObjects(Group.class));
         };
     }
 
     private void checkIfGroupDeleted(QuerySnapshot queryDocumentSnapshots) {
-        if (!eventDeleteGroups.hasObservers()) {
-            return;
-        }
-
         List<Group> deletedGroups = new ArrayList<>();
         for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
             if (change.getType() == DocumentChange.Type.REMOVED) {
@@ -210,15 +209,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return aVoid -> groupsCollection
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int newPosition = 0;
-                    WriteBatch writeBatch = firestore.batch();
-                    for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                        writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
-                        newPosition++;
-                    }
-                    writeBatch.commit();
-                })
+                .addOnSuccessListener(this::reorderConsecutively)
                 .addOnFailureListener(this::onFailure);
     }
 
@@ -238,15 +229,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int newPosition = 0;
-                    WriteBatch writeBatch = firestore.batch();
-                    for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-                        writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
-                        newPosition++;
-                    }
-                    writeBatch.commit();
-                })
+                .addOnSuccessListener(this::reorderConsecutively)
                 .addOnFailureListener(this::onFailure);
     }
 
@@ -267,92 +250,44 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     @Override
-    public void updateGroupPositionsDecrement(Group group, int oldPosition, int newPosition) {
-        updatePositions(
-                getGroupUpdatePositionsQuery(oldPosition, newPosition),
-                decrementPositions(getGroupDocument(group.getId()), newPosition)
-        );
-    }
-
-    @Override
-    public void updateGroupPositionsIncrement(Group group, int oldPosition, int newPosition) {
-        updatePositions(
-                getGroupUpdatePositionsQuery(oldPosition, newPosition),
-                incrementPositions(getGroupDocument(group.getId()), newPosition)
-        );
-    }
-
-    private Query getGroupUpdatePositionsQuery(int oldPosition, int newPosition) {
-        int lowerPosition = getLowerPosition(oldPosition, newPosition);
-        int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return groupsCollection
-                .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
-    }
-
-
-    @Override
-    public void updateItemPositionsDecrement(Item item, int oldPosition, int newPosition) {
-        updatePositions(
-                getItemsUpdatePositionsQuery(item.getGroupId(), oldPosition, newPosition),
-                decrementPositions(getItemDocument(item.getId()), newPosition)
-        );
-    }
-
-    @Override
-    public void updateItemPositionsIncrement(Item item, int oldPosition, int newPosition) {
-        updatePositions(
-                getItemsUpdatePositionsQuery(item.getGroupId(), oldPosition, newPosition),
-                incrementPositions(getItemDocument(item.getId()), newPosition)
-        );
-    }
-
-    private Query getItemsUpdatePositionsQuery(String groupId, int oldPosition, int newPosition) {
-        int lowerPosition = getLowerPosition(oldPosition, newPosition);
-        int higherPosition = getHigherPosition(oldPosition, newPosition);
-        return itemsCollection
-                .whereEqualTo(FIELD_ITEM_GROUP_ID, groupId)
-                .whereGreaterThanOrEqualTo(FIELD_POSITION, lowerPosition)
-                .whereLessThanOrEqualTo(FIELD_POSITION, higherPosition);
-    }
-
-
-    private void updatePositions(Query query, OnSuccessListener<QuerySnapshot> successListener) {
-        query.get()
-                .addOnSuccessListener(successListener)
+    public void updateGroupPosition(Group group, int newPosition) {
+        getGroupDocument(group.getId())
+                .update(FIELD_POSITION, newPosition + 0.5)
+                .addOnSuccessListener(aVoid ->
+                        groupsCollection
+                                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                                .get()
+                                .addOnSuccessListener(this::reorderConsecutively)
+                                .addOnFailureListener(this::onFailure)
+                )
                 .addOnFailureListener(this::onFailure);
     }
 
-    private OnSuccessListener<QuerySnapshot> decrementPositions(DocumentReference movedDocument, int newPosition) {
-        return queryDocumentSnapshots -> {
-            WriteBatch batch = firestore.batch();
-            for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() - 1;
-                batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
-            }
-            batch.update(movedDocument, FIELD_POSITION, newPosition);
-            batch.commit().addOnFailureListener(this::onFailure);
-        };
+
+    @Override
+    public void updateItemPosition(Item item, int newPosition) {
+        getItemDocument(item.getId())
+                .update(FIELD_POSITION, newPosition + 0.5)
+                .addOnSuccessListener(aVoid ->
+                        itemsCollection
+                                .whereEqualTo(FIELD_ITEM_GROUP_ID, item.getGroupId())
+                                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
+                                .get()
+                                .addOnSuccessListener(this::reorderConsecutively)
+                                .addOnFailureListener(this::onFailure)
+                )
+                .addOnFailureListener(this::onFailure);
     }
 
-    private OnSuccessListener<QuerySnapshot> incrementPositions(DocumentReference movedDocument, int newPosition) {
-        return queryDocumentSnapshots -> {
-            WriteBatch batch = firestore.batch();
-            for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                int updatedPosition = Objects.requireNonNull(snapshot.getLong(FIELD_POSITION)).intValue() + 1;
-                batch.update(snapshot.getReference(), FIELD_POSITION, updatedPosition);
-            }
-            batch.update(movedDocument, FIELD_POSITION, newPosition);
-            batch.commit().addOnFailureListener(this::onFailure);
-        };
-    }
 
-    private int getLowerPosition(int oldPosition, int newPosition) {
-        return oldPosition < newPosition ? oldPosition : newPosition;
-    }
-
-    private int getHigherPosition(int oldPosition, int newPosition) {
-        return oldPosition > newPosition ? oldPosition : newPosition;
+    private void reorderConsecutively(QuerySnapshot queryDocumentSnapshots) {
+        int newPosition = 0;
+        WriteBatch writeBatch = firestore.batch();
+        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+            writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+            newPosition++;
+        }
+        writeBatch.commit();
     }
 
 
