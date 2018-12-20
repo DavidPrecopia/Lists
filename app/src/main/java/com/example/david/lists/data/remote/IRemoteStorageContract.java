@@ -25,9 +25,9 @@ public interface IRemoteStorageContract {
 
     void renameItem(String itemId, String newName);
 
-    void updateGroupPosition(Group group, int newPosition);
+    void updateGroupPosition(Group group, int oldPosition, int newPosition);
 
-    void updateItemPosition(Item item, int newPosition);
+    void updateItemPosition(Item item, int oldPosition, int newPosition);
 
     LiveData<List<Group>> getEventGroupDeleted();
 }

@@ -91,7 +91,7 @@ public final class Model implements IModelContract {
         }
 
         completableUtil(Completable.fromAction(() ->
-                remote.updateGroupPosition(group, newPosition)
+                remote.updateGroupPosition(group, oldPosition, newPosition)
         ));
     }
 
@@ -105,7 +105,7 @@ public final class Model implements IModelContract {
         }
 
         completableUtil(Completable.fromAction(() ->
-                remote.updateItemPosition(item, newPosition)
+                remote.updateItemPosition(item, oldPosition, newPosition)
         ));
     }
 
