@@ -13,6 +13,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
@@ -111,21 +112,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<Group>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (e != null) {
-                emitter.onError(e);
-                return;
-            } else if (queryDocumentSnapshots == null) {
-                if (BuildConfig.DEBUG) {
-                    Timber.e("QueryDocumentSnapshot is null");
-                }
-                return;
-            }
-
-
-            if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
-                recentLocalChanges = true;
-            } else if (recentLocalChanges) {
-                recentLocalChanges = false;
+            if (shouldReturn(emitter, queryDocumentSnapshots, e)) {
                 return;
             }
 
@@ -173,23 +160,43 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (e != null) {
-                emitter.onError(e);
-                return;
-            } else if (queryDocumentSnapshots == null) {
-                if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
-                return;
-            }
-
-            if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
-                recentLocalChanges = true;
-            } else if (recentLocalChanges) {
-                recentLocalChanges = false;
+            if (shouldReturn(emitter, queryDocumentSnapshots, e)) {
                 return;
             }
 
             emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
         };
+    }
+
+
+    private boolean shouldReturn(FlowableEmitter emitter, QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+        if (errorFromQuery(emitter, queryDocumentSnapshots, e)) {
+            return true;
+        }
+        return evaluateOrigin(queryDocumentSnapshots);
+    }
+
+    private boolean errorFromQuery(FlowableEmitter emitter, QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+        if (e != null) {
+            emitter.onError(e);
+            return true;
+        } else if (queryDocumentSnapshots == null) {
+            if (BuildConfig.DEBUG) {
+                Timber.e("QueryDocumentSnapshot is null");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean evaluateOrigin(QuerySnapshot queryDocumentSnapshots) {
+        if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
+            recentLocalChanges = true;
+        } else if (recentLocalChanges) {
+            recentLocalChanges = false;
+            return true;
+        }
+        return false;
     }
 
 
