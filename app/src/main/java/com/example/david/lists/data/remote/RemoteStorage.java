@@ -47,6 +47,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private final SingleLiveEvent<List<Group>> eventDeleteGroups;
 
+    private boolean recentLocalChanges;
+
 
     private static RemoteStorage instance;
 
@@ -68,6 +70,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
         groupsCollection = userDoc.collection(GROUPS_COLLECTION);
         itemsCollection = userDoc.collection(ITEMS_COLLECTION);
         eventDeleteGroups = new SingleLiveEvent<>();
+        recentLocalChanges = false;
 
         init();
     }
@@ -115,6 +118,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 if (BuildConfig.DEBUG) {
                     Timber.e("QueryDocumentSnapshot is null");
                 }
+                return;
+            }
+
+
+            if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
+                recentLocalChanges = true;
+            } else if (recentLocalChanges) {
+                recentLocalChanges = false;
                 return;
             }
 
@@ -169,6 +180,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 if (BuildConfig.DEBUG) Timber.e("QueryDocumentSnapshot is null");
                 return;
             }
+
+            if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
+                recentLocalChanges = true;
+            } else if (recentLocalChanges) {
+                recentLocalChanges = false;
+                return;
+            }
+
             emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
         };
     }
