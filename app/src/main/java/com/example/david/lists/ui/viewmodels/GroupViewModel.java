@@ -146,12 +146,16 @@ public final class GroupViewModel extends AndroidViewModel
 
     @Override
     public void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition) {
-        Collections.swap(groupList.getValue(), fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
+        Collections.swap(groupList.getValue(), fromPosition, toPosition);
     }
 
     @Override
     public void movedPermanently(int newPosition) {
+        if (newPosition < 0) {
+            return;
+        }
+
         Group group = groupList.getValue().get(newPosition);
         model.updateGroupPosition(
                 group,
