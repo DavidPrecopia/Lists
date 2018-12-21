@@ -78,6 +78,16 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
     /**
+     * Returns the fraction that the user should move the View to be considered as swiped.
+     * Default value is .5f.
+     */
+    @Override
+    public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return 1.0f;
+    }
+
+
+    /**
      * This is called post onMove <i>and</i> onSwiped.
      */
     @Override
