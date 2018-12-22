@@ -23,7 +23,6 @@
         <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">@color/colorPrimary</item>
         <item name="layout_scrollFlags">scroll|enterAlways</item>
         <item name="titleTextColor">@color/colorAccent</item>
     </style>
