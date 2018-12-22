@@ -1,6 +1,9 @@
 package com.example.david.lists.util;
 
 import android.app.Application;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
@@ -19,9 +22,18 @@ public final class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        checkNetworkConnection();
         setNightMode();
         initTimber();
         initLeakCanary();
+    }
+
+    private void checkNetworkConnection() {
+        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))
+                .getActiveNetworkInfo();
+        if (networkInfo == null) {
+            Toast.makeText(getApplicationContext(), R.string.error_msg_no_network_connection, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initTimber() {
