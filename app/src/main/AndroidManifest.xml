@@ -26,7 +26,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.MyAppWidgetProvider">
+        <receiver
+            android:name=".widget.MyAppWidgetProvider"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -38,6 +40,7 @@
 
         <service
             android:name=".widget.MyRemoteViewsService"
+            android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
