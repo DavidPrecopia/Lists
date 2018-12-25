@@ -154,7 +154,7 @@ public class GroupsFragment extends Fragment
         initLayoutManager(recyclerView);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        this.adapter = new GroupAdapter(viewModel, itemTouchHelper);
+        this.adapter = new GroupAdapter(viewModel);
         recyclerView.setAdapter(adapter);
     }
 
