@@ -10,5 +10,8 @@
     <color name="darkGray">#616161</color>
     <color name="red">#D50000</color>
 
+    <color name="nightModeStockBackground">#303030</color>
+
     <color name="black_day_night">@color/black</color>
+    <color name="list_item_background">@color/white</color>
 </resources>
