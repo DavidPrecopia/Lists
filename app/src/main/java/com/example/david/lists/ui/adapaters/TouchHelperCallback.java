@@ -1,17 +1,12 @@
 package com.example.david.lists.ui.adapaters;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import com.example.david.lists.R;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,7 +57,6 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
         return true;
     }
 
-
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         postMove = false;
@@ -77,6 +71,21 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
         }
     }
 
+
+    /**
+     * This is called post onMove <i>and</i> onSwiped.
+     */
+    @Override
+    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+        super.clearView(recyclerView, viewHolder);
+        if (postMove) {
+            movementCallback.movedPermanently(viewHolder.getAdapterPosition());
+        } else {
+            getDefaultUIUtil().clearView(getForegroundView(viewHolder));
+        }
+    }
+
+
     /**
      * Returns the fraction that the user should move the View to be considered as swiped.
      * Default value is .5f.
@@ -87,69 +96,38 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
 
-    /**
-     * This is called post onMove <i>and</i> onSwiped.
-     */
     @Override
-    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        super.clearView(recyclerView, viewHolder);
-        if (postMove) {
-            movementCallback.movedPermanently(viewHolder.getAdapterPosition());
+    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+        if (viewHolder != null && currentlySwiping(actionState)) {
+            getDefaultUIUtil().onSelected(getForegroundView(viewHolder));
+        } else {
+            super.onSelectedChanged(viewHolder, actionState);
         }
     }
-
 
     @Override
-    public void onChildDraw(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (actionState != ItemTouchHelper.ACTION_STATE_SWIPE) {
-            return;
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        if (currentlySwiping(actionState)) {
+            getDefaultUIUtil().onDraw(c, recyclerView, getForegroundView(viewHolder), dX, dY, actionState, isCurrentlyActive);
+        } else {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
+    }
 
-        View itemView = viewHolder.itemView;
-        float height = (float) itemView.getBottom() - (float) itemView.getTop();
-        float width = height / 3;
-
-        if (dX < 0) {
-            delete(canvas, dX, recyclerView.getContext(), itemView, width);
+    @Override
+    public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        if (currentlySwiping(actionState)) {
+            getDefaultUIUtil().onDrawOver(c, recyclerView, getForegroundView(viewHolder), dX, dY, actionState, isCurrentlyActive);
+        } else {
+            super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
-
-        super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 
-
-    private void delete(Canvas canvas, float dX, Context context, View itemView, float width) {
-        Paint paint = new Paint();
-        paint.setColor(ContextCompat.getColor(context, R.color.red));
-
-        canvas.drawRect(getBackground(dX, itemView), paint);
-        canvas.drawBitmap(
-                drawableToBitmap(context),
-                null,
-                getIconDestination(itemView, width),
-                paint
-        );
+    private boolean currentlySwiping(int actionState) {
+        return actionState == ItemTouchHelper.ACTION_STATE_SWIPE;
     }
 
-    private RectF getBackground(float dX, View itemView) {
-        return new RectF(
-                (float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom()
-        );
-    }
-
-    private RectF getIconDestination(View itemView, float width) {
-        return new RectF(
-                (float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width
-        );
-    }
-
-
-    private Bitmap drawableToBitmap(Context context) {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_delete_white_16dp);
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
+    private View getForegroundView(@Nullable RecyclerView.ViewHolder viewHolder) {
+        return viewHolder.itemView.findViewById(R.id.foreground_view);
     }
 }

@@ -4,6 +4,7 @@
     <string name="content_description_fab_add_list">Add a list</string>
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_overflow_menu">Overflow menu</string>
+    <string name="content_description_delete_icon">Delete</string>
 
     <string name="message_group_deletion">Group deleted</string>
     <string name="message_group_deletion_parameter">\"%s\" has been deleted</string>
