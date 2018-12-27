@@ -1,6 +1,7 @@
 package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder>
@@ -23,9 +25,11 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
     private final List<Group> groups;
 
     private final IGroupViewModelContract viewModel;
+    private final ItemTouchHelper itemTouchHelper;
 
-    public GroupAdapter(IGroupViewModelContract viewModel) {
+    public GroupAdapter(IGroupViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
         this.viewModel = viewModel;
+        this.itemTouchHelper = itemTouchHelper;
         groups = new ArrayList<>();
     }
 
@@ -88,12 +92,24 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
         void bindView(Group group) {
             bindTitle(group);
+            initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
         }
 
         private void bindTitle(Group group) {
             binding.tvTitle.setText(group.getTitle());
+        }
+
+        private void initDragHandle() {
+            binding.ivDrag.setOnTouchListener((view, event) -> {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            itemTouchHelper.startDrag(this);
+                        }
+                        view.performClick();
+                        return true;
+                    }
+            );
         }
 
         private void initPopupMenu() {

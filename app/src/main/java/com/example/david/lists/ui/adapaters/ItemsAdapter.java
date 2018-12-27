@@ -1,6 +1,7 @@
 package com.example.david.lists.ui.adapaters;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.example.david.lists.R;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>
@@ -22,10 +24,12 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
     private final List<Item> itemsList;
 
     private final IItemViewModelContract viewModel;
+    private final ItemTouchHelper itemTouchHelper;
 
-    public ItemsAdapter(IItemViewModelContract viewModel) {
-        this.itemsList = new ArrayList<>();
+    public ItemsAdapter(IItemViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
         this.viewModel = viewModel;
+        this.itemTouchHelper = itemTouchHelper;
+        itemsList = new ArrayList<>();
     }
 
     @NonNull
@@ -83,6 +87,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
         private void bindView(Item item) {
             bindTitle(item);
+            initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
         }
@@ -91,6 +96,16 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             binding.tvTitle.setText(item.getTitle());
         }
 
+        private void initDragHandle() {
+            binding.ivDrag.setOnTouchListener((view, event) -> {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            itemTouchHelper.startDrag(this);
+                        }
+                        view.performClick();
+                        return true;
+                    }
+            );
+        }
 
         private void initPopupMenu() {
             PopupMenu popupMenu = getPopupMenu();

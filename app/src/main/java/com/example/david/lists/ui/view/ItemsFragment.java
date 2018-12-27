@@ -140,7 +140,7 @@ public class ItemsFragment extends Fragment
         initLayoutManager(recyclerView);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        this.adapter = new ItemsAdapter(viewModel);
+        this.adapter = new ItemsAdapter(viewModel, itemTouchHelper);
         recyclerView.setAdapter(adapter);
     }
 
