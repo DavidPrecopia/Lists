@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+// Firebase Crashlytics
+apply plugin: 'io.fabric'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -72,6 +74,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    // Firebase Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'

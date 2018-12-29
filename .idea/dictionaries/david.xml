@@ -2,6 +2,7 @@
   <dictionary name="david">
     <words>
       <w>configactivity</w>
+      <w>crashlytics</w>
       <w>firebase</w>
       <w>firestore</w>
       <w>nanodegree</w>
