@@ -16,6 +16,7 @@
 
 package com.example.david.lists.util;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.david.lists.BuildConfig;
@@ -49,6 +50,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private final AtomicBoolean mPending = new AtomicBoolean(false);
 
 
+    @SuppressLint("LogNotTimber")
     @Override
     public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {
         if (hasActiveObservers()) {
