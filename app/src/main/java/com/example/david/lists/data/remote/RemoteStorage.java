@@ -1,8 +1,10 @@
 package com.example.david.lists.data.remote;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.util.SingleLiveEvent;
@@ -342,7 +344,12 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
+    @SuppressLint("LogNotTimber")
     private void onFailure(Exception exception) {
-        Crashlytics.logException(exception);
+        if (BuildConfig.DEBUG) {
+            Log.w(RemoteStorage.class.getSimpleName(), exception);
+        } else {
+            Crashlytics.logException(exception);
+        }
     }
 }

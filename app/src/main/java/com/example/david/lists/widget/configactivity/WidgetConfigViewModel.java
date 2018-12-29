@@ -1,14 +1,18 @@
 package com.example.david.lists.widget.configactivity;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.widget.WidgetRemoteView;
 
@@ -78,9 +82,14 @@ public final class WidgetConfigViewModel extends AndroidViewModel
                 evaluateNewData(groups);
             }
 
+            @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
-                Crashlytics.logException(t);
+                if (BuildConfig.DEBUG) {
+                    Log.w(RemoteStorage.class.getSimpleName(), t);
+                } else {
+                    Crashlytics.logException(t);
+                }
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }

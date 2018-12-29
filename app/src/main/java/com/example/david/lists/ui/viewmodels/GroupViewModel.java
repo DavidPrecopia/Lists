@@ -1,15 +1,19 @@
 package com.example.david.lists.ui.viewmodels;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilNightMode;
@@ -92,9 +96,14 @@ public final class GroupViewModel extends AndroidViewModel
                 evaluateNewData(groups);
             }
 
+            @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
-                Crashlytics.logException(t);
+                if (BuildConfig.DEBUG) {
+                    Log.w(RemoteStorage.class.getSimpleName(), t);
+                } else {
+                    Crashlytics.logException(t);
+                }
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }
