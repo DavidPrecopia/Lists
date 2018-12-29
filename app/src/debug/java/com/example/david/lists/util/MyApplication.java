@@ -36,23 +36,6 @@ public final class MyApplication extends Application {
         }
     }
 
-    private void initTimber() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new NotLoggingTree());
-        }
-    }
-
-    private void initLeakCanary() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
-    }
-
     private void setNightMode() {
         switch (getCurrentMode()) {
             case PREF_NOT_FOUND:
@@ -72,6 +55,24 @@ public final class MyApplication extends Application {
     private int getCurrentMode() {
         return getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
                 .getInt(getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
+    }
+
+
+    private void initTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new NotLoggingTree());
+        }
+    }
+
+    private void initLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 
 
