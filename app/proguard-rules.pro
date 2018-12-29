@@ -30,6 +30,7 @@
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigActivity
 -keep public class com.example.david.lists.widget.MyAppWidgetProvider
 -keepclassmembers class com.example.david.lists.data.datamodel.** { *; }
+-keep public class com.crashlytics.android.CrashlyticsInitProvider
 
 # Per Firebase Authentication
 -keepattributes Signature
