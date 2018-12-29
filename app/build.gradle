@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-// Firebase Crashlytics
 apply plugin: 'io.fabric'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")

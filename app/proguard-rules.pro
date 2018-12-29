@@ -35,3 +35,5 @@
 # Per Firebase Authentication
 -keepattributes Signature
 -keepattributes *Annotation*
+# Perserve file paths and lines numbers for crash reports - per Fabric Crashlytics.
+-keepattributes SourceFile,LineNumberTable

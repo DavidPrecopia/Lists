@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.squareup.leakcanary.LeakCanary;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 public final class MyApplication extends Application {
@@ -24,6 +26,8 @@ public final class MyApplication extends Application {
         super.onCreate();
         checkNetworkConnection();
         setNightMode();
+        initFabric();
+
         initTimber();
         initLeakCanary();
     }
@@ -55,6 +59,10 @@ public final class MyApplication extends Application {
     private int getCurrentMode() {
         return getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
                 .getInt(getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
+    }
+
+    private void initFabric() {
+        Fabric.with(this, new CrashlyticsCore());
     }
 
 

@@ -11,5 +11,6 @@
 /captures
 .externalNativeBuild
 /app/google-services.json
+/app/fabric.properties
 lists_keystore.jks
 keystore.properties
