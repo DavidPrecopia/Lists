@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.david.lists.BuildConfig;
+import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ActivityMainBinding;
@@ -25,7 +25,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import timber.log.Timber;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
@@ -260,9 +259,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void failedToSignOut(Exception e) {
-        if (BuildConfig.DEBUG) {
-            Timber.e(e);
-        }
+        Crashlytics.logException(e);
         toastMessage(R.string.error_experienced_signing_out);
     }
 

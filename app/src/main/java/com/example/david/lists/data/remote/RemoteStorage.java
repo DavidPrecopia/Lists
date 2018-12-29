@@ -1,6 +1,8 @@
 package com.example.david.lists.data.remote;
 
-import com.example.david.lists.BuildConfig;
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.util.SingleLiveEvent;
@@ -28,7 +30,6 @@ import androidx.lifecycle.LiveData;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
-import timber.log.Timber;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_GROUP_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
@@ -181,9 +182,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
             emitter.onError(e);
             return true;
         } else if (queryDocumentSnapshots == null) {
-            if (BuildConfig.DEBUG) {
-                Timber.e("QueryDocumentSnapshot is null");
-            }
+            Crashlytics.log(Log.ERROR, RemoteStorage.class.getSimpleName(), "QueryDocumentSnapshot is null");
             return true;
         }
         return false;
@@ -344,8 +343,6 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
 
     private void onFailure(Exception exception) {
-        if (BuildConfig.DEBUG) {
-            Timber.e(exception);
-        }
+        Crashlytics.logException(exception);
     }
 }

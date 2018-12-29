@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.MenuItem;
 
-import com.example.david.lists.BuildConfig;
+import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
@@ -28,7 +28,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import timber.log.Timber;
 
 public final class GroupViewModel extends AndroidViewModel
         implements IGroupViewModelContract {
@@ -95,7 +94,7 @@ public final class GroupViewModel extends AndroidViewModel
 
             @Override
             public void onError(Throwable t) {
-                if (BuildConfig.DEBUG) Timber.e(t);
+                Crashlytics.logException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }

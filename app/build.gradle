@@ -82,11 +82,10 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
 
     // Timber
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    debugImplementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
 
     testImplementation 'junit:junit:4.12'

@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
@@ -21,7 +22,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
@@ -80,7 +80,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
             @Override
             public void onError(Throwable t) {
-                Timber.e(t);
+                Crashlytics.logException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }

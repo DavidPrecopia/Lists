@@ -16,6 +16,8 @@
 
 package com.example.david.lists.util;
 
+import android.util.Log;
+
 import com.example.david.lists.BuildConfig;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,7 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import timber.log.Timber;
 
 /**
  * This class <em>was not</em> created by me - it can be found on Google Sample's GitHub page, specifically,
@@ -52,7 +53,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<? super T> observer) {
         if (hasActiveObservers()) {
             if (BuildConfig.DEBUG) {
-                Timber.tag(TAG).w("Multiple observers registered but only one will be notified of changes.");
+                Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
             }
         }
 

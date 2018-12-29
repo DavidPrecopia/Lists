@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.david.lists.BuildConfig;
+import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.model.IModelContract;
@@ -19,7 +19,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
-import timber.log.Timber;
 
 public class MyRemoteViewsService extends RemoteViewsService {
     @Override
@@ -77,9 +76,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
 
                 @Override
                 public void onError(Throwable t) {
-                    if (BuildConfig.DEBUG) {
-                        Timber.e(t);
-                    }
+                    Crashlytics.logException(t);
                 }
 
                 @Override
