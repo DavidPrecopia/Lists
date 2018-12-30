@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.adapaters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -101,6 +102,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
             binding.tvTitle.setText(group.getTitle());
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         private void initDragHandle() {
             binding.ivDrag.setOnTouchListener((view, event) -> {
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
