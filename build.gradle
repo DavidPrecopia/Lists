@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:4.2.0'
-        // Firebase Crashlytics
         classpath 'io.fabric.tools:gradle:1.27.0'
     }
 }
@@ -18,7 +17,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://dl.bintray.com/firebaseui/firebase-ui" }
+        maven { url 'https://dl.bintray.com/firebaseui/firebase-ui' }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
