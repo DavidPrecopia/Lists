@@ -20,7 +20,7 @@ allprojects {
         mavenCentral()
         maven { url "https://dl.bintray.com/firebaseui/firebase-ui" }
         maven { url 'https://maven.fabric.io/public' }
-        jcenter()
+        maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
 
     checkstyle {
