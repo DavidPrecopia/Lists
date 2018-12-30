@@ -6,12 +6,8 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.crashlytics.android.core.CrashlyticsCore;
-import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.squareup.leakcanary.LeakCanary;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import io.fabric.sdk.android.Fabric;
@@ -67,11 +63,7 @@ public final class MyApplication extends Application {
 
 
     private void initTimber() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new NotLoggingTree());
-        }
+        Timber.plant(new Timber.DebugTree());
     }
 
     private void initLeakCanary() {
@@ -81,12 +73,5 @@ public final class MyApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-    }
-
-
-    private class NotLoggingTree extends Timber.Tree {
-        @Override
-        protected void log(int priority, @Nullable String tag, @NotNull String message, @Nullable Throwable t) {
-        }
     }
 }
