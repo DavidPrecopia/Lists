@@ -28,12 +28,6 @@
     </style>
 
 
-    <style name="DialogStyle" parent="Base.Theme.MaterialComponents.Dialog">
-        <item name="android:windowMinWidthMajor">100%</item>
-        <item name="android:windowMinWidthMinor">100%</item>
-    </style>
-
-
     <!--
         Setting TextInputEditText as the textAppearance causes the
         text size to shrink to (roughly) 2sp - thus it needs to be
