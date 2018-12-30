@@ -43,9 +43,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
-        itemsViewHolder.bindView(
-                itemsList.get(itemsViewHolder.getAdapterPosition())
-        );
+        itemsViewHolder.bindView(itemsList.get(itemsViewHolder.getAdapterPosition()));
     }
 
     @Override
@@ -110,8 +108,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
         }
 
         private void initPopupMenu() {
-            PopupMenu popupMenu = getPopupMenu();
-            binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
+            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu().show());
         }
 
         private PopupMenu getPopupMenu() {
@@ -131,7 +128,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
                         viewModel.delete(ItemsAdapter.this, getAdapterPosition());
                         break;
                     default:
-                        return false;
+                        throw new IllegalArgumentException();
                 }
                 return true;
             };

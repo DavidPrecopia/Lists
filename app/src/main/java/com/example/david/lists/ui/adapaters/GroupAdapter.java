@@ -44,9 +44,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder groupViewHolder, int position) {
-        groupViewHolder.bindView(
-                groups.get(groupViewHolder.getAdapterPosition())
-        );
+        groupViewHolder.bindView(groups.get(groupViewHolder.getAdapterPosition()));
     }
 
     @Override
@@ -115,16 +113,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
         }
 
         private void initPopupMenu() {
-            PopupMenu popupMenu = getPopupMenu();
-            binding.ivOverflowMenu.setOnClickListener(view -> popupMenu.show());
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            viewModel.groupClicked(
-                    groups.get(getAdapterPosition())
-            );
+            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu().show());
         }
 
         private PopupMenu getPopupMenu() {
@@ -144,10 +133,18 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
                         viewModel.delete(GroupAdapter.this, getAdapterPosition());
                         break;
                     default:
-                        return false;
+                        throw new IllegalArgumentException();
                 }
                 return true;
             };
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            viewModel.groupClicked(
+                    groups.get(getAdapterPosition())
+            );
         }
     }
 }
