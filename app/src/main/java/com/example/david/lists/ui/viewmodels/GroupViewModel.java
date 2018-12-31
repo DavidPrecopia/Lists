@@ -210,8 +210,7 @@ public final class GroupViewModel extends AndroidViewModel
         if (tempGroups.isEmpty()) {
             return;
         }
-        List<Group> groups = new ArrayList<>(tempGroups);
-        model.deleteGroups(groups);
+        model.deleteGroups(tempGroups);
         tempGroups.clear();
     }
 

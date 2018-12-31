@@ -219,8 +219,7 @@ public final class ItemViewModel extends AndroidViewModel
         if (tempItemList.isEmpty()) {
             return;
         }
-        List<Item> items = new ArrayList<>(tempItemList);
-        model.deleteItems(items);
+        model.deleteItems(tempItemList);
         tempItemList.clear();
     }
 
