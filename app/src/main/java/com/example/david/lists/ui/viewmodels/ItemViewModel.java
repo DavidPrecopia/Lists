@@ -25,9 +25,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public final class ItemViewModel extends AndroidViewModel
@@ -96,8 +94,6 @@ public final class ItemViewModel extends AndroidViewModel
 
     private void getItems() {
         disposable.add(model.getGroupItems(groupId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListsSubscriber())
         );
     }
