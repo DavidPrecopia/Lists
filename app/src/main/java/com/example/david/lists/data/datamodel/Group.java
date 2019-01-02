@@ -1,5 +1,7 @@
 package com.example.david.lists.data.datamodel;
 
+import androidx.annotation.NonNull;
+
 /**
  * Field names need to match the constants in {@link DataModelFieldConstants}.
  */
@@ -40,5 +42,12 @@ public final class Group {
 
     public int getPosition() {
         return position;
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        return id + title + position;
     }
 }

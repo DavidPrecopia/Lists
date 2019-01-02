@@ -16,6 +16,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,9 +54,10 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
 
     public void swapData(List<Item> newItemsList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemDiffUtilCallback(this.itemsList, newItemsList));
         itemsList.clear();
         itemsList.addAll(newItemsList);
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public void move(int fromPosition, int toPosition) {
@@ -134,4 +136,36 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             };
         }
     }
+
+
+    final class ItemDiffUtilCallback extends DiffUtil.Callback {
+        private final List<Item> oldList;
+        private final List<Item> newList;
+
+        ItemDiffUtilCallback(List<Item> oldList, List<Item> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.get(oldItemPosition).getId().equals(newList.get(newItemPosition).getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.toString().equals(newList.toString());
+        }
+    }
+
 }

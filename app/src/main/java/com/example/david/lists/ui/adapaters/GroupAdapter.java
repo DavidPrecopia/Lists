@@ -17,13 +17,14 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder>
         implements IGroupAdapterContract {
 
-    private final List<Group> groups;
+    private final ArrayList<Group> groups;
 
     private final IGroupViewModelContract viewModel;
     private final ItemTouchHelper itemTouchHelper;
@@ -54,9 +55,10 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
 
     public void swapData(List<Group> newGroups) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new GroupDiffUtilCallback(this.groups, newGroups));
         groups.clear();
         groups.addAll(newGroups);
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -145,6 +147,37 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
             viewModel.groupClicked(
                     groups.get(getAdapterPosition())
             );
+        }
+    }
+
+
+    final class GroupDiffUtilCallback extends DiffUtil.Callback {
+        private final List<Group> oldList;
+        private final List<Group> newList;
+
+        GroupDiffUtilCallback(List<Group> oldList, List<Group> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.get(oldItemPosition).getId().equals(newList.get(newItemPosition).getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.toString().equals(newList.toString());
         }
     }
 }
