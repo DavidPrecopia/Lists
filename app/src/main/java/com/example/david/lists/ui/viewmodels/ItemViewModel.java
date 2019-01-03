@@ -203,6 +203,7 @@ public final class ItemViewModel extends AndroidViewModel
             );
         }
         reAdd(adapter);
+        deletionNotificationTimedOut();
     }
 
     private void reAdd(IItemAdapterContract adapter) {

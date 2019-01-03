@@ -222,13 +222,18 @@ public class ItemsFragment extends Fragment
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        // If it was replaced by another Snackbar, do not forward.
-                        if (event != Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                        if (validSnackbarEvent(event)) {
                             viewModel.deletionNotificationTimedOut();
                         }
                     }
                 })
                 .show();
+    }
+
+    private boolean validSnackbarEvent(int event) {
+        return event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT
+                || event == Snackbar.Callback.DISMISS_EVENT_SWIPE
+                || event == Snackbar.Callback.DISMISS_EVENT_MANUAL;
     }
 
 

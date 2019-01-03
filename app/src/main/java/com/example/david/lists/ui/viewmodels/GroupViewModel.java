@@ -194,6 +194,7 @@ public final class GroupViewModel extends AndroidViewModel
             );
         }
         reAdd(adapter);
+        deletionNotificationTimedOut();
     }
 
     private void reAdd(IGroupAdapterContract adapter) {
