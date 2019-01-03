@@ -1,8 +1,6 @@
 package com.example.david.lists.util;
 
 import android.app.Application;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -29,9 +27,7 @@ public final class MyApplication extends Application {
     }
 
     private void checkNetworkConnection() {
-        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))
-                .getActiveNetworkInfo();
-        if (networkInfo == null) {
+        if (!UtilNetwork.haveNetworkConnection(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), R.string.error_msg_no_network_connection, Toast.LENGTH_LONG).show();
         }
     }
