@@ -36,7 +36,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class GroupsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
-        EditDialogFragment.EditDialogFragmentListener, TouchHelperCallback.MovementCallback {
+        EditDialogFragment.EditDialogFragmentListener,
+        TouchHelperCallback.MovementCallback {
 
 
     interface GroupFragmentListener {
