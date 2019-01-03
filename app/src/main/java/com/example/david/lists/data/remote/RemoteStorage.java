@@ -115,7 +115,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<Group>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (shouldReturn(emitter, queryDocumentSnapshots, e)) {
+            if (errorFromQuery(queryDocumentSnapshots, e)) {
+                emitter.onError(e);
+            } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;
             }
 
@@ -163,7 +165,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (shouldReturn(emitter, queryDocumentSnapshots, e)) {
+            if (errorFromQuery(queryDocumentSnapshots, e)) {
+                emitter.onError(e);
+            } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;
             }
 
@@ -172,16 +176,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
-    private boolean shouldReturn(FlowableEmitter emitter, QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-        if (errorFromQuery(emitter, queryDocumentSnapshots, e)) {
-            return true;
-        }
-        return evaluateOrigin(queryDocumentSnapshots);
-    }
-
-    private boolean errorFromQuery(FlowableEmitter emitter, QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+    private boolean errorFromQuery(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
         if (e != null) {
-            emitter.onError(e);
             return true;
         } else if (queryDocumentSnapshots == null) {
             Crashlytics.log(Log.ERROR, RemoteStorage.class.getSimpleName(), "QueryDocumentSnapshot is null");
@@ -190,14 +186,30 @@ public final class RemoteStorage implements IRemoteStorageContract {
         return false;
     }
 
-    private boolean evaluateOrigin(QuerySnapshot queryDocumentSnapshots) {
-        if (queryDocumentSnapshots.getMetadata().hasPendingWrites()) {
-            recentLocalChanges = true;
-        } else if (recentLocalChanges) {
+    private boolean shouldReturn(QuerySnapshot queryDocumentSnapshots) {
+        if (isRecentLocalChanges()) {
             recentLocalChanges = false;
             return true;
+        } else if (fromLocalCache(queryDocumentSnapshots)) {
+            recentLocalChanges = true;
+            return false;
         }
         return false;
+    }
+
+    /**
+     * Because there were recent local changes, I can assume that this payload is from the server
+     * - which is identical of the query that just came from the local cache - thus it can be skipped.
+     */
+    private boolean isRecentLocalChanges() {
+        return recentLocalChanges;
+    }
+
+    /**
+     * This payload is from the local cache, post a local change.
+     */
+    private boolean fromLocalCache(QuerySnapshot queryDocumentSnapshots) {
+        return queryDocumentSnapshots.getMetadata().hasPendingWrites();
     }
 
 

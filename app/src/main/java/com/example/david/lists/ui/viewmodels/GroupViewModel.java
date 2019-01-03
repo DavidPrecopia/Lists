@@ -30,6 +30,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
+import timber.log.Timber;
 
 public final class GroupViewModel extends AndroidViewModel
         implements IGroupViewModelContract {
@@ -88,6 +89,7 @@ public final class GroupViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Group>>() {
             @Override
             public void onNext(List<Group> groups) {
+                Timber.w("TAG - onNext");
                 GroupViewModel.this.groupList.setValue(groups);
                 evaluateNewData(groups);
             }
