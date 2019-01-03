@@ -60,10 +60,10 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         postMove = false;
-        final int position = viewHolder.getAdapterPosition();
+
         switch (direction) {
             case ItemTouchHelper.LEFT:
-                movementCallback.swipedLeft(position);
+                movementCallback.swipedLeft(viewHolder.getAdapterPosition());
                 break;
             default:
                 // intentionally left blank
