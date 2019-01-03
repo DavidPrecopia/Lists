@@ -327,12 +327,14 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private void reorderConsecutively(QuerySnapshot queryDocumentSnapshots) {
         int newPosition = 0;
-        WriteBatch writeBatch = firestore.batch();
+        WriteBatch batch = firestore.batch();
         for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-            writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+            if (snapshot.getDouble(FIELD_POSITION) != newPosition) {
+                batch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+            }
             newPosition++;
         }
-        writeBatch.commit();
+        batch.commit();
     }
 
 
