@@ -6,13 +6,13 @@ import android.net.NetworkInfo;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-public final class UtilNetwork {
+final class UtilNetwork {
     private UtilNetwork() {
     }
 
-    public static boolean haveNetworkConnection(Context context) {
+    static boolean haveNetworkConnection(Context context) {
         NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE))
                 .getActiveNetworkInfo();
-        return networkInfo == null;
+        return networkInfo != null;
     }
 }
