@@ -216,7 +216,7 @@ public class ItemsFragment extends Fragment
 
 
     private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
                 .addCallback(new Snackbar.Callback() {
                     @Override
