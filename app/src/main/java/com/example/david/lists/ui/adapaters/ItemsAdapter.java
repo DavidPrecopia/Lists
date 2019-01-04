@@ -10,6 +10,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
+import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,7 +147,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
                         viewModel.delete(ItemsAdapter.this, getAdapterPosition());
                         break;
                     default:
-                        throw new IllegalArgumentException();
+                        UtilExceptions.throwException(new IllegalArgumentException());
                 }
                 return true;
             };

@@ -18,6 +18,7 @@ import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.GroupViewModel;
 import com.example.david.lists.ui.viewmodels.GroupViewModelFactory;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
+import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -235,7 +236,7 @@ public class GroupsFragment extends Fragment
                 viewModel.nightMode(item);
                 break;
             default:
-                throw new IllegalArgumentException();
+                UtilExceptions.throwException(new IllegalArgumentException());
         }
         return super.onOptionsItemSelected(item);
     }

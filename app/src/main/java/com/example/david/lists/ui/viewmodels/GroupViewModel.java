@@ -4,18 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.MenuItem;
 
-import com.crashlytics.android.Crashlytics;
-import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.util.UtilUser;
 
@@ -95,11 +92,7 @@ public final class GroupViewModel extends AndroidViewModel
             @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
-                if (BuildConfig.DEBUG) {
-                    Log.w(RemoteStorage.class.getSimpleName(), t);
-                } else {
-                    Crashlytics.logException(t);
-                }
+                UtilExceptions.throwException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }
@@ -189,9 +182,9 @@ public final class GroupViewModel extends AndroidViewModel
     @Override
     public void undoRecentDeletion(IGroupAdapterContract adapter) {
         if (tempGroups.isEmpty() || tempGroupPosition < 0) {
-            throw new UnsupportedOperationException(
+            UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
-            );
+            ));
         }
         reAdd(adapter);
         deletionNotificationTimedOut();
@@ -241,9 +234,9 @@ public final class GroupViewModel extends AndroidViewModel
         if (UtilUser.isAnonymous()) {
             eventSignIn.call();
         } else {
-            throw new UnsupportedOperationException(
+            UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_sign_in_when_not_anonymous)
-            );
+            ));
         }
     }
 

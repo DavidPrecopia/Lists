@@ -2,19 +2,16 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,11 +106,7 @@ public final class ItemViewModel extends AndroidViewModel
             @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
-                if (BuildConfig.DEBUG) {
-                    Log.w(RemoteStorage.class.getSimpleName(), t);
-                } else {
-                    Crashlytics.logException(t);
-                }
+                UtilExceptions.throwException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
             }
 
@@ -198,9 +191,9 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void undoRecentDeletion(IItemAdapterContract adapter) {
         if (tempItemList == null || tempItemPosition < 0) {
-            throw new UnsupportedOperationException(
+            UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
-            );
+            ));
         }
         reAdd(adapter);
         deletionNotificationTimedOut();

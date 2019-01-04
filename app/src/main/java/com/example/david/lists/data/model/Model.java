@@ -4,6 +4,7 @@ import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
 import com.example.david.lists.data.remote.RemoteStorage;
+import com.example.david.lists.util.UtilExceptions;
 
 import java.util.List;
 
@@ -118,13 +119,13 @@ public final class Model implements IModelContract {
         if (list == null) {
             nullObjectException();
         } else if (list.isEmpty()) {
-            throw new IllegalArgumentException("Passed List is empty");
+            UtilExceptions.throwException(new IllegalArgumentException("Passed List is empty"));
         }
     }
 
     private void validatePositions(int positionOne, int positionTwo) {
         if (positionOne < 0 || positionTwo < 0) {
-            throw new IllegalArgumentException("One or both positions are less then 0");
+            UtilExceptions.throwException(new IllegalArgumentException("One or both positions are less then 0"));
         }
     }
 
@@ -136,6 +137,6 @@ public final class Model implements IModelContract {
 
 
     private void nullObjectException() {
-        throw new IllegalArgumentException("Parameter cannot be null");
+        UtilExceptions.throwException(new IllegalArgumentException("Parameter cannot be null"));
     }
 }

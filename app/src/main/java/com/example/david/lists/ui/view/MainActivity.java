@@ -4,16 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
-import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.databinding.ActivityMainBinding;
+import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -154,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                 signIn();
                 break;
             default:
-                throw new IllegalArgumentException();
+                UtilExceptions.throwException(new IllegalArgumentException());
         }
     }
 
@@ -261,13 +258,8 @@ public class MainActivity extends AppCompatActivity
         verifyUser(true);
     }
 
-    @SuppressLint("LogNotTimber")
     private void failedToSignOut(Exception e) {
-        if (BuildConfig.DEBUG) {
-            Log.w(RemoteStorage.class.getSimpleName(), e);
-        } else {
-            Crashlytics.logException(e);
-        }
+        UtilExceptions.throwException(e);
         toastMessage(R.string.error_experienced_signing_out);
     }
 

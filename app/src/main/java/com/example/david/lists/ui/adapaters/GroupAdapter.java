@@ -11,6 +11,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
+import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,7 +153,7 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
                         viewModel.delete(GroupAdapter.this, getAdapterPosition());
                         break;
                     default:
-                        throw new IllegalArgumentException();
+                        UtilExceptions.throwException(new IllegalArgumentException());
                 }
                 return true;
             };

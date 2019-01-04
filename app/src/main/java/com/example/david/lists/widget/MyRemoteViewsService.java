@@ -4,17 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.crashlytics.android.Crashlytics;
-import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.data.model.Model;
-import com.example.david.lists.data.remote.RemoteStorage;
+import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,11 +78,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
                 @SuppressLint("LogNotTimber")
                 @Override
                 public void onError(Throwable t) {
-                    if (BuildConfig.DEBUG) {
-                        Log.w(RemoteStorage.class.getSimpleName(), t);
-                    } else {
-                        Crashlytics.logException(t);
-                    }
+                    UtilExceptions.throwException(t);
                 }
 
                 @Override
