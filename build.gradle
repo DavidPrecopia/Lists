@@ -31,8 +31,8 @@ allprojects {
     }
 
     task checkstyle(type: Checkstyle) {
-        // google_checks.xml copy from:
-        // https://raw.githubusercontent.com/checkstyle/checkstyle/master/src/main/resources/google_checks.xml
+        // google_checks.xml from:
+        // https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml
         configFile new File(rootDir, "tools/checkstyle/google_checks.xml")
         configProperties.checkstyleSuppressionPath =
                 new File(rootDir, "tools/checkstyle/suppressions.xml").absolutePath
