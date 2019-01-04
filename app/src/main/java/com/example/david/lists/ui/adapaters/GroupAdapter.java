@@ -99,15 +99,15 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
 
         void bindView(Group group) {
-            bindTitle(group);
+            bindTitle(group.getTitle());
             initBackgroundView(group.getId());
             initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
         }
 
-        private void bindTitle(Group group) {
-            binding.tvTitle.setText(group.getTitle());
+        private void bindTitle(String title) {
+            binding.tvTitle.setText(title);
         }
 
         private void initBackgroundView(String groupId) {

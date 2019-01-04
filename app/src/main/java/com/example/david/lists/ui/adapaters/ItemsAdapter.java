@@ -93,15 +93,15 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
 
         private void bindView(Item item) {
-            bindTitle(item);
+            bindTitle(item.getTitle());
             initBackgroundView(item.getId());
             initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
         }
 
-        private void bindTitle(Item item) {
-            binding.tvTitle.setText(item.getTitle());
+        private void bindTitle(String title) {
+            binding.tvTitle.setText(title);
         }
 
         private void initBackgroundView(String itemId) {
