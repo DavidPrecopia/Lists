@@ -68,6 +68,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$androidLibraries"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
+    // Swipe Reveal Layout
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
     // LiveData and ViewModel
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensions"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensions"

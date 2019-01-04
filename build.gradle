@@ -21,6 +21,7 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://dl.bintray.com/firebaseui/firebase-ui' }
+        maven { url 'https://dl.bintray.com/chthai64/maven' }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
