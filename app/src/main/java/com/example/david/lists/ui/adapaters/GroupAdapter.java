@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.databinding.ListItemBinding;
@@ -28,10 +29,15 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
     private final IGroupViewModelContract viewModel;
     private final ItemTouchHelper itemTouchHelper;
+    private final ViewBinderHelper viewBinderHelper;
 
     public GroupAdapter(IGroupViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
+
+        viewBinderHelper = new ViewBinderHelper();
+        viewBinderHelper.setOpenOnlyOne(true);
+
         groups = new ArrayList<>();
     }
 
@@ -87,12 +93,14 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
         GroupViewHolder(@NonNull ListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.getRoot().setOnClickListener(this);
+            // Background view has its own click listener.
+            binding.foregroundView.setOnClickListener(this);
         }
 
 
         void bindView(Group group) {
             bindTitle(group);
+            initBackgroundView(group.getId());
             initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
@@ -100,6 +108,15 @@ public final class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupV
 
         private void bindTitle(Group group) {
             binding.tvTitle.setText(group.getTitle());
+        }
+
+        private void initBackgroundView(String groupId) {
+            // Ensures only one row can be opened at a time - see Adapter's constructor.
+            viewBinderHelper.bind(binding.swipeRevealLayout, groupId);
+            binding.backgroundView.setOnClickListener(view -> {
+                viewModel.swipedLeft(GroupAdapter.this, getAdapterPosition());
+                viewBinderHelper.closeLayout(groupId);
+            });
         }
 
         @SuppressLint("ClickableViewAccessibility")

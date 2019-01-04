@@ -247,11 +247,6 @@ public class ItemsFragment extends Fragment
         viewModel.movedPermanently(newPosition);
     }
 
-    @Override
-    public void swipedLeft(int position) {
-        viewModel.swipedLeft(adapter, position);
-    }
-
 
     private void openDialogFragment(DialogFragment dialogFragment) {
         dialogFragment.setTargetFragment(this, 0);

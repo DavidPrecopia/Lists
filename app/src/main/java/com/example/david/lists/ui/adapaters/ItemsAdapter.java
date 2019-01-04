@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
@@ -27,10 +28,15 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
     private final IItemViewModelContract viewModel;
     private final ItemTouchHelper itemTouchHelper;
+    private final ViewBinderHelper viewBinderHelper;
 
     public ItemsAdapter(IItemViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
+
+        viewBinderHelper = new ViewBinderHelper();
+        viewBinderHelper.setOpenOnlyOne(true);
+
         itemsList = new ArrayList<>();
     }
 
@@ -88,6 +94,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
         private void bindView(Item item) {
             bindTitle(item);
+            initBackgroundView(item.getId());
             initDragHandle();
             initPopupMenu();
             binding.executePendingBindings();
@@ -95,6 +102,15 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
         private void bindTitle(Item item) {
             binding.tvTitle.setText(item.getTitle());
+        }
+
+        private void initBackgroundView(String itemId) {
+            // Ensures only one row can be opened at a time - see Adapter's constructor.
+            viewBinderHelper.bind(binding.swipeRevealLayout, itemId);
+            binding.backgroundView.setOnClickListener(view -> {
+                viewModel.swipedLeft(ItemsAdapter.this, getAdapterPosition());
+                viewBinderHelper.closeLayout(itemId);
+            });
         }
 
         @SuppressLint("ClickableViewAccessibility")

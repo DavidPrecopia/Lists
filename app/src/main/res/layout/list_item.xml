@@ -3,23 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <com.chauthai.swipereveallayout.SwipeRevealLayout
+        android:id="@+id/swipe_reveal_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:dragEdge="right"
+        app:mode="normal">
 
         <FrameLayout
             android:id="@+id/background_view"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/red">
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="@dimen/margin_normal"
                 android:contentDescription="@string/content_description_delete_icon"
-                app:srcCompat="@drawable/ic_delete_white_24dp" />
+                android:paddingStart="@dimen/margin_normal"
+                android:paddingEnd="@dimen/margin_normal"
+                app:srcCompat="@drawable/ic_delete_white_20dp" />
 
         </FrameLayout>
 
@@ -66,5 +70,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </FrameLayout>
+    </com.chauthai.swipereveallayout.SwipeRevealLayout>
 </layout>
