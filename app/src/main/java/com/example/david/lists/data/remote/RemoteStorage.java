@@ -292,7 +292,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void updateGroupPosition(Group group, int oldPosition, int newPosition) {
         getGroupDocument(group.getId())
-                .update(FIELD_POSITION, evaluateNewPositions(oldPosition, newPosition))
+                .update(FIELD_POSITION, getNewTemporaryPosition(oldPosition, newPosition))
                 .addOnSuccessListener(aVoid ->
                         groupsCollection
                                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
@@ -307,7 +307,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
     @Override
     public void updateItemPosition(Item item, int oldPosition, int newPosition) {
         getItemDocument(item.getId())
-                .update(FIELD_POSITION, evaluateNewPositions(oldPosition, newPosition))
+                .update(FIELD_POSITION, getNewTemporaryPosition(oldPosition, newPosition))
                 .addOnSuccessListener(aVoid ->
                         itemsCollection
                                 .whereEqualTo(FIELD_ITEM_GROUP_ID, item.getGroupId())
@@ -319,7 +319,7 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 .addOnFailureListener(this::onFailure);
     }
 
-    private double evaluateNewPositions(int oldPosition, int newPosition) {
+    private double getNewTemporaryPosition(int oldPosition, int newPosition) {
         return newPosition > oldPosition ? newPosition + 0.5 : newPosition - 0.5;
     }
 
