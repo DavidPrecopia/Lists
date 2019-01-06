@@ -184,5 +184,4 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             return oldList.toString().equals(newList.toString());
         }
     }
-
 }

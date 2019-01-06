@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.Group;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
@@ -36,7 +36,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final CompositeDisposable disposable;
 
     private final int widgetId;
-    private final MutableLiveData<List<Group>> groups;
+    private final MutableLiveData<List<UserList>> userLists;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<Void> eventSuccessful;
@@ -48,7 +48,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         this.model = model;
         this.widgetId = widgetId;
         disposable = new CompositeDisposable();
-        groups = new MutableLiveData<>();
+        userLists = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventSuccessful = new SingleLiveEvent<>();
         eventDisplayError = new SingleLiveEvent<>();
@@ -59,24 +59,24 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
     private void init() {
         eventDisplayLoading.setValue(true);
-        getGroups();
+        getUserListsFromModel();
     }
 
 
-    private void getGroups() {
-        disposable.add(model.getAllGroups()
+    private void getUserListsFromModel() {
+        disposable.add(model.getAllUserLists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(groupsSubscriber())
+                .subscribeWith(userListSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<Group>> groupsSubscriber() {
-        return new DisposableSubscriber<List<Group>>() {
+    private DisposableSubscriber<List<UserList>> userListSubscriber() {
+        return new DisposableSubscriber<List<UserList>>() {
             @Override
-            public void onNext(List<Group> groups) {
-                WidgetConfigViewModel.this.groups.setValue(groups);
-                evaluateNewData(groups);
+            public void onNext(List<UserList> userLists) {
+                WidgetConfigViewModel.this.userLists.setValue(userLists);
+                evaluateNewData(userLists);
             }
 
             @SuppressLint("LogNotTimber")
@@ -94,11 +94,11 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         };
     }
 
-    private void evaluateNewData(List<Group> newGroupList) {
+    private void evaluateNewData(List<UserList> newUserListList) {
         eventDisplayLoading.setValue(false);
 
-        if (newGroupList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_no_groups));
+        if (newUserListList.isEmpty()) {
+            errorMessage.setValue(getStringResource(R.string.error_msg_no_user_lists));
             eventDisplayError.setValue(true);
         } else {
             eventDisplayError.setValue(false);
@@ -107,8 +107,8 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
 
     @Override
-    public void groupClicked(Group group) {
-        saveDetails(group.getId(), group.getTitle());
+    public void userListClicked(UserList userList) {
+        saveDetails(userList.getId(), userList.getTitle());
         updateWidget();
         eventSuccessful.call();
     }
@@ -129,12 +129,12 @@ public final class WidgetConfigViewModel extends AndroidViewModel
 
 
     @Override
-    public LiveData<List<Group>> getGroupList() {
-        List<Group> value = groups.getValue();
+    public LiveData<List<UserList>> getUserLists() {
+        List<UserList> value = userLists.getValue();
         if (value != null) {
             evaluateNewData(value);
         }
-        return groups;
+        return userLists;
     }
 
     @Override

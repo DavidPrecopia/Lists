@@ -91,7 +91,7 @@ public final class WidgetRemoteView {
 
     private void setAdapterIntentExtras(Intent adapterIntent) {
         adapterIntent.putExtra(
-                context.getString(R.string.widget_key_intent_group_id), getListId()
+                context.getString(R.string.widget_key_intent_user_list_id), getListId()
         );
         adapterIntent.putExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId

@@ -3,15 +3,15 @@ package com.example.david.lists.ui.viewmodels;
 import android.view.MenuItem;
 
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.Group;
-import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
+import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-public interface IGroupViewModelContract {
-    void groupClicked(Group group);
+public interface IUserListViewModelContract {
+    void userListClicked(UserList userList);
 
     void addButtonClicked();
 
@@ -21,15 +21,15 @@ public interface IGroupViewModelContract {
 
     void changeTitle(EditingInfo editingInfo, String newTitle);
 
-    void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition);
+    void dragging(IUserListAdapterContract adapter, int fromPosition, int toPosition);
 
     void movedPermanently(int newPosition);
 
-    void swipedLeft(IGroupAdapterContract adapter, int position);
+    void swipedLeft(IUserListAdapterContract adapter, int position);
 
-    void delete(IGroupAdapterContract adapter, int position);
+    void delete(IUserListAdapterContract adapter, int position);
 
-    void undoRecentDeletion(IGroupAdapterContract adapter);
+    void undoRecentDeletion(IUserListAdapterContract adapter);
 
     void deletionNotificationTimedOut();
 
@@ -40,9 +40,9 @@ public interface IGroupViewModelContract {
     void signOut();
 
 
-    LiveData<List<Group>> getGroupList();
+    LiveData<List<UserList>> getUserLists();
 
-    LiveData<Group> getEventOpenGroup();
+    LiveData<UserList> getEventOpenUserList();
 
     LiveData<Boolean> getEventDisplayLoading();
 

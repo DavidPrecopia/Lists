@@ -49,7 +49,7 @@
             android:id="@+id/widget_tv_error"
             style="@style/ErrorTextViewStyle"
             android:layout_gravity="center"
-            android:text="@string/error_msg_empty_group" />
+            android:text="@string/error_msg_empty_user_list" />
 
     </FrameLayout>
 

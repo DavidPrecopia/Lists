@@ -8,9 +8,9 @@ import android.view.MenuItem;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.Group;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.ui.adapaters.IGroupAdapterContract;
+import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
@@ -28,16 +28,16 @@ import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class GroupViewModel extends AndroidViewModel
-        implements IGroupViewModelContract {
+public final class UserListViewModel extends AndroidViewModel
+        implements IUserListViewModelContract {
 
-    private final MutableLiveData<List<Group>> groupList;
+    private final MutableLiveData<List<UserList>> userLists;
 
     private final IModelContract model;
     private final CompositeDisposable disposable;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<Group> eventOpenGroup;
+    private final SingleLiveEvent<UserList> eventOpenUserList;
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
@@ -47,15 +47,15 @@ public final class GroupViewModel extends AndroidViewModel
     private final SingleLiveEvent<Void> eventSignOut;
     private final SingleLiveEvent<Void> eventSignIn;
 
-    private final List<Group> tempGroups;
-    private int tempGroupPosition;
+    private final List<UserList> tempUserLists;
+    private int tempUserListPosition;
 
-    GroupViewModel(@NonNull Application application, IModelContract model) {
+    UserListViewModel(@NonNull Application application, IModelContract model) {
         super(application);
-        groupList = new MutableLiveData<>();
+        userLists = new MutableLiveData<>();
         this.model = model;
         disposable = new CompositeDisposable();
-        eventOpenGroup = new SingleLiveEvent<>();
+        eventOpenUserList = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
         errorMessage = new SingleLiveEvent<>();
@@ -64,29 +64,29 @@ public final class GroupViewModel extends AndroidViewModel
         eventEdit = new SingleLiveEvent<>();
         eventSignOut = new SingleLiveEvent<>();
         eventSignIn = new SingleLiveEvent<>();
-        this.tempGroups = new ArrayList<>();
-        this.tempGroupPosition = -1;
+        this.tempUserLists = new ArrayList<>();
+        this.tempUserListPosition = -1;
         init();
     }
 
     private void init() {
         eventDisplayLoading.setValue(true);
-        getAllGroups();
+        getAllUserLists();
     }
 
 
-    private void getAllGroups() {
-        disposable.add(model.getAllGroups()
-                .subscribeWith(groupsSubscriber())
+    private void getAllUserLists() {
+        disposable.add(model.getAllUserLists()
+                .subscribeWith(userListsSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<Group>> groupsSubscriber() {
-        return new DisposableSubscriber<List<Group>>() {
+    private DisposableSubscriber<List<UserList>> userListsSubscriber() {
+        return new DisposableSubscriber<List<UserList>>() {
             @Override
-            public void onNext(List<Group> groups) {
-                GroupViewModel.this.groupList.setValue(groups);
-                evaluateNewData(groups);
+            public void onNext(List<UserList> userLists) {
+                UserListViewModel.this.userLists.setValue(userLists);
+                evaluateNewData(userLists);
             }
 
             @SuppressLint("LogNotTimber")
@@ -103,11 +103,11 @@ public final class GroupViewModel extends AndroidViewModel
         };
     }
 
-    private void evaluateNewData(List<Group> newGroupList) {
+    private void evaluateNewData(List<UserList> newUserListList) {
         eventDisplayLoading.setValue(false);
 
-        if (newGroupList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_no_groups));
+        if (newUserListList.isEmpty()) {
+            errorMessage.setValue(getStringResource(R.string.error_msg_no_user_lists));
             eventDisplayError.setValue(true);
         } else {
             eventDisplayError.setValue(false);
@@ -116,35 +116,35 @@ public final class GroupViewModel extends AndroidViewModel
 
 
     @Override
-    public void groupClicked(Group group) {
-        eventOpenGroup.setValue(group);
+    public void userListClicked(UserList userList) {
+        eventOpenUserList.setValue(userList);
     }
 
     @Override
     public void addButtonClicked() {
-        eventAdd.setValue(getStringResource(R.string.hint_add_group));
+        eventAdd.setValue(getStringResource(R.string.hint_add_user_list));
     }
 
     @Override
     public void add(String title) {
-        model.addGroup(new Group(title, this.groupList.getValue().size()));
+        model.addUserList(new UserList(title, this.userLists.getValue().size()));
     }
 
 
     @Override
     public void edit(int position) {
-        eventEdit.setValue(new EditingInfo(groupList.getValue().get(position)));
+        eventEdit.setValue(new EditingInfo(userLists.getValue().get(position)));
     }
 
     @Override
     public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        model.renameGroup(editingInfo.getId(), newTitle);
+        model.renameUserList(editingInfo.getId(), newTitle);
     }
 
     @Override
-    public void dragging(IGroupAdapterContract adapter, int fromPosition, int toPosition) {
+    public void dragging(IUserListAdapterContract adapter, int fromPosition, int toPosition) {
         adapter.move(fromPosition, toPosition);
-        Collections.swap(groupList.getValue(), fromPosition, toPosition);
+        Collections.swap(userLists.getValue(), fromPosition, toPosition);
     }
 
     @Override
@@ -153,35 +153,35 @@ public final class GroupViewModel extends AndroidViewModel
             return;
         }
 
-        Group group = groupList.getValue().get(newPosition);
-        model.updateGroupPosition(
-                group,
-                group.getPosition(),
+        UserList userList = userLists.getValue().get(newPosition);
+        model.updateUserListPosition(
+                userList,
+                userList.getPosition(),
                 newPosition
         );
     }
 
     @Override
-    public void swipedLeft(IGroupAdapterContract adapter, int position) {
+    public void swipedLeft(IUserListAdapterContract adapter, int position) {
         delete(adapter, position);
     }
 
 
     @Override
-    public void delete(IGroupAdapterContract adapter, int position) {
+    public void delete(IUserListAdapterContract adapter, int position) {
         adapter.remove(position);
-        tempGroups.add(groupList.getValue().get(position));
-        tempGroupPosition = position;
+        tempUserLists.add(userLists.getValue().get(position));
+        tempUserListPosition = position;
 
         eventNotifyUserOfDeletion.setValue(
-                getStringResource(R.string.message_group_deletion)
+                getStringResource(R.string.message_user_list_deletion)
         );
     }
 
 
     @Override
-    public void undoRecentDeletion(IGroupAdapterContract adapter) {
-        if (tempGroups.isEmpty() || tempGroupPosition < 0) {
+    public void undoRecentDeletion(IUserListAdapterContract adapter) {
+        if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
             ));
@@ -190,22 +190,22 @@ public final class GroupViewModel extends AndroidViewModel
         deletionNotificationTimedOut();
     }
 
-    private void reAdd(IGroupAdapterContract adapter) {
-        int lastDeletedPosition = tempGroups.size() - 1;
+    private void reAdd(IUserListAdapterContract adapter) {
+        int lastDeletedPosition = tempUserLists.size() - 1;
         adapter.reAdd(
-                tempGroupPosition,
-                tempGroups.get(lastDeletedPosition)
+                tempUserListPosition,
+                tempUserLists.get(lastDeletedPosition)
         );
-        tempGroups.remove(lastDeletedPosition);
+        tempUserLists.remove(lastDeletedPosition);
     }
 
     @Override
     public void deletionNotificationTimedOut() {
-        if (tempGroups.isEmpty()) {
+        if (tempUserLists.isEmpty()) {
             return;
         }
-        model.deleteGroups(tempGroups);
-        tempGroups.clear();
+        model.deleteUserLists(tempUserLists);
+        tempUserLists.clear();
     }
 
 
@@ -247,17 +247,17 @@ public final class GroupViewModel extends AndroidViewModel
 
 
     @Override
-    public LiveData<List<Group>> getGroupList() {
-        List<Group> value = groupList.getValue();
+    public LiveData<List<UserList>> getUserLists() {
+        List<UserList> value = userLists.getValue();
         if (value != null) {
             evaluateNewData(value);
         }
-        return groupList;
+        return userLists;
     }
 
     @Override
-    public LiveData<Group> getEventOpenGroup() {
-        return eventOpenGroup;
+    public LiveData<UserList> getEventOpenUserList() {
+        return eventOpenUserList;
     }
 
     @Override

@@ -11,13 +11,13 @@ import android.view.ViewGroup;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.Group;
-import com.example.david.lists.databinding.FragmentGroupsBinding;
-import com.example.david.lists.ui.adapaters.GroupAdapter;
+import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.databinding.FragmentUserListBinding;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.GroupViewModel;
-import com.example.david.lists.ui.viewmodels.GroupViewModelFactory;
-import com.example.david.lists.ui.viewmodels.IGroupViewModelContract;
+import com.example.david.lists.ui.adapaters.UserListsAdapter;
+import com.example.david.lists.ui.viewmodels.IUserListViewModelContract;
+import com.example.david.lists.ui.viewmodels.UserListViewModel;
+import com.example.david.lists.ui.viewmodels.UserListViewModelFactory;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GroupsFragment extends Fragment
+public class UserListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
         TouchHelperCallback.MovementCallback {
@@ -47,22 +47,22 @@ public class GroupsFragment extends Fragment
 
         void messages(int message);
 
-        void openGroup(Group group);
+        void openGroup(UserList userList);
     }
 
 
-    private IGroupViewModelContract viewModel;
-    private FragmentGroupsBinding binding;
-    private GroupAdapter adapter;
+    private IUserListViewModelContract viewModel;
+    private FragmentUserListBinding binding;
+    private UserListsAdapter adapter;
 
     private GroupFragmentListener groupFragmentListener;
 
 
-    public GroupsFragment() {
+    public UserListFragment() {
     }
 
-    static GroupsFragment newInstance() {
-        return new GroupsFragment();
+    static UserListFragment newInstance() {
+        return new UserListFragment();
     }
 
 
@@ -74,13 +74,13 @@ public class GroupsFragment extends Fragment
     }
 
     private void intiViewModel() {
-        GroupViewModelFactory factory = new GroupViewModelFactory(getActivity().getApplication());
-        viewModel = ViewModelProviders.of(this, factory).get(GroupViewModel.class);
+        UserListViewModelFactory factory = new UserListViewModelFactory(getActivity().getApplication());
+        viewModel = ViewModelProviders.of(this, factory).get(UserListViewModel.class);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_groups, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false);
         initView();
         return binding.getRoot();
     }
@@ -104,11 +104,11 @@ public class GroupsFragment extends Fragment
     }
 
     private void observeGroupList() {
-        viewModel.getGroupList().observe(this, groups -> adapter.swapData(groups));
+        viewModel.getUserLists().observe(this, groups -> adapter.swapData(groups));
     }
 
     private void observeAccountEvents() {
-        viewModel.getEventOpenGroup().observe(this, group ->
+        viewModel.getEventOpenUserList().observe(this, group ->
                 groupFragmentListener.openGroup(group));
         viewModel.getEventSignOut().observe(this, aVoid ->
                 groupFragmentListener.messages(GroupFragmentListener.SIGN_OUT));
@@ -156,7 +156,7 @@ public class GroupsFragment extends Fragment
         initLayoutManager(recyclerView);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        this.adapter = new GroupAdapter(viewModel, itemTouchHelper);
+        this.adapter = new UserListsAdapter(viewModel, itemTouchHelper);
         recyclerView.setAdapter(adapter);
     }
 

@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="group"
-            type="com.example.david.lists.data.datamodel.Group" />
+            name="userList"
+            type="com.example.david.lists.data.datamodel.UserList" />
     </data>
 
     <FrameLayout
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/margin_normal"
-            android:text="@{group.title}"
+            android:text="@{userList.title}"
             android:textColor="@color/black"
             tools:text="This is a noticeably long title" />
 

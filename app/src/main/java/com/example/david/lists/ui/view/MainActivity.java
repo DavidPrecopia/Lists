@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.Group;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
@@ -31,7 +31,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
 public class MainActivity extends AppCompatActivity
-        implements GroupsFragment.GroupFragmentListener,
+        implements UserListFragment.GroupFragmentListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private GroupsFragment getGroupFragment() {
-        return GroupsFragment.newInstance();
+    private UserListFragment getGroupFragment() {
+        return UserListFragment.newInstance();
     }
 
     private ItemsFragment getItemsFragment(String groupId, String title) {
@@ -144,10 +144,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void messages(int message) {
         switch (message) {
-            case GroupsFragment.GroupFragmentListener.SIGN_OUT:
+            case UserListFragment.GroupFragmentListener.SIGN_OUT:
                 signOut();
                 break;
-            case GroupsFragment.GroupFragmentListener.SIGN_IN:
+            case UserListFragment.GroupFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:
@@ -156,8 +156,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void openGroup(Group group) {
-        addFragmentToBackStack(getItemsFragment(group.getId(), group.getTitle()));
+    public void openGroup(UserList userList) {
+        addFragmentToBackStack(getItemsFragment(userList.getId(), userList.getTitle()));
     }
 
 

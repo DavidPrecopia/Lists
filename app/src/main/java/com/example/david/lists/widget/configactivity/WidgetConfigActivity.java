@@ -88,14 +88,14 @@ public class WidgetConfigActivity extends AppCompatActivity {
     }
 
     private void observeViewModel() {
-        observeGroupList();
+        observeUserLists();
         observeEventDisplayingLoading();
         observeEventDisplayError();
         observeEventSuccessful();
     }
 
-    private void observeGroupList() {
-        viewModel.getGroupList().observe(this, groups -> adapter.swapData(groups));
+    private void observeUserLists() {
+        viewModel.getUserLists().observe(this, userLists -> adapter.swapData(userLists));
     }
 
     private void observeEventDisplayingLoading() {

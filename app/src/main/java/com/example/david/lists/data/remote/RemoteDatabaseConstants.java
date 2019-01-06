@@ -5,6 +5,6 @@ final class RemoteDatabaseConstants {
     }
 
     static final String USER_COLLECTION = "users";
-    static final String GROUPS_COLLECTION = "groups";
+    static final String USER_LISTS_COLLECTION = "user_lists";
     static final String ITEMS_COLLECTION = "items";
 }

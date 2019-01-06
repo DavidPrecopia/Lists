@@ -11,12 +11,12 @@ public final class Item {
     private String title;
     private int position;
 
-    private String groupId;
+    private String userListId;
 
-    public Item(String title, int position, String groupId) {
+    public Item(String title, int position, String userListId) {
         this.title = title;
         this.position = position;
-        this.groupId = groupId;
+        this.userListId = userListId;
     }
 
     /**
@@ -29,7 +29,7 @@ public final class Item {
         this.id = id;
         this.title = item.title;
         this.position = item.position;
-        this.groupId = item.groupId;
+        this.userListId = item.userListId;
     }
 
     public Item() {
@@ -48,14 +48,14 @@ public final class Item {
         return position;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getUserListId() {
+        return userListId;
     }
 
 
     @NonNull
     @Override
     public String toString() {
-        return id + title + position + groupId;
+        return id + title + position + userListId;
     }
 }

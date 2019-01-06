@@ -1,7 +1,7 @@
 package com.example.david.lists.data.remote;
 
-import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
@@ -9,25 +9,25 @@ import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
 public interface IRemoteStorageContract {
-    Flowable<List<Group>> getGroups();
+    Flowable<List<UserList>> getUserLists();
 
-    Flowable<List<Item>> getItems(String groupId);
+    Flowable<List<Item>> getItems(String userListId);
 
-    void addGroup(Group group);
+    void addUserList(UserList userList);
 
     void addItem(Item item);
 
-    void deleteGroups(List<Group> group);
+    void deleteUserLists(List<UserList> userList);
 
     void deleteItems(List<Item> item);
 
-    void renameGroup(String groupId, String newName);
+    void renameUserList(String userListId, String newName);
 
     void renameItem(String itemId, String newName);
 
-    void updateGroupPosition(Group group, int oldPosition, int newPosition);
+    void updateUserListPosition(UserList userList, int oldPosition, int newPosition);
 
     void updateItemPosition(Item item, int oldPosition, int newPosition);
 
-    LiveData<List<Group>> getEventGroupDeleted();
+    LiveData<List<UserList>> getEventUserListDeleted();
 }

@@ -1,15 +1,15 @@
 package com.example.david.lists.widget.configactivity;
 
-import com.example.david.lists.data.datamodel.Group;
+import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
 interface IWidgetConfigViewModelContract {
-    void groupClicked(Group group);
+    void userListClicked(UserList userList);
 
-    LiveData<List<Group>> getGroupList();
+    LiveData<List<UserList>> getUserLists();
 
     LiveData<Boolean> getEventDisplayLoading();
 

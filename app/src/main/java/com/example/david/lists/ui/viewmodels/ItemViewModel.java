@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.Group;
 import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.model.IModelContract;
 import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
@@ -28,7 +28,7 @@ import io.reactivex.subscribers.DisposableSubscriber;
 public final class ItemViewModel extends AndroidViewModel
         implements IItemViewModelContract {
 
-    private final String groupId;
+    private final String userListId;
     private final MutableLiveData<List<Item>> itemList;
 
     private final IModelContract model;
@@ -42,14 +42,14 @@ public final class ItemViewModel extends AndroidViewModel
     private final SingleLiveEvent<EditingInfo> eventEdit;
     private final SingleLiveEvent<Void> eventFinish;
 
-    private Observer<List<Group>> modelObserver;
+    private Observer<List<UserList>> modelObserver;
 
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    ItemViewModel(@NonNull Application application, IModelContract model, String groupId) {
+    ItemViewModel(@NonNull Application application, IModelContract model, String userListId) {
         super(application);
-        this.groupId = groupId;
+        this.userListId = userListId;
         itemList = new MutableLiveData<>();
         this.model = model;
         disposable = new CompositeDisposable();
@@ -75,22 +75,22 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     private void observeModel() {
-        modelObserver = groups -> {
-            for (Group group : groups) {
-                if (group.getId().equals(this.groupId)) {
+        modelObserver = userLists -> {
+            for (UserList userList : userLists) {
+                if (userList.getId().equals(this.userListId)) {
                     Toast.makeText(getApplication(),
-                            getStringResource(R.string.message_group_deletion_parameter, group.getTitle()),
+                            getStringResource(R.string.message_user_list_deletion_parameter, userList.getTitle()),
                             Toast.LENGTH_LONG
                     ).show();
                     eventFinish.call();
                 }
             }
         };
-        model.getEventGroupDeleted().observeForever(modelObserver);
+        model.getEventUserListDeleted().observeForever(modelObserver);
     }
 
     private void getItems() {
-        disposable.add(model.getGroupItems(groupId)
+        disposable.add(model.getItems(userListId)
                 .subscribeWith(userListsSubscriber())
         );
     }
@@ -120,7 +120,7 @@ public final class ItemViewModel extends AndroidViewModel
         eventDisplayLoading.setValue(false);
 
         if (newItemList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_empty_group));
+            errorMessage.setValue(getStringResource(R.string.error_msg_empty_user_list));
             eventDisplayError.setValue(true);
         } else {
             eventDisplayError.setValue(false);
@@ -135,7 +135,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        model.addItem(new Item(title, itemList.getValue().size(), this.groupId));
+        model.addItem(new Item(title, itemList.getValue().size(), this.userListId));
     }
 
 
@@ -276,6 +276,6 @@ public final class ItemViewModel extends AndroidViewModel
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
-        model.getEventGroupDeleted().removeObserver(modelObserver);
+        model.getEventUserListDeleted().removeObserver(modelObserver);
     }
 }
