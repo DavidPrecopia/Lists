@@ -38,7 +38,8 @@ import androidx.recyclerview.widget.RecyclerView;
 public class UserListFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
-        TouchHelperCallback.MovementCallback {
+        TouchHelperCallback.MovementCallback,
+        ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
 
 
     interface GroupFragmentListener {
@@ -112,6 +113,8 @@ public class UserListFragment extends Fragment
                 groupFragmentListener.openGroup(group));
         viewModel.getEventSignOut().observe(this, aVoid ->
                 groupFragmentListener.messages(GroupFragmentListener.SIGN_OUT));
+        viewModel.getEventConfirmSignOut().observe(this, aVoid ->
+                openDialogFragment(new ConfirmSignOutDialogFragment()));
         viewModel.getEventSignIn().observe(this, aVoid ->
                 groupFragmentListener.messages(GroupFragmentListener.SIGN_IN));
     }
@@ -230,7 +233,7 @@ public class UserListFragment extends Fragment
                 viewModel.signIn();
                 break;
             case R.id.menu_id_sign_out:
-                viewModel.signOut();
+                viewModel.signOutButtonClicked();
                 break;
             case R.id.menu_id_night_mode:
                 viewModel.nightMode(item);
@@ -263,6 +266,11 @@ public class UserListFragment extends Fragment
     @Override
     public void edit(EditingInfo editingInfo, String newTitle) {
         viewModel.changeTitle(editingInfo, newTitle);
+    }
+
+    @Override
+    public void proceedWithSignOut() {
+        viewModel.signOut();
     }
 
 

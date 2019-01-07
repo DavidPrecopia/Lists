@@ -2,4 +2,6 @@
 <resources>
     <color name="black_day_night">@color/white</color>
     <color name="list_item_background">@color/nightModeStockBackground</color>
+
+    <color name="alert_dialog_button_day_night">@color/colorAccent</color>
 </resources>

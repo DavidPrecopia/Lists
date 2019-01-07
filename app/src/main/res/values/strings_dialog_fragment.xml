@@ -4,9 +4,12 @@
     <string name="hint_add_item">Item\'s name</string>
     <string name="hint_edit">Rename</string>
 
+    <string name="confirm_sign_out_dialog_message">Are you sure you want to sign-out?</string>
+
     <string name="button_text_cancel">Cancel</string>
     <string name="button_text_confirm_add">Add</string>
     <string name="button_text_confirm_edit">Apply</string>
+    <string name="button_text_yes">Yes</string>
 
     <string name="error_empty_title_text_field">Cannot be empty</string>
     <string name="error_title_unchanged">Title is unchanged</string>

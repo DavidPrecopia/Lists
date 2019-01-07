@@ -14,4 +14,6 @@
 
     <color name="black_day_night">@color/black</color>
     <color name="list_item_background">@color/white</color>
+
+    <color name="alert_dialog_button_day_night">@color/colorPrimary</color>
 </resources>

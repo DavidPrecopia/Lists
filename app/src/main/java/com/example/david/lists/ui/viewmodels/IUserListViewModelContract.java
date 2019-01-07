@@ -37,6 +37,8 @@ public interface IUserListViewModelContract {
 
     void signIn();
 
+    void signOutButtonClicked();
+
     void signOut();
 
 
@@ -57,6 +59,8 @@ public interface IUserListViewModelContract {
     LiveData<EditingInfo> getEventEdit();
 
     LiveData<Void> getEventSignOut();
+
+    LiveData<Void> getEventConfirmSignOut();
 
     LiveData<Void> getEventSignIn();
 }

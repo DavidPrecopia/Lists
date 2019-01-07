@@ -45,6 +45,7 @@ public final class UserListViewModel extends AndroidViewModel
     private final SingleLiveEvent<EditingInfo> eventEdit;
 
     private final SingleLiveEvent<Void> eventSignOut;
+    private final SingleLiveEvent<Void> eventConfirmSignOut;
     private final SingleLiveEvent<Void> eventSignIn;
 
     private final List<UserList> tempUserLists;
@@ -63,6 +64,7 @@ public final class UserListViewModel extends AndroidViewModel
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
         eventSignOut = new SingleLiveEvent<>();
+        eventConfirmSignOut = new SingleLiveEvent<>();
         eventSignIn = new SingleLiveEvent<>();
         this.tempUserLists = new ArrayList<>();
         this.tempUserListPosition = -1;
@@ -229,6 +231,7 @@ public final class UserListViewModel extends AndroidViewModel
         editor.apply();
     }
 
+
     @Override
     public void signIn() {
         if (UtilUser.isAnonymous()) {
@@ -238,6 +241,11 @@ public final class UserListViewModel extends AndroidViewModel
                     getStringResource(R.string.error_sign_in_when_not_anonymous)
             ));
         }
+    }
+
+    @Override
+    public void signOutButtonClicked() {
+        eventConfirmSignOut.call();
     }
 
     @Override
@@ -293,6 +301,11 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public LiveData<Void> getEventSignOut() {
         return eventSignOut;
+    }
+
+    @Override
+    public LiveData<Void> getEventConfirmSignOut() {
+        return eventConfirmSignOut;
     }
 
     @Override
