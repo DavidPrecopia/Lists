@@ -31,7 +31,7 @@
                 android:id="@+id/text_input_edit_text"
                 android:layout_width="@dimen/dialog_width"
                 android:layout_height="match_parent"
-                android:inputType="textAutoCorrect"
+                android:inputType="textCapWords|textAutoCorrect"
                 android:maxLength="@integer/max_name_length"
                 android:singleLine="true" />
 
