@@ -80,7 +80,7 @@ public final class ItemViewModel extends AndroidViewModel
                 if (userList.getId().equals(this.userListId)) {
                     Toast.makeText(getApplication(),
                             getStringResource(R.string.message_user_list_deletion_parameter, userList.getTitle()),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                     ).show();
                     eventFinish.call();
                 }
