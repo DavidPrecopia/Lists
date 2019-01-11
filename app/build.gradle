@@ -64,6 +64,7 @@ dependencies {
     def androidLibraries = "1.0.0"
     def lifecycleExtensions = "2.0.0"
     def daggerVersion = "2.20"
+    def leakCanaryVersion = "1.6.2"
 
     implementation "com.google.android.material:material:$androidLibraries"
     implementation "androidx.recyclerview:recyclerview:$androidLibraries"
@@ -103,8 +104,8 @@ dependencies {
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Leak Canary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
