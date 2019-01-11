@@ -63,6 +63,7 @@ dependencies {
 
     def androidLibraries = "1.0.0"
     def lifecycleExtensions = "2.0.0"
+    def daggerVersion = "2.20"
 
     implementation "com.google.android.material:material:$androidLibraries"
     implementation "androidx.recyclerview:recyclerview:$androidLibraries"
@@ -91,6 +92,12 @@ dependencies {
     // RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
+
+    // Dagger
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     // Timber
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
