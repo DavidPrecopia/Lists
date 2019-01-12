@@ -10,6 +10,7 @@ import com.example.david.lists.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 public final class ConfirmSignOutDialogFragment extends DialogFragment {
@@ -48,7 +49,7 @@ public final class ConfirmSignOutDialogFragment extends DialogFragment {
 
     private void setButtonTextColor(Button button) {
         button.setTextColor(
-                getContext().getResources().getColor(R.color.alert_dialog_button_day_night)
+                ContextCompat.getColor(getContext().getApplicationContext(), R.color.alert_dialog_button_day_night)
         );
     }
 
