@@ -3,7 +3,7 @@ package com.example.david.lists.ui.viewmodels;
 import android.app.Application;
 
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.data.model.Model;
+import com.example.david.lists.util.MyApplication;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -17,7 +17,7 @@ public final class UserListViewModelFactory extends ViewModelProvider.AndroidVie
     public UserListViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
-        this.model = Model.getInstance();
+        this.model = ((MyApplication) application.getApplicationContext()).getModelComponent().getModel();
     }
 
     @NonNull

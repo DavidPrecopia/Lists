@@ -3,7 +3,6 @@ package com.example.david.lists.data.model;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.remote.IRemoteStorageContract;
-import com.example.david.lists.data.remote.RemoteStorage;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.List;
@@ -16,19 +15,8 @@ public final class Model implements IModelContract {
     private final IRemoteStorageContract remote;
 
 
-    private static volatile Model instance;
-
-    public static IModelContract getInstance() {
-        if (instance == null) {
-            synchronized (Model.class) {
-                instance = new Model();
-            }
-        }
-        return instance;
-    }
-
-    private Model() {
-        remote = RemoteStorage.getInstance();
+    public Model(IRemoteStorageContract remoteStorage) {
+        remote = remoteStorage;
     }
 
 

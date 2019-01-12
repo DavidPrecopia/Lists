@@ -3,7 +3,7 @@ package com.example.david.lists.widget.configactivity;
 import android.app.Application;
 
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.data.model.Model;
+import com.example.david.lists.util.MyApplication;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -20,7 +20,7 @@ final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewMo
         super(application);
         this.application = application;
         this.widgetId = widgetId;
-        this.model = Model.getInstance();
+        this.model = ((MyApplication) application.getApplicationContext()).getModelComponent().getModel();
     }
 
     @NonNull

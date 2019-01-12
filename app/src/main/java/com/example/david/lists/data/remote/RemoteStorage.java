@@ -17,7 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
@@ -52,23 +51,8 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private boolean recentLocalChanges;
 
-
-    private static RemoteStorage instance;
-
-    public static IRemoteStorageContract getInstance() {
-        if (instance == null) {
-            instance = new RemoteStorage();
-        }
-        return instance;
-    }
-
-    private RemoteStorage() {
-        firestore = FirebaseFirestore.getInstance();
-        firestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(true)
-                .setTimestampsInSnapshotsEnabled(true)
-                .build()
-        );
+    public RemoteStorage(FirebaseFirestore firestore) {
+        this.firestore = firestore;
         DocumentReference userDoc = firestore.collection(USER_COLLECTION).document(getUserId());
         userListsCollection = userDoc.collection(USER_LISTS_COLLECTION);
         itemsCollection = userDoc.collection(ITEMS_COLLECTION);

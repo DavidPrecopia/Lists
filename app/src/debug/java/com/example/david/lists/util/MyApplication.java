@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.example.david.lists.R;
+import com.example.david.lists.di.data.DaggerModelComponent;
+import com.example.david.lists.di.data.ModelComponent;
 import com.squareup.leakcanary.LeakCanary;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -13,17 +15,24 @@ import timber.log.Timber;
 
 public final class MyApplication extends Application {
 
+    private ModelComponent modelComponent;
+
     private static final int PREF_NOT_FOUND = -1;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        initModelComponent();
         checkNetworkConnection();
         setNightMode();
         initFabric();
 
         initTimber();
         initLeakCanary();
+    }
+
+    private void initModelComponent() {
+        this.modelComponent = DaggerModelComponent.create();
     }
 
     private void checkNetworkConnection() {
@@ -55,6 +64,11 @@ public final class MyApplication extends Application {
 
     private void initFabric() {
         Fabric.with(this, new CrashlyticsCore());
+    }
+
+
+    public ModelComponent getModelComponent() {
+        return this.modelComponent;
     }
 
 
