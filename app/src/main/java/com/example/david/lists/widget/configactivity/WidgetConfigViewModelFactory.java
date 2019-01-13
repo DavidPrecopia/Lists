@@ -2,8 +2,8 @@ package com.example.david.lists.widget.configactivity;
 
 import android.app.Application;
 
+import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.model.IModelContract;
-import com.example.david.lists.util.MyApplication;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
