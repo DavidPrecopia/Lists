@@ -103,7 +103,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             bindTitle(userList.getTitle());
             initBackgroundView(userList.getId());
             initDragHandle();
-            initPopupMenu();
+            initPopupMenu(userList.getId());
             binding.executePendingBindings();
         }
 
@@ -111,12 +111,12 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             binding.tvTitle.setText(title);
         }
 
-        private void initBackgroundView(String groupId) {
+        private void initBackgroundView(String userListId) {
             // Ensures only one row can be opened at a time - see Adapter's constructor.
-            viewBinderHelper.bind(binding.swipeRevealLayout, groupId);
+            viewBinderHelper.bind(binding.swipeRevealLayout, userListId);
             binding.backgroundView.setOnClickListener(view -> {
                 viewModel.swipedLeft(UserListsAdapter.this, getAdapterPosition());
-                viewBinderHelper.closeLayout(groupId);
+                viewBinderHelper.closeLayout(userListId);
             });
         }
 
@@ -132,24 +132,25 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
             );
         }
 
-        private void initPopupMenu() {
-            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu().show());
+        private void initPopupMenu(String userListId) {
+            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu(userListId).show());
         }
 
-        private PopupMenu getPopupMenu() {
+        private PopupMenu getPopupMenu(String userListId) {
             PopupMenu popupMenu = new PopupMenu(binding.ivOverflowMenu.getContext(), binding.ivOverflowMenu);
             popupMenu.inflate(R.menu.popup_menu_list_item);
-            popupMenu.setOnMenuItemClickListener(getMenuClickListener());
+            popupMenu.setOnMenuItemClickListener(getMenuClickListener(userListId));
             return popupMenu;
         }
 
-        private PopupMenu.OnMenuItemClickListener getMenuClickListener() {
+        private PopupMenu.OnMenuItemClickListener getMenuClickListener(String userListId) {
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
                         viewModel.edit(getAdapterPosition());
                         break;
                     case R.id.menu_item_delete:
+                        viewBinderHelper.openLayout(userListId);
                         viewModel.delete(UserListsAdapter.this, getAdapterPosition());
                         break;
                     default:

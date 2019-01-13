@@ -97,7 +97,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             bindTitle(item.getTitle());
             initBackgroundView(item.getId());
             initDragHandle();
-            initPopupMenu();
+            initPopupMenu(item.getId());
             binding.executePendingBindings();
         }
 
@@ -126,24 +126,25 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
             );
         }
 
-        private void initPopupMenu() {
-            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu().show());
+        private void initPopupMenu(String itemId) {
+            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu(itemId).show());
         }
 
-        private PopupMenu getPopupMenu() {
+        private PopupMenu getPopupMenu(String itemId) {
             PopupMenu popupMenu = new PopupMenu(binding.ivOverflowMenu.getContext(), binding.ivOverflowMenu);
             popupMenu.inflate(R.menu.popup_menu_list_item);
-            popupMenu.setOnMenuItemClickListener(getMenuClickListener());
+            popupMenu.setOnMenuItemClickListener(getMenuClickListener(itemId));
             return popupMenu;
         }
 
-        private PopupMenu.OnMenuItemClickListener getMenuClickListener() {
+        private PopupMenu.OnMenuItemClickListener getMenuClickListener(String itemId) {
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
                         viewModel.edit(getAdapterPosition());
                         break;
                     case R.id.menu_item_delete:
+                        viewBinderHelper.openLayout(itemId);
                         viewModel.delete(ItemsAdapter.this, getAdapterPosition());
                         break;
                     default:
