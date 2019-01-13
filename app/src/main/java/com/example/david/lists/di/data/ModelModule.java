@@ -13,13 +13,7 @@ import dagger.Provides;
 class ModelModule {
     @Singleton
     @Provides
-    IModelContract modelContract(Model model) {
-        return model;
-    }
-
-    @Singleton
-    @Provides
-    Model model(IRemoteStorageContract remoteStorage) {
+    IModelContract model(IRemoteStorageContract remoteStorage) {
         return new Model(remoteStorage);
     }
 }

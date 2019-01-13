@@ -14,13 +14,7 @@ import dagger.Provides;
 class RemoteStorageModule {
     @Singleton
     @Provides
-    IRemoteStorageContract remoteStorageContract(RemoteStorage remoteStorage) {
-        return remoteStorage;
-    }
-
-    @Singleton
-    @Provides
-    RemoteStorage remoteStorage(FirebaseFirestore firestore) {
+    IRemoteStorageContract remoteStorage(FirebaseFirestore firestore) {
         return new RemoteStorage(firestore);
     }
 
