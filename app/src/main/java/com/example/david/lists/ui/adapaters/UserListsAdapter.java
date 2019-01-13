@@ -62,7 +62,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
 
 
     public void swapData(List<UserList> newUserLists) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new GroupDiffUtilCallback(this.userLists, newUserLists));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserListDiffUtilCallback(this.userLists, newUserLists));
         userLists.clear();
         userLists.addAll(newUserLists);
         diffResult.dispatchUpdatesTo(this);
@@ -170,11 +170,11 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
     }
 
 
-    final class GroupDiffUtilCallback extends DiffUtil.Callback {
+    final class UserListDiffUtilCallback extends DiffUtil.Callback {
         private final List<UserList> oldList;
         private final List<UserList> newList;
 
-        GroupDiffUtilCallback(List<UserList> oldList, List<UserList> newList) {
+        UserListDiffUtilCallback(List<UserList> oldList, List<UserList> newList) {
             this.oldList = oldList;
             this.newList = newList;
         }
