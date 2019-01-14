@@ -2,40 +2,36 @@ package com.example.david.lists.application;
 
 import android.app.Application;
 
-import com.example.david.lists.di.data.ModelComponent;
+import com.example.david.lists.di.data.AppComponent;
 import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
 
 final class InitDebug {
 
-    private ModelComponent modelComponent;
+    private final Application application;
 
-    InitDebug() {
+    InitDebug(Application application) {
+        this.application = application;
     }
 
-    public InitDebug init(Application application) {
-        modelComponent = new InitRelease().init(application).getModelComponent();
+    public AppComponent init() {
+        AppComponent appComponent = new InitRelease(application).init();
         initTimber();
-        initLeakCanary(application);
-        return this;
+        initLeakCanary();
+        return appComponent;
     }
 
     private void initTimber() {
         Timber.plant(new Timber.DebugTree());
     }
 
-    private void initLeakCanary(Application application) {
+    private void initLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(application)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in context process.
             return;
         }
         LeakCanary.install(application);
-    }
-
-
-    ModelComponent getModelComponent() {
-        return this.modelComponent;
     }
 }

@@ -19,7 +19,7 @@ public final class ItemViewModelFactory extends ViewModelProvider.AndroidViewMod
         super(application);
         this.application = application;
         this.userListId = userListId;
-        this.model = ((MyApplication) application.getApplicationContext()).getModelComponent().getModel();
+        this.model = ((MyApplication) application).getAppComponent().getModel();
     }
 
     @NonNull

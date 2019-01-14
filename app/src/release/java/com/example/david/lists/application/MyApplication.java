@@ -2,19 +2,19 @@ package com.example.david.lists.application;
 
 import android.app.Application;
 
-import com.example.david.lists.di.data.ModelComponent;
+import com.example.david.lists.di.data.AppComponent;
 
 public final class MyApplication extends Application {
 
-    private ModelComponent modelComponent;
+    private AppComponent appComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        modelComponent = new InitRelease().init(this).getModelComponent();
+        appComponent = new InitRelease(this).init();
     }
 
-    public ModelComponent getModelComponent() {
-        return this.modelComponent;
+    public AppComponent getAppComponent() {
+        return this.appComponent;
     }
 }

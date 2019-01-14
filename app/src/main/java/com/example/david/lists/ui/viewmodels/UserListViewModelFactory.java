@@ -17,7 +17,7 @@ public final class UserListViewModelFactory extends ViewModelProvider.AndroidVie
     public UserListViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
-        this.model = ((MyApplication) application.getApplicationContext()).getModelComponent().getModel();
+        this.model = ((MyApplication) application).getAppComponent().getModel();
     }
 
     @NonNull

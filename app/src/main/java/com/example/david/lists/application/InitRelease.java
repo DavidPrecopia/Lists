@@ -7,31 +7,41 @@ import android.widget.Toast;
 
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.example.david.lists.R;
-import com.example.david.lists.di.data.DaggerModelComponent;
-import com.example.david.lists.di.data.ModelComponent;
+import com.example.david.lists.di.data.AppComponent;
+import com.example.david.lists.di.data.DaggerAppComponent;
 import com.example.david.lists.util.UtilNightMode;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import io.fabric.sdk.android.Fabric;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
-import static android.content.Context.MODE_PRIVATE;
 
 final class InitRelease {
 
+    private final Application application;
+    private AppComponent appComponent;
+
     private static final int PREF_NOT_FOUND = -1;
 
-    InitRelease() {
+    InitRelease(Application application) {
+        this.application = application;
     }
 
-    InitRelease init(Application application) {
-        checkNetworkConnection(application);
-        setNightMode(application);
-        initFabric(application);
-        return this;
+    AppComponent init() {
+        appComponent = initAppComponent();
+        checkNetworkConnection();
+        setNightMode();
+        initFabric();
+        return appComponent;
     }
 
-    private void checkNetworkConnection(Application application) {
+    private AppComponent initAppComponent() {
+        return DaggerAppComponent.builder()
+                .application(application)
+                .build();
+    }
+
+    private void checkNetworkConnection() {
         NetworkInfo networkInfo = ((ConnectivityManager) application.getSystemService(CONNECTIVITY_SERVICE))
                 .getActiveNetworkInfo();
         if (networkInfo == null) {
@@ -39,8 +49,8 @@ final class InitRelease {
         }
     }
 
-    private void setNightMode(Application application) {
-        switch (getCurrentMode(application)) {
+    private void setNightMode() {
+        switch (getCurrentMode()) {
             case PREF_NOT_FOUND:
                 UtilNightMode.setDay();
                 break;
@@ -55,17 +65,12 @@ final class InitRelease {
         }
     }
 
-    private int getCurrentMode(Application application) {
-        return application.getSharedPreferences(application.getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
+    private int getCurrentMode() {
+        return appComponent.getSharedPrefsNightMode()
                 .getInt(application.getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
     }
 
-    private void initFabric(Application application) {
+    private void initFabric() {
         Fabric.with(application, new CrashlyticsCore());
-    }
-
-
-    ModelComponent getModelComponent() {
-        return DaggerModelComponent.create();
     }
 }

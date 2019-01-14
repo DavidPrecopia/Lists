@@ -20,7 +20,7 @@ final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewMo
         super(application);
         this.application = application;
         this.widgetId = widgetId;
-        this.model = ((MyApplication) application.getApplicationContext()).getModelComponent().getModel();
+        this.model = ((MyApplication) application.getApplicationContext()).getAppComponent().getModel();
     }
 
     @NonNull
