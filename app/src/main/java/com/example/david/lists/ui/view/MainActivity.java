@@ -10,18 +10,18 @@ import android.widget.Toast;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
+import com.example.david.lists.di.view.DaggerMainActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -34,32 +34,45 @@ public class MainActivity extends AppCompatActivity
         implements UserListsFragment.UserListsFragmentListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private ActivityMainBinding binding;
-    private FragmentManager fragmentManager;
+    @Inject
+    ActivityMainBinding binding;
+    @Inject
+    FragmentManager fragmentManager;
+    @Inject
+    SharedPreferences sharedPrefs;
 
+    @Inject
+    Provider<Intent> authenticationIntent;
     private static final int RESPONSE_CODE_AUTH = 100;
 
     private boolean newActivity;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        init();
+        verifyUser(savedInstanceState == null);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
-                .registerOnSharedPreferenceChangeListener(this);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        getSharedPreferences(getString(R.string.night_mode_shared_pref_name), MODE_PRIVATE)
-                .unregisterOnSharedPreferenceChangeListener(this);
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        verifyUser(savedInstanceState == null);
+
+    private void init() {
+        DaggerMainActivityComponent.builder()
+                .mainActivity(this)
+                .build()
+                .inject(this);
     }
 
     private void verifyUser(boolean newActivity) {
@@ -72,7 +85,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initFields(boolean newActivity) {
-        fragmentManager = getSupportFragmentManager();
         this.newActivity = newActivity;
     }
 
@@ -201,27 +213,8 @@ public class MainActivity extends AppCompatActivity
     private void openAuthentication() {
         hideFragment();
         startActivityForResult(
-                getAuthIntent(),
+                authenticationIntent.get(),
                 RESPONSE_CODE_AUTH
-        );
-    }
-
-    private Intent getAuthIntent() {
-        return AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(getProviders())
-                .enableAnonymousUsersAutoUpgrade()
-                .setIsSmartLockEnabled(false, true)
-                .setLogo(R.mipmap.ic_launcher_round)
-                .setTheme(R.style.FirebaseUIAuthStyle)
-                .build();
-    }
-
-    private List<AuthUI.IdpConfig> getProviders() {
-        return Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.AnonymousBuilder().build()
         );
     }
 
