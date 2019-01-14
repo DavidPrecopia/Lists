@@ -31,7 +31,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
 public class MainActivity extends AppCompatActivity
-        implements UserListFragment.GroupFragmentListener,
+        implements UserListsFragment.UserListsFragmentListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity
             processIntentExtras(getIntent().getExtras());
         }
         if (newActivity) {
-            addFragment(getGroupFragment());
+            addFragment(getUserListsFragment());
         }
     }
 
@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private UserListFragment getGroupFragment() {
-        return UserListFragment.newInstance();
+    private UserListsFragment getUserListsFragment() {
+        return UserListsFragment.newInstance();
     }
 
     private ItemsFragment getItemsFragment(String groupId, String title) {
@@ -144,10 +144,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void messages(int message) {
         switch (message) {
-            case UserListFragment.GroupFragmentListener.SIGN_OUT:
+            case UserListsFragment.UserListsFragmentListener.SIGN_OUT:
                 signOut();
                 break;
-            case UserListFragment.GroupFragmentListener.SIGN_IN:
+            case UserListsFragment.UserListsFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:

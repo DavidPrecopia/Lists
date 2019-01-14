@@ -35,14 +35,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class UserListFragment extends Fragment
+public class UserListsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
         TouchHelperCallback.MovementCallback,
         ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
 
 
-    interface GroupFragmentListener {
+    interface UserListsFragmentListener {
         int SIGN_OUT = 100;
         int SIGN_IN = 200;
 
@@ -56,14 +56,14 @@ public class UserListFragment extends Fragment
     private FragmentUserListBinding binding;
     private UserListsAdapter adapter;
 
-    private GroupFragmentListener groupFragmentListener;
+    private UserListsFragmentListener userListsFragmentListener;
 
 
-    public UserListFragment() {
+    public UserListsFragment() {
     }
 
-    static UserListFragment newInstance() {
-        return new UserListFragment();
+    static UserListsFragment newInstance() {
+        return new UserListsFragment();
     }
 
 
@@ -87,7 +87,7 @@ public class UserListFragment extends Fragment
     }
 
     private void initView() {
-        this.groupFragmentListener = (GroupFragmentListener) getActivity();
+        this.userListsFragmentListener = (UserListsFragmentListener) getActivity();
         initRecyclerView();
         observeViewModel();
         initToolbar();
@@ -110,13 +110,13 @@ public class UserListFragment extends Fragment
 
     private void observeAccountEvents() {
         viewModel.getEventOpenUserList().observe(this, group ->
-                groupFragmentListener.openGroup(group));
+                userListsFragmentListener.openGroup(group));
         viewModel.getEventSignOut().observe(this, aVoid ->
-                groupFragmentListener.messages(GroupFragmentListener.SIGN_OUT));
+                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_OUT));
         viewModel.getEventConfirmSignOut().observe(this, aVoid ->
                 openDialogFragment(new ConfirmSignOutDialogFragment()));
         viewModel.getEventSignIn().observe(this, aVoid ->
-                groupFragmentListener.messages(GroupFragmentListener.SIGN_IN));
+                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_IN));
     }
 
 

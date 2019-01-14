@@ -20,7 +20,7 @@ public final class ConfirmSignOutDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callback = (UserListFragment) getTargetFragment();
+        callback = (UserListsFragment) getTargetFragment();
     }
 
     @NonNull
