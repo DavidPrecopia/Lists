@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        inject();
         super.onCreate(savedInstanceState);
-        init();
         verifyUser(savedInstanceState == null);
     }
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void init() {
+    private void inject() {
         DaggerMainActivityComponent.builder()
                 .mainActivity(this)
                 .build()
