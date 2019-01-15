@@ -22,6 +22,7 @@ import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -34,8 +35,8 @@ public class MainActivity extends AppCompatActivity
         implements UserListsFragment.UserListsFragmentListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
+
     @Inject
     FragmentManager fragmentManager;
     @Inject
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         verifyUser(savedInstanceState == null);
     }
 

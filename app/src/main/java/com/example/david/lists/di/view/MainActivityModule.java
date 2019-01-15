@@ -5,26 +5,18 @@ import android.content.SharedPreferences;
 
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
-import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.ui.view.MainActivity;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 class MainActivityModule {
-    @MainActivityScope
-    @Provides
-    ActivityMainBinding binding(MainActivity mainActivity) {
-        return DataBindingUtil.setContentView(mainActivity, R.layout.activity_main);
-    }
-
     @MainActivityScope
     @Provides
     FragmentManager fragmentManager(MainActivity mainActivity) {
