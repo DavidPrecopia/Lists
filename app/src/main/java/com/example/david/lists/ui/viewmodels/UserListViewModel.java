@@ -2,7 +2,6 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.MenuItem;
 
@@ -51,7 +50,9 @@ public final class UserListViewModel extends AndroidViewModel
     private final List<UserList> tempUserLists;
     private int tempUserListPosition;
 
-    UserListViewModel(@NonNull Application application, IModelContract model) {
+    private final SharedPreferences sharedPrefs;
+
+    UserListViewModel(@NonNull Application application, IModelContract model, SharedPreferences sharedPrefs) {
         super(application);
         userLists = new MutableLiveData<>();
         this.model = model;
@@ -68,6 +69,7 @@ public final class UserListViewModel extends AndroidViewModel
         eventSignIn = new SingleLiveEvent<>();
         this.tempUserLists = new ArrayList<>();
         this.tempUserListPosition = -1;
+        this.sharedPrefs = sharedPrefs;
         init();
     }
 
@@ -225,8 +227,7 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     private void setNightModePreference(int mode) {
-        SharedPreferences.Editor editor
-                = getApplication().getSharedPreferences(getStringResource(R.string.night_mode_shared_pref_name), Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putInt(getStringResource(R.string.night_mode_shared_pref_key), mode);
         editor.apply();
     }

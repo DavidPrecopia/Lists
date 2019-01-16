@@ -13,6 +13,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.FragmentUserListBinding;
+import com.example.david.lists.di.view.DaggerUserListFragmentComponent;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
 import com.example.david.lists.ui.viewmodels.IUserListViewModelContract;
@@ -22,6 +23,8 @@ import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,6 +56,9 @@ public class UserListsFragment extends Fragment
 
 
     private IUserListViewModelContract viewModel;
+    @Inject
+    UserListViewModelFactory viewModelFactory;
+
     private FragmentUserListBinding binding;
     private UserListsAdapter adapter;
 
@@ -68,15 +74,27 @@ public class UserListsFragment extends Fragment
 
 
     @Override
+    public void onAttach(Context context) {
+        inject();
+        super.onAttach(context);
+    }
+
+    private void inject() {
+        DaggerUserListFragmentComponent.builder()
+                .application(getActivity().getApplication())
+                .build()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         intiViewModel();
+        setHasOptionsMenu(true);
     }
 
     private void intiViewModel() {
-        UserListViewModelFactory factory = new UserListViewModelFactory(getActivity().getApplication());
-        viewModel = ViewModelProviders.of(this, factory).get(UserListViewModel.class);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserListViewModel.class);
     }
 
     @Override
