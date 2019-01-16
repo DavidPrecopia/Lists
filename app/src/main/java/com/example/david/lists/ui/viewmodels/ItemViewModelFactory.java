@@ -2,7 +2,6 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.app.Application;
 
-import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.model.IModelContract;
 
 import androidx.annotation.NonNull;
@@ -15,11 +14,11 @@ public final class ItemViewModelFactory extends ViewModelProvider.AndroidViewMod
     private final String userListId;
     private final IModelContract model;
 
-    public ItemViewModelFactory(@NonNull Application application, String userListId) {
+    public ItemViewModelFactory(@NonNull Application application, IModelContract model, String userListId) {
         super(application);
         this.application = application;
+        this.model = model;
         this.userListId = userListId;
-        this.model = ((MyApplication) application).getAppComponent().getModel();
     }
 
     @NonNull

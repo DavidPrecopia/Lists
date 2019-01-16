@@ -1,5 +1,6 @@
 package com.example.david.lists.ui.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentItemsBinding;
+import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
 import com.example.david.lists.ui.adapaters.ItemsAdapter;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
@@ -15,6 +17,8 @@ import com.example.david.lists.ui.viewmodels.ItemViewModel;
 import com.example.david.lists.ui.viewmodels.ItemViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +37,9 @@ public class ItemsFragment extends Fragment
         TouchHelperCallback.MovementCallback {
 
     private IItemViewModelContract viewModel;
+    @Inject
+    ItemViewModelFactory viewsModelFactory;
+
     private FragmentItemsBinding binding;
     private ItemsAdapter adapter;
 
@@ -53,17 +60,27 @@ public class ItemsFragment extends Fragment
 
 
     @Override
+    public void onAttach(Context context) {
+        inject();
+        super.onAttach(context);
+    }
+
+    private void inject() {
+        DaggerItemsFragmentComponent.builder()
+                .application(getActivity().getApplication())
+                .userListId(getArguments().getString(ARG_KEY_GROUP_ID))
+                .build()
+                .inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initViewModel();
     }
 
     private void initViewModel() {
-        ItemViewModelFactory factory = new ItemViewModelFactory(
-                getActivity().getApplication(),
-                getArguments().getString(ARG_KEY_GROUP_ID)
-        );
-        this.viewModel = ViewModelProviders.of(this, factory).get(ItemViewModel.class);
+        this.viewModel = ViewModelProviders.of(this, viewsModelFactory).get(ItemViewModel.class);
     }
 
 
