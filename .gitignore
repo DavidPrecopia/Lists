@@ -4,7 +4,7 @@
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
-/.idea/caches/build_file_checksums.ser
+/.idea/caches/
 /.idea/checkstyle-idea.xml
 .DS_Store
 /build
