@@ -61,11 +61,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    def androidLibraries = "1.0.0"
-    def lifecycleExtensions = "2.0.0"
-    def daggerVersion = "2.20"
-    def leakCanaryVersion = "1.6.2"
-
     implementation "com.google.android.material:material:$androidLibraries"
     implementation "androidx.recyclerview:recyclerview:$androidLibraries"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

@@ -16,7 +16,6 @@ buildscript {
 
 allprojects {
     apply plugin: 'checkstyle'
-
     repositories {
         google()
         mavenCentral()
@@ -25,11 +24,15 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
-
+    ext {
+        androidLibraries = "1.0.0"
+        lifecycleExtensions = "2.0.0"
+        daggerVersion = "2.20"
+        leakCanaryVersion = "1.6.2"
+    }
     checkstyle {
         toolVersion = '8.15'
     }
-
     task checkstyle(type: Checkstyle) {
         // google_checks.xml from:
         // https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml
