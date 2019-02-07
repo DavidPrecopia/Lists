@@ -27,6 +27,7 @@ public final class Model implements IModelContract {
 
     @Override
     public Flowable<List<Item>> getItems(String userListId) {
+        verifyValidStrings(userListId);
         return remote.getItems(userListId);
     }
 
