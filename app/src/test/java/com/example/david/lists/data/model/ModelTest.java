@@ -11,7 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -22,6 +26,91 @@ public class ModelTest {
 
     @Mock
     private IRemoteStorageContract remoteStorage;
+
+    private String id = "qwerty";
+    private String newTitle = "New Title";
+    private UserList userList = new UserList("title", 0);
+    private Item item = new Item("title", 0, "qwerty");
+
+
+    @Test
+    public void getAllUserLists_InvokesCorrectRemoteStorageMethodOnce() {
+        model.getAllUserLists();
+        verify(remoteStorage, times(1)).getUserLists();
+    }
+
+    @Test
+    public void getAllItems_InvokesCorrectRemoteStorageMethodOnce() {
+        model.getItems(id);
+        verify(remoteStorage, times(1)).getItems(id);
+    }
+
+    @Test
+    public void addUserList_InvokesCorrectRemoteStorageMethodOnce() {
+        model.addUserList(userList);
+        verify(remoteStorage, times(1)).addUserList(userList);
+    }
+
+    @Test
+    public void addItem_InvokesCorrectRemoteStorageMethodOnce() {
+        model.addItem(item);
+        verify(remoteStorage, times(1)).addItem(item);
+    }
+
+    @Test
+    public void deleteUserLists_InvokesCorrectRemoteStorageMethodOnce() {
+        List<UserList> userLists = Collections.singletonList(userList);
+        model.deleteUserLists(userLists);
+        verify(remoteStorage, times(1)).deleteUserLists(userLists);
+    }
+
+    @Test
+    public void deleteItems_InvokesCorrectRemoteStorageMethodOnce() {
+        List<Item> items = Collections.singletonList(item);
+        model.deleteItems(items);
+        verify(remoteStorage, times(1)).deleteItems(items);
+    }
+
+    @Test
+    public void renameUserList_InvokesCorrectRemoteStorageMethodOnce() {
+        model.renameUserList(id, newTitle);
+        verify(remoteStorage, times(1)).renameUserList(id, newTitle);
+    }
+
+    @Test
+    public void renameItem_InvokesCorrectRemoteStorageMethodOnce() {
+        model.renameItem(id, newTitle);
+        verify(remoteStorage, times(1)).renameItem(id, newTitle);
+    }
+
+    @Test
+    public void updateUserListPosition__InvokesCorrectRemoteStorageMethodOnce() {
+        int newPosition = 1;
+        int oldPosition = 5;
+        model.updateUserListPosition(userList, oldPosition, newPosition);
+        verify(remoteStorage, times(1)).updateUserListPosition(userList, oldPosition, newPosition);
+    }
+
+    @Test
+    public void updateItemPosition__InvokesCorrectRemoteStorageMethodOnce() {
+        int newPosition = 1;
+        int oldPosition = 5;
+        model.updateItemPosition(item, oldPosition, newPosition);
+        verify(remoteStorage, times(1)).updateItemPosition(item, oldPosition, newPosition);
+    }
+
+
+    /**ERROR TESTING**/
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getItems_whenIdIsEmpty_ThrowsIllegalArgumentException() {
+        model.getItems("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getItems_WhenIdIsNull_ThrowsIllegalArgumentException() {
+        model.getItems(null);
+    }
 
 
     @Test(expected = IllegalArgumentException.class)
