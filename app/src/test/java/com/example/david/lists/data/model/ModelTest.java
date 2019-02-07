@@ -114,116 +114,116 @@ public class ModelTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenNull_AddUserList_ThrowsIllegalArgumentException() {
+    public void addUserList_WhenNull_ThrowsIllegalArgumentException() {
         model.addUserList(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenNull_AddItem_ThrowsIllegalArgumentException() {
+    public void addItem_WhenNull_ThrowsIllegalArgumentException() {
         model.addItem(null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenListIsEmpty_DeleteUserList_ThrowsIllegalArgumentException() {
+    public void deleteUserList_WhenListIsEmpty_ThrowIllegalArgumentException() {
         model.deleteUserLists(new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenListIsEmpty_DeleteItems_ThrowsIllegalArgumentException() {
+    public void deleteItems_WhenListIsEmpty_ThrowIllegalArgumentException() {
         model.deleteItems(new ArrayList<>());
     }
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenTitleIsEmpty_RenameUserList_ThrowsIllegalArgumentException() {
+    public void renameUserList_WhenTitleIsEmpty_ThrowsIllegalArgumentException() {
         model.renameUserList("placeholder", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenTitleIsNull_RenameUserList_ThrowsIllegalArgumentException() {
+    public void renameUserList_WhenTitleIsNull_ThrowsIllegalArgumentException() {
         model.renameUserList("placeholder", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenIdIsEmpty_RenameUserList_ThrowsIllegalArgumentException() {
+    public void renameUserList_WhenIdIsEmpty_ThrowsIllegalArgumentException() {
         model.renameUserList("", "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenIdIsNull_RenameUserList_ThrowsIllegalArgumentException() {
+    public void renameUserList_WhenIdIsNull_ThrowsIllegalArgumentException() {
         model.renameUserList(null, "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenTitleIsEmpty_RenameItem_ThrowsIllegalArgumentException() {
+    public void renameItem_WhenTitleIsEmpty_ThrowsIllegalArgumentException() {
         model.renameItem("placeholder", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenTitleIsNull_RenameItem_ThrowsIllegalArgumentException() {
+    public void renameItem_WhenTitleIsNull_ThrowsIllegalArgumentException() {
         model.renameItem("placeholder", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenIdIsEmpty_RenameItem_ThrowsIllegalArgumentException() {
+    public void renameItem_WhenIdIsEmpty_ThrowsIllegalArgumentException() {
         model.renameItem("", "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenIdIsNull_RenameItem_ThrowsIllegalArgumentException() {
+    public void renameItem_WhenIdIsNull_ThrowsIllegalArgumentException() {
         model.renameItem(null, "newTitle");
     }
 
 
-    public void whenPositionsAreTheSame_UpdateUserListPosition_Returns() {
+    public void updateUserListPosition_WhenPositionsAreTheSame_Returns() {
         model.updateUserListPosition(new UserList("placeholder", 0), 5, 5);
         verifyZeroInteractions(remoteStorage);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenPositionsAreNegative_UpdateUserListPosition_ThrowsIllegalArgumentException() {
+    public void updateUserListPosition_WhenPositionsAreNegative_ThrowsIllegalArgumentException() {
         model.updateUserListPosition(new UserList("placeholder", 0), -1, -10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenFirstPositionIsNegative_UpdateUserListPosition_ThrowsIllegalArgumentException() {
+    public void updateUserListPosition_WhenFirstPositionIsNegative_ThrowsIllegalArgumentException() {
         model.updateUserListPosition(new UserList("placeholder", 0), -1, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenSecondPositionIsNegative_UpdateUserListPosition_ThrowsIllegalArgumentException() {
+    public void updateUserListPosition_WhenSecondPositionIsNegative_ThrowsIllegalArgumentException() {
         model.updateUserListPosition(new UserList("placeholder", 0), 1, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenNullObject_UpdateUserListPosition_ThrowsIllegalArgumentException() {
+    public void updateUserListPosition_WhenNullObject_ThrowsIllegalArgumentException() {
         model.updateUserListPosition(null, 1, 10);
     }
 
 
-    public void whenPositionsAreTheSame_UpdateItemPosition_Returns() {
+    public void updateItemPosition_WhenPositionsAreTheSame_Returns() {
         model.updateItemPosition(new Item("placeholder", 0, "qwerty"), 5, 5);
         verifyZeroInteractions(remoteStorage);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenPositionsAreNegative_UpdateItemPosition_ThrowsIllegalArgumentException() {
+    public void updateItemPosition_WhenPositionsAreNegative_ThrowsIllegalArgumentException() {
         model.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, -10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenFirstPositionIsNegative_UpdateItemPosition_ThrowsIllegalArgumentException() {
+    public void updateItemPosition_WhenFirstPositionIsNegative_ThrowsIllegalArgumentException() {
         model.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenSecondPositionIsNegative_UpdateItemPosition_ThrowsIllegalArgumentException() {
+    public void updateItemPosition_WhenSecondPositionIsNegative_ThrowsIllegalArgumentException() {
         model.updateItemPosition(new Item("placeholder", 0, "qwerty"), 1, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void whenNullObject_UpdateItemPosition_ThrowsIllegalArgumentException() {
+    public void updateItemPosition_WhenNullObject_ThrowsIllegalArgumentException() {
         model.updateItemPosition(null, 1, 10);
     }
 }
