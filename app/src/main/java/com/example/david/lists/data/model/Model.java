@@ -74,11 +74,9 @@ public final class Model implements IModelContract {
     public void updateUserListPosition(UserList userList, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
-        } else {
-            validateObject(userList);
-            validatePositions(oldPosition, newPosition);
         }
-
+        validateObject(userList);
+        validatePositions(oldPosition, newPosition);
         remote.updateUserListPosition(userList, oldPosition, newPosition);
     }
 
@@ -86,11 +84,9 @@ public final class Model implements IModelContract {
     public void updateItemPosition(Item item, int oldPosition, int newPosition) {
         if (positionNotChanged(oldPosition, newPosition)) {
             return;
-        } else {
-            validateObject(item);
-            validatePositions(oldPosition, newPosition);
         }
-
+        validateObject(item);
+        validatePositions(oldPosition, newPosition);
         remote.updateItemPosition(item, oldPosition, newPosition);
     }
 
