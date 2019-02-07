@@ -57,6 +57,16 @@ public class ModelTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void whenIdIsEmpty_RenameUserList_ThrowsIllegalArgumentException() {
+        model.renameUserList("", "newTitle");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenIdIsNull_RenameUserList_ThrowsIllegalArgumentException() {
+        model.renameUserList(null, "newTitle");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void whenTitleIsEmpty_RenameItem_ThrowsIllegalArgumentException() {
         model.renameItem("placeholder", "");
     }
@@ -64,6 +74,16 @@ public class ModelTest {
     @Test(expected = IllegalArgumentException.class)
     public void whenTitleIsNull_RenameItem_ThrowsIllegalArgumentException() {
         model.renameItem("placeholder", null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenIdIsEmpty_RenameItem_ThrowsIllegalArgumentException() {
+        model.renameItem("", "newTitle");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenIdIsNull_RenameItem_ThrowsIllegalArgumentException() {
+        model.renameItem(null, "newTitle");
     }
 
 

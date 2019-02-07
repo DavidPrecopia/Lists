@@ -59,13 +59,13 @@ public final class Model implements IModelContract {
 
     @Override
     public void renameUserList(String userListId, String newTitle) {
-        verifyValidTitle(newTitle);
+        verifyValidStrings(userListId, newTitle);
         remote.renameUserList(userListId, newTitle);
     }
 
     @Override
     public void renameItem(String itemId, String newTitle) {
-        verifyValidTitle(newTitle);
+        verifyValidStrings(itemId, newTitle);
         remote.renameItem(itemId, newTitle);
     }
 
@@ -109,9 +109,11 @@ public final class Model implements IModelContract {
         }
     }
 
-    private void verifyValidTitle(String newTitle) {
-        if (newTitle == null || newTitle.isEmpty()) {
-            UtilExceptions.throwException(new IllegalArgumentException("Title is null or empty"));
+    private void verifyValidStrings(String... stringArray) {
+        for (String testingString : stringArray) {
+            if (testingString == null || testingString.isEmpty()) {
+                UtilExceptions.throwException(new IllegalArgumentException("This String is null or empty"));
+            }
         }
     }
 
