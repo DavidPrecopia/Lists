@@ -119,9 +119,10 @@ public final class RemoteStorage implements IRemoteStorageContract {
                 deletedUserLists.add(change.getDocument().toObject(UserList.class));
             }
         }
-        if (!deletedUserLists.isEmpty()) {
-            eventDeleteUserList.postValue(deletedUserLists);
+        if (deletedUserLists.isEmpty()) {
+            return;
         }
+        eventDeleteUserList.postValue(deletedUserLists);
     }
 
 
