@@ -91,7 +91,7 @@ public final class UtilSnapshotListeners {
         // this saves a reference to the listener
         this.userListsSnapshotListener = userListCollection
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, getGroupSnapshotListener(emitter));
+                .addSnapshotListener(MetadataChanges.INCLUDE, getUserListSnapshotListener(emitter));
 
         emitter.setCancellable(() -> {
             if (userListsSnapshotListener != null) {
@@ -100,9 +100,9 @@ public final class UtilSnapshotListeners {
         });
     }
 
-    private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<UserList>> emitter) {
+    private EventListener<QuerySnapshot> getUserListSnapshotListener(FlowableEmitter<List<UserList>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (errorFromQuery(queryDocumentSnapshots, e)) {
+            if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;
@@ -141,7 +141,7 @@ public final class UtilSnapshotListeners {
         this.itemsSnapshotListener = itemCollection
                 .whereEqualTo(FIELD_ITEM_LIST_ID, userListId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
+                .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshotListener(emitter));
 
         emitter.setCancellable(() -> {
             if (itemsSnapshotListener != null) {
@@ -150,9 +150,9 @@ public final class UtilSnapshotListeners {
         });
     }
 
-    private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {
+    private EventListener<QuerySnapshot> getItemSnapshotListener(FlowableEmitter<List<Item>> emitter) {
         return (queryDocumentSnapshots, e) -> {
-            if (errorFromQuery(queryDocumentSnapshots, e)) {
+            if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;
@@ -163,7 +163,7 @@ public final class UtilSnapshotListeners {
     }
 
 
-    private boolean errorFromQuery(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+    private boolean checkForErrorFromQuery(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
         if (e != null) {
             return true;
         } else if (queryDocumentSnapshots == null) {
