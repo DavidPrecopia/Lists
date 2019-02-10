@@ -1,42 +1,25 @@
 package com.example.david.lists.data.remote;
 
-import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilUser;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
 
 public final class RemoteStorage implements IRemoteStorageContract {
 
@@ -44,156 +27,27 @@ public final class RemoteStorage implements IRemoteStorageContract {
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
-    private ListenerRegistration userListsSnapshotListener;
-    private ListenerRegistration itemsSnapshotListener;
+    private final UtilSnapshotListeners snapshotListeners;
 
-    private final SingleLiveEvent<List<UserList>> eventDeleteUserList;
-
-    private boolean recentLocalChanges;
-
-    public RemoteStorage(FirebaseFirestore firestore) {
+    public RemoteStorage(FirebaseFirestore firestore,
+                         CollectionReference userListsCollection,
+                         CollectionReference itemsCollection,
+                         UtilSnapshotListeners snapshotListeners) {
         this.firestore = firestore;
-        DocumentReference userDoc = firestore.collection(USER_COLLECTION).document(getUserId());
-        userListsCollection = userDoc.collection(USER_LISTS_COLLECTION);
-        itemsCollection = userDoc.collection(ITEMS_COLLECTION);
-        eventDeleteUserList = new SingleLiveEvent<>();
-        recentLocalChanges = false;
-
-        init();
-    }
-
-    private void init() {
-        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            if (UtilUser.signedOut()) {
-                if (userListsSnapshotListener != null) {
-                    userListsSnapshotListener.remove();
-                }
-                if (itemsSnapshotListener != null) {
-                    itemsSnapshotListener.remove();
-                }
-            }
-        });
+        this.userListsCollection = userListsCollection;
+        this.itemsCollection = itemsCollection;
+        this.snapshotListeners = snapshotListeners;
     }
 
 
     @Override
     public Flowable<List<UserList>> getUserLists() {
-        return Flowable.create(
-                this::userListQuerySnapshot,
-                BackpressureStrategy.BUFFER
-        );
+        return snapshotListeners.getUserListFlowable();
     }
-
-    private void userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
-        this.userListsSnapshotListener = userListsCollection
-                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, getGroupSnapshotListener(emitter));
-
-        emitter.setCancellable(() -> {
-            if (userListsSnapshotListener != null) {
-                userListsSnapshotListener.remove();
-            }
-        });
-    }
-
-    private EventListener<QuerySnapshot> getGroupSnapshotListener(FlowableEmitter<List<UserList>> emitter) {
-        return (queryDocumentSnapshots, e) -> {
-            if (errorFromQuery(queryDocumentSnapshots, e)) {
-                emitter.onError(e);
-            } else if (shouldReturn(queryDocumentSnapshots)) {
-                return;
-            }
-
-            if (eventDeleteUserList.hasObservers()) {
-                checkIfUserListDeleted(queryDocumentSnapshots);
-            }
-
-            emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
-        };
-    }
-
-    private void checkIfUserListDeleted(QuerySnapshot queryDocumentSnapshots) {
-        List<UserList> deletedUserLists = new ArrayList<>();
-        for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-            if (change.getType() == DocumentChange.Type.REMOVED) {
-                deletedUserLists.add(change.getDocument().toObject(UserList.class));
-            }
-        }
-        if (deletedUserLists.isEmpty()) {
-            return;
-        }
-        eventDeleteUserList.postValue(deletedUserLists);
-    }
-
 
     @Override
     public Flowable<List<Item>> getItems(String userListId) {
-        return Flowable.create(
-                emitter -> itemQuerySnapshot(emitter, userListId),
-                BackpressureStrategy.BUFFER
-        );
-    }
-
-    private void itemQuerySnapshot(FlowableEmitter<List<Item>> emitter, String userListId) {
-        this.itemsSnapshotListener = itemsCollection
-                .whereEqualTo(FIELD_ITEM_LIST_ID, userListId)
-                .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
-                .addSnapshotListener(MetadataChanges.INCLUDE, getItemSnapshot(emitter));
-
-        emitter.setCancellable(() -> {
-            if (itemsSnapshotListener != null) {
-                itemsSnapshotListener.remove();
-            }
-        });
-    }
-
-    private EventListener<QuerySnapshot> getItemSnapshot(FlowableEmitter<List<Item>> emitter) {
-        return (queryDocumentSnapshots, e) -> {
-            if (errorFromQuery(queryDocumentSnapshots, e)) {
-                emitter.onError(e);
-            } else if (shouldReturn(queryDocumentSnapshots)) {
-                return;
-            }
-
-            emitter.onNext(queryDocumentSnapshots.toObjects(Item.class));
-        };
-    }
-
-
-    private boolean errorFromQuery(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-        if (e != null) {
-            return true;
-        } else if (queryDocumentSnapshots == null) {
-            Crashlytics.log(Log.ERROR, RemoteStorage.class.getSimpleName(), "QueryDocumentSnapshot is null");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean shouldReturn(QuerySnapshot queryDocumentSnapshots) {
-        if (isRecentLocalChanges()) {
-            recentLocalChanges = false;
-            return true;
-        } else if (fromLocalCache(queryDocumentSnapshots)) {
-            recentLocalChanges = true;
-            return false;
-        }
-        return false;
-    }
-
-    /**
-     * Because there were recent local changes, I can assume that this payload is from the server
-     * - which is identical of the query that just came from the local cache - thus it can be skipped.
-     */
-    private boolean isRecentLocalChanges() {
-        return recentLocalChanges;
-    }
-
-    /**
-     * This payload is from the local cache, post a local change.
-     */
-    private boolean fromLocalCache(QuerySnapshot queryDocumentSnapshots) {
-        return queryDocumentSnapshots.getMetadata().hasPendingWrites();
+        return snapshotListeners.getItemFlowable(userListId);
     }
 
 
@@ -331,14 +185,9 @@ public final class RemoteStorage implements IRemoteStorageContract {
     }
 
 
-    private String getUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
-    }
-
-
     @Override
     public LiveData<List<UserList>> getEventUserListDeleted() {
-        return eventDeleteUserList;
+        return snapshotListeners.getEventDeleteUserList();
     }
 
 
