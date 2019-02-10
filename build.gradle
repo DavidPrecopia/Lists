@@ -30,6 +30,16 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
+
+//    This will check for the usage of deprecated APIs when building.
+//    This will tell exactly which line is calling the deprecated API.
+//    It is commented-out because it increases build time.
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs << "-Xlint:deprecation"
+//        }
+//    }
+
     checkstyle {
         toolVersion = '8.15'
     }
