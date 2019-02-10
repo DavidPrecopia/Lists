@@ -1,7 +1,7 @@
 package com.example.david.lists.data.remote;
 
-public final class RemoteStorageConstants {
-    private RemoteStorageConstants() {
+public final class RemoteDatabaseConstants {
+    private RemoteDatabaseConstants() {
     }
 
     public static final String USER_COLLECTION = "users";

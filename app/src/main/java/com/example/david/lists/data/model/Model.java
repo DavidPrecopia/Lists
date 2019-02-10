@@ -2,7 +2,7 @@ package com.example.david.lists.data.model;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.remote.IRemoteStorageContract;
+import com.example.david.lists.data.remote.IRemoteDatabaseContract;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.List;
@@ -12,11 +12,11 @@ import io.reactivex.Flowable;
 
 public final class Model implements IModelContract {
 
-    private final IRemoteStorageContract remote;
+    private final IRemoteDatabaseContract remote;
 
 
-    public Model(IRemoteStorageContract remoteStorage) {
-        remote = remoteStorage;
+    public Model(IRemoteDatabaseContract remoteDatabase) {
+        remote = remoteDatabase;
     }
 
 

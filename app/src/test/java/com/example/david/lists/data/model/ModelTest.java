@@ -2,7 +2,7 @@ package com.example.david.lists.data.model;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.remote.IRemoteStorageContract;
+import com.example.david.lists.data.remote.IRemoteDatabaseContract;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ public class ModelTest {
     private Model model;
 
     @Mock
-    private IRemoteStorageContract remoteStorage;
+    private IRemoteDatabaseContract remoteDatabase;
 
     private String id = "qwerty";
     private String newTitle = "New Title";
@@ -36,51 +36,51 @@ public class ModelTest {
     @Test
     public void getAllUserLists_InvokesCorrectRemoteStorageMethodOnce() {
         model.getAllUserLists();
-        verify(remoteStorage, times(1)).getUserLists();
+        verify(remoteDatabase, times(1)).getUserLists();
     }
 
     @Test
     public void getAllItems_InvokesCorrectRemoteStorageMethodOnce() {
         model.getItems(id);
-        verify(remoteStorage, times(1)).getItems(id);
+        verify(remoteDatabase, times(1)).getItems(id);
     }
 
     @Test
     public void addUserList_InvokesCorrectRemoteStorageMethodOnce() {
         model.addUserList(userList);
-        verify(remoteStorage, times(1)).addUserList(userList);
+        verify(remoteDatabase, times(1)).addUserList(userList);
     }
 
     @Test
     public void addItem_InvokesCorrectRemoteStorageMethodOnce() {
         model.addItem(item);
-        verify(remoteStorage, times(1)).addItem(item);
+        verify(remoteDatabase, times(1)).addItem(item);
     }
 
     @Test
     public void deleteUserLists_InvokesCorrectRemoteStorageMethodOnce() {
         List<UserList> userLists = Collections.singletonList(userList);
         model.deleteUserLists(userLists);
-        verify(remoteStorage, times(1)).deleteUserLists(userLists);
+        verify(remoteDatabase, times(1)).deleteUserLists(userLists);
     }
 
     @Test
     public void deleteItems_InvokesCorrectRemoteStorageMethodOnce() {
         List<Item> items = Collections.singletonList(item);
         model.deleteItems(items);
-        verify(remoteStorage, times(1)).deleteItems(items);
+        verify(remoteDatabase, times(1)).deleteItems(items);
     }
 
     @Test
     public void renameUserList_InvokesCorrectRemoteStorageMethodOnce() {
         model.renameUserList(id, newTitle);
-        verify(remoteStorage, times(1)).renameUserList(id, newTitle);
+        verify(remoteDatabase, times(1)).renameUserList(id, newTitle);
     }
 
     @Test
     public void renameItem_InvokesCorrectRemoteStorageMethodOnce() {
         model.renameItem(id, newTitle);
-        verify(remoteStorage, times(1)).renameItem(id, newTitle);
+        verify(remoteDatabase, times(1)).renameItem(id, newTitle);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ModelTest {
         int newPosition = 1;
         int oldPosition = 5;
         model.updateUserListPosition(userList, oldPosition, newPosition);
-        verify(remoteStorage, times(1)).updateUserListPosition(userList, oldPosition, newPosition);
+        verify(remoteDatabase, times(1)).updateUserListPosition(userList, oldPosition, newPosition);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class ModelTest {
         int newPosition = 1;
         int oldPosition = 5;
         model.updateItemPosition(item, oldPosition, newPosition);
-        verify(remoteStorage, times(1)).updateItemPosition(item, oldPosition, newPosition);
+        verify(remoteDatabase, times(1)).updateItemPosition(item, oldPosition, newPosition);
     }
 
 
@@ -178,7 +178,7 @@ public class ModelTest {
 
     public void updateUserListPosition_WhenPositionsAreTheSame_Returns() {
         model.updateUserListPosition(new UserList("placeholder", 0), 5, 5);
-        verifyZeroInteractions(remoteStorage);
+        verifyZeroInteractions(remoteDatabase);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -204,7 +204,7 @@ public class ModelTest {
 
     public void updateItemPosition_WhenPositionsAreTheSame_Returns() {
         model.updateItemPosition(new Item("placeholder", 0, "qwerty"), 5, 5);
-        verifyZeroInteractions(remoteStorage);
+        verifyZeroInteractions(remoteDatabase);
     }
 
     @Test(expected = IllegalArgumentException.class)

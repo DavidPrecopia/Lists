@@ -8,7 +8,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
-public interface IRemoteStorageContract {
+public interface IRemoteDatabaseContract {
     Flowable<List<UserList>> getUserLists();
 
     Flowable<List<Item>> getItems(String userListId);

@@ -21,7 +21,7 @@ import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIE
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 
-public final class RemoteStorage implements IRemoteStorageContract {
+public final class RemoteDatabase implements IRemoteDatabaseContract {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
@@ -29,10 +29,10 @@ public final class RemoteStorage implements IRemoteStorageContract {
 
     private final UtilSnapshotListeners snapshotListeners;
 
-    public RemoteStorage(FirebaseFirestore firestore,
-                         CollectionReference userListsCollection,
-                         CollectionReference itemsCollection,
-                         UtilSnapshotListeners snapshotListeners) {
+    public RemoteDatabase(FirebaseFirestore firestore,
+                          CollectionReference userListsCollection,
+                          CollectionReference itemsCollection,
+                          UtilSnapshotListeners snapshotListeners) {
         this.firestore = firestore;
         this.userListsCollection = userListsCollection;
         this.itemsCollection = itemsCollection;
