@@ -1,6 +1,6 @@
 # Lists
 
-Keep lists in sync across multiple devices.
+Keep lists synced across multiple devices.
 
 This is my capstone project in Udacity's Android Developer Nanodegree.
 
