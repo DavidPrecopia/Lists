@@ -2,7 +2,7 @@
 
 Keep lists synced across multiple devices.
 
-This is my capstone project in Udacity's Android Developer Nanodegree.
+This app uses Firebase's Cloud Firestore to synchronize lists between devices and FirebaseAuth to authenticate users.
 
 **Features**
 
