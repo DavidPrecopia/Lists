@@ -10,6 +10,8 @@ This app uses Firebase's Cloud Firestore to synchronize lists between devices an
 - Synchronized all of your lists between different devices.
   - Requires the creation of an account (supported methods below).
 - All lists are stored on your device for offline access.
+- Night mode
+- Drag to rearrange
 - Supports keyboard navigation.
 - Available authentication methods:
   - Email
