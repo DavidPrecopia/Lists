@@ -16,6 +16,24 @@ This app uses Firebase's Cloud Firestore to synchronize lists between devices an
   - Google account
   - Remain anonymous
 
+# Screenshots
+
+Sign-in
+
+<img src="screenshots/authenticate.jpg" width=30% />
+
+Main screen
+
+<img src="screenshots/user_lists.jpg" width=30% />  <img src="screenshots/user_lists_2.jpg" width=30% />  
+
+Inside of a list
+
+<img src="screenshots/items.jpg" width=30% />
+
+Night mode
+
+<img src="screenshots/night_mode.jpg" width=30% />
+
 # Resources
 
 **Icons**
