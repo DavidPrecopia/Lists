@@ -2,7 +2,7 @@
 
 Keep lists synced across multiple devices.
 
-This app uses Firebase's Cloud Firestore to synchronize lists between devices and FirebaseAuth to authenticate users.
+This app utilizes Firebase's Cloud Firestore to synchronize lists between devices and FirebaseAuth to authenticate users.
 
 **Features**
 
