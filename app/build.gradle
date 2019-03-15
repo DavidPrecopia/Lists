@@ -75,15 +75,15 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.7'
     // Cloud Firestore
-    implementation 'com.google.firebase:firebase-firestore:18.0.0'
+    implementation 'com.google.firebase:firebase-firestore:18.1.0'
     // Firebase Authentication
-    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-auth:16.2.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     // Firebase Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     // Firebase Performance Monitoring
-    implementation 'com.google.firebase:firebase-perf:16.2.3'
+    implementation 'com.google.firebase:firebase-perf:16.2.4'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
