@@ -73,7 +73,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensions"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore:18.1.0'
     // Firebase Authentication
