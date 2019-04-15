@@ -81,6 +81,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     // Firebase Crashlytics
+    // This cannot be in the `releaseImplementation` configuration because Crashlytics
+    // is referenced in debug code.
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
     // Firebase Performance Monitoring
     implementation 'com.google.firebase:firebase-perf:16.2.4'
