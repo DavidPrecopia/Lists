@@ -293,7 +293,7 @@ public class UserListsFragment extends Fragment
 
 
     private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_SHORT)
+        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
                 .addCallback(new Snackbar.Callback() {
                     @Override
