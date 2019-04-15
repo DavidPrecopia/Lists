@@ -77,7 +77,7 @@ dependencies {
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore:18.2.0'
     // Firebase Authentication
-    implementation 'com.google.firebase:firebase-auth:16.2.0'
+    implementation 'com.google.firebase:firebase-auth:16.2.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     // Firebase Crashlytics
