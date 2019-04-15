@@ -174,12 +174,16 @@ public final class UserListViewModel extends AndroidViewModel
     @Override
     public void delete(IUserListAdapterContract adapter, int position) {
         adapter.remove(position);
-        tempUserLists.add(userLists.getValue().get(position));
-        tempUserListPosition = position;
-
+        saveDeletedUserList(position);
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_user_list_deletion)
         );
+    }
+
+    private void saveDeletedUserList(int position) {
+        tempUserLists.add(userLists.getValue().get(position));
+        tempUserListPosition = position;
+        userLists.getValue().remove(position);
     }
 
 
@@ -195,12 +199,18 @@ public final class UserListViewModel extends AndroidViewModel
     }
 
     private void reAdd(IUserListAdapterContract adapter) {
-        int lastDeletedPosition = tempUserLists.size() - 1;
-        adapter.reAdd(
-                tempUserListPosition,
-                tempUserLists.get(lastDeletedPosition)
-        );
+        int lastDeletedPosition = (tempUserLists.size() - 1);
+        reAddUserListToAdapter(adapter, lastDeletedPosition);
+        reAddUserListToLocalList(lastDeletedPosition);
         tempUserLists.remove(lastDeletedPosition);
+    }
+
+    private void reAddUserListToAdapter(IUserListAdapterContract adapter, int lastDeletedPosition) {
+        adapter.reAdd(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
+    }
+
+    private void reAddUserListToLocalList(int lastDeletedPosition) {
+        userLists.getValue().add(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
     }
 
     @Override

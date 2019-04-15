@@ -179,12 +179,17 @@ public final class ItemViewModel extends AndroidViewModel
     @Override
     public void delete(IItemAdapterContract adapter, int position) {
         adapter.remove(position);
-        tempItemList.add(itemList.getValue().get(position));
-        tempItemPosition = position;
+        saveDeletedItem(position);
 
         eventNotifyUserOfDeletion.setValue(
                 getStringResource(R.string.message_item_deletion)
         );
+    }
+
+    private void saveDeletedItem(int position) {
+        tempItemList.add(itemList.getValue().get(position));
+        tempItemPosition = position;
+        itemList.getValue().remove(position);
     }
 
 
@@ -200,12 +205,18 @@ public final class ItemViewModel extends AndroidViewModel
     }
 
     private void reAdd(IItemAdapterContract adapter) {
-        int lastDeletedPosition = tempItemList.size() - 1;
-        adapter.reAdd(
-                tempItemPosition,
-                tempItemList.get(lastDeletedPosition)
-        );
+        int lastDeletedPosition = (tempItemList.size() - 1);
+        reAddItemToAdapter(adapter, lastDeletedPosition);
+        reAddItemToLocalList(lastDeletedPosition);
         tempItemList.remove(lastDeletedPosition);
+    }
+
+    private void reAddItemToAdapter(IItemAdapterContract adapter, int lastDeletedPosition) {
+        adapter.reAdd(tempItemPosition, tempItemList.get(lastDeletedPosition));
+    }
+
+    private void reAddItemToLocalList(int lastDeletedPosition) {
+        itemList.getValue().add(tempItemPosition, tempItemList.get(lastDeletedPosition));
     }
 
     @Override
