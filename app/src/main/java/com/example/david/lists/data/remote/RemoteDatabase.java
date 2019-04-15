@@ -10,7 +10,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.util.List;
 
@@ -73,12 +72,11 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
     @Override
     public void deleteUserLists(List<UserList> userLists) {
-        WriteBatch writeBatch = firestore.batch();
-        for (UserList userList : userLists) {
-            writeBatch.delete(getUserListDocument(userList.getId()));
-        }
-        writeBatch.commit()
-                .addOnSuccessListener(successfullyDeleteUserLists())
+        firestore.runBatch(writeBatch -> {
+            for (UserList userList : userLists) {
+                writeBatch.delete(getUserListDocument(userList.getId()));
+            }
+        }).addOnSuccessListener(successfullyDeleteUserLists())
                 .addOnFailureListener(this::onFailure);
     }
 
@@ -92,12 +90,11 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
     @Override
     public void deleteItems(List<Item> items) {
-        WriteBatch batch = firestore.batch();
-        for (Item item : items) {
-            batch.delete(getItemDocument(item.getId()));
-        }
-        batch.commit()
-                .addOnSuccessListener(successfullyDeleteItems(items.get(0).getUserListId()))
+        firestore.runBatch(writeBatch -> {
+            for (Item item : items) {
+                writeBatch.delete(getItemDocument(item.getId()));
+            }
+        }).addOnSuccessListener(successfullyDeleteItems(items.get(0).getUserListId()))
                 .addOnFailureListener(this::onFailure);
     }
 
@@ -164,15 +161,15 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
 
     private void reorderConsecutively(QuerySnapshot queryDocumentSnapshots) {
-        int newPosition = 0;
-        WriteBatch batch = firestore.batch();
-        for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
-            if (snapshot.getDouble(FIELD_POSITION) != newPosition) {
-                batch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+        firestore.runBatch(writeBatch -> {
+            int newPosition = 0;
+            for (DocumentSnapshot snapshot : queryDocumentSnapshots.getDocuments()) {
+                if (snapshot.getDouble(FIELD_POSITION) != newPosition) {
+                    writeBatch.update(snapshot.getReference(), FIELD_POSITION, newPosition);
+                }
+                newPosition++;
             }
-            newPosition++;
-        }
-        batch.commit();
+        }).addOnFailureListener(this::onFailure);
     }
 
 
