@@ -16,12 +16,14 @@
         android:paddingEnd="@dimen/margin_normal"
         android:paddingBottom="@dimen/margin_medium">
 
+        <!--
+            Setting `layout_width` to match_parent, as oppose to 0dp, ensures that
+            it has a comfortable width, otherwise it is squished - I do not know why that is.
+        -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/max_name_length"
             app:hintTextAppearance="@style/HintTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,11 +31,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/text_input_edit_text"
-                android:layout_width="@dimen/dialog_width"
-                android:layout_height="match_parent"
-                android:inputType="textCapSentences|textAutoCorrect"
-                android:maxLength="@integer/max_name_length"
-                android:singleLine="true" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+                android:minWidth="@dimen/dialog_width" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -53,7 +54,8 @@
             style="@style/ButtonColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_input_layout"
             tools:text="Confirm" />
