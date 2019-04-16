@@ -5,7 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.di.data.AppComponent;
 import com.example.david.lists.di.data.DaggerAppComponent;
@@ -71,6 +73,10 @@ final class InitRelease {
     }
 
     private void initFabric() {
-        Fabric.with(application, new CrashlyticsCore());
+        // Initializes Fabric for builds that don't use the debug build type.
+        Crashlytics crashlyticsKit = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
+                .build();
+        Fabric.with(application, crashlyticsKit);
     }
 }
