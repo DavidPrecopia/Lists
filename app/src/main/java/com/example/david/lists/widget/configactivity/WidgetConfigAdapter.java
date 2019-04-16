@@ -61,7 +61,7 @@ final class WidgetConfigAdapter extends RecyclerView.Adapter<WidgetConfigAdapter
         }
 
         private void bindView(UserList userList) {
-            binding.setUserList(userList);
+            binding.tvTitle.setText(userList.getTitle());
         }
 
         @Override
