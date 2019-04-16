@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="AppThemeDay" />
 
     <style name="AppThemeDay" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -39,6 +40,15 @@
         </item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FloatingActionButtonAddStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/margin_normal</item>
+        <item name="android:elevation">@dimen/elevation_fab</item>
+        <item name="pressedTranslationZ">@dimen/elevation_fab_pressed_z_axis</item>
+        <item name="srcCompat">@drawable/ic_add_black_24dp</item>
     </style>
 
     <style name="ErrorTextViewStyle">

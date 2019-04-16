@@ -25,15 +25,9 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/FloatingActionButtonAddStyle"
             android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/margin_normal"
-            android:contentDescription="@string/content_description_fab_add_list"
-            app:elevation="@dimen/elevation_fab"
-            app:pressedTranslationZ="@dimen/elevation_fab_pressed_z_axis"
-            app:srcCompat="@drawable/ic_add_black_24dp" />
-
+            android:contentDescription="@string/content_description_fab_add_user_list" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -47,7 +41,6 @@
             style="@style/ErrorTextViewStyle"
             android:layout_gravity="center"
             tools:text="This is an error message regarding something" />
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
