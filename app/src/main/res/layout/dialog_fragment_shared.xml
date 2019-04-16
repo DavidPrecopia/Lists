@@ -33,7 +33,7 @@
                 android:id="@+id/text_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+                android:inputType="textCapSentences|textAutoCorrect"
                 android:minWidth="@dimen/dialog_width" />
 
         </com.google.android.material.textfield.TextInputLayout>
