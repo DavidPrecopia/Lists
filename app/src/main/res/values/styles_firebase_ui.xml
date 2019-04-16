@@ -13,10 +13,10 @@
 
 
     <style name="FirebaseUI.TextInputLayout">
-        <item name="hintTextAppearance">@style/FirebaseUIHintTextAppearance</item>
+        <item name="hintTextAppearance">@style/FirebaseUiHintTextAppearance</item>
     </style>
 
-    <style name="FirebaseUIHintTextAppearance">
+    <style name="FirebaseUiHintTextAppearance">
         <item name="android:textColor">@color/darkGray</item>
         <item name="android:textSize">12sp</item>
     </style>
