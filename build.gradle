@@ -41,7 +41,7 @@ allprojects {
 //    }
 
     checkstyle {
-        toolVersion = '8.15'
+        toolVersion = '8.19'
     }
     task checkstyle(type: Checkstyle) {
         // google_checks.xml from:
