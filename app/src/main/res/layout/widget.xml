@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/widget_iv_settings"
         android:background="@color/colorPrimary"
+        android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
         android:padding="@dimen/margin_medium"
