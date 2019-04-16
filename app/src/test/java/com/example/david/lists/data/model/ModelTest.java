@@ -27,10 +27,10 @@ public class ModelTest {
     @Mock
     private IRemoteDatabaseContract remoteDatabase;
 
-    private String id = "qwerty";
-    private String newTitle = "New Title";
-    private UserList userList = new UserList("title", 0);
-    private Item item = new Item("title", 0, "qwerty");
+    private final String id = "qwerty";
+    private final String newTitle = "New Title";
+    private final UserList userList = new UserList("title", 0);
+    private final Item item = new Item("title", 0, "qwerty");
 
 
     @Test

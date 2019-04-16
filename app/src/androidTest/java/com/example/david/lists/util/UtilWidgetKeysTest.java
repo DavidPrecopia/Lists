@@ -15,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class UtilWidgetKeysTest {
 
-    private Context context = ApplicationProvider.getApplicationContext();
-    private int appWidgetId = 123;
+    private final Context context = ApplicationProvider.getApplicationContext();
+    private final int appWidgetId = 123;
 
     @Test
     public void getSharedPrefNameTest() {
