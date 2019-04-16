@@ -28,6 +28,7 @@
         </FrameLayout>
 
 
+        <!--If background color is not set, the background view shows through-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/foreground_view"
             android:layout_width="match_parent"
