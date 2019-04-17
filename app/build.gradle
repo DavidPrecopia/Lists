@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.firebase.firebase-perf'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -86,8 +85,6 @@ dependencies {
     // This cannot be in the `releaseImplementation` configuration because Crashlytics
     // is referenced in debug code.
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
-    // Firebase Performance Monitoring
-    implementation 'com.google.firebase:firebase-perf:16.2.4'
 
     // RxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
