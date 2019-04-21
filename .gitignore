@@ -7,6 +7,8 @@
 /.idea/caches/
 /.idea/checkstyle-idea.xml
 /.idea/encodings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/dictionaries/david.xml
 .DS_Store
 /build
 /captures
@@ -15,3 +17,7 @@
 /app/fabric.properties
 lists_keystore.jks
 keystore.properties
+
+\.idea/gradle\.xml
+
+\.idea/misc\.xml
