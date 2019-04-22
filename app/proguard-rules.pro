@@ -21,7 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 
-# You can keep Instant Run enabled with these options.
 -keep public class com.google.firebase.provider.FirebaseInitProvider
 -keep public class com.firebase.ui.auth.data.client.AuthUiInitProvider
 -keep public class com.google.firebase.iid.FirebaseInstanceIdService
