@@ -39,11 +39,6 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            // DEX's 65k limit has been reached
-            // Avoiding MultiDex
-            minifyEnabled true
-            useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".debug"
             // Prevents Crashlytics from updating app resources with its own unique build ID.
             // This is not needed for the debug build.
