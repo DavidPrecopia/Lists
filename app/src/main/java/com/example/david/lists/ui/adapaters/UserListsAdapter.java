@@ -59,11 +59,6 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
     }
 
     @Override
-    public int getItemCount() {
-        return userLists.size();
-    }
-
-    @Override
     public void submitList(@Nullable List<UserList> list) {
         super.submitList(list);
         // In case the exact same List is submitted twice
