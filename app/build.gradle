@@ -94,7 +94,6 @@ dependencies {
 
     // Leak Canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
 
     // Local testing
     testImplementation 'junit:junit:4.12'
