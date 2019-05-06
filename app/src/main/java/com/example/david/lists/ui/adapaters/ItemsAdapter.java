@@ -5,6 +5,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
@@ -16,13 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-
-public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>
+public final class ItemsAdapter extends ListAdapter<Item, ItemsAdapter.ItemsViewHolder>
         implements IItemAdapterContract {
 
     private final List<Item> itemsList;
@@ -32,6 +34,7 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
     private final ViewBinderHelper viewBinderHelper;
 
     public ItemsAdapter(IItemViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
+        super(DIFF_UTIL_CALLBACK);
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
 
@@ -51,20 +54,17 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
-        itemsViewHolder.bindView(itemsList.get(itemsViewHolder.getAdapterPosition()));
+        itemsViewHolder.bindView(getItem(position));
     }
 
     @Override
-    public int getItemCount() {
-        return itemsList.size();
-    }
-
-
-    public void swapData(List<Item> newItemsList) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ItemDiffUtilCallback(this.itemsList, newItemsList));
-        itemsList.clear();
-        itemsList.addAll(newItemsList);
-        diffResult.dispatchUpdatesTo(this);
+    public void submitList(@Nullable List<Item> list) {
+        super.submitList(list);
+        // In case the exact same List is submitted twice
+        if (this.itemsList != list) {
+            itemsList.clear();
+            itemsList.addAll(list);
+        }
     }
 
     public void move(int fromPosition, int toPosition) {
@@ -156,33 +156,15 @@ public final class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ItemsV
     }
 
 
-    final class ItemDiffUtilCallback extends DiffUtil.Callback {
-        private final List<Item> oldList;
-        private final List<Item> newList;
-
-        ItemDiffUtilCallback(List<Item> oldList, List<Item> newList) {
-            this.oldList = oldList;
-            this.newList = newList;
+    private static final DiffUtil.ItemCallback<Item> DIFF_UTIL_CALLBACK = new DiffUtil.ItemCallback<Item>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
+            return oldItem.getId().equals(newItem.getId());
         }
 
         @Override
-        public int getOldListSize() {
-            return oldList.size();
+        public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
+            return oldItem.toString().equals(newItem.toString());
         }
-
-        @Override
-        public int getNewListSize() {
-            return newList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.get(oldItemPosition).getId().equals(newList.get(newItemPosition).getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.toString().equals(newList.toString());
-        }
-    }
+    };
 }

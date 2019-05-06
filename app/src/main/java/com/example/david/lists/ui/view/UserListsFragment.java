@@ -123,7 +123,7 @@ public class UserListsFragment extends Fragment
     }
 
     private void observeUserLists() {
-        viewModel.getUserLists().observe(this, userLists -> adapter.swapData(userLists));
+        viewModel.getUserLists().observe(this, userLists -> adapter.submitList(userLists));
     }
 
     private void observeAccountEvents() {

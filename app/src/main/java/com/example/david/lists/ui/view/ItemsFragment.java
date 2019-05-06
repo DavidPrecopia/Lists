@@ -109,7 +109,7 @@ public class ItemsFragment extends Fragment
     }
 
     private void observeItemList() {
-        viewModel.getItemList().observe(this, items -> adapter.swapData(items));
+        viewModel.getItemList().observe(this, items -> adapter.submitList(items));
     }
 
     private void observeEventDisplayError() {

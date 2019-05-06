@@ -6,6 +6,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
@@ -17,13 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-
-public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapter.UserListViewHolder>
+public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapter.UserListViewHolder>
         implements IUserListAdapterContract {
 
     private final ArrayList<UserList> userLists;
@@ -33,6 +35,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
     private final ViewBinderHelper viewBinderHelper;
 
     public UserListsAdapter(IUserListViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
+        super(DIFF_UTIL_CALLBACK);
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
 
@@ -52,7 +55,7 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
 
     @Override
     public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
-        userListViewHolder.bindView(userLists.get(userListViewHolder.getAdapterPosition()));
+        userListViewHolder.bindView(getItem(position));
     }
 
     @Override
@@ -60,12 +63,14 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
         return userLists.size();
     }
 
-
-    public void swapData(List<UserList> newUserLists) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserListDiffUtilCallback(this.userLists, newUserLists));
-        userLists.clear();
-        userLists.addAll(newUserLists);
-        diffResult.dispatchUpdatesTo(this);
+    @Override
+    public void submitList(@Nullable List<UserList> list) {
+        super.submitList(list);
+        // In case the exact same List is submitted twice
+        if (this.userLists != list) {
+            userLists.clear();
+            userLists.addAll(list);
+        }
     }
 
     @Override
@@ -170,33 +175,15 @@ public final class UserListsAdapter extends RecyclerView.Adapter<UserListsAdapte
     }
 
 
-    final class UserListDiffUtilCallback extends DiffUtil.Callback {
-        private final List<UserList> oldList;
-        private final List<UserList> newList;
-
-        UserListDiffUtilCallback(List<UserList> oldList, List<UserList> newList) {
-            this.oldList = oldList;
-            this.newList = newList;
+    private static final DiffUtil.ItemCallback<UserList> DIFF_UTIL_CALLBACK = new DiffUtil.ItemCallback<UserList>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull UserList oldItem, @NonNull UserList newItem) {
+            return oldItem.getId().equals(newItem.getId());
         }
 
         @Override
-        public int getOldListSize() {
-            return oldList.size();
+        public boolean areContentsTheSame(@NonNull UserList oldItem, @NonNull UserList newItem) {
+            return oldItem.toString().equals(newItem.toString());
         }
-
-        @Override
-        public int getNewListSize() {
-            return newList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.get(oldItemPosition).getId().equals(newList.get(newItemPosition).getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldList.toString().equals(newList.toString());
-        }
-    }
+    };
 }
