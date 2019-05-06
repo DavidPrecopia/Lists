@@ -6,6 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentItemsBinding;
@@ -20,17 +31,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ItemsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
@@ -43,17 +43,17 @@ public class ItemsFragment extends Fragment
     private FragmentItemsBinding binding;
     private ItemsAdapter adapter;
 
-    private static final String ARG_KEY_GROUP_ID = "group_id_key";
-    private static final String ARG_KEY_GROUP_TITLE = "group_title_key";
+    private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
+    private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
 
     public ItemsFragment() {
     }
 
-    static ItemsFragment newInstance(String groupId, String groupTitle) {
+    static ItemsFragment newInstance(String userListId, String userListTitle) {
         ItemsFragment fragment = new ItemsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_KEY_GROUP_ID, groupId);
-        bundle.putString(ARG_KEY_GROUP_TITLE, groupTitle);
+        bundle.putString(ARG_KEY_USER_LIST_ID, userListId);
+        bundle.putString(ARG_KEY_USER_LIST_TITLE, userListTitle);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,7 +68,7 @@ public class ItemsFragment extends Fragment
     private void inject() {
         DaggerItemsFragmentComponent.builder()
                 .application(getActivity().getApplication())
-                .userListId(getArguments().getString(ARG_KEY_GROUP_ID))
+                .userListId(getArguments().getString(ARG_KEY_USER_LIST_ID))
                 .build()
                 .inject(this);
     }
@@ -180,7 +180,7 @@ public class ItemsFragment extends Fragment
         ((AppCompatActivity) getActivity()).getSupportActionBar()
                 .setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setTitle(getArguments().getString(ARG_KEY_GROUP_TITLE));
+                .setTitle(getArguments().getString(ARG_KEY_USER_LIST_TITLE));
     }
 
     private void initFab() {

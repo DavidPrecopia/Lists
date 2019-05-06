@@ -9,6 +9,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
@@ -26,18 +38,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class UserListsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
@@ -51,7 +51,7 @@ public class UserListsFragment extends Fragment
 
         void messages(int message);
 
-        void openGroup(UserList userList);
+        void openUserList(UserList userList);
     }
 
 
@@ -113,7 +113,7 @@ public class UserListsFragment extends Fragment
     }
 
     private void observeViewModel() {
-        observeGroupList();
+        observeUserLists();
         observeEventDisplayError();
         observeEventDisplayLoading();
         observeEventNotifyUserOfDeletion();
@@ -122,13 +122,13 @@ public class UserListsFragment extends Fragment
         observeAccountEvents();
     }
 
-    private void observeGroupList() {
-        viewModel.getUserLists().observe(this, groups -> adapter.swapData(groups));
+    private void observeUserLists() {
+        viewModel.getUserLists().observe(this, userLists -> adapter.swapData(userLists));
     }
 
     private void observeAccountEvents() {
-        viewModel.getEventOpenUserList().observe(this, group ->
-                userListsFragmentListener.openGroup(group));
+        viewModel.getEventOpenUserList().observe(this, userList ->
+                userListsFragmentListener.openUserList(userList));
         viewModel.getEventSignOut().observe(this, aVoid ->
                 userListsFragmentListener.messages(UserListsFragmentListener.SIGN_OUT));
         viewModel.getEventConfirmSignOut().observe(this, aVoid ->
