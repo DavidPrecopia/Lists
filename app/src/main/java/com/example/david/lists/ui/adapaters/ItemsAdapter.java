@@ -54,6 +54,8 @@ public final class ItemsAdapter extends ListAdapter<Item, ItemsAdapter.ItemsView
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
+        // I am using `getItem()`, not the List field, because when the entire list is updated,
+        // the RecyclerView's internal list is updated before the field is.
         itemsViewHolder.bindView(getItem(position));
     }
 

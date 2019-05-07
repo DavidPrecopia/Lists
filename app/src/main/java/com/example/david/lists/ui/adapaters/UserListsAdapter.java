@@ -55,6 +55,8 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
 
     @Override
     public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
+        // I am using `getItem()`, not the List field, because when the entire list is updated,
+        // the RecyclerView's internal list is updated before the field is.
         userListViewHolder.bindView(getItem(position));
     }
 
