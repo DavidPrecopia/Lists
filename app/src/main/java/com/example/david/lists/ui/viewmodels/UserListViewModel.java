@@ -5,6 +5,12 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
@@ -19,11 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
@@ -136,8 +137,8 @@ public final class UserListViewModel extends AndroidViewModel
 
 
     @Override
-    public void edit(int position) {
-        eventEdit.setValue(new EditingInfo(userLists.getValue().get(position)));
+    public void edit(UserList userList) {
+        eventEdit.setValue(new EditingInfo(userList));
     }
 
     @Override

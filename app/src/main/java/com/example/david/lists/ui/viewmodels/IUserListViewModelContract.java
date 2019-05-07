@@ -2,13 +2,13 @@ package com.example.david.lists.ui.viewmodels;
 
 import android.view.MenuItem;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
 
 public interface IUserListViewModelContract {
     void userListClicked(UserList userList);
@@ -17,7 +17,7 @@ public interface IUserListViewModelContract {
 
     void add(String title);
 
-    void edit(int position);
+    void edit(UserList userList);
 
     void changeTitle(EditingInfo editingInfo, String newTitle);
 

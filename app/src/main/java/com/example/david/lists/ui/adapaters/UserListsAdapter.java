@@ -147,7 +147,7 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
-                        viewModel.edit(getAdapterPosition());
+                        viewModel.edit(userLists.get(getAdapterPosition()));
                         break;
                     case R.id.menu_item_delete:
                         viewBinderHelper.openLayout(userListId);

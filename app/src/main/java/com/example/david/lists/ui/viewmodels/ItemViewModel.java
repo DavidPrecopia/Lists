@@ -4,6 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
@@ -17,11 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
@@ -140,8 +141,8 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     @Override
-    public void edit(int position) {
-        eventEdit.setValue(new EditingInfo(itemList.getValue().get(position)));
+    public void edit(Item item) {
+        eventEdit.setValue(new EditingInfo(item));
     }
 
     @Override

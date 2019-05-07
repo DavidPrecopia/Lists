@@ -141,7 +141,7 @@ public final class ItemsAdapter extends ListAdapter<Item, ItemsAdapter.ItemsView
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
-                        viewModel.edit(getAdapterPosition());
+                        viewModel.edit(itemsList.get(getAdapterPosition()));
                         break;
                     case R.id.menu_item_delete:
                         viewBinderHelper.openLayout(itemId);

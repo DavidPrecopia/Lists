@@ -1,19 +1,19 @@
 package com.example.david.lists.ui.viewmodels;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
-
 public interface IItemViewModelContract {
     void addButtonClicked();
 
     void add(String title);
 
-    void edit(int position);
+    void edit(Item item);
 
     void changeTitle(EditingInfo editingInfo, String newTitle);
 
