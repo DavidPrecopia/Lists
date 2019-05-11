@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -31,8 +32,19 @@ class RemoteDatabaseModule {
 
     @Singleton
     @Provides
-    FirebaseFirestore firebaseFirestore() {
-        return FirebaseFirestore.getInstance();
+    FirebaseFirestore firebaseFirestore(FirebaseFirestoreSettings settings) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.setFirestoreSettings(settings);
+        return firestore;
+    }
+
+    @Singleton
+    @Provides
+    FirebaseFirestoreSettings firebaseFirestoreSettings() {
+        final long cacheSize = 10 * 1024 * 1024; // 10mb
+        return new FirebaseFirestoreSettings.Builder()
+                .setCacheSizeBytes(cacheSize)
+                .build();
     }
 
     @Singleton
