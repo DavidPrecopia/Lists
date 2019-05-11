@@ -6,11 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.david.lists.R;
-import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-
-import java.util.Objects;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
@@ -18,6 +13,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.david.lists.R;
+import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
+
+import java.util.Objects;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
@@ -95,7 +95,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     }
 
     private void observeUserLists() {
-        viewModel.getUserLists().observe(this, userLists -> adapter.swapData(userLists));
+        viewModel.getUserLists().observe(this, userLists -> adapter.submitList(userLists));
     }
 
     private void observeEventDisplayingLoading() {

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +34,7 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
     private final ViewBinderHelper viewBinderHelper;
 
     public UserListsAdapter(IUserListViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
-        super(DIFF_UTIL_CALLBACK);
+        super(new UserListDiffCallback());
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
 
@@ -170,17 +169,4 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
             );
         }
     }
-
-
-    private static final DiffUtil.ItemCallback<UserList> DIFF_UTIL_CALLBACK = new DiffUtil.ItemCallback<UserList>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull UserList oldItem, @NonNull UserList newItem) {
-            return oldItem.getId().equals(newItem.getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull UserList oldItem, @NonNull UserList newItem) {
-            return oldItem.toString().equals(newItem.toString());
-        }
-    };
 }
