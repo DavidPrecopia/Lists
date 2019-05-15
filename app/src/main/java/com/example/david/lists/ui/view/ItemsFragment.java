@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,27 +19,33 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
-import com.example.david.lists.ui.adapaters.ItemsAdapter;
+import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
-import com.example.david.lists.ui.viewmodels.ItemViewModel;
-import com.example.david.lists.ui.viewmodels.ItemViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class ItemsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
         TouchHelperCallback.MovementCallback {
 
-    private IItemViewModelContract viewModel;
-    @Inject
-    ItemViewModelFactory viewsModelFactory;
-
     private FragmentItemsBinding binding;
-    private ItemsAdapter adapter;
+
+    @Inject
+    IItemViewModelContract viewModel;
+
+    @Inject
+    IItemAdapterContract adapter;
+    @Inject
+    Provider<LinearLayoutManager> layoutManger;
+    @Inject
+    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
+    @Inject
+    Provider<ItemTouchHelper> itemTouchHelper;
 
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
@@ -68,19 +72,11 @@ public class ItemsFragment extends Fragment
     private void inject() {
         DaggerItemsFragmentComponent.builder()
                 .application(getActivity().getApplication())
+                .fragment(this)
+                .movementCallback(this)
                 .userListId(getArguments().getString(ARG_KEY_USER_LIST_ID))
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initViewModel();
-    }
-
-    private void initViewModel() {
-        this.viewModel = ViewModelProviders.of(this, viewsModelFactory).get(ItemViewModel.class);
     }
 
 
@@ -154,24 +150,10 @@ public class ItemsFragment extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        initLayoutManager(recyclerView);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelperCallback(this));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-        this.adapter = new ItemsAdapter(viewModel, itemTouchHelper);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void initLayoutManager(RecyclerView recyclerView) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-    }
-
-    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
+        recyclerView.setLayoutManager(layoutManger.get());
+        recyclerView.addItemDecoration(dividerItemDecorator.get());
+        itemTouchHelper.get().attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter((RecyclerView.Adapter) adapter);
     }
 
 

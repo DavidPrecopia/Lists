@@ -2,13 +2,16 @@ package com.example.david.lists.di.view;
 
 import android.app.Application;
 
+import androidx.fragment.app.Fragment;
+
+import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.view.UserListsFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
 @UserListFragmentScope
-@Component(modules = {UserListFragmentModule.class})
+@Component(modules = {UserListFragmentModule.class, RecyclerViewModule.class})
 public interface UserListFragmentComponent {
     void inject(UserListsFragment userListsFragment);
 
@@ -18,5 +21,11 @@ public interface UserListFragmentComponent {
 
         @BindsInstance
         Builder application(Application application);
+
+        @BindsInstance
+        Builder fragment(Fragment fragment);
+
+        @BindsInstance
+        Builder movementCallback(TouchHelperCallback.MovementCallback movementCallback);
     }
 }
