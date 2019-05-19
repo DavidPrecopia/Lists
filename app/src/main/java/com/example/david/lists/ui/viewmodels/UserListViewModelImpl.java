@@ -14,7 +14,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
@@ -28,12 +28,11 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class UserListViewModel extends AndroidViewModel
-        implements IUserListViewModelContract {
+public final class UserListViewModelImpl extends AndroidViewModel implements IUserListViewModel {
 
     private final MutableLiveData<List<UserList>> userLists;
 
-    private final IModelContract model;
+    private final IRepository repository;
     private final CompositeDisposable disposable;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
@@ -53,10 +52,10 @@ public final class UserListViewModel extends AndroidViewModel
 
     private final SharedPreferences sharedPrefs;
 
-    UserListViewModel(@NonNull Application application, IModelContract model, SharedPreferences sharedPrefs) {
+    UserListViewModelImpl(@NonNull Application application, IRepository repository, SharedPreferences sharedPrefs) {
         super(application);
         userLists = new MutableLiveData<>();
-        this.model = model;
+        this.repository = repository;
         disposable = new CompositeDisposable();
         eventOpenUserList = new SingleLiveEvent<>();
         eventDisplayLoading = new MutableLiveData<>();
@@ -81,7 +80,7 @@ public final class UserListViewModel extends AndroidViewModel
 
 
     private void getAllUserLists() {
-        disposable.add(model.getAllUserLists()
+        disposable.add(repository.getAllUserLists()
                 .subscribeWith(userListsSubscriber())
         );
     }
@@ -90,7 +89,7 @@ public final class UserListViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                UserListViewModel.this.userLists.setValue(userLists);
+                UserListViewModelImpl.this.userLists.setValue(userLists);
                 evaluateNewData(userLists);
             }
 
@@ -132,7 +131,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        model.addUserList(new UserList(title, this.userLists.getValue().size()));
+        repository.addUserList(new UserList(title, this.userLists.getValue().size()));
     }
 
 
@@ -143,7 +142,7 @@ public final class UserListViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        model.renameUserList(editingInfo.getId(), newTitle);
+        repository.renameUserList(editingInfo.getId(), newTitle);
     }
 
     @Override
@@ -159,7 +158,7 @@ public final class UserListViewModel extends AndroidViewModel
         }
 
         UserList userList = userLists.getValue().get(newPosition);
-        model.updateUserListPosition(
+        repository.updateUserListPosition(
                 userList,
                 userList.getPosition(),
                 newPosition
@@ -219,7 +218,7 @@ public final class UserListViewModel extends AndroidViewModel
         if (tempUserLists.isEmpty()) {
             return;
         }
-        model.deleteUserLists(tempUserLists);
+        repository.deleteUserLists(tempUserLists);
         tempUserLists.clear();
     }
 

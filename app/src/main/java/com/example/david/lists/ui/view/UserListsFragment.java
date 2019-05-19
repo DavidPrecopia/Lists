@@ -26,7 +26,7 @@ import com.example.david.lists.databinding.FragmentUserListBinding;
 import com.example.david.lists.di.view.DaggerUserListFragmentComponent;
 import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IUserListViewModelContract;
+import com.example.david.lists.ui.viewmodels.IUserListViewModel;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,7 +54,7 @@ public class UserListsFragment extends Fragment
     private FragmentUserListBinding binding;
 
     @Inject
-    IUserListViewModelContract viewModel;
+    IUserListViewModel viewModel;
 
     @Inject
     IUserListAdapterContract adapter;

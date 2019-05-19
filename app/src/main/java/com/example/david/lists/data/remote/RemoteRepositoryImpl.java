@@ -1,5 +1,7 @@
 package com.example.david.lists.data.remote;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.UtilExceptions;
@@ -13,14 +15,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_LIST_ID;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
 import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
 
-public final class RemoteDatabase implements IRemoteDatabaseContract {
+public final class RemoteRepositoryImpl implements IRemoteRepository {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
@@ -28,10 +29,10 @@ public final class RemoteDatabase implements IRemoteDatabaseContract {
 
     private final UtilSnapshotListeners snapshotListeners;
 
-    public RemoteDatabase(FirebaseFirestore firestore,
-                          CollectionReference userListsCollection,
-                          CollectionReference itemsCollection,
-                          UtilSnapshotListeners snapshotListeners) {
+    public RemoteRepositoryImpl(FirebaseFirestore firestore,
+                                CollectionReference userListsCollection,
+                                CollectionReference itemsCollection,
+                                UtilSnapshotListeners snapshotListeners) {
         this.firestore = firestore;
         this.userListsCollection = userListsCollection;
         this.itemsCollection = itemsCollection;

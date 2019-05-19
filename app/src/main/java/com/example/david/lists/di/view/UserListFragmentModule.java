@@ -5,21 +5,15 @@ import android.content.SharedPreferences;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.application.MyApplication;
-import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
-import com.example.david.lists.ui.adapaters.TouchHelperCallback;
 import com.example.david.lists.ui.adapaters.UserListsAdapter;
-import com.example.david.lists.ui.view.MainActivity;
-import com.example.david.lists.ui.view.UserListsFragment;
-import com.example.david.lists.ui.viewmodels.IUserListViewModelContract;
-import com.example.david.lists.ui.viewmodels.UserListViewModel;
+import com.example.david.lists.ui.viewmodels.IUserListViewModel;
 import com.example.david.lists.ui.viewmodels.UserListViewModelFactory;
+import com.example.david.lists.ui.viewmodels.UserListViewModelImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,31 +22,31 @@ import dagger.Provides;
 class UserListFragmentModule {
     @UserListFragmentScope
     @Provides
-    IUserListViewModelContract viewModel(Fragment fragment, UserListViewModelFactory factory) {
-        return ViewModelProviders.of(fragment, factory).get(UserListViewModel.class);
+    IUserListViewModel viewModel(Fragment fragment, UserListViewModelFactory factory) {
+        return ViewModelProviders.of(fragment, factory).get(UserListViewModelImpl.class);
     }
 
     @UserListFragmentScope
     @Provides
-    UserListViewModelFactory viewModelFactory(Application application, IModelContract model, SharedPreferences sharedPrefs) {
-        return new UserListViewModelFactory(application, model, sharedPrefs);
+    UserListViewModelFactory viewModelFactory(Application application, IRepository repository, SharedPreferences sharedPrefs) {
+        return new UserListViewModelFactory(application, repository, sharedPrefs);
     }
 
     @UserListFragmentScope
     @Provides
-    IModelContract model(Application application) {
-        return ((MyApplication) application).getAppComponent().getModel();
+    IRepository repository(Application application) {
+        return ((MyApplication) application).getAppComponent().repository();
     }
 
     @UserListFragmentScope
     @Provides
     SharedPreferences sharedPreferences(Application application) {
-        return ((MyApplication) application).getAppComponent().getSharedPrefsNightMode();
+        return ((MyApplication) application).getAppComponent().sharedPrefsNightMode();
     }
 
     @UserListFragmentScope
     @Provides
-    IUserListAdapterContract userListAdapter(IUserListViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
+    IUserListAdapterContract userListAdapter(IUserListViewModel viewModel, ItemTouchHelper itemTouchHelper) {
         return new UserListsAdapter(viewModel, itemTouchHelper);
     }
 }

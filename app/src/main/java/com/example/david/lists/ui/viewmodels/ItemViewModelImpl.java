@@ -14,7 +14,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
@@ -26,13 +26,12 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class ItemViewModel extends AndroidViewModel
-        implements IItemViewModelContract {
+public final class ItemViewModelImpl extends AndroidViewModel implements IItemViewModel {
 
     private final String userListId;
     private final MutableLiveData<List<Item>> itemList;
 
-    private final IModelContract model;
+    private final IRepository repository;
     private final CompositeDisposable disposable;
 
     private final MutableLiveData<Boolean> eventDisplayLoading;
@@ -43,16 +42,16 @@ public final class ItemViewModel extends AndroidViewModel
     private final SingleLiveEvent<EditingInfo> eventEdit;
     private final SingleLiveEvent<Void> eventFinish;
 
-    private Observer<List<UserList>> modelObserver;
+    private Observer<List<UserList>> repositoryObserver;
 
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    ItemViewModel(@NonNull Application application, IModelContract model, String userListId) {
+    ItemViewModelImpl(@NonNull Application application, IRepository repository, String userListId) {
         super(application);
         this.userListId = userListId;
         itemList = new MutableLiveData<>();
-        this.model = model;
+        this.repository = repository;
         disposable = new CompositeDisposable();
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
@@ -76,7 +75,7 @@ public final class ItemViewModel extends AndroidViewModel
 
 
     private void observeModel() {
-        modelObserver = userLists -> {
+        repositoryObserver = userLists -> {
             for (UserList userList : userLists) {
                 if (userList.getId().equals(this.userListId)) {
                     Toast.makeText(getApplication(),
@@ -87,11 +86,11 @@ public final class ItemViewModel extends AndroidViewModel
                 }
             }
         };
-        model.getEventUserListDeleted().observeForever(modelObserver);
+        repository.getEventUserListDeleted().observeForever(repositoryObserver);
     }
 
     private void getItems() {
-        disposable.add(model.getItems(userListId)
+        disposable.add(repository.getItems(userListId)
                 .subscribeWith(userListsSubscriber())
         );
     }
@@ -100,7 +99,7 @@ public final class ItemViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
-                ItemViewModel.this.itemList.setValue(itemList);
+                ItemViewModelImpl.this.itemList.setValue(itemList);
                 evaluateNewData(itemList);
             }
 
@@ -136,7 +135,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void add(String title) {
-        model.addItem(new Item(title, itemList.getValue().size(), this.userListId));
+        repository.addItem(new Item(title, itemList.getValue().size(), this.userListId));
     }
 
 
@@ -147,7 +146,7 @@ public final class ItemViewModel extends AndroidViewModel
 
     @Override
     public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        model.renameItem(editingInfo.getId(), newTitle);
+        repository.renameItem(editingInfo.getId(), newTitle);
     }
 
 
@@ -164,7 +163,7 @@ public final class ItemViewModel extends AndroidViewModel
         }
 
         Item item = itemList.getValue().get(newPosition);
-        model.updateItemPosition(
+        repository.updateItemPosition(
                 item,
                 item.getPosition(),
                 newPosition
@@ -225,7 +224,7 @@ public final class ItemViewModel extends AndroidViewModel
         if (tempItemList.isEmpty()) {
             return;
         }
-        model.deleteItems(tempItemList);
+        repository.deleteItems(tempItemList);
         tempItemList.clear();
     }
 
@@ -288,6 +287,6 @@ public final class ItemViewModel extends AndroidViewModel
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
-        model.getEventUserListDeleted().removeObserver(modelObserver);
+        repository.getEventUserListDeleted().removeObserver(repositoryObserver);
     }
 }

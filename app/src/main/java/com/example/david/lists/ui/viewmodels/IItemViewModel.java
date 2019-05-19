@@ -8,7 +8,7 @@ import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 
 import java.util.List;
 
-public interface IItemViewModelContract {
+public interface IItemViewModel {
     void addButtonClicked();
 
     void add(String title);

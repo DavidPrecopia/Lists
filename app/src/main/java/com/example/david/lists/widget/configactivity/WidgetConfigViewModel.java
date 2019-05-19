@@ -6,19 +6,20 @@ import android.appwidget.AppWidgetManager;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.widget.WidgetRemoteView;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -32,7 +33,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 public final class WidgetConfigViewModel extends AndroidViewModel
         implements IWidgetConfigViewModelContract {
 
-    private final IModelContract model;
+    private final IRepository model;
     private final CompositeDisposable disposable;
 
     private final int widgetId;
@@ -43,7 +44,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
-    WidgetConfigViewModel(@NonNull Application application, IModelContract model, int widgetId) {
+    WidgetConfigViewModel(@NonNull Application application, IRepository model, int widgetId) {
         super(application);
         this.model = model;
         this.widgetId = widgetId;

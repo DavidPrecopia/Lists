@@ -1,14 +1,15 @@
-package com.example.david.lists.data.model;
+package com.example.david.lists.data.repository;
+
+import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
-public interface IModelContract {
+public interface IRepository {
     Flowable<List<UserList>> getAllUserLists();
 
     Flowable<List<Item>> getItems(String userListId);

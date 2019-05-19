@@ -167,7 +167,7 @@ public final class UtilSnapshotListeners {
         if (e != null) {
             return true;
         } else if (queryDocumentSnapshots == null) {
-            Crashlytics.log(Log.ERROR, RemoteDatabase.class.getSimpleName(), "QueryDocumentSnapshot is null");
+            Crashlytics.log(Log.ERROR, RemoteRepositoryImpl.class.getSimpleName(), "QueryDocumentSnapshot is null");
             return true;
         }
         return false;

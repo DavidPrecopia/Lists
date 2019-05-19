@@ -1,7 +1,7 @@
 package com.example.david.lists.di.data;
 
-import com.example.david.lists.data.remote.IRemoteDatabaseContract;
-import com.example.david.lists.data.remote.RemoteDatabase;
+import com.example.david.lists.data.remote.IRemoteRepository;
+import com.example.david.lists.data.remote.RemoteRepositoryImpl;
 import com.example.david.lists.data.remote.UtilSnapshotListeners;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -15,19 +15,19 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.ITEMS_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteDatabaseConstants.USER_LISTS_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.ITEMS_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER_LISTS_COLLECTION;
 
 @Module
-class RemoteDatabaseModule {
+class RemoteRepositoryModule {
     @Singleton
     @Provides
-    IRemoteDatabaseContract remoteDatabase(FirebaseFirestore firestore,
-                                           @Named(USER_LISTS_COLLECTION) CollectionReference userListCollection,
-                                           @Named(ITEMS_COLLECTION) CollectionReference itemCollection,
-                                           UtilSnapshotListeners snapshotListeners) {
-        return new RemoteDatabase(firestore, userListCollection, itemCollection, snapshotListeners);
+    IRemoteRepository remoteDatabase(FirebaseFirestore firestore,
+                                     @Named(USER_LISTS_COLLECTION) CollectionReference userListCollection,
+                                     @Named(ITEMS_COLLECTION) CollectionReference itemCollection,
+                                     UtilSnapshotListeners snapshotListeners) {
+        return new RemoteRepositoryImpl(firestore, userListCollection, itemCollection, snapshotListeners);
     }
 
     @Singleton

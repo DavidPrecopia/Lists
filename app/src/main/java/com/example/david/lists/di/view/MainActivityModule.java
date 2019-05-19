@@ -3,6 +3,8 @@ package com.example.david.lists.di.view;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.ui.view.MainActivity;
@@ -11,7 +13,6 @@ import com.firebase.ui.auth.AuthUI;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.fragment.app.FragmentManager;
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,7 +29,7 @@ class MainActivityModule {
     SharedPreferences sharedPreferences(MainActivity mainActivity) {
         return ((MyApplication) mainActivity.getApplication())
                 .getAppComponent()
-                .getSharedPrefsNightMode();
+                .sharedPrefsNightMode();
     }
 
     @MainActivityScope

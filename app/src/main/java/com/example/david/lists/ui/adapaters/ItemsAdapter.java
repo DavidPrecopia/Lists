@@ -17,7 +17,7 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
+import com.example.david.lists.ui.viewmodels.IItemViewModel;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
@@ -29,11 +29,11 @@ public final class ItemsAdapter extends ListAdapter<Item, ItemsAdapter.ItemsView
 
     private final List<Item> itemsList;
 
-    private final IItemViewModelContract viewModel;
+    private final IItemViewModel viewModel;
     private final ItemTouchHelper itemTouchHelper;
     private final ViewBinderHelper viewBinderHelper;
 
-    public ItemsAdapter(IItemViewModelContract viewModel, ItemTouchHelper itemTouchHelper) {
+    public ItemsAdapter(IItemViewModel viewModel, ItemTouchHelper itemTouchHelper) {
         super(DIFF_UTIL_CALLBACK);
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;

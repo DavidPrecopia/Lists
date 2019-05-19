@@ -10,7 +10,7 @@ import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 
 import java.util.List;
 
-public interface IUserListViewModelContract {
+public interface IUserListViewModel {
     void userListClicked(UserList userList);
 
     void addButtonClicked();

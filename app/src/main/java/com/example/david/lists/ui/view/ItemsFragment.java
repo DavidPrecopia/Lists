@@ -21,7 +21,7 @@ import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
 import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 import com.example.david.lists.ui.adapaters.TouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IItemViewModelContract;
+import com.example.david.lists.ui.viewmodels.IItemViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -36,7 +36,7 @@ public class ItemsFragment extends Fragment
     private FragmentItemsBinding binding;
 
     @Inject
-    IItemViewModelContract viewModel;
+    IItemViewModel viewModel;
 
     @Inject
     IItemAdapterContract adapter;

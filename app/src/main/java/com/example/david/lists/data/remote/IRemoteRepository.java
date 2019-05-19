@@ -1,14 +1,15 @@
 package com.example.david.lists.data.remote;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
 import io.reactivex.Flowable;
 
-public interface IRemoteDatabaseContract {
+public interface IRemoteRepository {
     Flowable<List<UserList>> getUserLists();
 
     Flowable<List<Item>> getItems(String userListId);

@@ -1,8 +1,8 @@
-package com.example.david.lists.data.model;
+package com.example.david.lists.data.repository;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.remote.IRemoteDatabaseContract;
+import com.example.david.lists.data.remote.IRemoteRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ModelTest {
+public class RepositoryImplTest {
 
     @InjectMocks
-    private Model model;
+    private RepositoryImpl repositoryImpl;
 
     @Mock
-    private IRemoteDatabaseContract remoteDatabase;
+    private IRemoteRepository remoteDatabase;
 
     private final String id = "qwerty";
     private final String newTitle = "New Title";
@@ -35,51 +35,51 @@ public class ModelTest {
 
     @Test
     public void getAllUserLists_InvokesCorrectRemoteStorageMethodOnce() {
-        model.getAllUserLists();
+        repositoryImpl.getAllUserLists();
         verify(remoteDatabase, times(1)).getUserLists();
     }
 
     @Test
     public void getAllItems_InvokesCorrectRemoteStorageMethodOnce() {
-        model.getItems(id);
+        repositoryImpl.getItems(id);
         verify(remoteDatabase, times(1)).getItems(id);
     }
 
     @Test
     public void addUserList_InvokesCorrectRemoteStorageMethodOnce() {
-        model.addUserList(userList);
+        repositoryImpl.addUserList(userList);
         verify(remoteDatabase, times(1)).addUserList(userList);
     }
 
     @Test
     public void addItem_InvokesCorrectRemoteStorageMethodOnce() {
-        model.addItem(item);
+        repositoryImpl.addItem(item);
         verify(remoteDatabase, times(1)).addItem(item);
     }
 
     @Test
     public void deleteUserLists_InvokesCorrectRemoteStorageMethodOnce() {
         List<UserList> userLists = Collections.singletonList(userList);
-        model.deleteUserLists(userLists);
+        repositoryImpl.deleteUserLists(userLists);
         verify(remoteDatabase, times(1)).deleteUserLists(userLists);
     }
 
     @Test
     public void deleteItems_InvokesCorrectRemoteStorageMethodOnce() {
         List<Item> items = Collections.singletonList(item);
-        model.deleteItems(items);
+        repositoryImpl.deleteItems(items);
         verify(remoteDatabase, times(1)).deleteItems(items);
     }
 
     @Test
     public void renameUserList_InvokesCorrectRemoteStorageMethodOnce() {
-        model.renameUserList(id, newTitle);
+        repositoryImpl.renameUserList(id, newTitle);
         verify(remoteDatabase, times(1)).renameUserList(id, newTitle);
     }
 
     @Test
     public void renameItem_InvokesCorrectRemoteStorageMethodOnce() {
-        model.renameItem(id, newTitle);
+        repositoryImpl.renameItem(id, newTitle);
         verify(remoteDatabase, times(1)).renameItem(id, newTitle);
     }
 
@@ -87,7 +87,7 @@ public class ModelTest {
     public void updateUserListPosition__InvokesCorrectRemoteStorageMethodOnce() {
         int newPosition = 1;
         int oldPosition = 5;
-        model.updateUserListPosition(userList, oldPosition, newPosition);
+        repositoryImpl.updateUserListPosition(userList, oldPosition, newPosition);
         verify(remoteDatabase, times(1)).updateUserListPosition(userList, oldPosition, newPosition);
     }
 
@@ -95,7 +95,7 @@ public class ModelTest {
     public void updateItemPosition__InvokesCorrectRemoteStorageMethodOnce() {
         int newPosition = 1;
         int oldPosition = 5;
-        model.updateItemPosition(item, oldPosition, newPosition);
+        repositoryImpl.updateItemPosition(item, oldPosition, newPosition);
         verify(remoteDatabase, times(1)).updateItemPosition(item, oldPosition, newPosition);
     }
 
@@ -104,126 +104,126 @@ public class ModelTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getItems_whenIdIsEmpty_ThrowsIllegalArgumentException() {
-        model.getItems("");
+        repositoryImpl.getItems("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getItems_WhenIdIsNull_ThrowsIllegalArgumentException() {
-        model.getItems(null);
+        repositoryImpl.getItems(null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void addUserList_WhenNull_ThrowsIllegalArgumentException() {
-        model.addUserList(null);
+        repositoryImpl.addUserList(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addItem_WhenNull_ThrowsIllegalArgumentException() {
-        model.addItem(null);
+        repositoryImpl.addItem(null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteUserList_WhenListIsEmpty_ThrowIllegalArgumentException() {
-        model.deleteUserLists(new ArrayList<>());
+        repositoryImpl.deleteUserLists(new ArrayList<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteItems_WhenListIsEmpty_ThrowIllegalArgumentException() {
-        model.deleteItems(new ArrayList<>());
+        repositoryImpl.deleteItems(new ArrayList<>());
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void renameUserList_WhenTitleIsEmpty_ThrowsIllegalArgumentException() {
-        model.renameUserList("placeholder", "");
+        repositoryImpl.renameUserList("placeholder", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameUserList_WhenTitleIsNull_ThrowsIllegalArgumentException() {
-        model.renameUserList("placeholder", null);
+        repositoryImpl.renameUserList("placeholder", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameUserList_WhenIdIsEmpty_ThrowsIllegalArgumentException() {
-        model.renameUserList("", "newTitle");
+        repositoryImpl.renameUserList("", "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameUserList_WhenIdIsNull_ThrowsIllegalArgumentException() {
-        model.renameUserList(null, "newTitle");
+        repositoryImpl.renameUserList(null, "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameItem_WhenTitleIsEmpty_ThrowsIllegalArgumentException() {
-        model.renameItem("placeholder", "");
+        repositoryImpl.renameItem("placeholder", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameItem_WhenTitleIsNull_ThrowsIllegalArgumentException() {
-        model.renameItem("placeholder", null);
+        repositoryImpl.renameItem("placeholder", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameItem_WhenIdIsEmpty_ThrowsIllegalArgumentException() {
-        model.renameItem("", "newTitle");
+        repositoryImpl.renameItem("", "newTitle");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void renameItem_WhenIdIsNull_ThrowsIllegalArgumentException() {
-        model.renameItem(null, "newTitle");
+        repositoryImpl.renameItem(null, "newTitle");
     }
 
 
     public void updateUserListPosition_WhenPositionsAreTheSame_Returns() {
-        model.updateUserListPosition(new UserList("placeholder", 0), 5, 5);
+        repositoryImpl.updateUserListPosition(new UserList("placeholder", 0), 5, 5);
         verifyZeroInteractions(remoteDatabase);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateUserListPosition_WhenPositionsAreNegative_ThrowsIllegalArgumentException() {
-        model.updateUserListPosition(new UserList("placeholder", 0), -1, -10);
+        repositoryImpl.updateUserListPosition(new UserList("placeholder", 0), -1, -10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateUserListPosition_WhenFirstPositionIsNegative_ThrowsIllegalArgumentException() {
-        model.updateUserListPosition(new UserList("placeholder", 0), -1, 10);
+        repositoryImpl.updateUserListPosition(new UserList("placeholder", 0), -1, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateUserListPosition_WhenSecondPositionIsNegative_ThrowsIllegalArgumentException() {
-        model.updateUserListPosition(new UserList("placeholder", 0), 1, -1);
+        repositoryImpl.updateUserListPosition(new UserList("placeholder", 0), 1, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateUserListPosition_WhenNullObject_ThrowsIllegalArgumentException() {
-        model.updateUserListPosition(null, 1, 10);
+        repositoryImpl.updateUserListPosition(null, 1, 10);
     }
 
 
     public void updateItemPosition_WhenPositionsAreTheSame_Returns() {
-        model.updateItemPosition(new Item("placeholder", 0, "qwerty"), 5, 5);
+        repositoryImpl.updateItemPosition(new Item("placeholder", 0, "qwerty"), 5, 5);
         verifyZeroInteractions(remoteDatabase);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateItemPosition_WhenPositionsAreNegative_ThrowsIllegalArgumentException() {
-        model.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, -10);
+        repositoryImpl.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, -10);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateItemPosition_WhenFirstPositionIsNegative_ThrowsIllegalArgumentException() {
-        model.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, 1);
+        repositoryImpl.updateItemPosition(new Item("placeholder", 0, "qwerty"), -1, 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateItemPosition_WhenSecondPositionIsNegative_ThrowsIllegalArgumentException() {
-        model.updateItemPosition(new Item("placeholder", 0, "qwerty"), 1, -1);
+        repositoryImpl.updateItemPosition(new Item("placeholder", 0, "qwerty"), 1, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateItemPosition_WhenNullObject_ThrowsIllegalArgumentException() {
-        model.updateItemPosition(null, 1, 10);
+        repositoryImpl.updateItemPosition(null, 1, 10);
     }
 }

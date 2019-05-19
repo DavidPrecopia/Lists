@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.model.IModelContract;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
         return new MyRemoteViewsFactory(
                 intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
-                ((MyApplication) getApplication()).getAppComponent().getModel(),
+                ((MyApplication) getApplication()).getAppComponent().repository(),
                 getApplication(),
                 AppWidgetManager.getInstance(getApplicationContext())
         );
@@ -39,18 +39,18 @@ public class MyRemoteViewsService extends RemoteViewsService {
         private final List<Item> itemList;
         private final String userListId;
 
-        private final IModelContract model;
+        private final IRepository repository;
         private final CompositeDisposable disposable;
         private final Application application;
 
         private final AppWidgetManager appWidgetManager;
         private final int widgetId;
 
-        MyRemoteViewsFactory(String userListId, int widgetId, IModelContract model, Application application, AppWidgetManager appWidgetManager) {
+        MyRemoteViewsFactory(String userListId, int widgetId, IRepository model, Application application, AppWidgetManager appWidgetManager) {
             this.application = application;
             itemList = new ArrayList<>();
             this.userListId = userListId;
-            this.model = model;
+            this.repository = model;
             this.disposable = new CompositeDisposable();
             this.appWidgetManager = appWidgetManager;
             this.widgetId = widgetId;
@@ -59,7 +59,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            disposable.add(model.getItems(userListId)
+            disposable.add(repository.getItems(userListId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(itemListObserver())

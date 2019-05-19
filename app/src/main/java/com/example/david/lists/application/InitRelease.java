@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.example.david.lists.BuildConfig;
@@ -13,7 +15,6 @@ import com.example.david.lists.di.data.AppComponent;
 import com.example.david.lists.di.data.DaggerAppComponent;
 import com.example.david.lists.util.UtilNightMode;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import io.fabric.sdk.android.Fabric;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
@@ -68,7 +69,7 @@ final class InitRelease {
     }
 
     private int getCurrentMode() {
-        return appComponent.getSharedPrefsNightMode()
+        return appComponent.sharedPrefsNightMode()
                 .getInt(application.getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
     }
 
