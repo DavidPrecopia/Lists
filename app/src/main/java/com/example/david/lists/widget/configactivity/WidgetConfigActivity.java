@@ -9,27 +9,36 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
+import com.example.david.lists.widget.di.DaggerWidgetConfigComponent;
 
-import java.util.Objects;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
-    private IWidgetConfigViewModelContract viewModel;
     private ActivityWidgetConfigBinding binding;
+
+    @Inject
+    IWidgetConfigViewModel viewModel;
+
+    @Inject
+    WidgetConfigAdapter adapter;
+    @Inject
+    Provider<LinearLayoutManager> layoutManger;
+    @Inject
+    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
 
     private static final int INVALID_WIDGET_ID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int widgetId = INVALID_WIDGET_ID;
-    private WidgetConfigAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        inject();
         super.onCreate(savedInstanceState);
         // In case the user cancels
         resultsIntent(RESULT_CANCELED);
@@ -37,54 +46,45 @@ public class WidgetConfigActivity extends AppCompatActivity {
         init();
     }
 
+    private void inject() {
+        DaggerWidgetConfigComponent.builder()
+                .widgetConfigActivity(this)
+                .application(getApplication())
+                .widgetId(getWidgetId())
+                .build()
+                .inject(this);
+    }
+
     private void init() {
         getWidgetId();
-        initViewModel();
         initRecyclerView();
         initToolbar();
         observeViewModel();
     }
 
 
-    private void getWidgetId() {
-        widgetId = Objects.requireNonNull(getIntent().getExtras())
+    private int getWidgetId() {
+        widgetId = getIntent()
+                .getExtras()
                 .getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, INVALID_WIDGET_ID);
         if (widgetId == INVALID_WIDGET_ID) {
             finish();
         }
+        return widgetId;
     }
 
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        initLayoutManager(recyclerView);
-        adapter = new WidgetConfigAdapter(viewModel);
+        recyclerView.setLayoutManager(layoutManger.get());
+        recyclerView.addItemDecoration(dividerItemDecorator.get());
         recyclerView.setAdapter(adapter);
-    }
-
-    private void initLayoutManager(RecyclerView recyclerView) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(getDividerDecorator(recyclerView, layoutManager));
-    }
-
-    private DividerItemDecoration getDividerDecorator(RecyclerView recyclerView, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        );
     }
 
     private void initToolbar() {
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title_widget_config_activity);
-    }
-
-
-    private void initViewModel() {
-        WidgetConfigViewModelFactory factory = new WidgetConfigViewModelFactory(getApplication(), this.widgetId);
-        viewModel = ViewModelProviders.of(this, factory).get(WidgetConfigViewModel.class);
     }
 
     private void observeViewModel() {

@@ -6,29 +6,28 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 
-final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
+public final class WidgetConfigViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     @NonNull
     private final Application application;
     private final int widgetId;
-    private final IRepository model;
+    private final IRepository repository;
 
-    WidgetConfigViewModelFactory(@NonNull Application application, int widgetId) {
+    public WidgetConfigViewModelFactory(@NonNull Application application, int widgetId, IRepository repository) {
         super(application);
         this.application = application;
         this.widgetId = widgetId;
-        this.model = ((MyApplication) application.getApplicationContext()).getAppComponent().repository();
+        this.repository = repository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
+        if (modelClass.isAssignableFrom(WidgetConfigViewModelImpl.class)) {
             //noinspection unchecked
-            return (T) new WidgetConfigViewModel(application, model, widgetId);
+            return (T) new WidgetConfigViewModelImpl(application, repository, widgetId);
         } else {
             throw new IllegalArgumentException();
         }

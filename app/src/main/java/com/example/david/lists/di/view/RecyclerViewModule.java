@@ -14,7 +14,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-final class RecyclerViewModule {
+public final class RecyclerViewModule {
     @Reusable
     @Provides
     RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {

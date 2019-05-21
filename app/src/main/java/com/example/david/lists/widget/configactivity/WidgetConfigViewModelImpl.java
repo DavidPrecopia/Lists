@@ -30,8 +30,8 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
-public final class WidgetConfigViewModel extends AndroidViewModel
-        implements IWidgetConfigViewModelContract {
+public final class WidgetConfigViewModelImpl extends AndroidViewModel
+        implements IWidgetConfigViewModel {
 
     private final IRepository model;
     private final CompositeDisposable disposable;
@@ -44,7 +44,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
-    WidgetConfigViewModel(@NonNull Application application, IRepository model, int widgetId) {
+    WidgetConfigViewModelImpl(@NonNull Application application, IRepository model, int widgetId) {
         super(application);
         this.model = model;
         this.widgetId = widgetId;
@@ -76,7 +76,7 @@ public final class WidgetConfigViewModel extends AndroidViewModel
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                WidgetConfigViewModel.this.userLists.setValue(userLists);
+                WidgetConfigViewModelImpl.this.userLists.setValue(userLists);
                 evaluateNewData(userLists);
             }
 

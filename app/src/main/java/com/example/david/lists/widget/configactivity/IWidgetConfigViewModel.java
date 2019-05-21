@@ -1,12 +1,12 @@
 package com.example.david.lists.widget.configactivity;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
-import androidx.lifecycle.LiveData;
-
-interface IWidgetConfigViewModelContract {
+public interface IWidgetConfigViewModel {
     void userListClicked(UserList userList);
 
     LiveData<List<UserList>> getUserLists();
