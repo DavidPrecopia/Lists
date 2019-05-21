@@ -6,13 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.itemlist.IItemAdapterContract;
+import com.example.david.lists.ui.itemlist.IItemAdapter;
 import com.example.david.lists.ui.itemlist.IItemViewModel;
 import com.example.david.lists.ui.itemlist.ItemViewModelFactory;
 import com.example.david.lists.ui.itemlist.ItemViewModelImpl;
-import com.example.david.lists.ui.itemlist.ItemsAdapter;
+import com.example.david.lists.ui.itemlist.ItemsAdapterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,7 +40,7 @@ final class ItemsFragmentModule {
 
     @ItemsFragmentScope
     @Provides
-    IItemAdapterContract adapter(IItemViewModel viewModel, ItemTouchHelper itemTouchHelper) {
-        return new ItemsAdapter(viewModel, itemTouchHelper);
+    IItemAdapter adapter(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+        return new ItemsAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
 }

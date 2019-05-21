@@ -7,13 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.userlistlist.IUserListAdapterContract;
+import com.example.david.lists.ui.userlistlist.IUserListAdapter;
 import com.example.david.lists.ui.userlistlist.IUserListViewModel;
 import com.example.david.lists.ui.userlistlist.UserListViewModelFactory;
 import com.example.david.lists.ui.userlistlist.UserListViewModelImpl;
-import com.example.david.lists.ui.userlistlist.UserListsAdapter;
+import com.example.david.lists.ui.userlistlist.UserListsAdapterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,7 +47,7 @@ class UserListFragmentModule {
 
     @UserListFragmentScope
     @Provides
-    IUserListAdapterContract userListAdapter(IUserListViewModel viewModel, ItemTouchHelper itemTouchHelper) {
-        return new UserListsAdapter(viewModel, itemTouchHelper);
+    IUserListAdapter userListAdapter(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+        return new UserListsAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
 }

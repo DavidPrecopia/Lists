@@ -58,7 +58,7 @@ public class UserListsFragment extends Fragment
     IUserListViewModel viewModel;
 
     @Inject
-    IUserListAdapterContract adapter;
+    IUserListAdapter adapter;
     @Inject
     Provider<LinearLayoutManager> layoutManger;
     @Inject

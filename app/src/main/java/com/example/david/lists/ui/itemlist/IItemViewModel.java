@@ -16,15 +16,15 @@ public interface IItemViewModel {
 
     void changeTitle(EditingInfo editingInfo, String newTitle);
 
-    void dragging(IItemAdapterContract adapter, int fromPosition, int toPosition);
+    void dragging(IItemAdapter adapter, int fromPosition, int toPosition);
 
     void movedPermanently(int newPosition);
 
-    void swipedLeft(IItemAdapterContract adapter, int position);
+    void swipedLeft(IItemAdapter adapter, int position);
 
-    void delete(IItemAdapterContract adapter, int position);
+    void delete(IItemAdapter adapter, int position);
 
-    void undoRecentDeletion(IItemAdapterContract adapter);
+    void undoRecentDeletion(IItemAdapter adapter);
 
     void deletionNotificationTimedOut();
 

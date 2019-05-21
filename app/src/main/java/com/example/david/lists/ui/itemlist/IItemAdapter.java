@@ -4,7 +4,7 @@ import com.example.david.lists.data.datamodel.Item;
 
 import java.util.List;
 
-public interface IItemAdapterContract {
+public interface IItemAdapter {
     void submitList(List<Item> list);
 
     void move(int fromPosition, int toPosition);

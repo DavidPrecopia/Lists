@@ -20,15 +20,15 @@ public interface IUserListViewModel {
 
     void changeTitle(EditingInfo editingInfo, String newTitle);
 
-    void dragging(IUserListAdapterContract adapter, int fromPosition, int toPosition);
+    void dragging(IUserListAdapter adapter, int fromPosition, int toPosition);
 
     void movedPermanently(int newPosition);
 
-    void swipedLeft(IUserListAdapterContract adapter, int position);
+    void swipedLeft(IUserListAdapter adapter, int position);
 
-    void delete(IUserListAdapterContract adapter, int position);
+    void delete(IUserListAdapter adapter, int position);
 
-    void undoRecentDeletion(IUserListAdapterContract adapter);
+    void undoRecentDeletion(IUserListAdapter adapter);
 
     void deletionNotificationTimedOut();
 

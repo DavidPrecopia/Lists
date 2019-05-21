@@ -4,7 +4,7 @@ import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
-public interface IUserListAdapterContract {
+public interface IUserListAdapter {
     void submitList(List<UserList> list);
 
     void move(int fromPosition, int toPosition);

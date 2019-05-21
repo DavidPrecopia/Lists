@@ -39,7 +39,7 @@ public class ItemsFragment extends Fragment
     IItemViewModel viewModel;
 
     @Inject
-    IItemAdapterContract adapter;
+    IItemAdapter adapter;
     @Inject
     Provider<LinearLayoutManager> layoutManger;
     @Inject

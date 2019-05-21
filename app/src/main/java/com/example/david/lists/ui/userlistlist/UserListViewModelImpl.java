@@ -145,7 +145,7 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
     }
 
     @Override
-    public void dragging(IUserListAdapterContract adapter, int fromPosition, int toPosition) {
+    public void dragging(IUserListAdapter adapter, int fromPosition, int toPosition) {
         adapter.move(fromPosition, toPosition);
         Collections.swap(userLists.getValue(), fromPosition, toPosition);
     }
@@ -165,13 +165,13 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
     }
 
     @Override
-    public void swipedLeft(IUserListAdapterContract adapter, int position) {
+    public void swipedLeft(IUserListAdapter adapter, int position) {
         delete(adapter, position);
     }
 
 
     @Override
-    public void delete(IUserListAdapterContract adapter, int position) {
+    public void delete(IUserListAdapter adapter, int position) {
         adapter.remove(position);
         saveDeletedUserList(position);
         eventNotifyUserOfDeletion.setValue(
@@ -187,7 +187,7 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
 
 
     @Override
-    public void undoRecentDeletion(IUserListAdapterContract adapter) {
+    public void undoRecentDeletion(IUserListAdapter adapter) {
         if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
@@ -197,14 +197,14 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
         deletionNotificationTimedOut();
     }
 
-    private void reAdd(IUserListAdapterContract adapter) {
+    private void reAdd(IUserListAdapter adapter) {
         int lastDeletedPosition = (tempUserLists.size() - 1);
         reAddUserListToAdapter(adapter, lastDeletedPosition);
         reAddUserListToLocalList(lastDeletedPosition);
         tempUserLists.remove(lastDeletedPosition);
     }
 
-    private void reAddUserListToAdapter(IUserListAdapterContract adapter, int lastDeletedPosition) {
+    private void reAddUserListToAdapter(IUserListAdapter adapter, int lastDeletedPosition) {
         adapter.reAdd(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
     }
 

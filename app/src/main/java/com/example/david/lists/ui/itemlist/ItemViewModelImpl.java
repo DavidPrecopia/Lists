@@ -150,7 +150,7 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
 
 
     @Override
-    public void dragging(IItemAdapterContract adapter, int fromPosition, int toPosition) {
+    public void dragging(IItemAdapter adapter, int fromPosition, int toPosition) {
         Collections.swap(itemList.getValue(), fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
     }
@@ -170,13 +170,13 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     }
 
     @Override
-    public void swipedLeft(IItemAdapterContract adapter, int position) {
+    public void swipedLeft(IItemAdapter adapter, int position) {
         delete(adapter, position);
     }
 
 
     @Override
-    public void delete(IItemAdapterContract adapter, int position) {
+    public void delete(IItemAdapter adapter, int position) {
         adapter.remove(position);
         saveDeletedItem(position);
 
@@ -193,7 +193,7 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
 
 
     @Override
-    public void undoRecentDeletion(IItemAdapterContract adapter) {
+    public void undoRecentDeletion(IItemAdapter adapter) {
         if (tempItemList == null || tempItemPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
@@ -203,14 +203,14 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
         deletionNotificationTimedOut();
     }
 
-    private void reAdd(IItemAdapterContract adapter) {
+    private void reAdd(IItemAdapter adapter) {
         int lastDeletedPosition = (tempItemList.size() - 1);
         reAddItemToAdapter(adapter, lastDeletedPosition);
         reAddItemToLocalList(lastDeletedPosition);
         tempItemList.remove(lastDeletedPosition);
     }
 
-    private void reAddItemToAdapter(IItemAdapterContract adapter, int lastDeletedPosition) {
+    private void reAddItemToAdapter(IItemAdapter adapter, int lastDeletedPosition) {
         adapter.reAdd(tempItemPosition, tempItemList.get(lastDeletedPosition));
     }
 
