@@ -18,7 +18,6 @@ allprojects {
         androidLibraries = "1.0.0"
         lifecycleExtensions = "2.0.0"
         daggerVersion = "2.22.1"
-        leakCanaryVersion = "2.0-alpha-1"
     }
     repositories {
         google()
