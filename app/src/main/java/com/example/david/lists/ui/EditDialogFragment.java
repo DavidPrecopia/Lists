@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,15 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
-import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.databinding.DialogFragmentSharedBinding;
-import com.example.david.lists.util.UtilSoftKeyboard;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.EditingInfo;
+import com.example.david.lists.databinding.DialogFragmentSharedBinding;
+import com.example.david.lists.util.UtilSoftKeyboard;
 
 public final class EditDialogFragment extends DialogFragment {
 
@@ -32,7 +32,7 @@ public final class EditDialogFragment extends DialogFragment {
     }
 
 
-    static EditDialogFragment getInstance(EditingInfo editingInfo) {
+    public static EditDialogFragment getInstance(EditingInfo editingInfo) {
         EditDialogFragment fragment = new EditDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_KEY_EDITING_INFO, editingInfo);

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.david.lists.ui.adapaters.TouchHelperCallback;
+import com.example.david.lists.ui.TouchHelperCallback;
 
 import dagger.Module;
 import dagger.Provides;

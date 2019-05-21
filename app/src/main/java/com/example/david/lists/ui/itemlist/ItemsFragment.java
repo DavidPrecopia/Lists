@@ -1,17 +1,13 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.ui.itemlist;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -21,43 +17,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
-import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.databinding.FragmentUserListBinding;
-import com.example.david.lists.di.view.DaggerUserListFragmentComponent;
-import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
-import com.example.david.lists.ui.adapaters.TouchHelperCallback;
-import com.example.david.lists.ui.viewmodels.IUserListViewModel;
-import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilUser;
+import com.example.david.lists.databinding.FragmentItemsBinding;
+import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
+import com.example.david.lists.ui.AddDialogFragment;
+import com.example.david.lists.ui.EditDialogFragment;
+import com.example.david.lists.ui.TouchHelperCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class UserListsFragment extends Fragment
+public class ItemsFragment extends Fragment
         implements AddDialogFragment.AddDialogFragmentListener,
         EditDialogFragment.EditDialogFragmentListener,
-        TouchHelperCallback.MovementCallback,
-        ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
+        TouchHelperCallback.MovementCallback {
 
-
-    interface UserListsFragmentListener {
-        int SIGN_OUT = 100;
-        int SIGN_IN = 200;
-
-        void messages(int message);
-
-        void openUserList(UserList userList);
-    }
-
-    private FragmentUserListBinding binding;
+    private FragmentItemsBinding binding;
 
     @Inject
-    IUserListViewModel viewModel;
+    IItemViewModel viewModel;
 
     @Inject
-    IUserListAdapterContract adapter;
+    IItemAdapterContract adapter;
     @Inject
     Provider<LinearLayoutManager> layoutManger;
     @Inject
@@ -65,14 +47,19 @@ public class UserListsFragment extends Fragment
     @Inject
     Provider<ItemTouchHelper> itemTouchHelper;
 
-    private UserListsFragmentListener userListsFragmentListener;
+    private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
+    private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
 
-
-    public UserListsFragment() {
+    public ItemsFragment() {
     }
 
-    static UserListsFragment newInstance() {
-        return new UserListsFragment();
+    public static ItemsFragment newInstance(String userListId, String userListTitle) {
+        ItemsFragment fragment = new ItemsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_KEY_USER_LIST_ID, userListId);
+        bundle.putString(ARG_KEY_USER_LIST_TITLE, userListTitle);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
 
@@ -83,29 +70,24 @@ public class UserListsFragment extends Fragment
     }
 
     private void inject() {
-        DaggerUserListFragmentComponent.builder()
+        DaggerItemsFragmentComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .movementCallback(this)
+                .userListId(getArguments().getString(ARG_KEY_USER_LIST_ID))
                 .build()
                 .inject(this);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_items, container, false);
         initView();
         return binding.getRoot();
     }
 
     private void initView() {
-        this.userListsFragmentListener = (UserListsFragmentListener) getActivity();
         initRecyclerView();
         observeViewModel();
         initToolbar();
@@ -113,30 +95,18 @@ public class UserListsFragment extends Fragment
     }
 
     private void observeViewModel() {
-        observeUserLists();
-        observeEventDisplayError();
+        observeItemList();
         observeEventDisplayLoading();
+        observeEventDisplayError();
         observeEventNotifyUserOfDeletion();
         observeEventAdd();
         observeEventEdit();
-        observeAccountEvents();
+        observeEventFinish();
     }
 
-    private void observeUserLists() {
-        viewModel.getUserLists().observe(this, userLists -> adapter.submitList(userLists));
+    private void observeItemList() {
+        viewModel.getItemList().observe(this, items -> adapter.submitList(items));
     }
-
-    private void observeAccountEvents() {
-        viewModel.getEventOpenUserList().observe(this, userList ->
-                userListsFragmentListener.openUserList(userList));
-        viewModel.getEventSignOut().observe(this, aVoid ->
-                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_OUT));
-        viewModel.getEventConfirmSignOut().observe(this, aVoid ->
-                openDialogFragment(new ConfirmSignOutDialogFragment()));
-        viewModel.getEventSignIn().observe(this, aVoid ->
-                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_IN));
-    }
-
 
     private void observeEventDisplayError() {
         viewModel.getEventDisplayError().observe(this, display -> {
@@ -170,6 +140,12 @@ public class UserListsFragment extends Fragment
         viewModel.getEventEdit().observe(this, this::openEditDialog);
     }
 
+    private void observeEventFinish() {
+        viewModel.getEventFinish().observe(this, aVoid ->
+                getActivity().getSupportFragmentManager().popBackStack()
+        );
+    }
+
 
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
@@ -183,7 +159,10 @@ public class UserListsFragment extends Fragment
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setTitle(getArguments().getString(ARG_KEY_USER_LIST_TITLE));
     }
 
     private void initFab() {
@@ -211,44 +190,6 @@ public class UserListsFragment extends Fragment
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(getMenuResource(), menu);
-        menu.findItem(R.id.menu_id_night_mode).setChecked(nightModeEnabled());
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private boolean nightModeEnabled() {
-        return AppCompatDelegate.MODE_NIGHT_YES == getActivity()
-                .getSharedPreferences(getString(R.string.night_mode_shared_pref_name), Context.MODE_PRIVATE)
-                .getInt(getString(R.string.night_mode_shared_pref_key), -1);
-    }
-
-    private int getMenuResource() {
-        return UtilUser.isAnonymous()
-                ? R.menu.menu_sign_in
-                : R.menu.menu_sign_out;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_id_sign_in:
-                viewModel.signIn();
-                break;
-            case R.id.menu_id_sign_out:
-                viewModel.signOutButtonClicked();
-                break;
-            case R.id.menu_id_night_mode:
-                viewModel.nightMode(item);
-                break;
-            default:
-                UtilExceptions.throwException(new IllegalArgumentException());
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private void openAddDialog(String hintMessage) {
         openDialogFragment(
                 AddDialogFragment.getInstance(hintMessage)
@@ -272,14 +213,9 @@ public class UserListsFragment extends Fragment
         viewModel.changeTitle(editingInfo, newTitle);
     }
 
-    @Override
-    public void proceedWithSignOut() {
-        viewModel.signOut();
-    }
-
 
     private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
                 .addCallback(new Snackbar.Callback() {
                     @Override

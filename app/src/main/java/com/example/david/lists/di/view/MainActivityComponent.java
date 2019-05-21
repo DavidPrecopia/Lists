@@ -1,6 +1,6 @@
 package com.example.david.lists.di.view;
 
-import com.example.david.lists.ui.view.MainActivity;
+import com.example.david.lists.ui.MainActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;

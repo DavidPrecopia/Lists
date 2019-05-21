@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
-import com.example.david.lists.ui.view.MainActivity;
+import com.example.david.lists.ui.MainActivity;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.Arrays;

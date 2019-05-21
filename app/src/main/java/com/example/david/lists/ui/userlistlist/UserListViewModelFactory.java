@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.ui.userlistlist;
 
 import android.app.Application;
 import android.content.SharedPreferences;

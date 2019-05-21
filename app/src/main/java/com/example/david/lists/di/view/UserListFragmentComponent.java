@@ -4,8 +4,8 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.david.lists.ui.adapaters.TouchHelperCallback;
-import com.example.david.lists.ui.view.UserListsFragment;
+import com.example.david.lists.ui.TouchHelperCallback;
+import com.example.david.lists.ui.userlistlist.UserListsFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;

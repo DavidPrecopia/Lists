@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.ui.itemlist;
 
 import android.app.Application;
 

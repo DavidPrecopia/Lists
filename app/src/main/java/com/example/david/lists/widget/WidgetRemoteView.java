@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
-import com.example.david.lists.ui.view.MainActivity;
+import com.example.david.lists.ui.MainActivity;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;

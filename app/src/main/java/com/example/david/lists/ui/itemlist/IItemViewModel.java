@@ -1,10 +1,9 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.ui.itemlist;
 
 import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.ui.adapaters.IItemAdapterContract;
 
 import java.util.List;
 

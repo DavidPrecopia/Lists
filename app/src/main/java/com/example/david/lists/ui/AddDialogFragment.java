@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
-import com.example.david.lists.R;
-import com.example.david.lists.databinding.DialogFragmentSharedBinding;
-import com.example.david.lists.util.UtilSoftKeyboard;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.david.lists.R;
+import com.example.david.lists.databinding.DialogFragmentSharedBinding;
+import com.example.david.lists.util.UtilSoftKeyboard;
 
 public final class AddDialogFragment extends DialogFragment {
 
@@ -30,7 +30,7 @@ public final class AddDialogFragment extends DialogFragment {
     public AddDialogFragment() {
     }
 
-    static AddDialogFragment getInstance(String hintText) {
+    public static AddDialogFragment getInstance(String hintText) {
         AddDialogFragment dialogFragment = new AddDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_HINT_TEXT, hintText);

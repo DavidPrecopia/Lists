@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.adapaters;
+package com.example.david.lists.ui.userlistlist;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;

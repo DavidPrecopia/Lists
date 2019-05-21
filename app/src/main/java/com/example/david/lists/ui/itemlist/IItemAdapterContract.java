@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.adapaters;
+package com.example.david.lists.ui.itemlist;
 
 import com.example.david.lists.data.datamodel.Item;
 

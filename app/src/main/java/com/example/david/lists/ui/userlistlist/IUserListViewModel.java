@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.ui.userlistlist;
 
 import android.view.MenuItem;
 
@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 
 import java.util.List;
 

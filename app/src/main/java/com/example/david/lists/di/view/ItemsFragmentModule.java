@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.adapaters.IItemAdapterContract;
-import com.example.david.lists.ui.adapaters.ItemsAdapter;
-import com.example.david.lists.ui.viewmodels.IItemViewModel;
-import com.example.david.lists.ui.viewmodels.ItemViewModelFactory;
-import com.example.david.lists.ui.viewmodels.ItemViewModelImpl;
+import com.example.david.lists.ui.itemlist.IItemAdapterContract;
+import com.example.david.lists.ui.itemlist.IItemViewModel;
+import com.example.david.lists.ui.itemlist.ItemViewModelFactory;
+import com.example.david.lists.ui.itemlist.ItemViewModelImpl;
+import com.example.david.lists.ui.itemlist.ItemsAdapter;
 
 import dagger.Module;
 import dagger.Provides;

@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
-import com.example.david.lists.ui.adapaters.UserListsAdapter;
-import com.example.david.lists.ui.viewmodels.IUserListViewModel;
-import com.example.david.lists.ui.viewmodels.UserListViewModelFactory;
-import com.example.david.lists.ui.viewmodels.UserListViewModelImpl;
+import com.example.david.lists.ui.userlistlist.IUserListAdapterContract;
+import com.example.david.lists.ui.userlistlist.IUserListViewModel;
+import com.example.david.lists.ui.userlistlist.UserListViewModelFactory;
+import com.example.david.lists.ui.userlistlist.UserListViewModelImpl;
+import com.example.david.lists.ui.userlistlist.UserListsAdapter;
 
 import dagger.Module;
 import dagger.Provides;

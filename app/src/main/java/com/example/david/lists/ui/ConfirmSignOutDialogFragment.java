@@ -1,17 +1,18 @@
-package com.example.david.lists.ui.view;
+package com.example.david.lists.ui;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.example.david.lists.R;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.david.lists.R;
+import com.example.david.lists.ui.userlistlist.UserListsFragment;
 
 public final class ConfirmSignOutDialogFragment extends DialogFragment {
 
@@ -54,7 +55,7 @@ public final class ConfirmSignOutDialogFragment extends DialogFragment {
     }
 
 
-    interface ConfirmSignOutCallback {
+    public interface ConfirmSignOutCallback {
         void proceedWithSignOut();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.viewmodels;
+package com.example.david.lists.ui.userlistlist;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -15,7 +15,6 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.adapaters.IUserListAdapterContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;

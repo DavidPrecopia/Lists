@@ -1,110 +1,104 @@
-package com.example.david.lists.ui.adapaters;
+package com.example.david.lists.ui.itemlist;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.viewmodels.IUserListViewModel;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapter.UserListViewHolder>
-        implements IUserListAdapterContract {
+public final class ItemsAdapter extends ListAdapter<Item, ItemsAdapter.ItemsViewHolder>
+        implements IItemAdapterContract {
 
-    private final ArrayList<UserList> userLists;
+    private final List<Item> itemsList;
 
-    private final IUserListViewModel viewModel;
+    private final IItemViewModel viewModel;
     private final ItemTouchHelper itemTouchHelper;
     private final ViewBinderHelper viewBinderHelper;
 
-    public UserListsAdapter(IUserListViewModel viewModel, ItemTouchHelper itemTouchHelper) {
-        super(new UserListDiffCallback());
+    public ItemsAdapter(IItemViewModel viewModel, ItemTouchHelper itemTouchHelper) {
+        super(DIFF_UTIL_CALLBACK);
         this.viewModel = viewModel;
         this.itemTouchHelper = itemTouchHelper;
 
         viewBinderHelper = new ViewBinderHelper();
         viewBinderHelper.setOpenOnlyOne(true);
 
-        userLists = new ArrayList<>();
+        itemsList = new ArrayList<>();
     }
 
     @NonNull
     @Override
-    public UserListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserListViewHolder(
+    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ItemsViewHolder(
                 ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
         // I am using `getItem()`, not the List field, because when the entire list is updated,
         // the RecyclerView's internal list is updated before the field is.
-        userListViewHolder.bindView(getItem(position));
+        itemsViewHolder.bindView(getItem(position));
     }
 
     @Override
-    public void submitList(@Nullable List<UserList> list) {
+    public void submitList(@Nullable List<Item> list) {
         super.submitList(list);
         // In case the exact same List is submitted twice
-        if (this.userLists != list) {
-            userLists.clear();
-            userLists.addAll(list);
+        if (this.itemsList != list) {
+            itemsList.clear();
+            itemsList.addAll(list);
         }
     }
 
-    @Override
     public void move(int fromPosition, int toPosition) {
-        Collections.swap(userLists, fromPosition, toPosition);
+        Collections.swap(itemsList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    @Override
     public void remove(int position) {
-        userLists.remove(position);
+        itemsList.remove(position);
         notifyItemRemoved(position);
     }
 
-    @Override
-    public void reAdd(int position, UserList userList) {
-        userLists.add(position, userList);
+    public void reAdd(int position, Item item) {
+        itemsList.add(position, item);
         notifyItemInserted(position);
     }
 
 
-    final class UserListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    final class ItemsViewHolder extends RecyclerView.ViewHolder {
 
         private final ListItemBinding binding;
 
-        UserListViewHolder(@NonNull ListItemBinding binding) {
+        ItemsViewHolder(@NonNull ListItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            // Background view has its own click listener.
-            binding.foregroundView.setOnClickListener(this);
         }
 
 
-        void bindView(UserList userList) {
-            bindTitle(userList.getTitle());
-            initBackgroundView(userList.getId());
+        private void bindView(Item item) {
+            bindTitle(item.getTitle());
+            initBackgroundView(item.getId());
             initDragHandle();
-            initPopupMenu(userList.getId());
+            initPopupMenu(item.getId());
             binding.executePendingBindings();
         }
 
@@ -112,12 +106,12 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
             binding.tvTitle.setText(title);
         }
 
-        private void initBackgroundView(String userListId) {
+        private void initBackgroundView(String itemId) {
             // Ensures only one row can be opened at a time - see Adapter's constructor.
-            viewBinderHelper.bind(binding.swipeRevealLayout, userListId);
+            viewBinderHelper.bind(binding.swipeRevealLayout, itemId);
             binding.backgroundView.setOnClickListener(view -> {
-                viewModel.swipedLeft(UserListsAdapter.this, getAdapterPosition());
-                viewBinderHelper.closeLayout(userListId);
+                viewModel.swipedLeft(ItemsAdapter.this, getAdapterPosition());
+                viewBinderHelper.closeLayout(itemId);
             });
         }
 
@@ -133,26 +127,26 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
             );
         }
 
-        private void initPopupMenu(String userListId) {
-            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu(userListId).show());
+        private void initPopupMenu(String itemId) {
+            binding.ivOverflowMenu.setOnClickListener(view -> getPopupMenu(itemId).show());
         }
 
-        private PopupMenu getPopupMenu(String userListId) {
+        private PopupMenu getPopupMenu(String itemId) {
             PopupMenu popupMenu = new PopupMenu(binding.ivOverflowMenu.getContext(), binding.ivOverflowMenu);
             popupMenu.inflate(R.menu.popup_menu_list_item);
-            popupMenu.setOnMenuItemClickListener(getMenuClickListener(userListId));
+            popupMenu.setOnMenuItemClickListener(getMenuClickListener(itemId));
             return popupMenu;
         }
 
-        private PopupMenu.OnMenuItemClickListener getMenuClickListener(String userListId) {
+        private PopupMenu.OnMenuItemClickListener getMenuClickListener(String itemId) {
             return item -> {
                 switch (item.getItemId()) {
                     case R.id.menu_item_edit:
-                        viewModel.edit(userLists.get(getAdapterPosition()));
+                        viewModel.edit(itemsList.get(getAdapterPosition()));
                         break;
                     case R.id.menu_item_delete:
-                        viewBinderHelper.openLayout(userListId);
-                        viewModel.delete(UserListsAdapter.this, getAdapterPosition());
+                        viewBinderHelper.openLayout(itemId);
+                        viewModel.delete(ItemsAdapter.this, getAdapterPosition());
                         break;
                     default:
                         UtilExceptions.throwException(new IllegalArgumentException());
@@ -160,13 +154,18 @@ public final class UserListsAdapter extends ListAdapter<UserList, UserListsAdapt
                 return true;
             };
         }
+    }
 
+
+    private static final DiffUtil.ItemCallback<Item> DIFF_UTIL_CALLBACK = new DiffUtil.ItemCallback<Item>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
 
         @Override
-        public void onClick(View v) {
-            viewModel.userListClicked(
-                    userLists.get(getAdapterPosition())
-            );
+        public boolean areContentsTheSame(@NonNull Item oldItem, @NonNull Item newItem) {
+            return oldItem.toString().equals(newItem.toString());
         }
-    }
+    };
 }
