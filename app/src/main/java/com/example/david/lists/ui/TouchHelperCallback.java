@@ -52,7 +52,8 @@ public final class TouchHelperCallback extends ItemTouchHelper.Callback {
 
 
     /**
-     * This is called post onMove <i>and</i> onSwiped.
+     * This is called post {@link TouchHelperCallback#onMove(RecyclerView, RecyclerView.ViewHolder, RecyclerView.ViewHolder)}
+     * and {@link TouchHelperCallback#onSwiped(RecyclerView.ViewHolder, int)}.
      */
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
