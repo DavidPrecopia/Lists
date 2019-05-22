@@ -1,4 +1,4 @@
-package com.example.david.lists.ui;
+package com.example.david.lists.ui.common;
 
 import android.annotation.SuppressLint;
 import android.view.MotionEvent;

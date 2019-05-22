@@ -21,7 +21,7 @@ import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
 import com.example.david.lists.ui.AddDialogFragment;
 import com.example.david.lists.ui.EditDialogFragment;
-import com.example.david.lists.ui.TouchHelperCallback;
+import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 

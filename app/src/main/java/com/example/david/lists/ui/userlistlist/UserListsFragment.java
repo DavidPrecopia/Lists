@@ -28,7 +28,7 @@ import com.example.david.lists.di.view.DaggerUserListFragmentComponent;
 import com.example.david.lists.ui.AddDialogFragment;
 import com.example.david.lists.ui.ConfirmSignOutDialogFragment;
 import com.example.david.lists.ui.EditDialogFragment;
-import com.example.david.lists.ui.TouchHelperCallback;
+import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

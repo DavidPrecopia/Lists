@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.example.david.lists.ui.TouchHelperCallback;
+import com.example.david.lists.ui.common.TouchHelperCallback;
 
 import dagger.Module;
 import dagger.Provides;
