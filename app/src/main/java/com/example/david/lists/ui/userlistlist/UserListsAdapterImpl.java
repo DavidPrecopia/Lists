@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.ListAdapter;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.ViewHolderBase;
+import com.example.david.lists.ui.ListItemViewHolderBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsAdapterImpl.UserListViewHolder>
+public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsAdapterImpl.UserListListItemViewHolder>
         implements IUserListAdapter {
 
     private final ArrayList<UserList> userLists;
@@ -37,8 +37,8 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
 
     @NonNull
     @Override
-    public UserListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserListViewHolder(
+    public UserListListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new UserListListItemViewHolder(
                 ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false),
                 viewBinderHelper,
                 itemTouchHelper
@@ -46,7 +46,7 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
+    public void onBindViewHolder(@NonNull UserListListItemViewHolder userListViewHolder, int position) {
         // I am using `getItem()`, not the List field, because when the entire list is updated,
         // the RecyclerView's internal list is updated before the field is.
         UserList userList = getItem(position);
@@ -82,9 +82,9 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
     }
 
 
-    final class UserListViewHolder extends ViewHolderBase implements View.OnClickListener {
+    final class UserListListItemViewHolder extends ListItemViewHolderBase implements View.OnClickListener {
 
-        UserListViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+        UserListListItemViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
             super(binding, viewBinderHelper, itemTouchHelper);
             // Background view has its own click listener.
             binding.foregroundView.setOnClickListener(this);

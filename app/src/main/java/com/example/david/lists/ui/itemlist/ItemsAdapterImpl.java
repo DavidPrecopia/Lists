@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.ListAdapter;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.ViewHolderBase;
+import com.example.david.lists.ui.ListItemViewHolderBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.ItemsViewHolder>
+public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.ItemsListItemViewHolder>
         implements IItemAdapter {
 
     private final List<Item> itemsList;
@@ -37,8 +37,8 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
 
     @NonNull
     @Override
-    public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ItemsViewHolder(
+    public ItemsListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ItemsListItemViewHolder(
                 ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false),
                 viewBinderHelper,
                 itemTouchHelper
@@ -46,7 +46,7 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemsViewHolder itemsViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ItemsListItemViewHolder itemsViewHolder, int position) {
         // I am using `getItem()`, not the List field, because when the entire list is updated,
         // the RecyclerView's internal list is updated before the field is.
         Item item = getItem(position);
@@ -79,8 +79,8 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
     }
 
 
-    final class ItemsViewHolder extends ViewHolderBase {
-        ItemsViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    final class ItemsListItemViewHolder extends ListItemViewHolderBase {
+        ItemsListItemViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
             super(binding, viewBinderHelper, itemTouchHelper);
         }
 

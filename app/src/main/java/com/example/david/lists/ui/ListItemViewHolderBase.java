@@ -12,7 +12,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.util.UtilExceptions;
 
-public abstract class ViewHolderBase extends RecyclerView.ViewHolder {
+public abstract class ListItemViewHolderBase extends RecyclerView.ViewHolder {
 
     private String id;
     private String title;
@@ -21,7 +21,7 @@ public abstract class ViewHolderBase extends RecyclerView.ViewHolder {
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public ViewHolderBase(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public ListItemViewHolderBase(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(binding.getRoot());
         this.binding = binding;
         this.viewBinderHelper = viewBinderHelper;
