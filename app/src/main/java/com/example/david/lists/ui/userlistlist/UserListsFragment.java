@@ -1,6 +1,7 @@
 package com.example.david.lists.ui.userlistlist;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +66,9 @@ public class UserListsFragment extends Fragment
     Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
     @Inject
     Provider<ItemTouchHelper> itemTouchHelper;
+
+    @Inject
+    SharedPreferences sharedPrefs;
 
     private UserListsFragmentListener userListsFragmentListener;
 
@@ -215,14 +219,13 @@ public class UserListsFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(getMenuResource(), menu);
-        menu.findItem(R.id.menu_id_night_mode).setChecked(nightModeEnabled());
+        menu.findItem(R.id.menu_id_night_mode).setChecked(isNightModeEnabled());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private boolean nightModeEnabled() {
-        return AppCompatDelegate.MODE_NIGHT_YES == getActivity()
-                .getSharedPreferences(getString(R.string.night_mode_shared_pref_name), Context.MODE_PRIVATE)
-                .getInt(getString(R.string.night_mode_shared_pref_key), -1);
+    private boolean isNightModeEnabled() {
+        return AppCompatDelegate.MODE_NIGHT_YES ==
+                sharedPrefs.getInt(getString(R.string.night_mode_shared_pref_key), -1);
     }
 
     private int getMenuResource() {
