@@ -1,6 +1,5 @@
 package com.example.david.lists.ui.itemlist;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.widget.Toast;
 
@@ -11,7 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
@@ -38,7 +36,7 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     private final SingleLiveEvent<String> errorMessage;
     private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<String> eventAdd;
-    private final SingleLiveEvent<EditingInfo> eventEdit;
+    private final SingleLiveEvent<Item> eventEdit;
     private final SingleLiveEvent<Void> eventFinish;
 
     private Observer<List<UserList>> repositoryObserver;
@@ -102,7 +100,6 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
                 evaluateNewData(itemList);
             }
 
-            @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
                 UtilExceptions.throwException(t);
@@ -129,23 +126,12 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
 
     @Override
     public void addButtonClicked() {
-        eventAdd.setValue(getStringResource(R.string.hint_add_item));
+        eventAdd.setValue(userListId);
     }
-
-    @Override
-    public void add(String title) {
-        repository.addItem(new Item(title, itemList.getValue().size(), this.userListId));
-    }
-
 
     @Override
     public void edit(Item item) {
-        eventEdit.setValue(new EditingInfo(item));
-    }
-
-    @Override
-    public void changeTitle(EditingInfo editingInfo, String newTitle) {
-        repository.renameItem(editingInfo.getId(), newTitle);
+        eventEdit.setValue(item);
     }
 
 
@@ -263,7 +249,7 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     }
 
     @Override
-    public LiveData<EditingInfo> getEventEdit() {
+    public LiveData<Item> getEventEdit() {
         return eventEdit;
     }
 

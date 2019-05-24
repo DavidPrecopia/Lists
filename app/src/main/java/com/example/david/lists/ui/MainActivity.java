@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityMainBinding;
-import com.example.david.lists.di.view.DaggerMainActivityComponent;
+import com.example.david.lists.di.view.mainactivity.DaggerMainActivityComponent;
 import com.example.david.lists.ui.itemlist.ItemsFragment;
 import com.example.david.lists.ui.userlistlist.UserListsFragment;
 import com.example.david.lists.util.UtilExceptions;

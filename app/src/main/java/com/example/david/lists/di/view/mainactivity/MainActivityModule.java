@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view;
+package com.example.david.lists.di.view.mainactivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

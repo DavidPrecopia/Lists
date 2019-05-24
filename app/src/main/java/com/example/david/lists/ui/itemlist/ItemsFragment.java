@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.EditingInfo;
+import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.FragmentItemsBinding;
-import com.example.david.lists.di.view.DaggerItemsFragmentComponent;
-import com.example.david.lists.ui.AddDialogFragment;
-import com.example.david.lists.ui.EditDialogFragment;
+import com.example.david.lists.di.view.itemfragment.DaggerItemsFragmentComponent;
+import com.example.david.lists.ui.addedit.item.AddEditItemFragment;
 import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,9 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class ItemsFragment extends Fragment
-        implements AddDialogFragment.AddDialogFragmentListener,
-        EditDialogFragment.EditDialogFragmentListener,
-        TouchHelperCallback.MovementCallback {
+        implements TouchHelperCallback.MovementCallback {
 
     private FragmentItemsBinding binding;
 
@@ -190,27 +187,16 @@ public class ItemsFragment extends Fragment
     }
 
 
-    private void openAddDialog(String hintMessage) {
+    private void openAddDialog(String userListId) {
         openDialogFragment(
-                AddDialogFragment.getInstance(hintMessage)
+                AddEditItemFragment.getInstance("", "", userListId)
         );
     }
 
-    @Override
-    public void add(String title) {
-        viewModel.add(title);
-    }
-
-
-    private void openEditDialog(EditingInfo editingInfo) {
+    private void openEditDialog(Item item) {
         openDialogFragment(
-                EditDialogFragment.getInstance(editingInfo)
+                AddEditItemFragment.getInstance(item.getId(), item.getTitle(), item.getUserListId())
         );
-    }
-
-    @Override
-    public void edit(EditingInfo editingInfo, String newTitle) {
-        viewModel.changeTitle(editingInfo, newTitle);
     }
 
 

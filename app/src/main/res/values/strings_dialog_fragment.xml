@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hint_add_user_list">List\'s name</string>
-    <string name="hint_add_item">Item\'s name</string>
-    <string name="hint_edit">Rename</string>
+    <string name="hint_add_edit">Title</string>
 
     <string name="confirm_sign_out_dialog_message">Are you sure you want to sign-out?</string>
 

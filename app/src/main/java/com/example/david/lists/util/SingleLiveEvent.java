@@ -19,16 +19,16 @@ package com.example.david.lists.util;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.example.david.lists.BuildConfig;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+
+import com.example.david.lists.BuildConfig;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class <em>was not</em> created by me - it can be found on Google Sample's GitHub page, specifically,

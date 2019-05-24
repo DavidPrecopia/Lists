@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view;
+package com.example.david.lists.di.view.userlistfragment;
 
 import android.app.Application;
 import android.content.SharedPreferences;

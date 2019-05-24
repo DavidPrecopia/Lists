@@ -21,13 +21,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.FragmentUserListBinding;
-import com.example.david.lists.di.view.DaggerUserListFragmentComponent;
-import com.example.david.lists.ui.AddDialogFragment;
+import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentComponent;
 import com.example.david.lists.ui.ConfirmSignOutDialogFragment;
-import com.example.david.lists.ui.EditDialogFragment;
+import com.example.david.lists.ui.addedit.userlist.AddEditUserListFragment;
 import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
@@ -38,9 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class UserListsFragment extends Fragment
-        implements AddDialogFragment.AddDialogFragmentListener,
-        EditDialogFragment.EditDialogFragmentListener,
-        TouchHelperCallback.MovementCallback,
+        implements TouchHelperCallback.MovementCallback,
         ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
 
 
@@ -168,7 +164,7 @@ public class UserListsFragment extends Fragment
     }
 
     private void observeEventAdd() {
-        viewModel.getEventAdd().observe(this, this::openAddDialog);
+        viewModel.getEventAdd().observe(this, aVoid -> openAddDialog());
     }
 
     private void observeEventEdit() {
@@ -253,28 +249,18 @@ public class UserListsFragment extends Fragment
     }
 
 
-    private void openAddDialog(String hintMessage) {
+    private void openAddDialog() {
         openDialogFragment(
-                AddDialogFragment.getInstance(hintMessage)
+                AddEditUserListFragment.getInstance("", "")
         );
     }
 
-    @Override
-    public void add(String title) {
-        viewModel.add(title);
-    }
-
-
-    private void openEditDialog(EditingInfo editingInfo) {
+    private void openEditDialog(UserList userList) {
         openDialogFragment(
-                EditDialogFragment.getInstance(editingInfo)
+                AddEditUserListFragment.getInstance(userList.getId(), userList.getTitle())
         );
     }
 
-    @Override
-    public void edit(EditingInfo editingInfo, String newTitle) {
-        viewModel.changeTitle(editingInfo, newTitle);
-    }
 
     @Override
     public void proceedWithSignOut() {

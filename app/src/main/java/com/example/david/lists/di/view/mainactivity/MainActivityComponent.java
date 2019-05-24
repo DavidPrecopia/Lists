@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view;
+package com.example.david.lists.di.view.mainactivity;
 
 import com.example.david.lists.ui.MainActivity;
 

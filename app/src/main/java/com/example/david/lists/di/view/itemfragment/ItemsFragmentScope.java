@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view;
+package com.example.david.lists.di.view.itemfragment;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

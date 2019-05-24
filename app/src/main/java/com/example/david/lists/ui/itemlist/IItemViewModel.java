@@ -2,7 +2,6 @@ package com.example.david.lists.ui.itemlist;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.Item;
 
 import java.util.List;
@@ -10,11 +9,7 @@ import java.util.List;
 public interface IItemViewModel {
     void addButtonClicked();
 
-    void add(String title);
-
     void edit(Item item);
-
-    void changeTitle(EditingInfo editingInfo, String newTitle);
 
     void dragging(IItemAdapter adapter, int fromPosition, int toPosition);
 
@@ -39,9 +34,12 @@ public interface IItemViewModel {
 
     LiveData<String> getEventNotifyUserOfDeletion();
 
+    /**
+     * @return the UserListId of this Item.
+     */
     LiveData<String> getEventAdd();
 
-    LiveData<EditingInfo> getEventEdit();
+    LiveData<Item> getEventEdit();
 
     LiveData<Void> getEventFinish();
 }

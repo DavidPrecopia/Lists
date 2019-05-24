@@ -1,0 +1,38 @@
+package com.example.david.lists.di.view.addeditfragment;
+
+import android.app.Application;
+
+import androidx.fragment.app.Fragment;
+
+import com.example.david.lists.ui.addedit.userlist.AddEditUserListFragment;
+
+import javax.inject.Named;
+
+import dagger.BindsInstance;
+import dagger.Component;
+
+import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.ID;
+import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
+
+@AddEditFragmentScope
+@Component(modules = {AddEditUserListFragmentModule.class})
+public interface AddEditUserListFragmentComponent {
+    void inject(AddEditUserListFragment fragment);
+
+    @Component.Builder
+    interface Builder {
+        AddEditUserListFragmentComponent build();
+
+        @BindsInstance
+        Builder application(Application application);
+
+        @BindsInstance
+        Builder fragment(Fragment fragment);
+
+        @BindsInstance
+        Builder id(@Named(ID) String id);
+
+        @BindsInstance
+        Builder title(@Named(TITLE) String title);
+    }
+}

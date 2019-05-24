@@ -4,7 +4,6 @@ import android.view.MenuItem;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.david.lists.data.datamodel.EditingInfo;
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
@@ -14,11 +13,7 @@ public interface IUserListViewModel {
 
     void addButtonClicked();
 
-    void add(String title);
-
     void edit(UserList userList);
-
-    void changeTitle(EditingInfo editingInfo, String newTitle);
 
     void dragging(IUserListAdapter adapter, int fromPosition, int toPosition);
 
@@ -53,9 +48,9 @@ public interface IUserListViewModel {
 
     LiveData<String> getEventNotifyUserOfDeletion();
 
-    LiveData<String> getEventAdd();
+    LiveData<Void> getEventAdd();
 
-    LiveData<EditingInfo> getEventEdit();
+    LiveData<UserList> getEventEdit();
 
     LiveData<Void> getEventSignOut();
 
