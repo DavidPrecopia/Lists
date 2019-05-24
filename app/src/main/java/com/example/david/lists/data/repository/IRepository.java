@@ -22,9 +22,9 @@ public interface IRepository {
 
     void deleteItems(List<Item> items);
 
-    void renameUserList(String userListId, String newName);
+    void renameUserList(String userListId, String newTitle);
 
-    void renameItem(String itemId, String newName);
+    void renameItem(String itemId, String newTitle);
 
     void updateUserListPosition(UserList userList, int oldPosition, int newPosition);
 
