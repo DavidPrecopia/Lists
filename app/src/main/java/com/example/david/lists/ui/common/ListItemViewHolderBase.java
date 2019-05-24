@@ -39,11 +39,11 @@ public abstract class ListItemViewHolderBase extends RecyclerView.ViewHolder {
     }
 
 
-    public abstract void swipedLeft(int adapterPosition);
+    protected abstract void swipedLeft(int adapterPosition);
 
-    public abstract void edit(int adapterPosition);
+    protected abstract void edit(int adapterPosition);
 
-    public abstract void delete(int adapterPosition);
+    protected abstract void delete(int adapterPosition);
 
 
     private void bindTitle() {

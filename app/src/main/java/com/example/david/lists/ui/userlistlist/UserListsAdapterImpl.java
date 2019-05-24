@@ -91,17 +91,17 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
         }
 
         @Override
-        public void swipedLeft(int adapterPosition) {
+        protected void swipedLeft(int adapterPosition) {
             viewModel.swipedLeft(UserListsAdapterImpl.this, adapterPosition);
         }
 
         @Override
-        public void edit(int adapterPosition) {
+        protected void edit(int adapterPosition) {
             viewModel.edit(getItem(adapterPosition));
         }
 
         @Override
-        public void delete(int adapterPosition) {
+        protected void delete(int adapterPosition) {
             viewModel.delete(UserListsAdapterImpl.this, adapterPosition);
         }
 
