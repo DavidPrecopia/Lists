@@ -4,8 +4,8 @@ import android.app.Application;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.david.lists.di.view.ViewCommonModule;
-import com.example.david.lists.di.view.ViewScope;
+import com.example.david.lists.di.view.common.ViewCommonModule;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.MainActivity;
 
 import dagger.BindsInstance;

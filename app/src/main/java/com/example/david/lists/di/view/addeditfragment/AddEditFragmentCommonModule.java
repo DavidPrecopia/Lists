@@ -1,6 +1,6 @@
 package com.example.david.lists.di.view.addeditfragment;
 
-import com.example.david.lists.di.view.ViewScope;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.util.UtilSoftKeyboard;
 
 import dagger.Module;

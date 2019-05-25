@@ -4,9 +4,9 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.david.lists.di.view.RecyclerViewAdapterModule;
-import com.example.david.lists.di.view.ViewCommonModule;
-import com.example.david.lists.di.view.ViewScope;
+import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
+import com.example.david.lists.di.view.common.ViewCommonModule;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
 import com.example.david.lists.view.userlistlist.UserListsFragment;
 

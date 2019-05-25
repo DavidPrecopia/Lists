@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.di.view.ViewScope;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.ViewModelFactory;
 import com.example.david.lists.view.itemlist.IItemAdapter;
 import com.example.david.lists.view.itemlist.IItemViewModel;

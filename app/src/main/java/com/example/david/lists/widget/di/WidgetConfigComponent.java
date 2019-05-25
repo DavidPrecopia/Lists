@@ -2,8 +2,8 @@ package com.example.david.lists.widget.di;
 
 import android.app.Application;
 
-import com.example.david.lists.di.view.RecyclerViewAdapterModule;
-import com.example.david.lists.di.view.ViewCommonModule;
+import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
+import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
 import dagger.BindsInstance;

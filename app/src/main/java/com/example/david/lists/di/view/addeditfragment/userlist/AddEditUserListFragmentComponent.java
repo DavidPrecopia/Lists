@@ -4,9 +4,9 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.david.lists.di.view.ViewCommonModule;
-import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.di.view.addeditfragment.AddEditFragmentCommonModule;
+import com.example.david.lists.di.view.common.ViewCommonModule;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListFragment;
 
 import javax.inject.Named;
