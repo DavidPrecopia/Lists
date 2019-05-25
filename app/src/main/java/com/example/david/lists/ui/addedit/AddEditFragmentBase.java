@@ -15,25 +15,27 @@ import com.example.david.lists.R;
 import com.example.david.lists.databinding.AddEditDialogFragmentBinding;
 import com.example.david.lists.util.UtilSoftKeyboard;
 
+import javax.inject.Inject;
+
 public abstract class AddEditFragmentBase extends DialogFragment {
 
-    private AddEditViewModelBase viewModel;
-
     private AddEditDialogFragmentBinding binding;
-    private UtilSoftKeyboard utilSoftKeyboard;
+
+    @Inject
+    AddEditViewModelBase viewModel;
+
+    @Inject
+    UtilSoftKeyboard utilSoftKeyboard;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.binding = DataBindingUtil.inflate(inflater, R.layout.add_edit_dialog_fragment, container, false);
-        this.viewModel = getViewModel();
         init();
         return binding.getRoot();
     }
 
 
     protected abstract String getCurrentTitle();
-
-    protected abstract AddEditViewModelBase getViewModel();
 
 
     private void init() {
@@ -84,7 +86,6 @@ public abstract class AddEditFragmentBase extends DialogFragment {
     }
 
     private void initSoftKeyboardUtil() {
-        utilSoftKeyboard = new UtilSoftKeyboard();
         utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
 

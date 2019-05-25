@@ -5,7 +5,6 @@ import android.app.Application;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.ui.addedit.AddEditViewModelBase;
 import com.example.david.lists.ui.addedit.AddEditViewModelFactory;
@@ -36,11 +35,5 @@ final class AddEditItemFragmentModule {
                                     @Named(TITLE) String title,
                                     @Named(USER_LIST_ID) String userListId) {
         return new AddEditViewModelFactory(application, repository, id, title, userListId);
-    }
-
-    @AddEditFragmentScope
-    @Provides
-    IRepository repository(Application application) {
-        return ((MyApplication) application).getAppComponent().repository();
     }
 }

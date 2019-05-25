@@ -15,7 +15,10 @@ import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConsta
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
 
 @AddEditFragmentScope
-@Component(modules = {AddEditUserListFragmentModule.class})
+@Component(modules = {
+        AddEditUserListFragmentModule.class,
+        AddEditFragmentCommonModule.class
+})
 public interface AddEditUserListFragmentComponent {
     void inject(AddEditUserListFragment fragment);
 

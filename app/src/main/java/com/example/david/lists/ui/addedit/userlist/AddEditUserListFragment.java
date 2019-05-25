@@ -5,14 +5,8 @@ import android.os.Bundle;
 
 import com.example.david.lists.di.view.addeditfragment.DaggerAddEditUserListFragmentComponent;
 import com.example.david.lists.ui.addedit.AddEditFragmentBase;
-import com.example.david.lists.ui.addedit.AddEditViewModelBase;
-
-import javax.inject.Inject;
 
 public final class AddEditUserListFragment extends AddEditFragmentBase {
-
-    @Inject
-    AddEditViewModelBase viewModel;
 
     private String id;
     private String currentTitle;
@@ -53,12 +47,6 @@ public final class AddEditUserListFragment extends AddEditFragmentBase {
                 .title(currentTitle)
                 .build()
                 .inject(this);
-    }
-
-
-    @Override
-    protected AddEditViewModelBase getViewModel() {
-        return viewModel;
     }
 
     @Override
