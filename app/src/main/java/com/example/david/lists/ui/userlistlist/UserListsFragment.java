@@ -228,6 +228,11 @@ public class UserListsFragment extends FragmentBase
     }
 
     @Override
+    protected boolean enableUpNavigationOnToolbar() {
+        return false;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         return (RecyclerView.Adapter) adapter;
     }

@@ -150,6 +150,11 @@ public class ItemsFragment extends FragmentBase {
     }
 
     @Override
+    protected boolean enableUpNavigationOnToolbar() {
+        return true;
+    }
+
+    @Override
     protected RecyclerView.Adapter getAdapter() {
         return (RecyclerView.Adapter) adapter;
     }

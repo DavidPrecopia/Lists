@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
@@ -56,6 +57,8 @@ public abstract class FragmentBase extends Fragment
 
     protected abstract String getTitle();
 
+    protected abstract boolean enableUpNavigationOnToolbar();
+
     protected abstract RecyclerView.Adapter getAdapter();
 
 
@@ -76,7 +79,9 @@ public abstract class FragmentBase extends Fragment
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getTitle());
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle(getTitle());
+        actionBar.setDisplayHomeAsUpEnabled(enableUpNavigationOnToolbar());
     }
 
     private void initFab() {
