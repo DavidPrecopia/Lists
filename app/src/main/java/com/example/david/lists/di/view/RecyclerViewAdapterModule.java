@@ -14,13 +14,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class FragmentBaseModule {
-    @Reusable
-    @Provides
-    RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
-        return new DividerItemDecoration(application.getApplicationContext(), layoutManager.getOrientation());
-    }
-
+public final class RecyclerViewAdapterModule {
     // If this is scoped then the same instance is injected.
     @Provides
     LinearLayoutManager layoutManager(Application application) {
@@ -31,5 +25,11 @@ public final class FragmentBaseModule {
     @Provides
     ItemTouchHelper itemTouchHelper(TouchHelperCallback.MovementCallback movementCallback) {
         return new ItemTouchHelper(new TouchHelperCallback(movementCallback));
+    }
+
+    @Reusable
+    @Provides
+    RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(application.getApplicationContext(), layoutManager.getOrientation());
     }
 }
