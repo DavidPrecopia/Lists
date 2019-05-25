@@ -2,35 +2,20 @@ package com.example.david.lists.ui.itemlist;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.databinding.FragmentItemsBinding;
 import com.example.david.lists.di.view.itemfragment.DaggerItemsFragmentComponent;
 import com.example.david.lists.ui.addedit.item.AddEditItemFragment;
-import com.example.david.lists.ui.common.TouchHelperCallback;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.david.lists.ui.common.FragmentBase;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class ItemsFragment extends Fragment
-        implements TouchHelperCallback.MovementCallback {
-
-    private FragmentItemsBinding binding;
+public class ItemsFragment extends FragmentBase {
 
     @Inject
     IItemViewModel viewModel;
@@ -64,6 +49,7 @@ public class ItemsFragment extends Fragment
     public void onAttach(Context context) {
         inject();
         super.onAttach(context);
+        observeViewModel();
     }
 
     private void inject() {
@@ -74,21 +60,6 @@ public class ItemsFragment extends Fragment
                 .userListId(getArguments().getString(ARG_KEY_USER_LIST_ID))
                 .build()
                 .inject(this);
-    }
-
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_items, container, false);
-        initView();
-        return binding.getRoot();
-    }
-
-    private void initView() {
-        initRecyclerView();
-        observeViewModel();
-        initToolbar();
-        initFab();
     }
 
     private void observeViewModel() {
@@ -144,49 +115,6 @@ public class ItemsFragment extends Fragment
     }
 
 
-    private void initRecyclerView() {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManger.get());
-        recyclerView.addItemDecoration(dividerItemDecorator.get());
-        itemTouchHelper.get().attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter((RecyclerView.Adapter) adapter);
-    }
-
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setTitle(getArguments().getString(ARG_KEY_USER_LIST_TITLE));
-    }
-
-    private void initFab() {
-        FloatingActionButton fab = binding.fab;
-        fabClickListener(fab);
-        fabScrollListener(fab);
-    }
-
-    private void fabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> viewModel.addButtonClicked());
-    }
-
-    private void fabScrollListener(FloatingActionButton fab) {
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    fab.hide();
-                } else if (dy < 0) {
-                    fab.show();
-                }
-            }
-        });
-    }
-
-
     private void openAddDialog(String userListId) {
         openDialogFragment(
                 AddEditItemFragment.getInstance("", "", userListId)
@@ -200,65 +128,53 @@ public class ItemsFragment extends Fragment
     }
 
 
-    private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
-                .addCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        if (validSnackbarEvent(event)) {
-                            viewModel.deletionNotificationTimedOut();
-                        }
-                    }
-                })
-                .show();
+    @Override
+    protected void addButtonClicked() {
+        viewModel.addButtonClicked();
     }
-
-    private boolean validSnackbarEvent(int event) {
-        return event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT
-                || event == Snackbar.Callback.DISMISS_EVENT_SWIPE
-                || event == Snackbar.Callback.DISMISS_EVENT_MANUAL;
-    }
-
 
     @Override
-    public void dragging(int fromPosition, int toPosition) {
+    protected void undoRecentDeletion() {
+        viewModel.undoRecentDeletion(adapter);
+    }
+
+    @Override
+    protected void deletionNotificationTimedOut() {
+        viewModel.deletionNotificationTimedOut();
+    }
+
+    @Override
+    protected void draggingListItem(int fromPosition, int toPosition) {
         viewModel.dragging(adapter, fromPosition, toPosition);
     }
 
     @Override
-    public void movedPermanently(int newPosition) {
+    protected void permanentlyMoved(int newPosition) {
         viewModel.movedPermanently(newPosition);
     }
 
-
-    private void openDialogFragment(DialogFragment dialogFragment) {
-        dialogFragment.setTargetFragment(this, 0);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+    @Override
+    protected String getTitle() {
+        return getArguments().getString(ARG_KEY_USER_LIST_TITLE);
     }
 
-
-    private void showLoading() {
-        hideError();
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.fab.hide();
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        return (RecyclerView.Adapter) adapter;
     }
 
-    private void hideLoading() {
-        binding.progressBar.setVisibility(View.GONE);
-        binding.recyclerView.setVisibility(View.VISIBLE);
-        binding.fab.show();
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManger() {
+        return layoutManger.get();
     }
 
-    private void showError(String errorMessage) {
-        hideLoading();
-        binding.tvError.setText(errorMessage);
-        binding.tvError.setVisibility(View.VISIBLE);
+    @Override
+    protected RecyclerView.ItemDecoration getDividerItemDecorator() {
+        return dividerItemDecorator.get();
     }
 
-    private void hideError() {
-        binding.tvError.setVisibility(View.GONE);
+    @Override
+    protected ItemTouchHelper getItemTouchHelper() {
+        return itemTouchHelper.get();
     }
 }

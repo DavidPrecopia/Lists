@@ -3,41 +3,29 @@ package com.example.david.lists.ui.userlistlist;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.databinding.FragmentUserListBinding;
 import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentComponent;
 import com.example.david.lists.ui.ConfirmSignOutDialogFragment;
 import com.example.david.lists.ui.addedit.userlist.AddEditUserListFragment;
-import com.example.david.lists.ui.common.TouchHelperCallback;
+import com.example.david.lists.ui.common.FragmentBase;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class UserListsFragment extends Fragment
-        implements TouchHelperCallback.MovementCallback,
-        ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
+public class UserListsFragment extends FragmentBase
+        implements ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
 
 
     public interface UserListsFragmentListener {
@@ -49,7 +37,6 @@ public class UserListsFragment extends Fragment
         void openUserList(UserList userList);
     }
 
-    private FragmentUserListBinding binding;
 
     @Inject
     IUserListViewModel viewModel;
@@ -81,6 +68,7 @@ public class UserListsFragment extends Fragment
     public void onAttach(Context context) {
         inject();
         super.onAttach(context);
+        init();
     }
 
     private void inject() {
@@ -98,19 +86,9 @@ public class UserListsFragment extends Fragment
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false);
-        initView();
-        return binding.getRoot();
-    }
-
-    private void initView() {
+    private void init() {
         this.userListsFragmentListener = (UserListsFragmentListener) getActivity();
-        initRecyclerView();
         observeViewModel();
-        initToolbar();
-        initFab();
     }
 
     private void observeViewModel() {
@@ -172,46 +150,6 @@ public class UserListsFragment extends Fragment
     }
 
 
-    private void initRecyclerView() {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManger.get());
-        recyclerView.addItemDecoration(dividerItemDecorator.get());
-        itemTouchHelper.get().attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter((RecyclerView.Adapter) adapter);
-    }
-
-
-    private void initToolbar() {
-        ((AppCompatActivity) getActivity()).setSupportActionBar(binding.toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
-    }
-
-    private void initFab() {
-        FloatingActionButton fab = binding.fab;
-        fabClickListener(fab);
-        fabScrollListener(fab);
-    }
-
-    private void fabClickListener(FloatingActionButton fab) {
-        fab.setOnClickListener(view -> viewModel.addButtonClicked());
-    }
-
-    private void fabScrollListener(FloatingActionButton fab) {
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    fab.hide();
-                } else if (dy < 0) {
-                    fab.show();
-                }
-            }
-        });
-    }
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(getMenuResource(), menu);
@@ -268,65 +206,53 @@ public class UserListsFragment extends Fragment
     }
 
 
-    private void notifyDeletionSnackbar(String message) {
-        Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.message_undo, view -> viewModel.undoRecentDeletion(adapter))
-                .addCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        if (validSnackbarEvent(event)) {
-                            viewModel.deletionNotificationTimedOut();
-                        }
-                    }
-                })
-                .show();
+    @Override
+    protected void addButtonClicked() {
+        viewModel.addButtonClicked();
     }
-
-    private boolean validSnackbarEvent(int event) {
-        return event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT
-                || event == Snackbar.Callback.DISMISS_EVENT_SWIPE
-                || event == Snackbar.Callback.DISMISS_EVENT_MANUAL;
-    }
-
 
     @Override
-    public void dragging(int fromPosition, int toPosition) {
+    protected void undoRecentDeletion() {
+        viewModel.undoRecentDeletion(adapter);
+    }
+
+    @Override
+    protected void deletionNotificationTimedOut() {
+        viewModel.deletionNotificationTimedOut();
+    }
+
+    @Override
+    protected void draggingListItem(int fromPosition, int toPosition) {
         viewModel.dragging(adapter, fromPosition, toPosition);
     }
 
     @Override
-    public void movedPermanently(int newPosition) {
+    protected void permanentlyMoved(int newPosition) {
         viewModel.movedPermanently(newPosition);
     }
 
-
-    private void openDialogFragment(DialogFragment dialogFragment) {
-        dialogFragment.setTargetFragment(this, 0);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), null);
+    @Override
+    protected String getTitle() {
+        return getString(R.string.app_name);
     }
 
-
-    private void showLoading() {
-        hideError();
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.fab.hide();
+    @Override
+    protected RecyclerView.Adapter getAdapter() {
+        return (RecyclerView.Adapter) adapter;
     }
 
-    private void hideLoading() {
-        binding.progressBar.setVisibility(View.GONE);
-        binding.recyclerView.setVisibility(View.VISIBLE);
-        binding.fab.show();
+    @Override
+    protected RecyclerView.LayoutManager getLayoutManger() {
+        return layoutManger.get();
     }
 
-    private void showError(String errorMessage) {
-        hideLoading();
-        binding.tvError.setText(errorMessage);
-        binding.tvError.setVisibility(View.VISIBLE);
+    @Override
+    protected RecyclerView.ItemDecoration getDividerItemDecorator() {
+        return dividerItemDecorator.get();
     }
 
-    private void hideError() {
-        binding.tvError.setVisibility(View.GONE);
+    @Override
+    protected ItemTouchHelper getItemTouchHelper() {
+        return itemTouchHelper.get();
     }
 }

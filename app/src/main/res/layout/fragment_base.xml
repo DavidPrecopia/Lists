@@ -27,7 +27,7 @@
             android:id="@+id/fab"
             style="@style/FloatingActionButtonAddStyle"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/content_description_fab_add_user_list" />
+            android:contentDescription="@string/content_description_fab_add" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
