@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.addedit.AddEditViewModelBase;
 import com.example.david.lists.ui.addedit.AddEditViewModelFactory;
 import com.example.david.lists.ui.addedit.userlist.AddEditUserListViewModel;
@@ -20,13 +21,13 @@ import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConsta
 
 @Module
 final class AddEditUserListFragmentModule {
-    @AddEditFragmentScope
+    @ViewScope
     @Provides
     AddEditViewModelBase viewModel(Fragment fragment, AddEditViewModelFactory factory) {
         return ViewModelProviders.of(fragment, factory).get(AddEditUserListViewModel.class);
     }
 
-    @AddEditFragmentScope
+    @ViewScope
     @Provides
     AddEditViewModelFactory factory(Application application,
                                     IRepository repository,

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
+import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.MainActivity;
 import com.firebase.ui.auth.AuthUI;
 
@@ -18,13 +19,13 @@ import dagger.Provides;
 
 @Module
 class MainActivityModule {
-    @MainActivityScope
+    @ViewScope
     @Provides
     FragmentManager fragmentManager(MainActivity mainActivity) {
         return mainActivity.getSupportFragmentManager();
     }
 
-    @MainActivityScope
+    @ViewScope
     @Provides
     SharedPreferences sharedPreferences(MainActivity mainActivity) {
         return ((MyApplication) mainActivity.getApplication())
@@ -32,7 +33,7 @@ class MainActivityModule {
                 .sharedPrefsNightMode();
     }
 
-    @MainActivityScope
+    @ViewScope
     @Provides
     Intent authenticationIntent() {
         return getAuthIntent();

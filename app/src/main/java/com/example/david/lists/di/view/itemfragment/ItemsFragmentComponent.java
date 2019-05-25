@@ -5,13 +5,14 @@ import android.app.Application;
 import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.di.view.RecyclerViewAdapterModule;
+import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.example.david.lists.ui.itemlist.ItemsFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
-@ItemsFragmentScope
+@ViewScope
 @Component(modules = {ItemsFragmentModule.class, RecyclerViewAdapterModule.class})
 public interface ItemsFragmentComponent {
     void inject(ItemsFragment itemsFragment);

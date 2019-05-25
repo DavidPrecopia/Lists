@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.addedit.userlist.AddEditUserListFragment;
 
 import javax.inject.Named;
@@ -14,7 +15,7 @@ import dagger.Component;
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.ID;
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
 
-@AddEditFragmentScope
+@ViewScope
 @Component(modules = {
         AddEditUserListFragmentModule.class,
         AddEditFragmentCommonModule.class
