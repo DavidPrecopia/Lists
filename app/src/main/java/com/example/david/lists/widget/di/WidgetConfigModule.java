@@ -3,9 +3,14 @@ package com.example.david.lists.widget.di;
 import android.app.Application;
 
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.ui.common.TouchHelperCallback;
 import com.example.david.lists.widget.configactivity.IWidgetConfigViewModel;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 import com.example.david.lists.widget.configactivity.WidgetConfigAdapter;
@@ -39,5 +44,23 @@ final class WidgetConfigModule {
     @Provides
     WidgetConfigAdapter adapter(IWidgetConfigViewModel viewModel) {
         return new WidgetConfigAdapter(viewModel);
+    }
+
+    @WidgetConfigScope
+    @Provides
+    RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
+        return new DividerItemDecoration(application.getApplicationContext(), layoutManager.getOrientation());
+    }
+
+    @WidgetConfigScope
+    @Provides
+    LinearLayoutManager layoutManager(Application application) {
+        return new LinearLayoutManager(application.getApplicationContext());
+    }
+
+    @WidgetConfigScope
+    @Provides
+    ItemTouchHelper itemTouchHelper(TouchHelperCallback.MovementCallback movementCallback) {
+        return new ItemTouchHelper(new TouchHelperCallback(movementCallback));
     }
 }
