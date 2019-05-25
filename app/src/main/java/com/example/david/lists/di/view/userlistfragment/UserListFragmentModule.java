@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.view.common.ViewModelFactory;
@@ -33,18 +32,6 @@ final class UserListFragmentModule {
     @Provides
     ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, SharedPreferences sharedPrefs) {
         return new ViewModelFactory(application, repository, sharedPrefs);
-    }
-
-    @ViewScope
-    @Provides
-    IRepository repository(Application application) {
-        return ((MyApplication) application).getAppComponent().repository();
-    }
-
-    @ViewScope
-    @Provides
-    SharedPreferences sharedPreferences(Application application) {
-        return ((MyApplication) application).getAppComponent().sharedPrefsNightMode();
     }
 
     @ViewScope

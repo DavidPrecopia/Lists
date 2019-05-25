@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.david.lists.di.view.ViewCommonModule;
 import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.di.view.addeditfragment.AddEditFragmentCommonModule;
 import com.example.david.lists.view.addedit.item.AddEditItemFragment;
@@ -20,7 +21,8 @@ import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConsta
 @ViewScope
 @Component(modules = {
         AddEditItemFragmentModule.class,
-        AddEditFragmentCommonModule.class
+        AddEditFragmentCommonModule.class,
+        ViewCommonModule.class
 })
 public interface AddEditItemFragmentComponent {
     void inject(AddEditItemFragment fragment);

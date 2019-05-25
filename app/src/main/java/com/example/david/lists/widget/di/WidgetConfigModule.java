@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.widget.configactivity.IWidgetConfigViewModel;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
@@ -27,12 +26,6 @@ final class WidgetConfigModule {
     @Provides
     WidgetConfigViewModelFactory factory(Application application, int widgetId, IRepository repository) {
         return new WidgetConfigViewModelFactory(application, widgetId, repository);
-    }
-
-    @WidgetConfigScope
-    @Provides
-    IRepository repository(Application application) {
-        return ((MyApplication) application).getAppComponent().repository();
     }
 
     @WidgetConfigScope
