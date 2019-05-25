@@ -1,10 +1,10 @@
 package com.example.david.lists.di.view.addeditfragment;
 
-final class AddEditNamedConstants {
+public final class AddEditNamedConstants {
     private AddEditNamedConstants() {
     }
 
-    final static String ID = "id";
-    final static String TITLE = "title";
-    final static String USER_LIST_ID = "userListId";
+    public final static String ID = "id";
+    public final static String TITLE = "title";
+    public final static String USER_LIST_ID = "userListId";
 }

@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.addeditfragment;
+package com.example.david.lists.di.view.addeditfragment.item;
 
 import android.app.Application;
 
@@ -9,7 +9,7 @@ import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.addedit.AddEditViewModelBase;
 import com.example.david.lists.ui.addedit.AddEditViewModelFactory;
-import com.example.david.lists.ui.addedit.userlist.AddEditUserListViewModel;
+import com.example.david.lists.ui.addedit.item.AddEditItemViewModel;
 
 import javax.inject.Named;
 
@@ -18,13 +18,14 @@ import dagger.Provides;
 
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.ID;
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
+import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.USER_LIST_ID;
 
 @Module
-final class AddEditUserListFragmentModule {
+final class AddEditItemFragmentModule {
     @ViewScope
     @Provides
     AddEditViewModelBase viewModel(Fragment fragment, AddEditViewModelFactory factory) {
-        return ViewModelProviders.of(fragment, factory).get(AddEditUserListViewModel.class);
+        return ViewModelProviders.of(fragment, factory).get(AddEditItemViewModel.class);
     }
 
     @ViewScope
@@ -32,7 +33,8 @@ final class AddEditUserListFragmentModule {
     AddEditViewModelFactory factory(Application application,
                                     IRepository repository,
                                     @Named(ID) String id,
-                                    @Named(TITLE) String title) {
-        return new AddEditViewModelFactory(application, repository, id, title);
+                                    @Named(TITLE) String title,
+                                    @Named(USER_LIST_ID) String userListId) {
+        return new AddEditViewModelFactory(application, repository, id, title, userListId);
     }
 }

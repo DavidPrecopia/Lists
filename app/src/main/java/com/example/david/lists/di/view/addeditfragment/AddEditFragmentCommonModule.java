@@ -11,7 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-final class AddEditFragmentCommonModule {
+public final class AddEditFragmentCommonModule {
     @ViewScope
     @Provides
     IRepository repository(Application application) {
