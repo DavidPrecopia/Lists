@@ -12,14 +12,14 @@ public final class WidgetConfigViewModelFactory extends ViewModelProvider.Androi
 
     @NonNull
     private final Application application;
-    private final int widgetId;
     private final IRepository repository;
+    private final int widgetId;
 
-    public WidgetConfigViewModelFactory(@NonNull Application application, int widgetId, IRepository repository) {
+    public WidgetConfigViewModelFactory(@NonNull Application application, IRepository repository, int widgetId) {
         super(application);
         this.application = application;
-        this.widgetId = widgetId;
         this.repository = repository;
+        this.widgetId = widgetId;
     }
 
     @NonNull

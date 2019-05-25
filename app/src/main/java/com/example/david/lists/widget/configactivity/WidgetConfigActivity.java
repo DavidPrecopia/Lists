@@ -48,8 +48,8 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
     private void inject() {
         DaggerWidgetConfigComponent.builder()
-                .widgetConfigActivity(this)
                 .application(getApplication())
+                .activity(this)
                 .widgetId(getWidgetId())
                 .build()
                 .inject(this);
@@ -64,8 +64,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
 
     private int getWidgetId() {
-        widgetId = getIntent()
-                .getExtras()
+        widgetId = getIntent().getExtras()
                 .getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, INVALID_WIDGET_ID);
         if (widgetId == INVALID_WIDGET_ID) {
             finish();

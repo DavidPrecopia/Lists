@@ -2,6 +2,8 @@ package com.example.david.lists.widget.di;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
@@ -23,10 +25,10 @@ public interface WidgetConfigComponent {
         WidgetConfigComponent build();
 
         @BindsInstance
-        Builder widgetConfigActivity(WidgetConfigActivity widgetConfigActivity);
+        Builder application(Application application);
 
         @BindsInstance
-        Builder application(Application application);
+        Builder activity(AppCompatActivity appCompatActivity);
 
         @BindsInstance
         Builder widgetId(int widgetId);

@@ -2,11 +2,12 @@ package com.example.david.lists.widget.di;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.widget.configactivity.IWidgetConfigViewModel;
-import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 import com.example.david.lists.widget.configactivity.WidgetConfigAdapter;
 import com.example.david.lists.widget.configactivity.WidgetConfigViewModelFactory;
 import com.example.david.lists.widget.configactivity.WidgetConfigViewModelImpl;
@@ -18,14 +19,14 @@ import dagger.Provides;
 final class WidgetConfigModule {
     @WidgetConfigScope
     @Provides
-    IWidgetConfigViewModel viewModel(WidgetConfigActivity activity, WidgetConfigViewModelFactory factory) {
+    IWidgetConfigViewModel viewModel(AppCompatActivity activity, ViewModelProvider.Factory factory) {
         return ViewModelProviders.of(activity, factory).get(WidgetConfigViewModelImpl.class);
     }
 
     @WidgetConfigScope
     @Provides
-    WidgetConfigViewModelFactory factory(Application application, int widgetId, IRepository repository) {
-        return new WidgetConfigViewModelFactory(application, widgetId, repository);
+    ViewModelProvider.Factory factory(Application application, IRepository repository, int widgetId) {
+        return new WidgetConfigViewModelFactory(application, repository, widgetId);
     }
 
     @WidgetConfigScope
