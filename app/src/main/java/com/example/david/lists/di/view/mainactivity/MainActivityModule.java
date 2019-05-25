@@ -3,12 +3,12 @@ package com.example.david.lists.di.view.mainactivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.david.lists.R;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.di.view.ViewScope;
-import com.example.david.lists.ui.MainActivity;
 import com.firebase.ui.auth.AuthUI;
 
 import java.util.Arrays;
@@ -21,14 +21,14 @@ import dagger.Provides;
 final class MainActivityModule {
     @ViewScope
     @Provides
-    FragmentManager fragmentManager(MainActivity mainActivity) {
-        return mainActivity.getSupportFragmentManager();
+    FragmentManager fragmentManager(AppCompatActivity activity) {
+        return activity.getSupportFragmentManager();
     }
 
     @ViewScope
     @Provides
-    SharedPreferences sharedPreferences(MainActivity mainActivity) {
-        return ((MyApplication) mainActivity.getApplication())
+    SharedPreferences sharedPreferences(AppCompatActivity activity) {
+        return ((MyApplication) activity.getApplication())
                 .getAppComponent()
                 .sharedPrefsNightMode();
     }

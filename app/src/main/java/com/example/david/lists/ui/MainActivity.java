@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
 
     private void inject() {
         DaggerMainActivityComponent.builder()
-                .mainActivity(this)
+                .activity(this)
                 .build()
                 .inject(this);
     }

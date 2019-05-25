@@ -1,5 +1,7 @@
 package com.example.david.lists.di.view.mainactivity;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.ui.MainActivity;
 
@@ -16,6 +18,6 @@ public interface MainActivityComponent {
         MainActivityComponent build();
 
         @BindsInstance
-        Builder mainActivity(MainActivity mainActivity);
+        Builder activity(AppCompatActivity activity);
     }
 }
