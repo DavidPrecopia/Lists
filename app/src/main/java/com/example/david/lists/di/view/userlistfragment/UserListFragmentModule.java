@@ -21,7 +21,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-class UserListFragmentModule {
+final class UserListFragmentModule {
     @ViewScope
     @Provides
     IUserListViewModel viewModel(Fragment fragment, UserListViewModelFactory factory) {
