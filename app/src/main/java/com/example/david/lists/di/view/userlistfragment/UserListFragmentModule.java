@@ -50,4 +50,12 @@ class UserListFragmentModule {
     IUserListAdapter userListAdapter(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         return new UserListsAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
+
+    @UserListFragmentScope
+    @Provides
+    ViewBinderHelper viewBinderHelper() {
+        ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+        viewBinderHelper.setOpenOnlyOne(true);
+        return viewBinderHelper;
+    }
 }

@@ -8,8 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
@@ -22,7 +20,6 @@ import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class UserListsFragment extends FragmentBase
         implements ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
@@ -43,12 +40,6 @@ public class UserListsFragment extends FragmentBase
 
     @Inject
     IUserListAdapter adapter;
-    @Inject
-    Provider<LinearLayoutManager> layoutManger;
-    @Inject
-    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
-    @Inject
-    Provider<ItemTouchHelper> itemTouchHelper;
 
     @Inject
     SharedPreferences sharedPrefs;
@@ -239,20 +230,5 @@ public class UserListsFragment extends FragmentBase
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return (RecyclerView.Adapter) adapter;
-    }
-
-    @Override
-    protected RecyclerView.LayoutManager getLayoutManger() {
-        return layoutManger.get();
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getDividerItemDecorator() {
-        return dividerItemDecorator.get();
-    }
-
-    @Override
-    protected ItemTouchHelper getItemTouchHelper() {
-        return itemTouchHelper.get();
     }
 }

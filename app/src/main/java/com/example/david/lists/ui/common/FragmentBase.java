@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
@@ -19,10 +20,20 @@ import com.example.david.lists.databinding.FragmentBaseBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 public abstract class FragmentBase extends Fragment
         implements TouchHelperCallback.MovementCallback {
 
     private FragmentBaseBinding binding;
+
+    @Inject
+    Provider<LinearLayoutManager> layoutManger;
+    @Inject
+    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
+    @Inject
+    Provider<ItemTouchHelper> itemTouchHelper;
 
     @Nullable
     @Override
@@ -47,12 +58,6 @@ public abstract class FragmentBase extends Fragment
 
     protected abstract RecyclerView.Adapter getAdapter();
 
-    protected abstract RecyclerView.LayoutManager getLayoutManger();
-
-    protected abstract RecyclerView.ItemDecoration getDividerItemDecorator();
-
-    protected abstract ItemTouchHelper getItemTouchHelper();
-
 
     private void init() {
         initRecyclerView();
@@ -63,9 +68,9 @@ public abstract class FragmentBase extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(getLayoutManger());
-        recyclerView.addItemDecoration(getDividerItemDecorator());
-        getItemTouchHelper().attachToRecyclerView(recyclerView);
+        recyclerView.setLayoutManager(layoutManger.get());
+        recyclerView.addItemDecoration(dividerItemDecorator.get());
+        itemTouchHelper.get().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(getAdapter());
     }
 

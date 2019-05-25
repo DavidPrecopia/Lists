@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.ui.common.TouchHelperCallback;
 
 import dagger.Module;
@@ -15,7 +14,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class RecyclerViewModule {
+public final class FragmentBaseModule {
     @Reusable
     @Provides
     RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
@@ -32,13 +31,5 @@ public final class RecyclerViewModule {
     @Provides
     ItemTouchHelper itemTouchHelper(TouchHelperCallback.MovementCallback movementCallback) {
         return new ItemTouchHelper(new TouchHelperCallback(movementCallback));
-    }
-
-    @Reusable
-    @Provides
-    ViewBinderHelper viewBinderHelper() {
-        ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-        viewBinderHelper.setOpenOnlyOne(true);
-        return viewBinderHelper;
     }
 }

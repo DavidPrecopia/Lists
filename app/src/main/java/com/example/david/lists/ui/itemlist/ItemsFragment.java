@@ -3,8 +3,6 @@ package com.example.david.lists.ui.itemlist;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
@@ -13,7 +11,6 @@ import com.example.david.lists.ui.addedit.item.AddEditItemFragment;
 import com.example.david.lists.ui.common.FragmentBase;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class ItemsFragment extends FragmentBase {
 
@@ -22,12 +19,6 @@ public class ItemsFragment extends FragmentBase {
 
     @Inject
     IItemAdapter adapter;
-    @Inject
-    Provider<LinearLayoutManager> layoutManger;
-    @Inject
-    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
-    @Inject
-    Provider<ItemTouchHelper> itemTouchHelper;
 
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
@@ -161,20 +152,5 @@ public class ItemsFragment extends FragmentBase {
     @Override
     protected RecyclerView.Adapter getAdapter() {
         return (RecyclerView.Adapter) adapter;
-    }
-
-    @Override
-    protected RecyclerView.LayoutManager getLayoutManger() {
-        return layoutManger.get();
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getDividerItemDecorator() {
-        return dividerItemDecorator.get();
-    }
-
-    @Override
-    protected ItemTouchHelper getItemTouchHelper() {
-        return itemTouchHelper.get();
     }
 }
