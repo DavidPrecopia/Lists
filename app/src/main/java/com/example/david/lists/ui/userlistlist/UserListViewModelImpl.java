@@ -49,7 +49,7 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
 
     private final SharedPreferences sharedPrefs;
 
-    UserListViewModelImpl(@NonNull Application application, IRepository repository, SharedPreferences sharedPrefs) {
+    public UserListViewModelImpl(@NonNull Application application, IRepository repository, SharedPreferences sharedPrefs) {
         super(application);
         userLists = new MutableLiveData<>();
         this.repository = repository;

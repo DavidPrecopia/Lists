@@ -44,7 +44,7 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    ItemViewModelImpl(@NonNull Application application, IRepository repository, String userListId) {
+    public ItemViewModelImpl(@NonNull Application application, IRepository repository, String userListId) {
         super(application);
         this.userListId = userListId;
         itemList = new MutableLiveData<>();

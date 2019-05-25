@@ -3,6 +3,7 @@ package com.example.david.lists.di.view.itemfragment;
 import android.app.Application;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
@@ -10,9 +11,9 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.ViewScope;
+import com.example.david.lists.ui.common.ViewModelFactory;
 import com.example.david.lists.ui.itemlist.IItemAdapter;
 import com.example.david.lists.ui.itemlist.IItemViewModel;
-import com.example.david.lists.ui.itemlist.ItemViewModelFactory;
 import com.example.david.lists.ui.itemlist.ItemViewModelImpl;
 import com.example.david.lists.ui.itemlist.ItemsAdapterImpl;
 
@@ -23,14 +24,14 @@ import dagger.Provides;
 final class ItemsFragmentModule {
     @ViewScope
     @Provides
-    IItemViewModel viewModel(Fragment fragment, ItemViewModelFactory factory) {
+    IItemViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
         return ViewModelProviders.of(fragment, factory).get(ItemViewModelImpl.class);
     }
 
     @ViewScope
     @Provides
-    ItemViewModelFactory viewModelFactory(Application application, IRepository repository, String userListId) {
-        return new ItemViewModelFactory(application, repository, userListId);
+    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, String userListId) {
+        return new ViewModelFactory(application, repository, userListId);
     }
 
     @ViewScope
