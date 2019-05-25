@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.di.view.ViewScope;
 import com.example.david.lists.di.view.addeditfragment.AddEditFragmentCommonModule;
-import com.example.david.lists.ui.addedit.item.AddEditItemFragment;
+import com.example.david.lists.view.addedit.item.AddEditItemFragment;
 
 import javax.inject.Named;
 

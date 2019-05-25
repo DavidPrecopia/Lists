@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.userlistlist;
+package com.example.david.lists.view.userlistlist;
 
 import com.example.david.lists.data.datamodel.UserList;
 

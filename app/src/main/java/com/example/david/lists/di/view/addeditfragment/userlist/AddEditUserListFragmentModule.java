@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.ViewScope;
-import com.example.david.lists.ui.addedit.AddEditViewModelBase;
-import com.example.david.lists.ui.addedit.AddEditViewModelFactory;
-import com.example.david.lists.ui.addedit.userlist.AddEditUserListViewModel;
+import com.example.david.lists.view.addedit.AddEditViewModelBase;
+import com.example.david.lists.view.addedit.AddEditViewModelFactory;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListViewModel;
 
 import javax.inject.Named;
 

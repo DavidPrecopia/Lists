@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.common;
+package com.example.david.lists.view.common;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;

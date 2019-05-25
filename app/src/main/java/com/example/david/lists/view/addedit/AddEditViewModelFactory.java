@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.addedit;
+package com.example.david.lists.view.addedit;
 
 import android.app.Application;
 
@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.addedit.item.AddEditItemViewModel;
-import com.example.david.lists.ui.addedit.userlist.AddEditUserListViewModel;
+import com.example.david.lists.view.addedit.item.AddEditItemViewModel;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListViewModel;
 
 public final class AddEditViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 

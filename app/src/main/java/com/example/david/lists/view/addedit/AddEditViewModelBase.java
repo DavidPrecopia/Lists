@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.addedit;
+package com.example.david.lists.view.addedit;
 
 import android.app.Application;
 import android.text.TextUtils;

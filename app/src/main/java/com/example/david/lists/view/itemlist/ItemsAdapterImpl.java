@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.itemlist;
+package com.example.david.lists.view.itemlist;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.databinding.ListItemBinding;
-import com.example.david.lists.ui.common.ListItemViewHolderBase;
+import com.example.david.lists.view.common.ListItemViewHolderBase;
 
 import java.util.ArrayList;
 import java.util.Collections;

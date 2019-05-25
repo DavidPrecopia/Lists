@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.WidgetConfigListItemBinding;
-import com.example.david.lists.ui.userlistlist.UserListDiffCallback;
+import com.example.david.lists.view.userlistlist.UserListDiffCallback;
 
 import java.util.ArrayList;
 import java.util.List;

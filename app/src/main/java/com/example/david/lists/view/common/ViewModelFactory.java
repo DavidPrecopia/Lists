@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.common;
+package com.example.david.lists.view.common;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.itemlist.ItemViewModelImpl;
-import com.example.david.lists.ui.userlistlist.UserListViewModelImpl;
+import com.example.david.lists.view.itemlist.ItemViewModelImpl;
+import com.example.david.lists.view.userlistlist.UserListViewModelImpl;
 
 public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
@@ -27,7 +27,7 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     }
 
     /**
-     * Used to create {@link com.example.david.lists.ui.userlistlist.UserListViewModelImpl}.
+     * Used to create {@link com.example.david.lists.view.userlistlist.UserListViewModelImpl}.
      */
     public ViewModelFactory(Application application, IRepository repository, SharedPreferences sharedPrefsNightMode) {
         this(application, repository);
@@ -35,7 +35,7 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     }
 
     /**
-     * Used to create {@link com.example.david.lists.ui.itemlist.ItemViewModelImpl}.
+     * Used to create {@link com.example.david.lists.view.itemlist.ItemViewModelImpl}.
      */
     public ViewModelFactory(@NonNull Application application, IRepository repository, String userListId) {
         this(application, repository);

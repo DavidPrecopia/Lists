@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.itemlist;
+package com.example.david.lists.view.itemlist;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.di.view.itemfragment.DaggerItemsFragmentComponent;
-import com.example.david.lists.ui.addedit.item.AddEditItemFragment;
-import com.example.david.lists.ui.common.FragmentBase;
+import com.example.david.lists.view.addedit.item.AddEditItemFragment;
+import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
 

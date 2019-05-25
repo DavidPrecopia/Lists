@@ -11,11 +11,11 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.application.MyApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.ViewScope;
-import com.example.david.lists.ui.common.ViewModelFactory;
-import com.example.david.lists.ui.itemlist.IItemAdapter;
-import com.example.david.lists.ui.itemlist.IItemViewModel;
-import com.example.david.lists.ui.itemlist.ItemViewModelImpl;
-import com.example.david.lists.ui.itemlist.ItemsAdapterImpl;
+import com.example.david.lists.view.common.ViewModelFactory;
+import com.example.david.lists.view.itemlist.IItemAdapter;
+import com.example.david.lists.view.itemlist.IItemViewModel;
+import com.example.david.lists.view.itemlist.ItemViewModelImpl;
+import com.example.david.lists.view.itemlist.ItemsAdapterImpl;
 
 import dagger.Module;
 import dagger.Provides;

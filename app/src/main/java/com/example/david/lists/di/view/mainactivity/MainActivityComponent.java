@@ -3,7 +3,7 @@ package com.example.david.lists.di.view.mainactivity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.david.lists.di.view.ViewScope;
-import com.example.david.lists.ui.MainActivity;
+import com.example.david.lists.view.MainActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;

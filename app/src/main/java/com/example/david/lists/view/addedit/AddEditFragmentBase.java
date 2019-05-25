@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.addedit;
+package com.example.david.lists.view.addedit;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

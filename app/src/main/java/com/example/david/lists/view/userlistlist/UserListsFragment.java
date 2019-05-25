@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.userlistlist;
+package com.example.david.lists.view.userlistlist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentComponent;
-import com.example.david.lists.ui.ConfirmSignOutDialogFragment;
-import com.example.david.lists.ui.addedit.userlist.AddEditUserListFragment;
-import com.example.david.lists.ui.common.FragmentBase;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
+import com.example.david.lists.view.ConfirmSignOutDialogFragment;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListFragment;
+import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
 

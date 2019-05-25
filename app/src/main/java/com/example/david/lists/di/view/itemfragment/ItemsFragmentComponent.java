@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.di.view.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.ViewScope;
-import com.example.david.lists.ui.common.TouchHelperCallback;
-import com.example.david.lists.ui.itemlist.ItemsFragment;
+import com.example.david.lists.view.common.TouchHelperCallback;
+import com.example.david.lists.view.itemlist.ItemsFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;

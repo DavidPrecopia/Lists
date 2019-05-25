@@ -1,11 +1,11 @@
-package com.example.david.lists.ui.addedit.userlist;
+package com.example.david.lists.view.addedit.userlist;
 
 import android.app.Application;
 
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.ui.addedit.AddEditViewModelBase;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.addedit.AddEditViewModelBase;
 
 import java.util.ArrayList;
 import java.util.List;

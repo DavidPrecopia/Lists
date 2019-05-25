@@ -1,4 +1,4 @@
-package com.example.david.lists.ui.itemlist;
+package com.example.david.lists.view.itemlist;
 
 import androidx.lifecycle.LiveData;
 
