@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,26 +16,21 @@ import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.util.UtilUser;
+import com.example.david.lists.view.common.ViewModelBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
+import timber.log.Timber;
 
-public final class UserListViewModelImpl extends AndroidViewModel implements IUserListViewModel {
+public final class UserListViewModelImpl extends ViewModelBase
+        implements IUserListViewModel {
 
     private final MutableLiveData<List<UserList>> userLists;
 
-    private final IRepository repository;
-    private final CompositeDisposable disposable;
-
-    private final MutableLiveData<Boolean> eventDisplayLoading;
     private final SingleLiveEvent<UserList> eventOpenUserList;
-    private final SingleLiveEvent<Boolean> eventDisplayError;
-    private final SingleLiveEvent<String> errorMessage;
-    private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     private final SingleLiveEvent<Void> eventAdd;
     private final SingleLiveEvent<UserList> eventEdit;
 
@@ -50,15 +44,9 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
     private final SharedPreferences sharedPrefs;
 
     public UserListViewModelImpl(@NonNull Application application, IRepository repository, SharedPreferences sharedPrefs) {
-        super(application);
+        super(application, repository);
         userLists = new MutableLiveData<>();
-        this.repository = repository;
-        disposable = new CompositeDisposable();
         eventOpenUserList = new SingleLiveEvent<>();
-        eventDisplayLoading = new MutableLiveData<>();
-        eventDisplayError = new SingleLiveEvent<>();
-        errorMessage = new SingleLiveEvent<>();
-        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
         eventSignOut = new SingleLiveEvent<>();
@@ -71,7 +59,6 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
     }
 
     private void init() {
-        eventDisplayLoading.setValue(true);
         getAllUserLists();
     }
 
@@ -101,17 +88,6 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
             public void onComplete() {
             }
         };
-    }
-
-    private void evaluateNewData(List<UserList> newUserListList) {
-        eventDisplayLoading.setValue(false);
-
-        if (newUserListList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_no_user_lists));
-            eventDisplayError.setValue(true);
-        } else {
-            eventDisplayError.setValue(false);
-        }
     }
 
 
@@ -308,11 +284,6 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
     @Override
     public LiveData<Void> getEventSignIn() {
         return eventSignIn;
-    }
-
-
-    private String getStringResource(int resId) {
-        return getApplication().getString(resId);
     }
 
 

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -15,27 +14,21 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.common.ViewModelBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
+import timber.log.Timber;
 
-public final class ItemViewModelImpl extends AndroidViewModel implements IItemViewModel {
+public final class ItemViewModelImpl extends ViewModelBase
+        implements IItemViewModel {
 
     private final String userListId;
     private final MutableLiveData<List<Item>> itemList;
 
-    private final IRepository repository;
-    private final CompositeDisposable disposable;
-
-    private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<Boolean> eventDisplayError;
-    private final SingleLiveEvent<String> errorMessage;
-    private final SingleLiveEvent<String> eventNotifyUserOfDeletion;
-    private final SingleLiveEvent<String> eventAdd;
     private final SingleLiveEvent<Item> eventEdit;
     private final SingleLiveEvent<Void> eventFinish;
 
@@ -45,16 +38,9 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     private int tempItemPosition;
 
     public ItemViewModelImpl(@NonNull Application application, IRepository repository, String userListId) {
-        super(application);
+        super(application, repository);
         this.userListId = userListId;
         itemList = new MutableLiveData<>();
-        this.repository = repository;
-        disposable = new CompositeDisposable();
-        eventDisplayLoading = new MutableLiveData<>();
-        eventDisplayError = new SingleLiveEvent<>();
-        errorMessage = new SingleLiveEvent<>();
-        eventNotifyUserOfDeletion = new SingleLiveEvent<>();
-        eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
         eventFinish = new SingleLiveEvent<>();
         tempItemList = new ArrayList<>();
@@ -65,7 +51,6 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
 
 
     private void init() {
-        eventDisplayLoading.setValue(true);
         observeModel();
         getItems();
     }
@@ -110,17 +95,6 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
             public void onComplete() {
             }
         };
-    }
-
-    private void evaluateNewData(List<Item> newItemList) {
-        eventDisplayLoading.setValue(false);
-
-        if (newItemList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_empty_user_list));
-            eventDisplayError.setValue(true);
-        } else {
-            eventDisplayError.setValue(false);
-        }
     }
 
 
@@ -256,15 +230,6 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
     @Override
     public LiveData<Void> getEventFinish() {
         return eventFinish;
-    }
-
-
-    private String getStringResource(int resId) {
-        return getApplication().getString(resId);
-    }
-
-    private String getStringResource(int resId, Object object) {
-        return getApplication().getString(resId, object);
     }
 
 
