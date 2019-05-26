@@ -1,30 +1,27 @@
-package com.example.david.lists.view.addedit.item;
+package com.example.david.lists.view.addedit.userlist;
 
 import android.content.Context;
 import android.os.Bundle;
 
-import com.example.david.lists.di.view.addeditfragment.item.DaggerAddEditItemFragmentComponent;
-import com.example.david.lists.view.addedit.AddEditFragmentBase;
+import com.example.david.lists.di.view.addeditfragment.userlist.DaggerAddEditUserListDialogFragmentComponent;
+import com.example.david.lists.view.addedit.AddEditDialogFragmentBase;
 
-public final class AddEditItemFragment extends AddEditFragmentBase {
+public final class AddEditUserListDialogFragment extends AddEditDialogFragmentBase {
 
     private String id;
     private String currentTitle;
-    private String userListId;
 
     private static final String ARG_KEY_ID = "arg_key_id";
     private static final String ARG_KEY_TITLE = "arg_key_title";
-    private static final String ARG_KEY_USER_LIST_ID = "arg_key_user_list_id";
 
-    public AddEditItemFragment() {
+    public AddEditUserListDialogFragment() {
     }
 
-    public static AddEditItemFragment getInstance(String id, String title, String userListId) {
-        AddEditItemFragment fragment = new AddEditItemFragment();
+    public static AddEditUserListDialogFragment getInstance(String id, String title) {
+        AddEditUserListDialogFragment fragment = new AddEditUserListDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_ID, id);
         bundle.putString(ARG_KEY_TITLE, title);
-        bundle.putString(ARG_KEY_USER_LIST_ID, userListId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -40,20 +37,17 @@ public final class AddEditItemFragment extends AddEditFragmentBase {
         Bundle arguments = getArguments();
         id = arguments.getString(ARG_KEY_ID);
         currentTitle = arguments.getString(ARG_KEY_TITLE);
-        userListId = arguments.getString(ARG_KEY_USER_LIST_ID);
     }
 
     private void inject() {
-        DaggerAddEditItemFragmentComponent.builder()
+        DaggerAddEditUserListDialogFragmentComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .id(id)
                 .title(currentTitle)
-                .userListId(userListId)
                 .build()
                 .inject(this);
     }
-
 
     @Override
     protected String getCurrentTitle() {

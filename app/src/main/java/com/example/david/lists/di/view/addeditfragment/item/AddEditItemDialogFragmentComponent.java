@@ -4,10 +4,10 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.david.lists.di.view.addeditfragment.AddEditFragmentCommonModule;
+import com.example.david.lists.di.view.addeditfragment.AddEditDialogFragmentCommonModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
-import com.example.david.lists.view.addedit.item.AddEditItemFragment;
+import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
 
 import javax.inject.Named;
 
@@ -20,16 +20,16 @@ import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConsta
 
 @ViewScope
 @Component(modules = {
-        AddEditItemFragmentModule.class,
-        AddEditFragmentCommonModule.class,
+        AddEditItemDialogFragmentModule.class,
+        AddEditDialogFragmentCommonModule.class,
         ViewCommonModule.class
 })
-public interface AddEditItemFragmentComponent {
-    void inject(AddEditItemFragment fragment);
+public interface AddEditItemDialogFragmentComponent {
+    void inject(AddEditItemDialogFragment fragment);
 
     @Component.Builder
     interface Builder {
-        AddEditItemFragmentComponent build();
+        AddEditItemDialogFragmentComponent build();
 
         @BindsInstance
         Builder application(Application application);

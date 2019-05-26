@@ -16,7 +16,7 @@ import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentCo
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
 import com.example.david.lists.view.ConfirmSignOutDialogFragment;
-import com.example.david.lists.view.addedit.userlist.AddEditUserListFragment;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
@@ -180,13 +180,13 @@ public class UserListsFragment extends FragmentBase
 
     private void openAddDialog() {
         openDialogFragment(
-                AddEditUserListFragment.getInstance("", "")
+                AddEditUserListDialogFragment.getInstance("", "")
         );
     }
 
     private void openEditDialog(UserList userList) {
         openDialogFragment(
-                AddEditUserListFragment.getInstance(userList.getId(), userList.getTitle())
+                AddEditUserListDialogFragment.getInstance(userList.getId(), userList.getTitle())
         );
     }
 

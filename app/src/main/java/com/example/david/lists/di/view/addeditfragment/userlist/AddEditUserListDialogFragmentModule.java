@@ -20,7 +20,7 @@ import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConsta
 import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
 
 @Module
-final class AddEditUserListFragmentModule {
+final class AddEditUserListDialogFragmentModule {
     @ViewScope
     @Provides
     AddEditViewModelBase viewModel(Fragment fragment, AddEditViewModelFactory factory) {

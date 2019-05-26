@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.di.view.itemfragment.DaggerItemsFragmentComponent;
-import com.example.david.lists.view.addedit.item.AddEditItemFragment;
+import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
@@ -108,13 +108,13 @@ public class ItemsFragment extends FragmentBase {
 
     private void openAddDialog(String userListId) {
         openDialogFragment(
-                AddEditItemFragment.getInstance("", "", userListId)
+                AddEditItemDialogFragment.getInstance("", "", userListId)
         );
     }
 
     private void openEditDialog(Item item) {
         openDialogFragment(
-                AddEditItemFragment.getInstance(item.getId(), item.getTitle(), item.getUserListId())
+                AddEditItemDialogFragment.getInstance(item.getId(), item.getTitle(), item.getUserListId())
         );
     }
 
