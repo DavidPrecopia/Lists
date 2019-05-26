@@ -8,7 +8,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.david.lists.R;
-import com.example.david.lists.application.MyApplication;
+import com.example.david.lists.application.ListsApplicationImpl;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.UtilExceptions;
@@ -27,7 +27,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
         return new MyRemoteViewsFactory(
                 intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
-                ((MyApplication) getApplication()).getAppComponent().repository(),
+                ((ListsApplicationImpl) getApplication()).getAppComponent().repository(),
                 getApplication(),
                 AppWidgetManager.getInstance(getApplicationContext())
         );

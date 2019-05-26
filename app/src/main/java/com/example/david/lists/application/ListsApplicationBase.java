@@ -17,38 +17,42 @@ import com.example.david.lists.util.UtilNightMode;
 
 import io.fabric.sdk.android.Fabric;
 
-import static android.content.Context.CONNECTIVITY_SERVICE;
+abstract class ListsApplicationBase extends Application {
 
-final class InitRelease {
-
-    private final Application application;
     private AppComponent appComponent;
 
     private static final int PREF_NOT_FOUND = -1;
 
-    InitRelease(Application application) {
-        this.application = application;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        init();
     }
 
-    AppComponent init() {
+
+    public AppComponent getAppComponent() {
+        return this.appComponent;
+    }
+
+
+    private void init() {
         appComponent = initAppComponent();
         checkNetworkConnection();
         setNightMode();
         initFabric();
-        return appComponent;
     }
 
     private AppComponent initAppComponent() {
         return DaggerAppComponent.builder()
-                .application(application)
+                .application(this)
                 .build();
     }
 
     private void checkNetworkConnection() {
-        NetworkInfo networkInfo = ((ConnectivityManager) application.getSystemService(CONNECTIVITY_SERVICE))
+        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))
                 .getActiveNetworkInfo();
         if (networkInfo == null) {
-            Toast.makeText(application, R.string.error_msg_no_network_connection, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_msg_no_network_connection, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -70,7 +74,7 @@ final class InitRelease {
 
     private int getCurrentMode() {
         return appComponent.sharedPrefsNightMode()
-                .getInt(application.getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
+                .getInt(getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
     }
 
     private void initFabric() {
@@ -78,6 +82,6 @@ final class InitRelease {
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
-        Fabric.with(application, crashlyticsKit);
+        Fabric.with(this, crashlyticsKit);
     }
 }

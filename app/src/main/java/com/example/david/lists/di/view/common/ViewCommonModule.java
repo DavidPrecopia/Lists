@@ -3,7 +3,7 @@ package com.example.david.lists.di.view.common;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.example.david.lists.application.MyApplication;
+import com.example.david.lists.application.ListsApplicationImpl;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.data.AppComponent;
 
@@ -28,6 +28,6 @@ public final class ViewCommonModule {
     @Reusable
     @Provides
     AppComponent appComponent(Application application) {
-        return ((MyApplication) application).getAppComponent();
+        return ((ListsApplicationImpl) application).getAppComponent();
     }
 }
