@@ -16,10 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.di.view.mainactivity.DaggerMainActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilUser;
 import com.example.david.lists.view.itemlist.ItemFragment;
 import com.example.david.lists.view.userlistlist.UserListFragment;
 import com.firebase.ui.auth.AuthUI;
@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     @Inject
     SharedPreferences sharedPrefs;
 
+    @Inject
+    IUserRepository userRepository;
     @Inject
     Provider<Intent> authenticationIntent;
     private static final int RESPONSE_CODE_AUTH = 100;
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 
     private void verifyUser(boolean newActivity) {
         initFields(newActivity);
-        if (UtilUser.signedOut()) {
+        if (userRepository.signedOut()) {
             openAuthentication();
         } else {
             initLayout();

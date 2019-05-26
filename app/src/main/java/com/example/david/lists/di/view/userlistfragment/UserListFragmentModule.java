@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.ViewModelFactory;
 import com.example.david.lists.view.userlistlist.IUserListAdapter;
@@ -30,8 +31,8 @@ final class UserListFragmentModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, SharedPreferences sharedPrefs) {
-        return new ViewModelFactory(application, repository, sharedPrefs);
+    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, IUserRepository userRepository, SharedPreferences sharedPrefs) {
+        return new ViewModelFactory(application, repository, userRepository, sharedPrefs);
     }
 
     @ViewScope

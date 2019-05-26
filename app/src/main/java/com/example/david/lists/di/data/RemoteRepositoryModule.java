@@ -3,6 +3,7 @@ package com.example.david.lists.di.data;
 import com.example.david.lists.data.remote.IRemoteRepository;
 import com.example.david.lists.data.remote.RemoteRepositoryImpl;
 import com.example.david.lists.data.remote.UtilSnapshotListeners;
+import com.example.david.lists.data.repository.IUserRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -51,8 +52,9 @@ class RemoteRepositoryModule {
     @Provides
     UtilSnapshotListeners utilSnapshotListeners(@Named(USER_LISTS_COLLECTION) CollectionReference userListCollection,
                                                 @Named(ITEMS_COLLECTION) CollectionReference itemCollection,
-                                                FirebaseAuth auth) {
-        return new UtilSnapshotListeners(userListCollection, itemCollection, auth);
+                                                IUserRepository userRepository,
+                                                FirebaseAuth firebaseAuth) {
+        return new UtilSnapshotListeners(userListCollection, itemCollection, userRepository, firebaseAuth);
     }
 
     @Named(USER_LISTS_COLLECTION)

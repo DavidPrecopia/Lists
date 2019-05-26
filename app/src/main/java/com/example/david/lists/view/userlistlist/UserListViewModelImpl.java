@@ -12,10 +12,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
-import com.example.david.lists.util.UtilUser;
 import com.example.david.lists.view.common.ViewModelBase;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import io.reactivex.subscribers.DisposableSubscriber;
 public final class UserListViewModelImpl extends ViewModelBase
         implements IUserListViewModel {
 
+    private final IUserRepository userRepository;
     private final MutableLiveData<List<UserList>> userLists;
 
     private final SingleLiveEvent<UserList> eventOpenUserList;
@@ -42,8 +43,12 @@ public final class UserListViewModelImpl extends ViewModelBase
 
     private final SharedPreferences sharedPrefs;
 
-    public UserListViewModelImpl(@NonNull Application application, IRepository repository, SharedPreferences sharedPrefs) {
+    public UserListViewModelImpl(@NonNull Application application,
+                                 IRepository repository,
+                                 IUserRepository userRepository,
+                                 SharedPreferences sharedPrefs) {
         super(application, repository);
+        this.userRepository = userRepository;
         userLists = new MutableLiveData<>();
         eventOpenUserList = new SingleLiveEvent<>();
         eventAdd = new SingleLiveEvent<>();
@@ -211,7 +216,7 @@ public final class UserListViewModelImpl extends ViewModelBase
     }
 
     private void signIn() {
-        if (UtilUser.isAnonymous()) {
+        if (userRepository.isAnonymous()) {
             eventSignIn.call();
         } else {
             UtilExceptions.throwException(new UnsupportedOperationException(
@@ -246,7 +251,7 @@ public final class UserListViewModelImpl extends ViewModelBase
 
     @Override
     public int getMenuResource() {
-        return UtilUser.isAnonymous()
+        return userRepository.isAnonymous()
                 ? R.menu.menu_sign_in
                 : R.menu.menu_sign_out;
     }

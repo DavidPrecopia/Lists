@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.example.david.lists.application.ListsApplicationImpl;
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.di.data.AppComponent;
 
 import dagger.Module;
@@ -17,6 +18,12 @@ public final class ViewCommonModule {
     @Provides
     IRepository repository(AppComponent appComponent) {
         return appComponent.repository();
+    }
+
+    @Reusable
+    @Provides
+    IUserRepository userRepository(AppComponent appComponent) {
+        return appComponent.userRepository();
     }
 
     @Reusable
