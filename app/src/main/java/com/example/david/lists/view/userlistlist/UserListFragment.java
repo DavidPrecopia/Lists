@@ -1,20 +1,16 @@
 package com.example.david.lists.view.userlistlist;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentComponent;
-import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilUser;
 import com.example.david.lists.view.ConfirmSignOutDialogFragment;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
@@ -40,9 +36,6 @@ public class UserListFragment extends FragmentBase
 
     @Inject
     IUserListAdapter adapter;
-
-    @Inject
-    SharedPreferences sharedPrefs;
 
     private UserListsFragmentListener userListsFragmentListener;
 
@@ -143,37 +136,14 @@ public class UserListFragment extends FragmentBase
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(getMenuResource(), menu);
-        menu.findItem(R.id.menu_id_night_mode).setChecked(isNightModeEnabled());
+        inflater.inflate(viewModel.getMenuResource(), menu);
+        menu.findItem(R.id.menu_id_night_mode).setChecked(viewModel.isNightModeEnabled());
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private boolean isNightModeEnabled() {
-        return AppCompatDelegate.MODE_NIGHT_YES ==
-                sharedPrefs.getInt(getString(R.string.night_mode_shared_pref_key), -1);
-    }
-
-    private int getMenuResource() {
-        return UtilUser.isAnonymous()
-                ? R.menu.menu_sign_in
-                : R.menu.menu_sign_out;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_id_sign_in:
-                viewModel.signIn();
-                break;
-            case R.id.menu_id_sign_out:
-                viewModel.signOutButtonClicked();
-                break;
-            case R.id.menu_id_night_mode:
-                viewModel.nightMode(item);
-                break;
-            default:
-                UtilExceptions.throwException(new IllegalArgumentException());
-        }
+        viewModel.onOptionsItemSelected(item);
         return super.onOptionsItemSelected(item);
     }
 

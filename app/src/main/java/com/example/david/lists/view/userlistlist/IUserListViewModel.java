@@ -27,13 +27,13 @@ public interface IUserListViewModel {
 
     void deletionNotificationTimedOut();
 
-    void nightMode(MenuItem item);
-
-    void signIn();
-
-    void signOutButtonClicked();
+    void onOptionsItemSelected(MenuItem menuItem);
 
     void signOut();
+
+    int getMenuResource();
+
+    boolean isNightModeEnabled();
 
 
     LiveData<List<UserList>> getUserLists();

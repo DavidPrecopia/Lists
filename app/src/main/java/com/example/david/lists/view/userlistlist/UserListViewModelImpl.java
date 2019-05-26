@@ -185,7 +185,42 @@ public final class UserListViewModelImpl extends ViewModelBase
 
 
     @Override
-    public void nightMode(MenuItem item) {
+    public void onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_id_sign_out:
+                signOutButtonClicked();
+                break;
+            case R.id.menu_id_sign_in:
+                signIn();
+                break;
+            case R.id.menu_id_night_mode:
+                nightMode(menuItem);
+                break;
+            default:
+                UtilExceptions.throwException(new IllegalArgumentException());
+        }
+    }
+
+    private void signOutButtonClicked() {
+        eventConfirmSignOut.call();
+    }
+
+    @Override
+    public void signOut() {
+        eventSignOut.call();
+    }
+
+    private void signIn() {
+        if (UtilUser.isAnonymous()) {
+            eventSignIn.call();
+        } else {
+            UtilExceptions.throwException(new UnsupportedOperationException(
+                    getStringResource(R.string.error_sign_in_when_not_anonymous)
+            ));
+        }
+    }
+
+    private void nightMode(MenuItem item) {
         if (item.isChecked()) {
             item.setChecked(false);
             UtilNightMode.setDay();
@@ -203,26 +238,17 @@ public final class UserListViewModelImpl extends ViewModelBase
         editor.apply();
     }
 
-
     @Override
-    public void signIn() {
-        if (UtilUser.isAnonymous()) {
-            eventSignIn.call();
-        } else {
-            UtilExceptions.throwException(new UnsupportedOperationException(
-                    getStringResource(R.string.error_sign_in_when_not_anonymous)
-            ));
-        }
+    public boolean isNightModeEnabled() {
+        return AppCompatDelegate.MODE_NIGHT_YES ==
+                sharedPrefs.getInt(getStringResource(R.string.night_mode_shared_pref_key), -1);
     }
 
     @Override
-    public void signOutButtonClicked() {
-        eventConfirmSignOut.call();
-    }
-
-    @Override
-    public void signOut() {
-        eventSignOut.call();
+    public int getMenuResource() {
+        return UtilUser.isAnonymous()
+                ? R.menu.menu_sign_in
+                : R.menu.menu_sign_out;
     }
 
 
