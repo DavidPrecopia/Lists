@@ -10,7 +10,6 @@ import com.example.david.lists.view.addedit.AddEditViewModelBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public class AddEditItemViewModel extends AddEditViewModelBase {
@@ -21,20 +20,15 @@ public class AddEditItemViewModel extends AddEditViewModelBase {
     // This is used to acquire the last position if adding.
     private final List<Item> items;
 
-    private final IRepository repository;
-    private final CompositeDisposable disposable;
-
     public AddEditItemViewModel(Application application,
                                 IRepository repository,
                                 String id,
                                 String currentTitle,
                                 String userListId) {
-        super(application, currentTitle);
-        this.repository = repository;
+        super(application, repository, currentTitle);
         this.id = id;
         this.userListId = userListId;
         this.items = new ArrayList<>();
-        this.disposable = new CompositeDisposable();
         init();
     }
 

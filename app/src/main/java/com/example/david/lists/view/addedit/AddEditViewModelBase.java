@@ -8,7 +8,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.SingleLiveEvent;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class AddEditViewModelBase extends AndroidViewModel {
 
@@ -16,13 +19,18 @@ public abstract class AddEditViewModelBase extends AndroidViewModel {
     protected static final int TASK_ADD = 100;
     protected static final int TASK_EDIT = 200;
 
+    protected final IRepository repository;
+    protected final CompositeDisposable disposable;
+
     private final String currentTitle;
 
     private final SingleLiveEvent<String> eventErrorMessage;
     private final SingleLiveEvent<Void> eventDismiss;
 
-    public AddEditViewModelBase(@NonNull Application application, String currentTitle) {
+    public AddEditViewModelBase(@NonNull Application application, IRepository repository, String currentTitle) {
         super(application);
+        this.repository = repository;
+        this.disposable = new CompositeDisposable();
         this.currentTitle = currentTitle;
         this.eventErrorMessage = new SingleLiveEvent<>();
         this.eventDismiss = new SingleLiveEvent<>();
