@@ -16,7 +16,8 @@ import dagger.Component;
         RepositoryModule.class,
         UserRepositoryModule.class,
         RemoteRepositoryModule.class,
-        SharedPreferencesModule.class
+        SharedPreferencesModule.class,
+        FirebaseAuthModule.class
 })
 public interface AppComponent {
     IRepository repository();

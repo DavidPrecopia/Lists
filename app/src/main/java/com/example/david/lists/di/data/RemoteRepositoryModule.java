@@ -78,10 +78,4 @@ final class RemoteRepositoryModule {
         String uid = auth.getCurrentUser().getUid();
         return firestore.collection(USER_COLLECTION).document(uid);
     }
-
-    @Singleton
-    @Provides
-    FirebaseAuth firebaseAuth() {
-        return FirebaseAuth.getInstance();
-    }
 }
