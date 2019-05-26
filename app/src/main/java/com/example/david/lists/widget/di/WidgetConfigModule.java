@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.widget.configactivity.IWidgetConfigAdapter;
 import com.example.david.lists.widget.configactivity.IWidgetConfigViewModel;
-import com.example.david.lists.widget.configactivity.WidgetConfigAdapter;
+import com.example.david.lists.widget.configactivity.WidgetConfigAdapterImpl;
 import com.example.david.lists.widget.configactivity.WidgetConfigViewModelFactory;
 import com.example.david.lists.widget.configactivity.WidgetConfigViewModelImpl;
 
@@ -31,7 +32,7 @@ final class WidgetConfigModule {
 
     @WidgetConfigScope
     @Provides
-    WidgetConfigAdapter adapter(IWidgetConfigViewModel viewModel) {
-        return new WidgetConfigAdapter(viewModel);
+    IWidgetConfigAdapter adapter(IWidgetConfigViewModel viewModel) {
+        return new WidgetConfigAdapterImpl(viewModel);
     }
 }

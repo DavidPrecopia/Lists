@@ -27,7 +27,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     IWidgetConfigViewModel viewModel;
 
     @Inject
-    WidgetConfigAdapter adapter;
+    IWidgetConfigAdapter adapter;
     @Inject
     Provider<LinearLayoutManager> layoutManger;
     @Inject
@@ -77,7 +77,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManger.get());
         recyclerView.addItemDecoration(dividerItemDecorator.get());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter((RecyclerView.Adapter) adapter);
     }
 
     private void initToolbar() {
