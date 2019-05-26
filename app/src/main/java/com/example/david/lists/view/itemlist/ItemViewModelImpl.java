@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.subscribers.DisposableSubscriber;
-import timber.log.Timber;
 
 public final class ItemViewModelImpl extends ViewModelBase
         implements IItemViewModel {
