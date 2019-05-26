@@ -1,4 +1,4 @@
-package com.example.david.lists.view;
+package com.example.david.lists.view.authentication;
 
 import android.app.Dialog;
 import android.content.Context;

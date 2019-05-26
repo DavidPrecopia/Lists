@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.di.view.userlistfragment.DaggerUserListFragmentComponent;
-import com.example.david.lists.view.ConfirmSignOutDialogFragment;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialogFragment;
+import com.example.david.lists.view.authentication.ConfirmSignOutDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;

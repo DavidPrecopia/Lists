@@ -18,6 +18,7 @@ import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.di.view.mainactivity.DaggerMainActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.authentication.SignInFragment;
 import com.example.david.lists.view.itemlist.ItemFragment;
 import com.example.david.lists.view.userlistlist.UserListFragment;
 import com.firebase.ui.auth.AuthUI;

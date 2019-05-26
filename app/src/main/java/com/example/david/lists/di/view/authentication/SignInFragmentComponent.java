@@ -1,7 +1,7 @@
-package com.example.david.lists.di.view.signin;
+package com.example.david.lists.di.view.authentication;
 
 import com.example.david.lists.di.view.common.ViewScope;
-import com.example.david.lists.view.SignInFragment;
+import com.example.david.lists.view.authentication.SignInFragment;
 
 import dagger.Component;
 

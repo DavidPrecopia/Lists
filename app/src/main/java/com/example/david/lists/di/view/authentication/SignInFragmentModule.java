@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.signin;
+package com.example.david.lists.di.view.authentication;
 
 import android.content.Intent;
 
