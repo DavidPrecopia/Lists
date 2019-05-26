@@ -1,13 +1,11 @@
 package com.example.david.lists.view;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -23,11 +21,8 @@ import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.view.itemlist.ItemFragment;
 import com.example.david.lists.view.userlistlist.UserListFragment;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
@@ -35,6 +30,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
 public class MainActivity extends AppCompatActivity
         implements UserListFragment.UserListsFragmentListener,
+        SignInFragment.SignInFragmentCallback,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
@@ -46,9 +42,6 @@ public class MainActivity extends AppCompatActivity
 
     @Inject
     IUserRepository userRepository;
-    @Inject
-    Provider<Intent> authenticationIntent;
-    private static final int RESPONSE_CODE_AUTH = 100;
 
     private boolean newActivity;
 
@@ -96,7 +89,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initLayout() {
-        showFragment();
         initView();
     }
 
@@ -107,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         if (newActivity) {
             addFragment(getUserListsFragment());
         }
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     private void processIntentExtras(Bundle intentExtras) {
@@ -149,17 +142,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void showFragment() {
-        binding.progressBar.setVisibility(View.GONE);
-        binding.fragmentHolder.setVisibility(View.VISIBLE);
-    }
-
-    private void hideFragment() {
-        binding.fragmentHolder.setVisibility(View.GONE);
-        binding.progressBar.setVisibility(View.VISIBLE);
-    }
-
-
     @Override
     public void messages(int message) {
         switch (message) {
@@ -177,15 +159,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void openUserList(UserList userList) {
         addFragmentToBackStack(getItemsFragment(userList.getId(), userList.getTitle()));
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESPONSE_CODE_AUTH) {
-            processAuthResult(IdpResponse.fromResultIntent(data), resultCode);
-        }
     }
 
     @Override
@@ -218,31 +191,13 @@ public class MainActivity extends AppCompatActivity
 
 
     private void openAuthentication() {
-        hideFragment();
-        startActivityForResult(
-                authenticationIntent.get(),
-                RESPONSE_CODE_AUTH
-        );
+        addFragment(SignInFragment.getInstance());
     }
 
-    @SuppressLint("RestrictedApi")
-    private void processAuthResult(IdpResponse response, int resultCode) {
-        if (resultCode == RESULT_OK) {
-            toastMessage(R.string.msg_welcome_user);
-            initLayout();
-            return;
-        }
-
-        if (response == null) {
-            toastMessage(R.string.msg_sign_in_cancelled);
-        } else {
-            toastMessage(ErrorCodes.toFriendlyMessage(
-                    response.getError().getErrorCode()
-            ));
-        }
-        finish();
+    @Override
+    public void successfullySignedIn() {
+        initLayout();
     }
-
 
     private void signOut() {
         AuthUI.getInstance().signOut(this)
@@ -272,9 +227,5 @@ public class MainActivity extends AppCompatActivity
 
     private void toastMessage(int stringResId) {
         Toast.makeText(getApplicationContext(), stringResId, Toast.LENGTH_SHORT).show();
-    }
-
-    private void toastMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
