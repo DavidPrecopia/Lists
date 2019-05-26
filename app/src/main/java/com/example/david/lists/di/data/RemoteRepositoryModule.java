@@ -21,7 +21,7 @@ import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER
 import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER_LISTS_COLLECTION;
 
 @Module
-class RemoteRepositoryModule {
+final class RemoteRepositoryModule {
     @Singleton
     @Provides
     IRemoteRepository remoteDatabase(FirebaseFirestore firestore,

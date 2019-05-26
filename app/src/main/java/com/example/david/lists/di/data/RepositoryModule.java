@@ -9,11 +9,11 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = RemoteRepositoryModule.class)
-class RepositoryModule {
+@Module
+final class RepositoryModule {
     @Singleton
     @Provides
-    IRepository model(IRemoteRepository remoteRepository) {
+    IRepository repository(IRemoteRepository remoteRepository) {
         return new RepositoryImpl(remoteRepository);
     }
 }

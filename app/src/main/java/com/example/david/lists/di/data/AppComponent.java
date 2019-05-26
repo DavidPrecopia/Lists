@@ -15,6 +15,7 @@ import dagger.Component;
 @Component(modules = {
         RepositoryModule.class,
         UserRepositoryModule.class,
+        RemoteRepositoryModule.class,
         SharedPreferencesModule.class
 })
 public interface AppComponent {
