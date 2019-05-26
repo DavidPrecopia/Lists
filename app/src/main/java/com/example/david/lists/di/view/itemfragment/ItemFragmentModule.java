@@ -13,14 +13,14 @@ import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.ViewModelFactory;
 import com.example.david.lists.view.itemlist.IItemAdapter;
 import com.example.david.lists.view.itemlist.IItemViewModel;
+import com.example.david.lists.view.itemlist.ItemAdapterImpl;
 import com.example.david.lists.view.itemlist.ItemViewModelImpl;
-import com.example.david.lists.view.itemlist.ItemsAdapterImpl;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-final class ItemsFragmentModule {
+final class ItemFragmentModule {
     @ViewScope
     @Provides
     IItemViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
@@ -36,7 +36,7 @@ final class ItemsFragmentModule {
     @ViewScope
     @Provides
     IItemAdapter adapter(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
-        return new ItemsAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
+        return new ItemAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
 
     @ViewScope

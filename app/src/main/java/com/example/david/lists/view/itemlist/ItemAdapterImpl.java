@@ -18,18 +18,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.ItemsListItemViewHolder>
+public final class ItemAdapterImpl extends ListAdapter<Item, ItemAdapterImpl.ItemViewHolder>
         implements IItemAdapter {
 
-    private final List<Item> itemsList;
+    private final List<Item> itemList;
 
     private final IItemViewModel viewModel;
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public ItemsAdapterImpl(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public ItemAdapterImpl(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(DIFF_UTIL_CALLBACK);
-        itemsList = new ArrayList<>();
+        itemList = new ArrayList<>();
         this.viewModel = viewModel;
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
@@ -37,8 +37,8 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
 
     @NonNull
     @Override
-    public ItemsListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ItemsListItemViewHolder(
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ItemViewHolder(
                 ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false),
                 viewBinderHelper,
                 itemTouchHelper
@@ -46,7 +46,7 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemsListItemViewHolder itemsViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ItemViewHolder itemsViewHolder, int position) {
         // I am using `getItem()`, not the List field, because when the entire list is updated,
         // the RecyclerView's internal list is updated before the field is.
         Item item = getItem(position);
@@ -57,36 +57,36 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
     public void submitList(@Nullable List<Item> list) {
         super.submitList(list);
         // In case the exact same List is submitted twice
-        if (this.itemsList != list) {
-            itemsList.clear();
-            itemsList.addAll(list);
+        if (this.itemList != list) {
+            itemList.clear();
+            itemList.addAll(list);
         }
     }
 
     public void move(int fromPosition, int toPosition) {
-        Collections.swap(itemsList, fromPosition, toPosition);
+        Collections.swap(itemList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
     public void remove(int position) {
-        itemsList.remove(position);
+        itemList.remove(position);
         notifyItemRemoved(position);
     }
 
     public void reAdd(int position, Item item) {
-        itemsList.add(position, item);
+        itemList.add(position, item);
         notifyItemInserted(position);
     }
 
 
-    final class ItemsListItemViewHolder extends ListItemViewHolderBase {
-        ItemsListItemViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    final class ItemViewHolder extends ListItemViewHolderBase {
+        ItemViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
             super(binding, viewBinderHelper, itemTouchHelper);
         }
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            viewModel.swipedLeft(ItemsAdapterImpl.this, adapterPosition);
+            viewModel.swipedLeft(ItemAdapterImpl.this, adapterPosition);
         }
 
         @Override
@@ -96,7 +96,7 @@ public final class ItemsAdapterImpl extends ListAdapter<Item, ItemsAdapterImpl.I
 
         @Override
         protected void delete(int adapterPosition) {
-            viewModel.delete(ItemsAdapterImpl.this, adapterPosition);
+            viewModel.delete(ItemAdapterImpl.this, adapterPosition);
         }
     }
 

@@ -88,11 +88,11 @@ public final class ItemViewModelImpl extends AndroidViewModel implements IItemVi
 
     private void getItems() {
         disposable.add(repository.getItems(userListId)
-                .subscribeWith(userListsSubscriber())
+                .subscribeWith(itemSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<Item>> userListsSubscriber() {
+    private DisposableSubscriber<List<Item>> itemSubscriber() {
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {

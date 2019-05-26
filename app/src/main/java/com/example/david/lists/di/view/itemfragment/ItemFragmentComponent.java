@@ -8,23 +8,23 @@ import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
-import com.example.david.lists.view.itemlist.ItemsFragment;
+import com.example.david.lists.view.itemlist.ItemFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
 @ViewScope
 @Component(modules = {
-        ItemsFragmentModule.class,
+        ItemFragmentModule.class,
         RecyclerViewAdapterModule.class,
         ViewCommonModule.class
 })
-public interface ItemsFragmentComponent {
-    void inject(ItemsFragment itemsFragment);
+public interface ItemFragmentComponent {
+    void inject(ItemFragment itemFragment);
 
     @Component.Builder
     interface Builder {
-        ItemsFragmentComponent build();
+        ItemFragmentComponent build();
 
         @BindsInstance
         Builder application(Application application);

@@ -14,8 +14,8 @@ import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.ViewModelFactory;
 import com.example.david.lists.view.userlistlist.IUserListAdapter;
 import com.example.david.lists.view.userlistlist.IUserListViewModel;
+import com.example.david.lists.view.userlistlist.UserListAdapterImpl;
 import com.example.david.lists.view.userlistlist.UserListViewModelImpl;
-import com.example.david.lists.view.userlistlist.UserListsAdapterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,7 +37,7 @@ final class UserListFragmentModule {
     @ViewScope
     @Provides
     IUserListAdapter userListAdapter(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
-        return new UserListsAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
+        return new UserListAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
 
     @ViewScope

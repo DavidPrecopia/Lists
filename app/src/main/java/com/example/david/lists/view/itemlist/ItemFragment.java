@@ -6,13 +6,13 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.di.view.itemfragment.DaggerItemsFragmentComponent;
+import com.example.david.lists.di.view.itemfragment.DaggerItemFragmentComponent;
 import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
 
-public class ItemsFragment extends FragmentBase {
+public class ItemFragment extends FragmentBase {
 
     @Inject
     IItemViewModel viewModel;
@@ -23,11 +23,11 @@ public class ItemsFragment extends FragmentBase {
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
 
-    public ItemsFragment() {
+    public ItemFragment() {
     }
 
-    public static ItemsFragment newInstance(String userListId, String userListTitle) {
-        ItemsFragment fragment = new ItemsFragment();
+    public static ItemFragment newInstance(String userListId, String userListTitle) {
+        ItemFragment fragment = new ItemFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_USER_LIST_ID, userListId);
         bundle.putString(ARG_KEY_USER_LIST_TITLE, userListTitle);
@@ -44,7 +44,7 @@ public class ItemsFragment extends FragmentBase {
     }
 
     private void inject() {
-        DaggerItemsFragmentComponent.builder()
+        DaggerItemFragmentComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .movementCallback(this)

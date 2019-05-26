@@ -18,18 +18,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsAdapterImpl.UserListListItemViewHolder>
+public final class UserListAdapterImpl extends ListAdapter<UserList, UserListAdapterImpl.UserListViewHolder>
         implements IUserListAdapter {
 
-    private final ArrayList<UserList> userLists;
+    private final ArrayList<UserList> userListList;
 
     private final IUserListViewModel viewModel;
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public UserListsAdapterImpl(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public UserListAdapterImpl(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(new UserListDiffCallback());
-        userLists = new ArrayList<>();
+        userListList = new ArrayList<>();
         this.viewModel = viewModel;
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
@@ -37,8 +37,8 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
 
     @NonNull
     @Override
-    public UserListListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserListListItemViewHolder(
+    public UserListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new UserListViewHolder(
                 ListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false),
                 viewBinderHelper,
                 itemTouchHelper
@@ -46,7 +46,7 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserListListItemViewHolder userListViewHolder, int position) {
+    public void onBindViewHolder(@NonNull UserListViewHolder userListViewHolder, int position) {
         // I am using `getItem()`, not the List field, because when the entire list is updated,
         // the RecyclerView's internal list is updated before the field is.
         UserList userList = getItem(position);
@@ -57,34 +57,34 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
     public void submitList(@Nullable List<UserList> list) {
         super.submitList(list);
         // In case the exact same List is submitted twice
-        if (this.userLists != list) {
-            userLists.clear();
-            userLists.addAll(list);
+        if (this.userListList != list) {
+            userListList.clear();
+            userListList.addAll(list);
         }
     }
 
     @Override
     public void move(int fromPosition, int toPosition) {
-        Collections.swap(userLists, fromPosition, toPosition);
+        Collections.swap(userListList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
     public void remove(int position) {
-        userLists.remove(position);
+        userListList.remove(position);
         notifyItemRemoved(position);
     }
 
     @Override
     public void reAdd(int position, UserList userList) {
-        userLists.add(position, userList);
+        userListList.add(position, userList);
         notifyItemInserted(position);
     }
 
 
-    final class UserListListItemViewHolder extends ListItemViewHolderBase implements View.OnClickListener {
+    final class UserListViewHolder extends ListItemViewHolderBase implements View.OnClickListener {
 
-        UserListListItemViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+        UserListViewHolder(ListItemBinding binding, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
             super(binding, viewBinderHelper, itemTouchHelper);
             // Background view has its own click listener.
             binding.foregroundView.setOnClickListener(this);
@@ -92,7 +92,7 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            viewModel.swipedLeft(UserListsAdapterImpl.this, adapterPosition);
+            viewModel.swipedLeft(UserListAdapterImpl.this, adapterPosition);
         }
 
         @Override
@@ -102,13 +102,13 @@ public final class UserListsAdapterImpl extends ListAdapter<UserList, UserListsA
 
         @Override
         protected void delete(int adapterPosition) {
-            viewModel.delete(UserListsAdapterImpl.this, adapterPosition);
+            viewModel.delete(UserListAdapterImpl.this, adapterPosition);
         }
 
         @Override
         public void onClick(View v) {
             viewModel.userListClicked(
-                    userLists.get(getAdapterPosition())
+                    userListList.get(getAdapterPosition())
             );
         }
     }

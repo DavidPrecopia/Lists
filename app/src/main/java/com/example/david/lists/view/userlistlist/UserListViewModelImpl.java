@@ -78,11 +78,11 @@ public final class UserListViewModelImpl extends AndroidViewModel implements IUs
 
     private void getAllUserLists() {
         disposable.add(repository.getAllUserLists()
-                .subscribeWith(userListsSubscriber())
+                .subscribeWith(userListSubscriber())
         );
     }
 
-    private DisposableSubscriber<List<UserList>> userListsSubscriber() {
+    private DisposableSubscriber<List<UserList>> userListSubscriber() {
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {

@@ -21,7 +21,7 @@ import com.example.david.lists.view.common.FragmentBase;
 
 import javax.inject.Inject;
 
-public class UserListsFragment extends FragmentBase
+public class UserListFragment extends FragmentBase
         implements ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
 
 
@@ -47,11 +47,11 @@ public class UserListsFragment extends FragmentBase
     private UserListsFragmentListener userListsFragmentListener;
 
 
-    public UserListsFragment() {
+    public UserListFragment() {
     }
 
-    public static UserListsFragment newInstance() {
-        return new UserListsFragment();
+    public static UserListFragment newInstance() {
+        return new UserListFragment();
     }
 
 

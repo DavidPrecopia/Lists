@@ -20,8 +20,8 @@ import com.example.david.lists.databinding.ActivityMainBinding;
 import com.example.david.lists.di.view.mainactivity.DaggerMainActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilUser;
-import com.example.david.lists.view.itemlist.ItemsFragment;
-import com.example.david.lists.view.userlistlist.UserListsFragment;
+import com.example.david.lists.view.itemlist.ItemFragment;
+import com.example.david.lists.view.userlistlist.UserListFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -34,7 +34,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 
 public class MainActivity extends AppCompatActivity
-        implements UserListsFragment.UserListsFragmentListener,
+        implements UserListFragment.UserListsFragmentListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityMainBinding binding;
@@ -138,12 +138,12 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private UserListsFragment getUserListsFragment() {
-        return UserListsFragment.newInstance();
+    private UserListFragment getUserListsFragment() {
+        return UserListFragment.newInstance();
     }
 
-    private ItemsFragment getItemsFragment(String groupId, String title) {
-        return ItemsFragment.newInstance(groupId, title);
+    private ItemFragment getItemsFragment(String groupId, String title) {
+        return ItemFragment.newInstance(groupId, title);
     }
 
 
@@ -161,10 +161,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void messages(int message) {
         switch (message) {
-            case UserListsFragment.UserListsFragmentListener.SIGN_OUT:
+            case UserListFragment.UserListsFragmentListener.SIGN_OUT:
                 signOut();
                 break;
-            case UserListsFragment.UserListsFragmentListener.SIGN_IN:
+            case UserListFragment.UserListsFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:

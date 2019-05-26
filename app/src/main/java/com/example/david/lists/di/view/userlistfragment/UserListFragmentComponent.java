@@ -8,7 +8,7 @@ import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
-import com.example.david.lists.view.userlistlist.UserListsFragment;
+import com.example.david.lists.view.userlistlist.UserListFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -20,7 +20,7 @@ import dagger.Component;
         ViewCommonModule.class
 })
 public interface UserListFragmentComponent {
-    void inject(UserListsFragment userListsFragment);
+    void inject(UserListFragment userListFragment);
 
     @Component.Builder
     interface Builder {

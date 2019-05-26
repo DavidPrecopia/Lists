@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.david.lists.R;
-import com.example.david.lists.view.userlistlist.UserListsFragment;
+import com.example.david.lists.view.userlistlist.UserListFragment;
 
 public final class ConfirmSignOutDialogFragment extends DialogFragment {
 
@@ -21,7 +21,7 @@ public final class ConfirmSignOutDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callback = (UserListsFragment) getTargetFragment();
+        callback = (UserListFragment) getTargetFragment();
     }
 
     @NonNull
