@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Lists</string>
 
+    <string name="intent_extra_user_list_id" translatable="false">intent_extra_user_list_id</string>
+    <string name="intent_extra_user_list_title" translatable="false">intent_extra_user_list_title</string>
+
     <string name="content_description_fab_add">Add</string>
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_overflow_menu">Overflow menu</string>

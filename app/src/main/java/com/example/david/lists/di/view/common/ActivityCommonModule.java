@@ -1,15 +1,13 @@
-package com.example.david.lists.di.view.mainactivity;
+package com.example.david.lists.di.view.common;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-
-import com.example.david.lists.di.view.common.ViewScope;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-final class MainActivityModule {
+public final class ActivityCommonModule {
     @ViewScope
     @Provides
     FragmentManager fragmentManager(AppCompatActivity activity) {

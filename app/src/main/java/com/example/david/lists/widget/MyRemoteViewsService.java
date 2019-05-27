@@ -25,7 +25,7 @@ public class MyRemoteViewsService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new MyRemoteViewsFactory(
-                intent.getStringExtra(getApplication().getString(R.string.widget_key_intent_user_list_id)),
+                intent.getStringExtra(getApplication().getString(R.string.intent_extra_user_list_id)),
                 intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
                 ((ListsApplicationImpl) getApplication()).getAppComponent().repository(),
                 getApplication(),

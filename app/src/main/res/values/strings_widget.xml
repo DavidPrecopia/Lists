@@ -4,10 +4,6 @@
     <string name="widget_key_shared_pref_user_list_title" translatable="false">widget_shared_prefs_title_key_%1$d</string>
     <string name="widget_key_shared_pref_user_list_id" translatable="false">widget_shared_prefs_id_key_%1$d</string>
 
-    <string name="widget_intent_bundle_name" translatable="false">widget_intent_bundle_name</string>
-    <string name="widget_key_intent_user_list_id" translatable="false">widget_intent_id_key</string>
-    <string name="widget_key_intent_user_list_title" translatable="false">widget_intent_title_key</string>
-
     <string name="title_widget_config_activity">Select a list</string>
 
     <string name="content_description_widget_settings">Widget settings</string>

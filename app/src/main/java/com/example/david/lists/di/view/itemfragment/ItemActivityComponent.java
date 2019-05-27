@@ -1,32 +1,33 @@
-package com.example.david.lists.di.view.mainactivity;
+package com.example.david.lists.di.view.itemfragment;
 
 import android.app.Application;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.david.lists.di.view.common.ActivityCommonModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
-import com.example.david.lists.view.MainActivity;
+import com.example.david.lists.view.itemlist.ItemActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
 @ViewScope
 @Component(modules = {
-        MainActivityModule.class,
+        ActivityCommonModule.class,
         ViewCommonModule.class
 })
-public interface MainActivityComponent {
-    void inject(MainActivity mainActivity);
+public interface ItemActivityComponent {
+    void inject(ItemActivity activity);
 
     @Component.Builder
     interface Builder {
-        MainActivityComponent build();
+        ItemActivityComponent build();
 
         @BindsInstance
         Builder application(Application application);
 
         @BindsInstance
-        Builder activity(AppCompatActivity activity);
+        Builder activity(AppCompatActivity appCompatActivity);
     }
 }

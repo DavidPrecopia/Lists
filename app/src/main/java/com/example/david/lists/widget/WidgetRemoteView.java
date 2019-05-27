@@ -6,16 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
-import com.example.david.lists.view.MainActivity;
+import com.example.david.lists.view.itemlist.ItemActivity;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
-import static com.example.david.lists.util.UtilWidgetKeys.getIntentBundleName;
-import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyId;
-import static com.example.david.lists.util.UtilWidgetKeys.getIntentKeyTitle;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
@@ -48,19 +44,17 @@ public final class WidgetRemoteView {
 
 
     private void setTitlePendingIntent() {
-        Intent intent = new Intent(context, MainActivity.class);
-        putTitleIntentExtras(intent);
+        Intent intent = new Intent(context, ItemActivity.class);
+        setIntentExtras(intent);
         remoteViews.setOnClickPendingIntent(
                 R.id.widget_tv_title,
                 getPendingIntent(intent)
         );
     }
 
-    private void putTitleIntentExtras(Intent intent) {
-        Bundle bundle = new Bundle();
-        bundle.putString(getIntentKeyId(context), getListId());
-        bundle.putString(getIntentKeyTitle(context), getListTitle());
-        intent.putExtra(getIntentBundleName(context), bundle);
+    private void setIntentExtras(Intent intent) {
+        intent.putExtra(getString(R.string.intent_extra_user_list_id), getListId());
+        intent.putExtra(getString(R.string.intent_extra_user_list_title), getListTitle());
     }
 
     private void setTitle() {
@@ -91,7 +85,7 @@ public final class WidgetRemoteView {
 
     private void setAdapterIntentExtras(Intent adapterIntent) {
         adapterIntent.putExtra(
-                context.getString(R.string.widget_key_intent_user_list_id), getListId()
+                context.getString(R.string.intent_extra_user_list_id), getListId()
         );
         adapterIntent.putExtra(
                 AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId
@@ -118,5 +112,10 @@ public final class WidgetRemoteView {
                 getSharedPrefName(context),
                 Context.MODE_PRIVATE
         );
+    }
+
+
+    private String getString(int stringRes) {
+        return context.getString(stringRes);
     }
 }
