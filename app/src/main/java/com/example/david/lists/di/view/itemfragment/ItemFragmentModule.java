@@ -38,12 +38,4 @@ final class ItemFragmentModule {
     IItemAdapter adapter(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         return new ItemAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
-
-    @ViewScope
-    @Provides
-    ViewBinderHelper viewBinderHelper() {
-        ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-        viewBinderHelper.setOpenOnlyOne(true);
-        return viewBinderHelper;
-    }
 }

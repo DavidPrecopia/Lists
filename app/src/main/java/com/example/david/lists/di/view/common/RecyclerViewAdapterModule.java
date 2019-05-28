@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.view.common.TouchHelperCallback;
 
 import dagger.Module;
@@ -31,5 +32,13 @@ public final class RecyclerViewAdapterModule {
     @Provides
     RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
         return new DividerItemDecoration(application.getApplicationContext(), layoutManager.getOrientation());
+    }
+
+    @Reusable
+    @Provides
+    ViewBinderHelper viewBinderHelper() {
+        ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+        viewBinderHelper.setOpenOnlyOne(true);
+        return viewBinderHelper;
     }
 }
