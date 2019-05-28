@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
+import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
-@WidgetConfigScope
+@ViewScope
 @Component(modules = {
         WidgetConfigModule.class,
         RecyclerViewAdapterModule.class,
