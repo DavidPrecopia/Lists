@@ -101,8 +101,7 @@ public class UserListActivity extends ActivityBase
 
     @Override
     public void openUserList(UserList userList) {
-        Bundle bundle = new Bundle();
-        startActivity(getOpenUserListIntent(userList), bundle);
+        startActivity(getOpenUserListIntent(userList));
     }
 
     private Intent getOpenUserListIntent(UserList userList) {
