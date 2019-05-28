@@ -17,9 +17,9 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_LIST_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_TITLE;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_ITEM_LIST_ID;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_POSITION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_TITLE;
 
 public final class RemoteRepositoryImpl implements IRemoteRepository {
 

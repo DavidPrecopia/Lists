@@ -4,7 +4,13 @@ public final class RemoteRepositoryConstants {
     private RemoteRepositoryConstants() {
     }
 
-    public static final String USER_COLLECTION = "users";
-    public static final String USER_LISTS_COLLECTION = "user_lists";
-    public static final String ITEMS_COLLECTION = "items";
+    // Collections
+    public static final String COLLECTION_USER = "users";
+    public static final String COLLECTION_USER_LISTS = "user_lists";
+    public static final String COLLECTION_ITEMS = "items";
+
+    // Fields
+    static final String FIELD_TITLE = "title";
+    static final String FIELD_POSITION = "position";
+    static final String FIELD_ITEM_LIST_ID = "userListId";
 }

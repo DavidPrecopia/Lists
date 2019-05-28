@@ -24,8 +24,8 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_ITEM_LIST_ID;
-import static com.example.david.lists.data.datamodel.DataModelFieldConstants.FIELD_POSITION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_ITEM_LIST_ID;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_POSITION;
 
 public final class UtilSnapshotListeners {
 

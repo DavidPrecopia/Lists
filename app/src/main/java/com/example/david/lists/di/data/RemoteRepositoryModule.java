@@ -16,17 +16,17 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.example.david.lists.data.remote.RemoteRepositoryConstants.ITEMS_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER_COLLECTION;
-import static com.example.david.lists.data.remote.RemoteRepositoryConstants.USER_LISTS_COLLECTION;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.COLLECTION_ITEMS;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.COLLECTION_USER;
+import static com.example.david.lists.data.remote.RemoteRepositoryConstants.COLLECTION_USER_LISTS;
 
 @Module
 final class RemoteRepositoryModule {
     @Singleton
     @Provides
     IRemoteRepository remoteDatabase(FirebaseFirestore firestore,
-                                     @Named(USER_LISTS_COLLECTION) CollectionReference userListCollection,
-                                     @Named(ITEMS_COLLECTION) CollectionReference itemCollection,
+                                     @Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
+                                     @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
                                      UtilSnapshotListeners snapshotListeners) {
         return new RemoteRepositoryImpl(firestore, userListCollection, itemCollection, snapshotListeners);
     }
@@ -50,32 +50,32 @@ final class RemoteRepositoryModule {
 
     @Singleton
     @Provides
-    UtilSnapshotListeners utilSnapshotListeners(@Named(USER_LISTS_COLLECTION) CollectionReference userListCollection,
-                                                @Named(ITEMS_COLLECTION) CollectionReference itemCollection,
+    UtilSnapshotListeners utilSnapshotListeners(@Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
+                                                @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
                                                 IUserRepository userRepository,
                                                 FirebaseAuth firebaseAuth) {
         return new UtilSnapshotListeners(userListCollection, itemCollection, userRepository, firebaseAuth);
     }
 
-    @Named(USER_LISTS_COLLECTION)
+    @Named(COLLECTION_USER_LISTS)
     @Singleton
     @Provides
-    CollectionReference userListCollectionReference(@Named(USER_COLLECTION) DocumentReference userDocument) {
-        return userDocument.collection(USER_LISTS_COLLECTION);
+    CollectionReference userListCollectionReference(@Named(COLLECTION_USER) DocumentReference userDocument) {
+        return userDocument.collection(COLLECTION_USER_LISTS);
     }
 
-    @Named(ITEMS_COLLECTION)
+    @Named(COLLECTION_ITEMS)
     @Singleton
     @Provides
-    CollectionReference itemCollectionReference(@Named(USER_COLLECTION) DocumentReference userDocument) {
-        return userDocument.collection(ITEMS_COLLECTION);
+    CollectionReference itemCollectionReference(@Named(COLLECTION_USER) DocumentReference userDocument) {
+        return userDocument.collection(COLLECTION_ITEMS);
     }
 
-    @Named(USER_COLLECTION)
+    @Named(COLLECTION_USER)
     @Singleton
     @Provides
     DocumentReference userIdDocument(FirebaseFirestore firestore, FirebaseAuth auth) {
         String uid = auth.getCurrentUser().getUid();
-        return firestore.collection(USER_COLLECTION).document(uid);
+        return firestore.collection(COLLECTION_USER).document(uid);
     }
 }

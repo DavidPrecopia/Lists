@@ -3,7 +3,8 @@ package com.example.david.lists.data.datamodel;
 import androidx.annotation.NonNull;
 
 /**
- * Field names need to match the constants in {@link DataModelFieldConstants}.
+ * ATTENTION!
+ * Field names need to match the constants in {@link com.example.david.lists.data.remote.RemoteRepositoryConstants}.
  */
 public final class UserList {
 
