@@ -94,6 +94,8 @@ public class UserListActivity extends ActivityBase
 
     @Override
     public void successfullySignedIn() {
+        // Need to reset this flag so the Fragment is added to the layout.
+        this.newActivity = true;
         initView();
     }
 
@@ -136,7 +138,7 @@ public class UserListActivity extends ActivityBase
         for (Fragment fragment : fragmentManager.getFragments()) {
             fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
         }
-        init();
+        recreate();
     }
 
     private void failedToSignOut(Exception e) {
