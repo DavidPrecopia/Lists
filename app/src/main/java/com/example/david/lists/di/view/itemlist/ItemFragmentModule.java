@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.itemfragment;
+package com.example.david.lists.di.view.itemlist;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.userlistfragment;
+package com.example.david.lists.di.view.itemlist;
 
 import android.app.Application;
 
@@ -8,23 +8,23 @@ import com.example.david.lists.di.view.common.RecyclerViewAdapterModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
-import com.example.david.lists.view.userlistlist.UserListFragment;
+import com.example.david.lists.view.itemlist.ItemFragment;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
 @ViewScope
 @Component(modules = {
-        UserListFragmentModule.class,
+        ItemFragmentModule.class,
         RecyclerViewAdapterModule.class,
         ViewCommonModule.class
 })
-public interface UserListFragmentComponent {
-    void inject(UserListFragment userListFragment);
+public interface ItemFragmentComponent {
+    void inject(ItemFragment itemFragment);
 
     @Component.Builder
     interface Builder {
-        UserListFragmentComponent build();
+        ItemFragmentComponent build();
 
         @BindsInstance
         Builder application(Application application);
@@ -34,5 +34,8 @@ public interface UserListFragmentComponent {
 
         @BindsInstance
         Builder movementCallback(TouchHelperCallback.MovementCallback movementCallback);
+
+        @BindsInstance
+        Builder userListId(String userListId);
     }
 }

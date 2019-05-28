@@ -3,7 +3,7 @@ package com.example.david.lists.view.addedit.userlist;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.example.david.lists.di.view.addeditfragment.userlist.DaggerAddEditUserListDialogFragmentComponent;
+import com.example.david.lists.di.view.addedit.userlist.DaggerAddEditUserListDialogFragmentComponent;
 import com.example.david.lists.view.addedit.AddEditDialogFragmentBase;
 
 public final class AddEditUserListDialogFragment extends AddEditDialogFragmentBase {

@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.itemfragment;
+package com.example.david.lists.di.view.userlistlist;
 
 import android.app.Application;
 
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.david.lists.di.view.common.ActivityCommonModule;
 import com.example.david.lists.di.view.common.ViewCommonModule;
 import com.example.david.lists.di.view.common.ViewScope;
-import com.example.david.lists.view.itemlist.ItemActivity;
+import com.example.david.lists.view.userlistlist.UserListActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -17,12 +17,12 @@ import dagger.Component;
         ActivityCommonModule.class,
         ViewCommonModule.class
 })
-public interface ItemActivityComponent {
-    void inject(ItemActivity activity);
+public interface UserListActivityComponent {
+    void inject(UserListActivity activity);
 
     @Component.Builder
     interface Builder {
-        ItemActivityComponent build();
+        UserListActivityComponent build();
 
         @BindsInstance
         Builder application(Application application);

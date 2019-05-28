@@ -13,7 +13,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.databinding.ActivityUserListBinding;
-import com.example.david.lists.di.view.userlistfragment.DaggerUserListActivityComponent;
+import com.example.david.lists.di.view.userlistlist.DaggerUserListActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.view.authentication.SignInFragment;
 import com.example.david.lists.view.common.ActivityBase;

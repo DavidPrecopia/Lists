@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityItemBinding;
-import com.example.david.lists.di.view.itemfragment.DaggerItemActivityComponent;
+import com.example.david.lists.di.view.itemlist.DaggerItemActivityComponent;
 import com.example.david.lists.view.common.ActivityBase;
 
 public class ItemActivity extends ActivityBase {

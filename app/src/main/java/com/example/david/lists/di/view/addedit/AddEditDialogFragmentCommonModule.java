@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.addeditfragment;
+package com.example.david.lists.di.view.addedit;
 
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.util.UtilSoftKeyboard;

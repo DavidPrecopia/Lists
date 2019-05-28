@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.addeditfragment;
+package com.example.david.lists.di.view.addedit;
 
 public final class AddEditNamedConstants {
     private AddEditNamedConstants() {

@@ -1,4 +1,4 @@
-package com.example.david.lists.di.view.addeditfragment.item;
+package com.example.david.lists.di.view.addedit.userlist;
 
 import android.app.Application;
 
@@ -9,23 +9,22 @@ import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.di.view.common.ViewScope;
 import com.example.david.lists.view.addedit.AddEditViewModelBase;
 import com.example.david.lists.view.addedit.AddEditViewModelFactory;
-import com.example.david.lists.view.addedit.item.AddEditItemViewModel;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListViewModel;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 
-import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.ID;
-import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.TITLE;
-import static com.example.david.lists.di.view.addeditfragment.AddEditNamedConstants.USER_LIST_ID;
+import static com.example.david.lists.di.view.addedit.AddEditNamedConstants.ID;
+import static com.example.david.lists.di.view.addedit.AddEditNamedConstants.TITLE;
 
 @Module
-final class AddEditItemDialogFragmentModule {
+final class AddEditUserListDialogFragmentModule {
     @ViewScope
     @Provides
     AddEditViewModelBase viewModel(Fragment fragment, AddEditViewModelFactory factory) {
-        return ViewModelProviders.of(fragment, factory).get(AddEditItemViewModel.class);
+        return ViewModelProviders.of(fragment, factory).get(AddEditUserListViewModel.class);
     }
 
     @ViewScope
@@ -33,8 +32,7 @@ final class AddEditItemDialogFragmentModule {
     AddEditViewModelFactory factory(Application application,
                                     IRepository repository,
                                     @Named(ID) String id,
-                                    @Named(TITLE) String title,
-                                    @Named(USER_LIST_ID) String userListId) {
-        return new AddEditViewModelFactory(application, repository, id, title, userListId);
+                                    @Named(TITLE) String title) {
+        return new AddEditViewModelFactory(application, repository, id, title);
     }
 }
