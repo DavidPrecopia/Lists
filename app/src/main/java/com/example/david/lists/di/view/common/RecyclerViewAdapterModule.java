@@ -12,29 +12,28 @@ import com.example.david.lists.view.common.TouchHelperCallback;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 
 @Module
 public final class RecyclerViewAdapterModule {
-    // If this is scoped then the same instance is injected.
+    @ViewScope
     @Provides
     LinearLayoutManager layoutManager(Application application) {
         return new LinearLayoutManager(application.getApplicationContext());
     }
 
-    @Reusable
+    @ViewScope
     @Provides
     ItemTouchHelper itemTouchHelper(TouchHelperCallback.MovementCallback movementCallback) {
         return new ItemTouchHelper(new TouchHelperCallback(movementCallback));
     }
 
-    @Reusable
+    @ViewScope
     @Provides
     RecyclerView.ItemDecoration itemDecoration(Application application, LinearLayoutManager layoutManager) {
         return new DividerItemDecoration(application.getApplicationContext(), layoutManager.getOrientation());
     }
 
-    @Reusable
+    @ViewScope
     @Provides
     ViewBinderHelper viewBinderHelper() {
         ViewBinderHelper viewBinderHelper = new ViewBinderHelper();

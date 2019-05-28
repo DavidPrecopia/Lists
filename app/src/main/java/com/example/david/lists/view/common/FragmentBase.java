@@ -22,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public abstract class FragmentBase extends Fragment
         implements TouchHelperCallback.MovementCallback {
@@ -30,11 +29,11 @@ public abstract class FragmentBase extends Fragment
     private FragmentBaseBinding binding;
 
     @Inject
-    Provider<LinearLayoutManager> layoutManger;
+    LinearLayoutManager layoutManger;
     @Inject
-    Provider<RecyclerView.ItemDecoration> dividerItemDecorator;
+    RecyclerView.ItemDecoration dividerItemDecorator;
     @Inject
-    Provider<ItemTouchHelper> itemTouchHelper;
+    ItemTouchHelper itemTouchHelper;
 
     @Nullable
     @Override
@@ -71,9 +70,9 @@ public abstract class FragmentBase extends Fragment
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManger.get());
-        recyclerView.addItemDecoration(dividerItemDecorator.get());
-        itemTouchHelper.get().attachToRecyclerView(recyclerView);
+        recyclerView.setLayoutManager(layoutManger);
+        recyclerView.addItemDecoration(dividerItemDecorator);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(getAdapter());
     }
 
