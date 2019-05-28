@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static com.example.david.lists.di.view.addedit.AddEditNamedConstants.ID;
 import static com.example.david.lists.di.view.addedit.AddEditNamedConstants.TITLE;
@@ -31,8 +32,9 @@ final class AddEditUserListDialogFragmentModule {
     @Provides
     AddEditViewModelFactory factory(Application application,
                                     IRepository repository,
+                                    CompositeDisposable disposable,
                                     @Named(ID) String id,
                                     @Named(TITLE) String title) {
-        return new AddEditViewModelFactory(application, repository, id, title);
+        return new AddEditViewModelFactory(application, repository, disposable, id, title);
     }
 }

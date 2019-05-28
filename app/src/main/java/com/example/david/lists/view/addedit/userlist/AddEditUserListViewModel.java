@@ -10,6 +10,7 @@ import com.example.david.lists.view.addedit.AddEditViewModelBase;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public class AddEditUserListViewModel extends AddEditViewModelBase {
@@ -21,9 +22,10 @@ public class AddEditUserListViewModel extends AddEditViewModelBase {
 
     public AddEditUserListViewModel(Application application,
                                     IRepository repository,
+                                    CompositeDisposable disposable,
                                     String id,
                                     String currentTitle) {
-        super(application, repository, currentTitle);
+        super(application, repository, disposable, currentTitle);
         this.id = id;
         this.userLists = new ArrayList<>();
         init();

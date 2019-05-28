@@ -18,6 +18,7 @@ import com.example.david.lists.view.itemlist.ItemViewModelImpl;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 final class ItemFragmentModule {
@@ -29,8 +30,8 @@ final class ItemFragmentModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, String userListId) {
-        return new ViewModelFactory(application, repository, userListId);
+    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, CompositeDisposable disposable, String userListId) {
+        return new ViewModelFactory(application, repository, disposable, userListId);
     }
 
     @ViewScope

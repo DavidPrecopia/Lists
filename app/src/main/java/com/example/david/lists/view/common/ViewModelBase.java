@@ -25,10 +25,10 @@ public abstract class ViewModelBase extends AndroidViewModel {
     protected final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     protected final SingleLiveEvent<String> eventAdd;
 
-    public ViewModelBase(@NonNull Application application, IRepository repository) {
+    public ViewModelBase(@NonNull Application application, IRepository repository, CompositeDisposable disposable) {
         super(application);
         this.repository = repository;
-        disposable = new CompositeDisposable();
+        this.disposable = disposable;
         eventDisplayLoading = new MutableLiveData<>();
         eventDisplayError = new SingleLiveEvent<>();
         errorMessage = new SingleLiveEvent<>();

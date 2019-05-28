@@ -44,11 +44,11 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
-    WidgetConfigViewModelImpl(@NonNull Application application, IRepository model, int widgetId) {
+    WidgetConfigViewModelImpl(@NonNull Application application, IRepository model, CompositeDisposable disposable, int widgetId) {
         super(application);
         this.model = model;
+        this.disposable = disposable;
         this.widgetId = widgetId;
-        disposable = new CompositeDisposable();
         userLists = new MutableLiveData<>();
         eventDisplayLoading = new MutableLiveData<>();
         eventSuccessful = new SingleLiveEvent<>();

@@ -10,11 +10,14 @@ import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.view.addedit.item.AddEditItemViewModel;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListViewModel;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public final class AddEditViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     private final Application application;
 
     private final IRepository repository;
+    private final CompositeDisposable disposable;
 
     private final String id;
     private final String title;
@@ -22,11 +25,13 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
 
     public AddEditViewModelFactory(Application application,
                                    IRepository repository,
+                                   CompositeDisposable disposable,
                                    String id,
                                    String title) {
         super(application);
         this.application = application;
         this.repository = repository;
+        this.disposable = disposable;
         this.id = id;
         this.title = title;
         this.userListId = "";
@@ -34,10 +39,11 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
 
     public AddEditViewModelFactory(Application application,
                                    IRepository repository,
+                                   CompositeDisposable disposable,
                                    String id,
                                    String title,
                                    String userListId) {
-        this(application, repository, id, title);
+        this(application, repository, disposable, id, title);
         this.userListId = userListId;
     }
 
@@ -46,10 +52,10 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(AddEditUserListViewModel.class)) {
             //noinspection unchecked
-            return (T) new AddEditUserListViewModel(application, repository, id, title);
+            return (T) new AddEditUserListViewModel(application, repository, disposable, id, title);
         } else if (modelClass.isAssignableFrom(AddEditItemViewModel.class)) {
             //noinspection unchecked
-            return (T) new AddEditItemViewModel(application, repository, id, title, userListId);
+            return (T) new AddEditItemViewModel(application, repository, disposable, id, title, userListId);
         } else {
             throw new IllegalArgumentException();
         }

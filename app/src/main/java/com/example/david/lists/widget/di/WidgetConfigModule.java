@@ -16,6 +16,7 @@ import com.example.david.lists.widget.configactivity.WidgetConfigViewModelImpl;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 final class WidgetConfigModule {
@@ -27,8 +28,8 @@ final class WidgetConfigModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory factory(Application application, IRepository repository, int widgetId) {
-        return new WidgetConfigViewModelFactory(application, repository, widgetId);
+    ViewModelProvider.Factory factory(Application application, IRepository repository, CompositeDisposable disposable, int widgetId) {
+        return new WidgetConfigViewModelFactory(application, repository, disposable, widgetId);
     }
 
     @ViewScope

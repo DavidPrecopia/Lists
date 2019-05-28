@@ -27,10 +27,10 @@ public abstract class AddEditViewModelBase extends AndroidViewModel {
     private final SingleLiveEvent<String> eventErrorMessage;
     private final SingleLiveEvent<Void> eventDismiss;
 
-    public AddEditViewModelBase(@NonNull Application application, IRepository repository, String currentTitle) {
+    public AddEditViewModelBase(@NonNull Application application, IRepository repository, CompositeDisposable disposable, String currentTitle) {
         super(application);
         this.repository = repository;
-        this.disposable = new CompositeDisposable();
+        this.disposable = disposable;
         this.currentTitle = currentTitle;
         this.eventErrorMessage = new SingleLiveEvent<>();
         this.eventDismiss = new SingleLiveEvent<>();

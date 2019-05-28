@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public final class ItemViewModelImpl extends ViewModelBase
@@ -36,8 +37,8 @@ public final class ItemViewModelImpl extends ViewModelBase
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    public ItemViewModelImpl(@NonNull Application application, IRepository repository, String userListId) {
-        super(application, repository);
+    public ItemViewModelImpl(@NonNull Application application, IRepository repository, CompositeDisposable disposable, String userListId) {
+        super(application, repository, disposable);
         this.userListId = userListId;
         itemList = new MutableLiveData<>();
         eventEdit = new SingleLiveEvent<>();

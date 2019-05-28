@@ -20,6 +20,7 @@ import com.example.david.lists.view.userlistlist.UserListViewModelImpl;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 final class UserListFragmentModule {
@@ -31,8 +32,8 @@ final class UserListFragmentModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, IUserRepository userRepository, SharedPreferences sharedPrefs) {
-        return new ViewModelFactory(application, repository, userRepository, sharedPrefs);
+    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, IUserRepository userRepository, CompositeDisposable disposable, SharedPreferences sharedPrefs) {
+        return new ViewModelFactory(application, repository, userRepository, disposable, sharedPrefs);
     }
 
     @ViewScope

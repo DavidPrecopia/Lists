@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public final class UserListViewModelImpl extends ViewModelBase
@@ -46,8 +47,9 @@ public final class UserListViewModelImpl extends ViewModelBase
     public UserListViewModelImpl(@NonNull Application application,
                                  IRepository repository,
                                  IUserRepository userRepository,
+                                 CompositeDisposable disposable,
                                  SharedPreferences sharedPrefs) {
-        super(application, repository);
+        super(application, repository, disposable);
         this.userRepository = userRepository;
         userLists = new MutableLiveData<>();
         eventOpenUserList = new SingleLiveEvent<>();

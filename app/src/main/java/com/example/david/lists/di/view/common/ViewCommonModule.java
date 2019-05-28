@@ -11,6 +11,7 @@ import com.example.david.lists.di.data.AppComponent;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public final class ViewCommonModule {
@@ -36,5 +37,11 @@ public final class ViewCommonModule {
     @Provides
     AppComponent appComponent(Application application) {
         return ((ListsApplicationImpl) application).getAppComponent();
+    }
+
+    @ViewScope
+    @Provides
+    CompositeDisposable disposable() {
+        return new CompositeDisposable();
     }
 }
