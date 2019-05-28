@@ -1,6 +1,5 @@
 package com.example.david.lists.widget;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -25,32 +24,37 @@ public class MyRemoteViewsService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new MyRemoteViewsFactory(
-                intent.getStringExtra(getApplication().getString(R.string.intent_extra_user_list_id)),
-                intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID),
-                ((ListsApplicationImpl) getApplication()).getAppComponent().repository(),
                 getApplication(),
-                AppWidgetManager.getInstance(getApplicationContext())
+                intent.getStringExtra(getApplication().getString(R.string.intent_extra_user_list_id)),
+                ((ListsApplicationImpl) getApplication()).getAppComponent().repository(),
+                AppWidgetManager.getInstance(getApplicationContext()),
+                intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         );
     }
 
 
     private class MyRemoteViewsFactory implements RemoteViewsFactory {
 
+        private final Application application;
+
         private final List<Item> itemList;
         private final String userListId;
 
         private final IRepository repository;
         private final CompositeDisposable disposable;
-        private final Application application;
 
         private final AppWidgetManager appWidgetManager;
         private final int widgetId;
 
-        MyRemoteViewsFactory(String userListId, int widgetId, IRepository model, Application application, AppWidgetManager appWidgetManager) {
+        MyRemoteViewsFactory(Application application,
+                             String userListId,
+                             IRepository repository,
+                             AppWidgetManager appWidgetManager,
+                             int widgetId) {
             this.application = application;
             itemList = new ArrayList<>();
             this.userListId = userListId;
-            this.repository = model;
+            this.repository = repository;
             this.disposable = new CompositeDisposable();
             this.appWidgetManager = appWidgetManager;
             this.widgetId = widgetId;
@@ -75,7 +79,6 @@ public class MyRemoteViewsService extends RemoteViewsService {
                     appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list_view);
                 }
 
-                @SuppressLint("LogNotTimber")
                 @Override
                 public void onError(Throwable t) {
                     UtilExceptions.throwException(t);

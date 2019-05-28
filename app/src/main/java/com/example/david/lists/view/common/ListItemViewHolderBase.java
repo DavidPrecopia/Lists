@@ -51,7 +51,7 @@ public abstract class ListItemViewHolderBase extends RecyclerView.ViewHolder {
     }
 
     private void initBackgroundView() {
-        // Ensures only one row can be opened at a time - see Adapter's constructor.
+        // Ensures only one row can be opened at a time.
         viewBinderHelper.bind(binding.swipeRevealLayout, id);
         binding.backgroundView.setOnClickListener(view -> {
             this.swipedLeft(getAdapterPosition());

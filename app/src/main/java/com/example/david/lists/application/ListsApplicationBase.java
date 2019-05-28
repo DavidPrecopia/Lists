@@ -26,7 +26,14 @@ abstract class ListsApplicationBase extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        this.appComponent = initAppComponent();
         init();
+    }
+
+    private AppComponent initAppComponent() {
+        return DaggerAppComponent.builder()
+                .application(this)
+                .build();
     }
 
 
@@ -36,16 +43,9 @@ abstract class ListsApplicationBase extends Application {
 
 
     private void init() {
-        appComponent = initAppComponent();
         checkNetworkConnection();
         setNightMode();
         initFabric();
-    }
-
-    private AppComponent initAppComponent() {
-        return DaggerAppComponent.builder()
-                .application(this)
-                .build();
     }
 
     private void checkNetworkConnection() {
@@ -78,7 +78,7 @@ abstract class ListsApplicationBase extends Application {
     }
 
     private void initFabric() {
-        // Initializes Fabric for builds that don't use the debug build type.
+        // Initializes Fabric only for builds that are not of the debug build type.
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();

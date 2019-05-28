@@ -47,15 +47,15 @@ public final class RepositoryImpl implements IRepository {
 
 
     @Override
-    public void deleteUserLists(List<UserList> userLists) {
-        validateList(userLists);
-        remote.deleteUserLists(userLists);
+    public void deleteUserLists(List<UserList> userListList) {
+        validateList(userListList);
+        remote.deleteUserLists(userListList);
     }
 
     @Override
-    public void deleteItems(List<Item> items) {
-        validateList(items);
-        remote.deleteItems(items);
+    public void deleteItems(List<Item> itemList) {
+        validateList(itemList);
+        remote.deleteItems(itemList);
     }
 
 

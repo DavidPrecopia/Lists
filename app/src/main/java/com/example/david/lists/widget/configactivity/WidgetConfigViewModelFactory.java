@@ -18,7 +18,10 @@ public final class WidgetConfigViewModelFactory extends ViewModelProvider.Androi
     private final CompositeDisposable disposable;
     private final int widgetId;
 
-    public WidgetConfigViewModelFactory(@NonNull Application application, IRepository repository, CompositeDisposable disposable, int widgetId) {
+    public WidgetConfigViewModelFactory(@NonNull Application application,
+                                        IRepository repository,
+                                        CompositeDisposable disposable,
+                                        int widgetId) {
         super(application);
         this.application = application;
         this.repository = repository;

@@ -18,9 +18,9 @@ public interface IRemoteRepository {
 
     void addItem(Item item);
 
-    void deleteUserLists(List<UserList> userList);
+    void deleteUserLists(List<UserList> userListList);
 
-    void deleteItems(List<Item> item);
+    void deleteItems(List<Item> itemList);
 
     void renameUserList(String userListId, String newName);
 

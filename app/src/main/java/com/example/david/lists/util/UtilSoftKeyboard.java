@@ -7,12 +7,15 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+/**
+ * A utility class to show and hide the soft keyboard.
+ */
 public final class UtilSoftKeyboard {
     public UtilSoftKeyboard() {
     }
 
     /**
-     * Show keyboard and focus to given EditText.
+     * Show keyboard and give focus to pass-in EditText.
      */
     public void showKeyboardInDialog(Dialog dialog, EditText target) {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);

@@ -31,11 +31,11 @@ public final class WidgetRemoteView {
 
 
     public RemoteViews updateWidget() {
-        setUpRemoveView();
+        initRemoveView();
         return remoteViews;
     }
 
-    private void setUpRemoveView() {
+    private void initRemoveView() {
         setTitle();
         setTitlePendingIntent();
         setConfigActivityPendingIntent();

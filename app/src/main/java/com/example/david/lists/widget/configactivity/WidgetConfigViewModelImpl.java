@@ -1,6 +1,5 @@
 package com.example.david.lists.widget.configactivity;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
 import android.content.SharedPreferences;
@@ -33,7 +32,7 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 public final class WidgetConfigViewModelImpl extends AndroidViewModel
         implements IWidgetConfigViewModel {
 
-    private final IRepository model;
+    private final IRepository repository;
     private final CompositeDisposable disposable;
 
     private final int widgetId;
@@ -44,9 +43,9 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
-    WidgetConfigViewModelImpl(@NonNull Application application, IRepository model, CompositeDisposable disposable, int widgetId) {
+    WidgetConfigViewModelImpl(@NonNull Application application, IRepository repository, CompositeDisposable disposable, int widgetId) {
         super(application);
-        this.model = model;
+        this.repository = repository;
         this.disposable = disposable;
         this.widgetId = widgetId;
         userLists = new MutableLiveData<>();
@@ -60,12 +59,12 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
 
     private void init() {
         eventDisplayLoading.setValue(true);
-        getUserListsFromModel();
+        getUserListsFromRepository();
     }
 
 
-    private void getUserListsFromModel() {
-        disposable.add(model.getAllUserLists()
+    private void getUserListsFromRepository() {
+        disposable.add(repository.getAllUserLists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(userListSubscriber())
@@ -80,7 +79,6 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
                 evaluateNewData(userLists);
             }
 
-            @SuppressLint("LogNotTimber")
             @Override
             public void onError(Throwable t) {
                 UtilExceptions.throwException(t);

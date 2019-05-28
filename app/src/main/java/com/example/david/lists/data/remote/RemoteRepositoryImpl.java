@@ -72,9 +72,9 @@ public final class RemoteRepositoryImpl implements IRemoteRepository {
 
 
     @Override
-    public void deleteUserLists(List<UserList> userLists) {
+    public void deleteUserLists(List<UserList> userListList) {
         firestore.runBatch(writeBatch -> {
-            for (UserList userList : userLists) {
+            for (UserList userList : userListList) {
                 writeBatch.delete(getUserListDocument(userList.getId()));
             }
         }).addOnSuccessListener(successfullyDeleteUserLists())
@@ -90,12 +90,12 @@ public final class RemoteRepositoryImpl implements IRemoteRepository {
     }
 
     @Override
-    public void deleteItems(List<Item> items) {
+    public void deleteItems(List<Item> itemList) {
         firestore.runBatch(writeBatch -> {
-            for (Item item : items) {
+            for (Item item : itemList) {
                 writeBatch.delete(getItemDocument(item.getId()));
             }
-        }).addOnSuccessListener(successfullyDeleteItems(items.get(0).getUserListId()))
+        }).addOnSuccessListener(successfullyDeleteItems(itemList.get(0).getUserListId()))
                 .addOnFailureListener(this::onFailure);
     }
 

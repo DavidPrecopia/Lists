@@ -32,13 +32,19 @@ final class UserListFragmentModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, IUserRepository userRepository, CompositeDisposable disposable, SharedPreferences sharedPrefs) {
+    ViewModelProvider.Factory viewModelFactory(Application application,
+                                               IRepository repository,
+                                               IUserRepository userRepository,
+                                               CompositeDisposable disposable,
+                                               SharedPreferences sharedPrefs) {
         return new ViewModelFactory(application, repository, userRepository, disposable, sharedPrefs);
     }
 
     @ViewScope
     @Provides
-    IUserListAdapter userListAdapter(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    IUserListAdapter userListAdapter(IUserListViewModel viewModel,
+                                     ViewBinderHelper viewBinderHelper,
+                                     ItemTouchHelper itemTouchHelper) {
         return new UserListAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
     }
 }

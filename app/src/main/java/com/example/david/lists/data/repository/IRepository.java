@@ -18,9 +18,9 @@ public interface IRepository {
 
     void addItem(Item item);
 
-    void deleteUserLists(List<UserList> userLists);
+    void deleteUserLists(List<UserList> userListList);
 
-    void deleteItems(List<Item> items);
+    void deleteItems(List<Item> itemList);
 
     void renameUserList(String userListId, String newTitle);
 

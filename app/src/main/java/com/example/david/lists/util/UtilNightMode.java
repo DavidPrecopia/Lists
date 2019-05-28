@@ -7,14 +7,14 @@ public final class UtilNightMode {
     }
 
     public static void setDay() {
-        changeMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     public static void setNight() {
-        changeMode(AppCompatDelegate.MODE_NIGHT_YES);
+        setMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
-    private static void changeMode(int mode) {
+    private static void setMode(int mode) {
         AppCompatDelegate.setDefaultNightMode(mode);
     }
 }

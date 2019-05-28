@@ -30,7 +30,10 @@ final class ItemFragmentModule {
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application, IRepository repository, CompositeDisposable disposable, String userListId) {
+    ViewModelProvider.Factory viewModelFactory(Application application,
+                                               IRepository repository,
+                                               CompositeDisposable disposable,
+                                               String userListId) {
         return new ViewModelFactory(application, repository, disposable, userListId);
     }
 

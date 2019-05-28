@@ -9,6 +9,9 @@ import androidx.fragment.app.FragmentManager;
 
 import javax.inject.Inject;
 
+/**
+ * To be used by an Activity that is backing a Fragment/View.
+ */
 public abstract class ActivityBase extends AppCompatActivity {
     @Inject
     protected FragmentManager fragmentManager;
