@@ -1,6 +1,7 @@
 package com.example.david.lists.view.common;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,9 +28,15 @@ public abstract class ActivityBase extends AppCompatActivity {
         this.newActivity = (savedInstanceState == null);
     }
 
+
     protected void addFragment(Fragment fragment, int containerViewId) {
         fragmentManager.beginTransaction()
                 .add(containerViewId, fragment)
                 .commit();
+    }
+
+
+    protected void toastMessage(int message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
