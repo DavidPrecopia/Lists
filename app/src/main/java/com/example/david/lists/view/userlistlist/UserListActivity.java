@@ -14,6 +14,7 @@ import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.databinding.ActivityUserListBinding;
 import com.example.david.lists.di.view.userlistlist.DaggerUserListActivityComponent;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.authentication.ConfirmSignOutDialogFragment;
 import com.example.david.lists.view.authentication.SignInFragment;
 import com.example.david.lists.view.common.ActivityBase;
 import com.example.david.lists.view.itemlist.ItemActivity;
@@ -24,7 +25,8 @@ import javax.inject.Inject;
 public class UserListActivity extends ActivityBase
         implements UserListFragment.UserListsFragmentListener,
         SignInFragment.SignInFragmentCallback,
-        SharedPreferences.OnSharedPreferenceChangeListener{
+        ConfirmSignOutDialogFragment.ConfirmSignOutCallback,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityUserListBinding binding;
 
@@ -112,10 +114,10 @@ public class UserListActivity extends ActivityBase
 
 
     @Override
-    public void messages(int message) {
+    public void authMessage(int message) {
         switch (message) {
             case UserListFragment.UserListsFragmentListener.SIGN_OUT:
-                signOut();
+                confirmSignOut();
                 break;
             case UserListFragment.UserListsFragmentListener.SIGN_IN:
                 signIn();
@@ -125,7 +127,12 @@ public class UserListActivity extends ActivityBase
         }
     }
 
-    private void signOut() {
+    private void confirmSignOut() {
+        openDialogFragment(new ConfirmSignOutDialogFragment());
+    }
+
+    @Override
+    public void proceedWithSignOut() {
         AuthUI.getInstance().signOut(this)
                 .addOnSuccessListener(aVoid -> successfullySignedOut())
                 .addOnFailureListener(this::failedToSignOut);

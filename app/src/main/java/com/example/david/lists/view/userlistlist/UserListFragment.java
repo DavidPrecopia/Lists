@@ -25,7 +25,7 @@ public class UserListFragment extends FragmentBase
         int SIGN_OUT = 100;
         int SIGN_IN = 200;
 
-        void messages(int message);
+        void authMessage(int message);
 
         void openUserList(UserList userList);
     }
@@ -93,11 +93,9 @@ public class UserListFragment extends FragmentBase
         viewModel.getEventOpenUserList().observe(this, userList ->
                 userListsFragmentListener.openUserList(userList));
         viewModel.getEventSignOut().observe(this, aVoid ->
-                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_OUT));
-        viewModel.getEventConfirmSignOut().observe(this, aVoid ->
-                openDialogFragment(new ConfirmSignOutDialogFragment()));
+                userListsFragmentListener.authMessage(UserListsFragmentListener.SIGN_OUT));
         viewModel.getEventSignIn().observe(this, aVoid ->
-                userListsFragmentListener.messages(UserListsFragmentListener.SIGN_IN));
+                userListsFragmentListener.authMessage(UserListsFragmentListener.SIGN_IN));
     }
 
 

@@ -54,7 +54,5 @@ public interface IUserListViewModel {
 
     LiveData<Void> getEventSignOut();
 
-    LiveData<Void> getEventConfirmSignOut();
-
     LiveData<Void> getEventSignIn();
 }

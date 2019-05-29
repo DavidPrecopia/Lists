@@ -36,7 +36,6 @@ public final class UserListViewModelImpl extends ViewModelBase
     private final SingleLiveEvent<UserList> eventEdit;
 
     private final SingleLiveEvent<Void> eventSignOut;
-    private final SingleLiveEvent<Void> eventConfirmSignOut;
     private final SingleLiveEvent<Void> eventSignIn;
 
     private final List<UserList> tempUserLists;
@@ -56,7 +55,6 @@ public final class UserListViewModelImpl extends ViewModelBase
         eventAdd = new SingleLiveEvent<>();
         eventEdit = new SingleLiveEvent<>();
         eventSignOut = new SingleLiveEvent<>();
-        eventConfirmSignOut = new SingleLiveEvent<>();
         eventSignIn = new SingleLiveEvent<>();
         this.tempUserLists = new ArrayList<>();
         this.tempUserListPosition = -1;
@@ -195,7 +193,7 @@ public final class UserListViewModelImpl extends ViewModelBase
     public void onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menu_id_sign_out:
-                signOutButtonClicked();
+                signOut();
                 break;
             case R.id.menu_id_sign_in:
                 signIn();
@@ -206,10 +204,6 @@ public final class UserListViewModelImpl extends ViewModelBase
             default:
                 UtilExceptions.throwException(new IllegalArgumentException());
         }
-    }
-
-    private void signOutButtonClicked() {
-        eventConfirmSignOut.call();
     }
 
     @Override
@@ -306,11 +300,6 @@ public final class UserListViewModelImpl extends ViewModelBase
     @Override
     public LiveData<Void> getEventSignOut() {
         return eventSignOut;
-    }
-
-    @Override
-    public LiveData<Void> getEventConfirmSignOut() {
-        return eventConfirmSignOut;
     }
 
     @Override

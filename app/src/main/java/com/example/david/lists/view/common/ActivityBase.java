@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -33,6 +34,10 @@ public abstract class ActivityBase extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(containerViewId, fragment)
                 .commit();
+    }
+
+    protected void openDialogFragment(DialogFragment dialogFragment) {
+        dialogFragment.show(fragmentManager, null);
     }
 
 

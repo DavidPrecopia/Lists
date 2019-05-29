@@ -16,12 +16,18 @@ import com.example.david.lists.view.userlistlist.UserListFragment;
 
 public final class ConfirmSignOutDialogFragment extends DialogFragment {
 
+
+    public interface ConfirmSignOutCallback {
+        void proceedWithSignOut();
+    }
+
+
     private ConfirmSignOutCallback callback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callback = (UserListFragment) getTargetFragment();
+        callback = (ConfirmSignOutCallback) getActivity();
     }
 
     @NonNull
@@ -52,10 +58,5 @@ public final class ConfirmSignOutDialogFragment extends DialogFragment {
         button.setTextColor(
                 ContextCompat.getColor(getContext().getApplicationContext(), R.color.alert_dialog_button_day_night)
         );
-    }
-
-
-    public interface ConfirmSignOutCallback {
-        void proceedWithSignOut();
     }
 }
