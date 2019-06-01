@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
@@ -140,9 +139,7 @@ public class UserListActivity extends ActivityBase
 
     private void successfullySignedOut() {
         toastMessage(R.string.msg_successful_signed_out);
-        for (Fragment fragment : fragmentManager.getFragments()) {
-            fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
-        }
+        removeAllFragments();
         recreate();
     }
 
@@ -152,7 +149,7 @@ public class UserListActivity extends ActivityBase
     }
 
     private void signIn() {
-        fragmentManager.popBackStack();
+        removeAllFragments();
         openAuthentication();
     }
 }

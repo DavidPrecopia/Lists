@@ -103,6 +103,10 @@ public final class UtilSnapshotListeners {
 
     private EventListener<QuerySnapshot> getUserListSnapshotListener(FlowableEmitter<List<UserList>> emitter) {
         return (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots == null) {
+                return;
+            }
+
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {
@@ -153,6 +157,10 @@ public final class UtilSnapshotListeners {
 
     private EventListener<QuerySnapshot> getItemSnapshotListener(FlowableEmitter<List<Item>> emitter) {
         return (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots == null) {
+                return;
+            }
+
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {

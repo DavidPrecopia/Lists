@@ -41,6 +41,13 @@ public abstract class ActivityBase extends AppCompatActivity {
     }
 
 
+    protected void removeAllFragments() {
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
+        }
+    }
+
+
     protected void toastMessage(int message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
