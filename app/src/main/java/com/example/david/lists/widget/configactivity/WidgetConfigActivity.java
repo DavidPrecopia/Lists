@@ -17,6 +17,7 @@ import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
 import com.example.david.lists.widget.di.DaggerWidgetConfigComponent;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class WidgetConfigActivity extends AppCompatActivity {
 
@@ -28,7 +29,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     @Inject
     IWidgetConfigAdapter adapter;
     @Inject
-    LinearLayoutManager layoutManger;
+    Provider<LinearLayoutManager> layoutManger;
     @Inject
     RecyclerView.ItemDecoration dividerItemDecorator;
 
@@ -74,7 +75,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     private void initRecyclerView() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManger);
+        recyclerView.setLayoutManager(layoutManger.get());
         recyclerView.addItemDecoration(dividerItemDecorator);
         recyclerView.setAdapter((RecyclerView.Adapter) adapter);
     }

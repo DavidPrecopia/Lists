@@ -15,7 +15,6 @@ import dagger.Provides;
 
 @Module
 public final class RecyclerViewAdapterModule {
-    @ViewScope
     @Provides
     LinearLayoutManager layoutManager(Application application) {
         return new LinearLayoutManager(application.getApplicationContext());
