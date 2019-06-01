@@ -14,6 +14,7 @@ import com.example.david.lists.R;
 import com.example.david.lists.di.data.AppComponent;
 import com.example.david.lists.di.data.DaggerAppComponent;
 import com.example.david.lists.util.UtilNightMode;
+import com.google.firebase.auth.FirebaseAuth;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -26,14 +27,28 @@ abstract class ListsApplicationBase extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.appComponent = initAppComponent();
+        initAppComponent();
         init();
+        firebaseAuthListener();
     }
 
-    private AppComponent initAppComponent() {
-        return DaggerAppComponent.builder()
+    private void initAppComponent() {
+        appComponent = DaggerAppComponent.builder()
                 .application(this)
                 .build();
+    }
+
+    /**
+     * If the user signs-out, {@link AppComponent} needs to be re-created
+     * otherwise the dependencies it creates will will still be tied
+     * to the account the user just signed-out of.
+     */
+    private void firebaseAuthListener() {
+        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
+            if (appComponent.userRepository().signedOut()) {
+                initAppComponent();
+            }
+        });
     }
 
 
