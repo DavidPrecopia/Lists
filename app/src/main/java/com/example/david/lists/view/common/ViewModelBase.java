@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.david.lists.R;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.SingleLiveEvent;
 
@@ -41,12 +40,15 @@ public abstract class ViewModelBase extends AndroidViewModel {
         eventDisplayLoading.setValue(true);
     }
 
+
+    protected abstract int getEmptyListErrorMessage();
+
     
     protected void evaluateNewData(List newList) {
         eventDisplayLoading.setValue(false);
 
         if (newList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_empty_user_list));
+            errorMessage.setValue(getStringResource(getEmptyListErrorMessage()));
             eventDisplayError.setValue(true);
         } else {
             eventDisplayError.setValue(false);

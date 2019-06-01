@@ -96,6 +96,11 @@ public final class ItemViewModelImpl extends ViewModelBase
         };
     }
 
+    @Override
+    protected int getEmptyListErrorMessage() {
+        return R.string.error_msg_empty_user_list;
+    }
+
 
     @Override
     public void addButtonClicked() {

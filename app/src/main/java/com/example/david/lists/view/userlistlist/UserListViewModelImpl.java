@@ -93,6 +93,11 @@ public final class UserListViewModelImpl extends ViewModelBase
         };
     }
 
+    @Override
+    protected int getEmptyListErrorMessage() {
+        return R.string.error_msg_no_user_lists;
+    }
+
 
     @Override
     public void userListClicked(UserList userList) {
