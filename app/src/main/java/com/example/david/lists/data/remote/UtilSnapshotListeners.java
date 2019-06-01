@@ -7,6 +7,7 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.util.SingleLiveEvent;
+import com.example.david.lists.util.UtilExceptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -108,6 +109,7 @@ public final class UtilSnapshotListeners {
             }
 
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
+                UtilExceptions.throwException(e);
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;
@@ -162,6 +164,7 @@ public final class UtilSnapshotListeners {
             }
 
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
+                UtilExceptions.throwException(e);
                 emitter.onError(e);
             } else if (shouldReturn(queryDocumentSnapshots)) {
                 return;

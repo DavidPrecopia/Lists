@@ -83,7 +83,6 @@ public final class UserListViewModelImpl extends ViewModelBase
 
             @Override
             public void onError(Throwable t) {
-                UtilExceptions.throwException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
                 eventDisplayError.setValue(true);
             }

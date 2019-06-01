@@ -87,7 +87,6 @@ public final class ItemViewModelImpl extends ViewModelBase
 
             @Override
             public void onError(Throwable t) {
-                UtilExceptions.throwException(t);
                 errorMessage.setValue(getStringResource(R.string.error_msg_generic));
             }
 
