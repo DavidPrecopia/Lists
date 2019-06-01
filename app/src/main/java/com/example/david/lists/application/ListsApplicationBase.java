@@ -14,7 +14,6 @@ import com.example.david.lists.R;
 import com.example.david.lists.di.data.AppComponent;
 import com.example.david.lists.di.data.DaggerAppComponent;
 import com.example.david.lists.util.UtilNightMode;
-import com.google.firebase.auth.FirebaseAuth;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -44,8 +43,8 @@ abstract class ListsApplicationBase extends Application {
      * to the account the user just signed-out of.
      */
     private void firebaseAuthListener() {
-        FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
-            if (appComponent.userRepository().signedOut()) {
+        appComponent.userRepository().userSignedOutObservable().observeForever(signedOut -> {
+            if (signedOut) {
                 initAppComponent();
             }
         });

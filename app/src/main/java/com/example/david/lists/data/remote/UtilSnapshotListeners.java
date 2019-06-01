@@ -7,7 +7,6 @@ import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.util.SingleLiveEvent;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -29,8 +28,6 @@ import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIEL
 
 public final class UtilSnapshotListeners {
 
-    private final IUserRepository userRepository;
-
     private final Flowable<List<UserList>> userListFlowable;
     private final CollectionReference userListCollection;
 
@@ -45,15 +42,13 @@ public final class UtilSnapshotListeners {
 
     public UtilSnapshotListeners(CollectionReference userListCollection,
                                  CollectionReference itemCollection,
-                                 IUserRepository userRepository,
-                                 FirebaseAuth firebaseAuth) {
-        this.userRepository = userRepository;
+                                 IUserRepository userRepository) {
         this.userListFlowable = initUserListFlowable();
         this.userListCollection = userListCollection;
         this.itemCollection = itemCollection;
         this.eventDeleteUserList = new SingleLiveEvent<>();
         recentLocalChanges = false;
-        initFirebaseAuth(firebaseAuth);
+        initFirebaseAuth(userRepository);
     }
 
 
@@ -70,15 +65,17 @@ public final class UtilSnapshotListeners {
     }
 
 
-    private void initFirebaseAuth(FirebaseAuth auth) {
-        auth.addAuthStateListener(firebaseAuth -> {
-            if (userRepository.signedOut()) {
-                if (userListsSnapshotListener != null) {
-                    userListsSnapshotListener.remove();
-                }
-                if (itemsSnapshotListener != null) {
-                    itemsSnapshotListener.remove();
-                }
+    private void initFirebaseAuth(IUserRepository userRepository) {
+        userRepository.userSignedOutObservable().observeForever(signedOut -> {
+            if (!signedOut) {
+                return;
+            }
+
+            if (userListsSnapshotListener != null) {
+                userListsSnapshotListener.remove();
+            }
+            if (itemsSnapshotListener != null) {
+                itemsSnapshotListener.remove();
             }
         });
     }

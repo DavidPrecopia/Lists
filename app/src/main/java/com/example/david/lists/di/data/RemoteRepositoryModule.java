@@ -52,9 +52,8 @@ final class RemoteRepositoryModule {
     @Provides
     UtilSnapshotListeners utilSnapshotListeners(@Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
                                                 @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
-                                                IUserRepository userRepository,
-                                                FirebaseAuth firebaseAuth) {
-        return new UtilSnapshotListeners(userListCollection, itemCollection, userRepository, firebaseAuth);
+                                                IUserRepository userRepository) {
+        return new UtilSnapshotListeners(userListCollection, itemCollection, userRepository);
     }
 
     @Named(COLLECTION_USER_LISTS)
