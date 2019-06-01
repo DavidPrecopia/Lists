@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +43,8 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initSoftKeyboardUtil();
+        // Needs to be called from `onCreateView()` otherwise `getDialog()` returns null.
+        utilSoftKeyboard.showKeyboardInDialog(getDialog());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -51,7 +53,7 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
 
 
     private void init() {
-        setEditText();
+        initEditText();
         setHint();
         setConfirmButtonText();
         confirmClickListener();
@@ -65,8 +67,10 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
         viewModel.getEventDismiss().observe(this, aVoid -> dismiss());
     }
 
-    private void setEditText() {
-        binding.textInputEditText.setText(getCurrentTitle());
+    private void initEditText() {
+        EditText editText = binding.textInputEditText;
+        editText.setText(getCurrentTitle());
+        editText.setSelection(getCurrentTitle().length());
     }
 
     private void setHint() {
@@ -97,14 +101,6 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
     }
 
 
-    /**
-     * Needs to be called from `onCreateView()` otherwise `getDialog()` returns null.
-     */
-    private void initSoftKeyboardUtil() {
-        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
-    }
-
-
     private String getEnteredText() {
         return binding.textInputEditText.getText().toString().trim();
     }
@@ -116,7 +112,7 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
 
     @Override
     public void dismiss() {
-        utilSoftKeyboard.hideKeyboard(getContext(), binding.getRoot());
+        utilSoftKeyboard.hideKeyboard(getActivity().getApplication(), binding.getRoot());
         super.dismiss();
     }
 }
