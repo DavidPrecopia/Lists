@@ -16,10 +16,6 @@
         android:paddingEnd="@dimen/margin_normal"
         android:paddingBottom="@dimen/margin_medium">
 
-        <!--
-            Setting `layout_width` to match_parent, as oppose to 0dp, ensures that
-            it has a comfortable width, otherwise it is squished - I do not know why that is.
-        -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout"
             android:layout_width="match_parent"

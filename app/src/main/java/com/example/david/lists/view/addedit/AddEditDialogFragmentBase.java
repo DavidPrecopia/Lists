@@ -1,5 +1,6 @@
 package com.example.david.lists.view.addedit;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
@@ -27,11 +29,21 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
     @Inject
     UtilSoftKeyboard utilSoftKeyboard;
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_edit_dialog_fragment, null, false);
+        this.binding = DataBindingUtil.bind(view);
+        AlertDialog dialog = new AlertDialog.Builder(getActivity()).setView(view).create();
+        init();
+        return dialog;
+    }
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.binding = DataBindingUtil.inflate(inflater, R.layout.add_edit_dialog_fragment, container, false);
-        init();
-        return binding.getRoot();
+        initSoftKeyboardUtil();
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
 
@@ -45,7 +57,6 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        initSoftKeyboardUtil();
         observeViewModel();
     }
 
@@ -63,7 +74,7 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
     }
 
     private void setConfirmButtonText() {
-        binding.buttonConfirm.setText(getString(R.string.button_text_confirm_add));
+        binding.buttonConfirm.setText(getString(R.string.button_text_save));
     }
 
     private void confirmClickListener() {
@@ -85,6 +96,10 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
         });
     }
 
+
+    /**
+     * Needs to be called from `onCreateView()` otherwise `getDialog()` returns null.
+     */
     private void initSoftKeyboardUtil() {
         utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
     }
