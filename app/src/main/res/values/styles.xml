@@ -67,9 +67,7 @@
         <item name="rippleColor">@color/colorAccent</item>
     </style>
 
-    <style name="HintTextAppearance" parent="HintTextAppearanceDay" />
-
-    <style name="HintTextAppearanceDay" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/darkGray</item>
+    <style name="HintTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/black_day_night</item>
     </style>
 </resources>

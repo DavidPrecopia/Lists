@@ -20,11 +20,4 @@
         <item name="layout_scrollFlags">scroll|enterAlways</item>
         <item name="titleTextColor">@color/colorAccent</item>
     </style>
-
-
-    <style name="HintTextAppearance" parent="HintTextAppearanceNight" />
-
-    <style name="HintTextAppearanceNight" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/white</item>
-    </style>
 </resources>
