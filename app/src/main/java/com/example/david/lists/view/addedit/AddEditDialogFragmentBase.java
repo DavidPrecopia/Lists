@@ -44,7 +44,7 @@ public abstract class AddEditDialogFragmentBase extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Needs to be called from `onCreateView()` otherwise `getDialog()` returns null.
-        utilSoftKeyboard.showKeyboardInDialog(getDialog());
+        utilSoftKeyboard.showKeyboardInDialog(getDialog(), binding.textInputEditText);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

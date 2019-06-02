@@ -14,8 +14,10 @@ public final class UtilSoftKeyboard {
     public UtilSoftKeyboard() {
     }
 
-    public void showKeyboardInDialog(Dialog dialog) {
+    public void showKeyboardInDialog(Dialog dialog, View target) {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        // This does not cause a memory leak.
+        target.requestFocus();
     }
 
     /**
