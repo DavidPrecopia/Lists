@@ -5,8 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatDelegate;
-
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.example.david.lists.BuildConfig;
@@ -20,8 +18,6 @@ import io.fabric.sdk.android.Fabric;
 abstract class ListsApplicationBase extends Application {
 
     private AppComponent appComponent;
-
-    private static final int PREF_NOT_FOUND = -1;
 
     @Override
     public void onCreate() {
@@ -71,24 +67,9 @@ abstract class ListsApplicationBase extends Application {
     }
 
     private void setNightMode() {
-        switch (getCurrentMode()) {
-            case PREF_NOT_FOUND:
-                UtilNightMode.setDay();
-                break;
-            case AppCompatDelegate.MODE_NIGHT_NO:
-                UtilNightMode.setDay();
-                break;
-            case AppCompatDelegate.MODE_NIGHT_YES:
-                UtilNightMode.setNight();
-                break;
-            default:
-                throw new IllegalArgumentException();
+        if (UtilNightMode.isNightModeEnabled(this)) {
+            UtilNightMode.setNight(this);
         }
-    }
-
-    private int getCurrentMode() {
-        return appComponent.sharedPrefsNightMode()
-                .getInt(getString(R.string.night_mode_shared_pref_key), PREF_NOT_FOUND);
     }
 
     private void initFabric() {

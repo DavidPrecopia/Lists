@@ -33,8 +33,6 @@ public interface IUserListViewModel {
 
     int getMenuResource();
 
-    boolean isNightModeEnabled();
-
 
     LiveData<List<UserList>> getUserLists();
 

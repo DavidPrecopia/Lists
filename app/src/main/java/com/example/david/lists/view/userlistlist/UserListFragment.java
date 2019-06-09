@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.di.view.userlistlist.DaggerUserListFragmentComponent;
+import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialogFragment;
 import com.example.david.lists.view.authentication.ConfirmSignOutDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
@@ -135,7 +136,8 @@ public class UserListFragment extends FragmentBase
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(viewModel.getMenuResource(), menu);
-        menu.findItem(R.id.menu_id_night_mode).setChecked(viewModel.isNightModeEnabled());
+        menu.findItem(R.id.menu_id_night_mode)
+                .setChecked(UtilNightMode.isNightModeEnabled(getActivity().getApplication()));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

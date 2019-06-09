@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -228,25 +227,11 @@ public final class UserListViewModelImpl extends ViewModelBase
     private void nightMode(MenuItem item) {
         if (item.isChecked()) {
             item.setChecked(false);
-            UtilNightMode.setDay();
-            setNightModePreference(AppCompatDelegate.MODE_NIGHT_NO);
+            UtilNightMode.setDay(getApplication());
         } else {
             item.setChecked(true);
-            UtilNightMode.setNight();
-            setNightModePreference(AppCompatDelegate.MODE_NIGHT_YES);
+            UtilNightMode.setNight(getApplication());
         }
-    }
-
-    private void setNightModePreference(int mode) {
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putInt(getStringResource(R.string.night_mode_shared_pref_key), mode);
-        editor.apply();
-    }
-
-    @Override
-    public boolean isNightModeEnabled() {
-        return AppCompatDelegate.MODE_NIGHT_YES ==
-                sharedPrefs.getInt(getStringResource(R.string.night_mode_shared_pref_key), -1);
     }
 
     @Override
