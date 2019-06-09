@@ -29,13 +29,17 @@ public class UtilNightModeTest {
     @Test
     public void setDayTest() {
         UtilNightMode.setDay(application);
-        assertThat(UtilNightMode.isNightModeEnabled(application), is(false));
+        assertNightModeEnabled(false);
     }
 
     @Test
     public void setNightTest() {
         UtilNightMode.setNight(application);
-        assertThat(UtilNightMode.isNightModeEnabled(application), is(true));
+        assertNightModeEnabled(true);
+    }
+
+    private void assertNightModeEnabled(boolean expectation) {
+        assertThat(UtilNightMode.isNightModeEnabled(application), is(expectation));
     }
 
 

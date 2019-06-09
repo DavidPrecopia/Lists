@@ -1,7 +1,6 @@
 package com.example.david.lists.util;
 
 import android.content.Context;
-import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -39,27 +38,33 @@ public class UtilWidgetKeysTest {
 
     @Test
     public void sharedPrefsKeyIdMaxValue() {
-        String result = UtilWidgetKeys.getSharedPrefKeyId(context, maxValue);
-        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_id, maxValue)));
+        sharedPrefsKeyId(maxValue);
     }
 
     @Test
     public void sharedPrefsKeyIdMinValue() {
-        String result = UtilWidgetKeys.getSharedPrefKeyId(context, minValue);
-        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_id, minValue)));
+        sharedPrefsKeyId(minValue);
+    }
+
+    private void sharedPrefsKeyId(int value) {
+        String result = UtilWidgetKeys.getSharedPrefKeyId(context, value);
+        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_id, value)));
     }
 
 
     @Test
     public void sharedPrefsKeyTitleMaxValue() {
-        String result = UtilWidgetKeys.getSharedPrefKeyTitle(context, maxValue);
-        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_title, maxValue)));
+        sharedPrefsKeyTitle(maxValue);
     }
 
     @Test
     public void sharedPrefsKeyTitleMinValue() {
-        String result = UtilWidgetKeys.getSharedPrefKeyTitle(context, minValue);
-        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_title, minValue)));
+        sharedPrefsKeyTitle(minValue);
+    }
+
+    private void sharedPrefsKeyTitle(int value) {
+        String result = UtilWidgetKeys.getSharedPrefKeyTitle(context, value);
+        assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_title, value)));
     }
 
 
