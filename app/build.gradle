@@ -99,6 +99,7 @@ dependencies {
 
     // Local testing
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest-library:2.1'
     testImplementation 'org.mockito:mockito-core:2.28.2'
 
     // Instrumentation testing
