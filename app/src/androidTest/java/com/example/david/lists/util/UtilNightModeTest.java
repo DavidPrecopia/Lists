@@ -1,26 +1,56 @@
 package com.example.david.lists.util;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import android.app.Application;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 public class UtilNightModeTest {
-    // Public API has changed
 
-//    @Test
-//    public void setDayTest() {
-//        UtilNightMode.setDay();
-//        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getCurrentNightModeStatus());
-//    }
-//
-//    @Test
-//    public void setNightTest() {
-//        UtilNightMode.setNight();
-//        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getCurrentNightModeStatus());
-//    }
-//
-//    private int getCurrentNightModeStatus() {
-//        return AppCompatDelegate.getDefaultNightMode();
-//    }
+    private Application application;
+
+    @Before
+    public void init() {
+        application = (Application) InstrumentationRegistry
+                .getInstrumentation()
+                .getTargetContext()
+                .getApplicationContext();
+    }
+
+
+    @Test
+    public void setDayTest() {
+        UtilNightMode.setDay(application);
+        assertThat(UtilNightMode.isNightModeEnabled(application), is(false));
+    }
+
+    @Test
+    public void setNightTest() {
+        UtilNightMode.setNight(application);
+        assertThat(UtilNightMode.isNightModeEnabled(application), is(true));
+    }
+
+
+    @Test(expected = Exception.class)
+    public void setDayTestNullArgument() {
+        UtilNightMode.setDay(null);
+    }
+
+    @Test(expected = Exception.class)
+    public void setNightNullArgument() {
+        UtilNightMode.setNight(null);
+    }
+
+    @Test(expected = Exception.class)
+    public void checkIfNightModeIsEnabledNullArgument() {
+        UtilNightMode.isNightModeEnabled(null);
+    }
 }
