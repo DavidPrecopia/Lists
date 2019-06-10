@@ -2,6 +2,7 @@ package com.example.david.lists.util;
 
 import android.app.Application;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -19,10 +20,7 @@ public class UtilNightModeTest {
 
     @Before
     public void init() {
-        application = (Application) InstrumentationRegistry
-                .getInstrumentation()
-                .getTargetContext()
-                .getApplicationContext();
+        application = ApplicationProvider.getApplicationContext();
     }
 
 
