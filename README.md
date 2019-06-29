@@ -44,4 +44,4 @@ Night mode
 
 # Copyright
 
-Copyright &copy; 2018 David M Precopia
+Copyright &copy; 2019 David M Precopia
