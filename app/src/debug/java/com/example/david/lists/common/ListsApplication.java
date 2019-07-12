@@ -2,7 +2,7 @@ package com.example.david.lists.common;
 
 import timber.log.Timber;
 
-public final class ListsApplicationImpl extends ListsApplicationBase {
+public final class ListsApplication extends ListsApplicationBase {
     @Override
     public void onCreate() {
         super.onCreate();

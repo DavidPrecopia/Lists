@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.david.lists.R;
-import com.example.david.lists.common.ListsApplicationImpl;
+import com.example.david.lists.common.ListsApplication;
 
 public final class UtilNightMode {
     private UtilNightMode() {
@@ -39,7 +39,7 @@ public final class UtilNightMode {
 
 
     private static SharedPreferences getSharedPrefs(Application application) {
-        return ((ListsApplicationImpl) application).getAppComponent().sharedPrefsNightMode();
+        return ((ListsApplication) application).getAppComponent().sharedPrefsNightMode();
     }
 
     private static String getKey(Application application) {

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
-import com.example.david.lists.common.ListsApplicationImpl;
+import com.example.david.lists.common.ListsApplication;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.view.common.TouchHelperCallback;
@@ -37,7 +37,7 @@ public final class ViewCommonModule {
 
     @Provides
     AppComponent appComponent(Application application) {
-        return ((ListsApplicationImpl) application).getAppComponent();
+        return ((ListsApplication) application).getAppComponent();
     }
 
     @ViewScope
