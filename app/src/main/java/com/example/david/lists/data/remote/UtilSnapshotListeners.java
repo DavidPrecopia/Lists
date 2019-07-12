@@ -11,6 +11,7 @@ import com.example.david.lists.util.UtilExceptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.MetadataChanges;
@@ -43,13 +44,14 @@ public final class UtilSnapshotListeners {
 
     public UtilSnapshotListeners(CollectionReference userListCollection,
                                  CollectionReference itemCollection,
-                                 IUserRepository userRepository) {
+                                 IUserRepository userRepository,
+                                 FirebaseFirestore firestore) {
         this.userListFlowable = initUserListFlowable();
         this.userListCollection = userListCollection;
         this.itemCollection = itemCollection;
         this.eventDeleteUserList = new SingleLiveEvent<>();
         recentLocalChanges = false;
-        initFirebaseAuth(userRepository);
+        initFirebaseAuth(userRepository, firestore);
     }
 
 
@@ -66,7 +68,7 @@ public final class UtilSnapshotListeners {
     }
 
 
-    private void initFirebaseAuth(IUserRepository userRepository) {
+    private void initFirebaseAuth(IUserRepository userRepository, FirebaseFirestore firestore) {
         userRepository.userSignedOutObservable().observeForever(signedOut -> {
             if (!signedOut) {
                 return;
@@ -78,6 +80,10 @@ public final class UtilSnapshotListeners {
             if (itemsSnapshotListener != null) {
                 itemsSnapshotListener.remove();
             }
+
+            // Clear persistence storage
+            // https://firebase.google.com/support/release-notes/android#version_2010
+            firestore.clearPersistence();
         });
     }
 
