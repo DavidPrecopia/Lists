@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.ListsApplication;
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.common.TouchHelperCallback;
 
 import dagger.Module;
@@ -21,12 +20,12 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public final class ViewCommonModule {
     @Provides
-    IRepository repository(AppComponent appComponent) {
+    IRepositoryContract.Repository repository(AppComponent appComponent) {
         return appComponent.repository();
     }
 
     @Provides
-    IUserRepository userRepository(AppComponent appComponent) {
+    IRepositoryContract.UserRepository userRepository(AppComponent appComponent) {
         return appComponent.userRepository();
     }
 

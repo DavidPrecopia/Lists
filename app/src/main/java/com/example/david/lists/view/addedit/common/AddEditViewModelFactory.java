@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.addedit.item.AddEditItemViewModel;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListViewModel;
 
@@ -16,7 +16,7 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
 
     private final Application application;
 
-    private final IRepository repository;
+    private final IRepositoryContract.Repository repository;
     private final CompositeDisposable disposable;
 
     private final String id;
@@ -24,7 +24,7 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
     private String userListId;
 
     public AddEditViewModelFactory(Application application,
-                                   IRepository repository,
+                                   IRepositoryContract.Repository repository,
                                    CompositeDisposable disposable,
                                    String id,
                                    String title) {
@@ -38,7 +38,7 @@ public final class AddEditViewModelFactory extends ViewModelProvider.AndroidView
     }
 
     public AddEditViewModelFactory(Application application,
-                                   IRepository repository,
+                                   IRepositoryContract.Repository repository,
                                    CompositeDisposable disposable,
                                    String id,
                                    String title,

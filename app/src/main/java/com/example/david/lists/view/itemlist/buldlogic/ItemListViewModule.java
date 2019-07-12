@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.common.ViewModelFactory;
-import com.example.david.lists.view.itemlist.IItemAdapter;
-import com.example.david.lists.view.itemlist.IItemViewModel;
-import com.example.david.lists.view.itemlist.ItemAdapterImpl;
-import com.example.david.lists.view.itemlist.ItemViewModelImpl;
+import com.example.david.lists.view.itemlist.IItemViewContract;
+import com.example.david.lists.view.itemlist.ItemAdapter;
+import com.example.david.lists.view.itemlist.ItemViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,14 +23,14 @@ import io.reactivex.disposables.CompositeDisposable;
 final class ItemListViewModule {
     @ViewScope
     @Provides
-    IItemViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
-        return ViewModelProviders.of(fragment, factory).get(ItemViewModelImpl.class);
+    IItemViewContract.ViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
+        return ViewModelProviders.of(fragment, factory).get(ItemViewModel.class);
     }
 
     @ViewScope
     @Provides
     ViewModelProvider.Factory viewModelFactory(Application application,
-                                               IRepository repository,
+                                               IRepositoryContract.Repository repository,
                                                CompositeDisposable disposable,
                                                String userListId) {
         return new ViewModelFactory(application, repository, disposable, userListId);
@@ -39,7 +38,7 @@ final class ItemListViewModule {
 
     @ViewScope
     @Provides
-    IItemAdapter adapter(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
-        return new ItemAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
+    IItemViewContract.Adapter adapter(IItemViewContract.ViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+        return new ItemAdapter(viewModel, viewBinderHelper, itemTouchHelper);
     }
 }

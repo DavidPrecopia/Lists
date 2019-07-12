@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.david.lists.common.buildlogic.ViewScope;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.addedit.common.AddEditViewModelBase;
 import com.example.david.lists.view.addedit.common.AddEditViewModelFactory;
 import com.example.david.lists.view.addedit.item.AddEditItemViewModel;
@@ -32,7 +32,7 @@ final class AddEditItemDialogModule {
     @ViewScope
     @Provides
     AddEditViewModelFactory factory(Application application,
-                                    IRepository repository,
+                                    IRepositoryContract.Repository repository,
                                     CompositeDisposable disposable,
                                     @Named(ID) String id,
                                     @Named(TITLE) String title,

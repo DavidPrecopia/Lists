@@ -1,7 +1,7 @@
 package com.example.david.lists.data.repository.buildlogic;
 
-import com.example.david.lists.data.repository.IUserRepository;
-import com.example.david.lists.data.repository.UserRepositoryImpl;
+import com.example.david.lists.data.repository.IRepositoryContract;
+import com.example.david.lists.data.repository.UserRepository;
 import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Singleton;
@@ -13,7 +13,7 @@ import dagger.Provides;
 public final class UserRepositoryModule {
     @Singleton
     @Provides
-    IUserRepository userRepository(FirebaseAuth firebaseAuth) {
-        return new UserRepositoryImpl(firebaseAuth);
+    IRepositoryContract.UserRepository userRepository(FirebaseAuth firebaseAuth) {
+        return new UserRepository(firebaseAuth);
     }
 }

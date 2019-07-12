@@ -1,9 +1,9 @@
 package com.example.david.lists.data.remote.buildlogic;
 
-import com.example.david.lists.data.remote.IRemoteRepository;
-import com.example.david.lists.data.remote.RemoteRepositoryImpl;
+import com.example.david.lists.data.remote.IRemoteRepositoryContract;
+import com.example.david.lists.data.remote.RemoteRepository;
 import com.example.david.lists.data.remote.UtilSnapshotListeners;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,11 +24,11 @@ import static com.example.david.lists.data.remote.RemoteRepositoryConstants.COLL
 public final class RemoteRepositoryModule {
     @Singleton
     @Provides
-    IRemoteRepository remoteDatabase(FirebaseFirestore firestore,
-                                     @Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
-                                     @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
-                                     UtilSnapshotListeners snapshotListeners) {
-        return new RemoteRepositoryImpl(firestore, userListCollection, itemCollection, snapshotListeners);
+    IRemoteRepositoryContract.Repository remoteDatabase(FirebaseFirestore firestore,
+                                                        @Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
+                                                        @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
+                                                        UtilSnapshotListeners snapshotListeners) {
+        return new RemoteRepository(firestore, userListCollection, itemCollection, snapshotListeners);
     }
 
     @Singleton
@@ -52,7 +52,7 @@ public final class RemoteRepositoryModule {
     @Provides
     UtilSnapshotListeners utilSnapshotListeners(@Named(COLLECTION_USER_LISTS) CollectionReference userListCollection,
                                                 @Named(COLLECTION_ITEMS) CollectionReference itemCollection,
-                                                IUserRepository userRepository,
+                                                IRepositoryContract.UserRepository userRepository,
                                                 FirebaseFirestore firestore) {
         return new UtilSnapshotListeners(userListCollection, itemCollection, userRepository, firestore);
     }

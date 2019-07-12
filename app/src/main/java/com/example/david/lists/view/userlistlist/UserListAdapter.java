@@ -18,16 +18,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class UserListAdapterImpl extends ListAdapter<UserList, UserListAdapterImpl.UserListViewHolder>
-        implements IUserListAdapter {
+public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter.UserListViewHolder>
+        implements IUserListViewContract.Adapter {
 
     private final ArrayList<UserList> userListList;
 
-    private final IUserListViewModel viewModel;
+    private final IUserListViewContract.ViewModel viewModel;
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public UserListAdapterImpl(IUserListViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public UserListAdapter(IUserListViewContract.ViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(new UserListDiffCallback());
         userListList = new ArrayList<>();
         this.viewModel = viewModel;
@@ -92,7 +92,7 @@ public final class UserListAdapterImpl extends ListAdapter<UserList, UserListAda
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            viewModel.swipedLeft(UserListAdapterImpl.this, adapterPosition);
+            viewModel.swipedLeft(UserListAdapter.this, adapterPosition);
         }
 
         @Override
@@ -102,7 +102,7 @@ public final class UserListAdapterImpl extends ListAdapter<UserList, UserListAda
 
         @Override
         protected void delete(int adapterPosition) {
-            viewModel.delete(UserListAdapterImpl.this, adapterPosition);
+            viewModel.delete(UserListAdapter.this, adapterPosition);
         }
 
         @Override

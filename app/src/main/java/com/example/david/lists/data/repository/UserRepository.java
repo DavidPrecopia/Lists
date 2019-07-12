@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public final class UserRepositoryImpl implements IUserRepository {
+public final class UserRepository implements IRepositoryContract.UserRepository {
 
     private final FirebaseAuth firebaseAuth;
     private final MutableLiveData<Boolean> userSignedOut;
 
-    public UserRepositoryImpl(FirebaseAuth firebaseAuth) {
+    public UserRepository(FirebaseAuth firebaseAuth) {
         this.firebaseAuth = firebaseAuth;
         userSignedOut = new MutableLiveData<>();
         init();

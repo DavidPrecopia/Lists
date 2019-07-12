@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.databinding.ActivityUserListBinding;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.view.authentication.ConfirmSignOutDialog;
@@ -33,7 +33,7 @@ public class UserListActivity extends ActivityBase
     SharedPreferences sharedPrefs;
 
     @Inject
-    IUserRepository userRepository;
+    IRepositoryContract.UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

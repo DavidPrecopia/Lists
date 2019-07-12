@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.common.ViewModelFactory;
-import com.example.david.lists.view.userlistlist.IUserListAdapter;
-import com.example.david.lists.view.userlistlist.IUserListViewModel;
-import com.example.david.lists.view.userlistlist.UserListAdapterImpl;
-import com.example.david.lists.view.userlistlist.UserListViewModelImpl;
+import com.example.david.lists.view.userlistlist.IUserListViewContract;
+import com.example.david.lists.view.userlistlist.UserListAdapter;
+import com.example.david.lists.view.userlistlist.UserListViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,15 +24,15 @@ import io.reactivex.disposables.CompositeDisposable;
 final class UserListListViewModule {
     @ViewScope
     @Provides
-    IUserListViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
-        return ViewModelProviders.of(fragment, factory).get(UserListViewModelImpl.class);
+    IUserListViewContract.ViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
+        return ViewModelProviders.of(fragment, factory).get(UserListViewModel.class);
     }
 
     @ViewScope
     @Provides
     ViewModelProvider.Factory viewModelFactory(Application application,
-                                               IRepository repository,
-                                               IUserRepository userRepository,
+                                               IRepositoryContract.Repository repository,
+                                               IRepositoryContract.UserRepository userRepository,
                                                CompositeDisposable disposable,
                                                SharedPreferences sharedPrefs) {
         return new ViewModelFactory(application, repository, userRepository, disposable, sharedPrefs);
@@ -42,9 +40,9 @@ final class UserListListViewModule {
 
     @ViewScope
     @Provides
-    IUserListAdapter userListAdapter(IUserListViewModel viewModel,
-                                     ViewBinderHelper viewBinderHelper,
-                                     ItemTouchHelper itemTouchHelper) {
-        return new UserListAdapterImpl(viewModel, viewBinderHelper, itemTouchHelper);
+    IUserListViewContract.Adapter userListAdapter(IUserListViewContract.ViewModel viewModel,
+                                                  ViewBinderHelper viewBinderHelper,
+                                                  ItemTouchHelper itemTouchHelper) {
+        return new UserListAdapter(viewModel, viewBinderHelper, itemTouchHelper);
     }
 }

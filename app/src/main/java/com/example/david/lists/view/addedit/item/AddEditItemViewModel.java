@@ -3,7 +3,7 @@ package com.example.david.lists.view.addedit.item;
 import android.app.Application;
 
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.view.addedit.common.AddEditViewModelBase;
 
@@ -22,7 +22,7 @@ public class AddEditItemViewModel extends AddEditViewModelBase {
     private final List<Item> items;
 
     public AddEditItemViewModel(Application application,
-                                IRepository repository,
+                                IRepositoryContract.Repository repository,
                                 CompositeDisposable disposable,
                                 String id,
                                 String currentTitle,

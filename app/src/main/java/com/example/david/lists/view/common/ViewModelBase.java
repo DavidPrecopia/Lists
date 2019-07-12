@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class ViewModelBase extends AndroidViewModel {
 
-    protected final IRepository repository;
+    protected final IRepositoryContract.Repository repository;
     protected final CompositeDisposable disposable;
 
     protected final MutableLiveData<Boolean> eventDisplayLoading;
@@ -24,7 +24,7 @@ public abstract class ViewModelBase extends AndroidViewModel {
     protected final SingleLiveEvent<String> eventNotifyUserOfDeletion;
     protected final SingleLiveEvent<String> eventAdd;
 
-    public ViewModelBase(@NonNull Application application, IRepository repository, CompositeDisposable disposable) {
+    public ViewModelBase(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable) {
         super(application);
         this.repository = repository;
         this.disposable = disposable;

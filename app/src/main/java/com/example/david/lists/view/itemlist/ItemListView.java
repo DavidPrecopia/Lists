@@ -15,10 +15,10 @@ import javax.inject.Inject;
 public class ItemListView extends ListViewBase {
 
     @Inject
-    IItemViewModel viewModel;
+    IItemViewContract.ViewModel viewModel;
 
     @Inject
-    IItemAdapter adapter;
+    IItemViewContract.Adapter adapter;
 
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";

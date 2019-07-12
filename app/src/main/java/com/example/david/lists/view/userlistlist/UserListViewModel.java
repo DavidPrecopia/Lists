@@ -10,8 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
@@ -24,10 +23,10 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class UserListViewModelImpl extends ViewModelBase
-        implements IUserListViewModel {
+public final class UserListViewModel extends ViewModelBase
+        implements IUserListViewContract.ViewModel {
 
-    private final IUserRepository userRepository;
+    private final IRepositoryContract.UserRepository userRepository;
     private final MutableLiveData<List<UserList>> userLists;
 
     private final SingleLiveEvent<UserList> eventOpenUserList;
@@ -42,11 +41,11 @@ public final class UserListViewModelImpl extends ViewModelBase
 
     private final SharedPreferences sharedPrefs;
 
-    public UserListViewModelImpl(@NonNull Application application,
-                                 IRepository repository,
-                                 IUserRepository userRepository,
-                                 CompositeDisposable disposable,
-                                 SharedPreferences sharedPrefs) {
+    public UserListViewModel(@NonNull Application application,
+                             IRepositoryContract.Repository repository,
+                             IRepositoryContract.UserRepository userRepository,
+                             CompositeDisposable disposable,
+                             SharedPreferences sharedPrefs) {
         super(application, repository, disposable);
         this.userRepository = userRepository;
         userLists = new MutableLiveData<>();
@@ -76,7 +75,7 @@ public final class UserListViewModelImpl extends ViewModelBase
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                UserListViewModelImpl.this.userLists.setValue(userLists);
+                UserListViewModel.this.userLists.setValue(userLists);
                 evaluateNewData(userLists);
             }
 
@@ -115,7 +114,7 @@ public final class UserListViewModelImpl extends ViewModelBase
 
 
     @Override
-    public void dragging(IUserListAdapter adapter, int fromPosition, int toPosition) {
+    public void dragging(IUserListViewContract.Adapter adapter, int fromPosition, int toPosition) {
         adapter.move(fromPosition, toPosition);
         Collections.swap(userLists.getValue(), fromPosition, toPosition);
     }
@@ -135,13 +134,13 @@ public final class UserListViewModelImpl extends ViewModelBase
     }
 
     @Override
-    public void swipedLeft(IUserListAdapter adapter, int position) {
+    public void swipedLeft(IUserListViewContract.Adapter adapter, int position) {
         delete(adapter, position);
     }
 
 
     @Override
-    public void delete(IUserListAdapter adapter, int position) {
+    public void delete(IUserListViewContract.Adapter adapter, int position) {
         adapter.remove(position);
         saveDeletedUserList(position);
         eventNotifyUserOfDeletion.setValue(
@@ -157,7 +156,7 @@ public final class UserListViewModelImpl extends ViewModelBase
 
 
     @Override
-    public void undoRecentDeletion(IUserListAdapter adapter) {
+    public void undoRecentDeletion(IUserListViewContract.Adapter adapter) {
         if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
@@ -167,14 +166,14 @@ public final class UserListViewModelImpl extends ViewModelBase
         deletionNotificationTimedOut();
     }
 
-    private void reAdd(IUserListAdapter adapter) {
+    private void reAdd(IUserListViewContract.Adapter adapter) {
         int lastDeletedPosition = (tempUserLists.size() - 1);
         reAddUserListToAdapter(adapter, lastDeletedPosition);
         reAddUserListToLocalList(lastDeletedPosition);
         tempUserLists.remove(lastDeletedPosition);
     }
 
-    private void reAddUserListToAdapter(IUserListAdapter adapter, int lastDeletedPosition) {
+    private void reAddUserListToAdapter(IUserListViewContract.Adapter adapter, int lastDeletedPosition) {
         adapter.reAdd(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
     }
 

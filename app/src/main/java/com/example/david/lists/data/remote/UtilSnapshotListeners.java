@@ -5,7 +5,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.google.firebase.firestore.CollectionReference;
@@ -44,7 +44,7 @@ public final class UtilSnapshotListeners {
 
     public UtilSnapshotListeners(CollectionReference userListCollection,
                                  CollectionReference itemCollection,
-                                 IUserRepository userRepository,
+                                 IRepositoryContract.UserRepository userRepository,
                                  FirebaseFirestore firestore) {
         this.userListFlowable = initUserListFlowable();
         this.userListCollection = userListCollection;
@@ -68,7 +68,7 @@ public final class UtilSnapshotListeners {
     }
 
 
-    private void initFirebaseAuth(IUserRepository userRepository, FirebaseFirestore firestore) {
+    private void initFirebaseAuth(IRepositoryContract.UserRepository userRepository, FirebaseFirestore firestore) {
         userRepository.userSignedOutObservable().observeForever(signedOut -> {
             if (!signedOut) {
                 return;
@@ -185,7 +185,7 @@ public final class UtilSnapshotListeners {
         if (e != null) {
             return true;
         } else if (queryDocumentSnapshots == null) {
-            Crashlytics.log(Log.ERROR, RemoteRepositoryImpl.class.getSimpleName(), "QueryDocumentSnapshot is null");
+            Crashlytics.log(Log.ERROR, RemoteRepository.class.getSimpleName(), "QueryDocumentSnapshot is null");
             return true;
         }
         return false;

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.RemoteViewsService;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.widget.view.MyRemoteViewsFactory;
 
 import dagger.Module;
@@ -18,7 +18,7 @@ final class MyRemoteViewsServiceModule {
     @Provides
     RemoteViewsService.RemoteViewsFactory remoteViewsFactory(Application application,
                                                              String userListId,
-                                                             IRepository repository,
+                                                             IRepositoryContract.Repository repository,
                                                              CompositeDisposable disposable,
                                                              AppWidgetManager appWidgetManager,
                                                              int appWidgetId) {

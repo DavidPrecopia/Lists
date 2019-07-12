@@ -18,16 +18,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class ItemAdapterImpl extends ListAdapter<Item, ItemAdapterImpl.ItemViewHolder>
-        implements IItemAdapter {
+public final class ItemAdapter extends ListAdapter<Item, ItemAdapter.ItemViewHolder>
+        implements IItemViewContract.Adapter {
 
     private final List<Item> itemList;
 
-    private final IItemViewModel viewModel;
+    private final IItemViewContract.ViewModel viewModel;
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public ItemAdapterImpl(IItemViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public ItemAdapter(IItemViewContract.ViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(DIFF_UTIL_CALLBACK);
         itemList = new ArrayList<>();
         this.viewModel = viewModel;
@@ -86,7 +86,7 @@ public final class ItemAdapterImpl extends ListAdapter<Item, ItemAdapterImpl.Ite
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            viewModel.swipedLeft(ItemAdapterImpl.this, adapterPosition);
+            viewModel.swipedLeft(ItemAdapter.this, adapterPosition);
         }
 
         @Override
@@ -96,7 +96,7 @@ public final class ItemAdapterImpl extends ListAdapter<Item, ItemAdapterImpl.Ite
 
         @Override
         protected void delete(int adapterPosition) {
-            viewModel.delete(ItemAdapterImpl.this, adapterPosition);
+            viewModel.delete(ItemAdapter.this, adapterPosition);
         }
     }
 

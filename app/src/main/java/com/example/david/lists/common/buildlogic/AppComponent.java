@@ -4,8 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.example.david.lists.data.remote.buildlogic.RemoteRepositoryModule;
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.IUserRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.data.repository.buildlogic.RepositoryModule;
 import com.example.david.lists.data.repository.buildlogic.UserRepositoryModule;
 
@@ -23,9 +22,9 @@ import dagger.Component;
         FirebaseAuthModule.class
 })
 public interface AppComponent {
-    IRepository repository();
+    IRepositoryContract.Repository repository();
 
-    IUserRepository userRepository();
+    IRepositoryContract.UserRepository userRepository();
 
     SharedPreferences sharedPrefsNightMode();
 

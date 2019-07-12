@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.view.common.ViewModelBase;
@@ -23,8 +23,8 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class ItemViewModelImpl extends ViewModelBase
-        implements IItemViewModel {
+public final class ItemViewModel extends ViewModelBase
+        implements IItemViewContract.ViewModel {
 
     private final String userListId;
     private final MutableLiveData<List<Item>> itemList;
@@ -37,7 +37,7 @@ public final class ItemViewModelImpl extends ViewModelBase
     private final List<Item> tempItemList;
     private int tempItemPosition;
 
-    public ItemViewModelImpl(@NonNull Application application, IRepository repository, CompositeDisposable disposable, String userListId) {
+    public ItemViewModel(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable, String userListId) {
         super(application, repository, disposable);
         this.userListId = userListId;
         itemList = new MutableLiveData<>();
@@ -81,7 +81,7 @@ public final class ItemViewModelImpl extends ViewModelBase
         return new DisposableSubscriber<List<Item>>() {
             @Override
             public void onNext(List<Item> itemList) {
-                ItemViewModelImpl.this.itemList.setValue(itemList);
+                ItemViewModel.this.itemList.setValue(itemList);
                 evaluateNewData(itemList);
             }
 
@@ -114,7 +114,7 @@ public final class ItemViewModelImpl extends ViewModelBase
 
 
     @Override
-    public void dragging(IItemAdapter adapter, int fromPosition, int toPosition) {
+    public void dragging(IItemViewContract.Adapter adapter, int fromPosition, int toPosition) {
         Collections.swap(itemList.getValue(), fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
     }
@@ -134,13 +134,13 @@ public final class ItemViewModelImpl extends ViewModelBase
     }
 
     @Override
-    public void swipedLeft(IItemAdapter adapter, int position) {
+    public void swipedLeft(IItemViewContract.Adapter adapter, int position) {
         delete(adapter, position);
     }
 
 
     @Override
-    public void delete(IItemAdapter adapter, int position) {
+    public void delete(IItemViewContract.Adapter adapter, int position) {
         adapter.remove(position);
         saveDeletedItem(position);
 
@@ -157,7 +157,7 @@ public final class ItemViewModelImpl extends ViewModelBase
 
 
     @Override
-    public void undoRecentDeletion(IItemAdapter adapter) {
+    public void undoRecentDeletion(IItemViewContract.Adapter adapter) {
         if (tempItemList == null || tempItemPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     getStringResource(R.string.error_invalid_action_undo_deletion)
@@ -167,14 +167,14 @@ public final class ItemViewModelImpl extends ViewModelBase
         deletionNotificationTimedOut();
     }
 
-    private void reAdd(IItemAdapter adapter) {
+    private void reAdd(IItemViewContract.Adapter adapter) {
         int lastDeletedPosition = (tempItemList.size() - 1);
         reAddItemToAdapter(adapter, lastDeletedPosition);
         reAddItemToLocalList(lastDeletedPosition);
         tempItemList.remove(lastDeletedPosition);
     }
 
-    private void reAddItemToAdapter(IItemAdapter adapter, int lastDeletedPosition) {
+    private void reAddItemToAdapter(IItemViewContract.Adapter adapter, int lastDeletedPosition) {
         adapter.reAdd(tempItemPosition, tempItemList.get(lastDeletedPosition));
     }
 

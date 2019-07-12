@@ -7,10 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.IUserRepository;
-import com.example.david.lists.view.itemlist.ItemViewModelImpl;
-import com.example.david.lists.view.userlistlist.UserListViewModelImpl;
+import com.example.david.lists.data.repository.IRepositoryContract;
+import com.example.david.lists.view.itemlist.ItemViewModel;
+import com.example.david.lists.view.userlistlist.UserListViewModel;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -18,8 +17,8 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
 
     private final Application application;
 
-    private final IRepository repository;
-    private IUserRepository userRepository;
+    private final IRepositoryContract.Repository repository;
+    private IRepositoryContract.UserRepository userRepository;
 
     private final CompositeDisposable disposable;
 
@@ -27,7 +26,7 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
 
     private String userListId;
 
-    private ViewModelFactory(@NonNull Application application, IRepository repository, CompositeDisposable disposable) {
+    private ViewModelFactory(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable) {
         super(application);
         this.application = application;
         this.repository = repository;
@@ -35,18 +34,18 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     }
 
     /**
-     * Used to create {@link com.example.david.lists.view.userlistlist.UserListViewModelImpl}.
+     * Used to create {@link UserListViewModel}.
      */
-    public ViewModelFactory(Application application, IRepository repository, IUserRepository userRepository, CompositeDisposable disposable, SharedPreferences sharedPrefsNightMode) {
+    public ViewModelFactory(Application application, IRepositoryContract.Repository repository, IRepositoryContract.UserRepository userRepository, CompositeDisposable disposable, SharedPreferences sharedPrefsNightMode) {
         this(application, repository, disposable);
         this.userRepository = userRepository;
         this.sharedPrefsNightMode = sharedPrefsNightMode;
     }
 
     /**
-     * Used to create {@link com.example.david.lists.view.itemlist.ItemViewModelImpl}.
+     * Used to create {@link ItemViewModel}.
      */
-    public ViewModelFactory(@NonNull Application application, IRepository repository, CompositeDisposable disposable, String userListId) {
+    public ViewModelFactory(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable, String userListId) {
         this(application, repository, disposable);
         this.userListId = userListId;
     }
@@ -55,12 +54,12 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UserListViewModelImpl.class)) {
+        if (modelClass.isAssignableFrom(UserListViewModel.class)) {
             //noinspection unchecked
-            return (T) new UserListViewModelImpl(application, repository, userRepository, disposable, sharedPrefsNightMode);
-        } else if (modelClass.isAssignableFrom(ItemViewModelImpl.class)) {
+            return (T) new UserListViewModel(application, repository, userRepository, disposable, sharedPrefsNightMode);
+        } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
             //noinspection unchecked
-            return (T) new ItemViewModelImpl(application, repository, disposable, userListId);
+            return (T) new ItemViewModel(application, repository, disposable, userListId);
         } else {
             throw new IllegalArgumentException();
         }

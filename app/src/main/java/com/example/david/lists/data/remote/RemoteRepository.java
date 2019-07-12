@@ -21,7 +21,7 @@ import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIEL
 import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_POSITION;
 import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_TITLE;
 
-public final class RemoteRepositoryImpl implements IRemoteRepository {
+public final class RemoteRepository implements IRemoteRepositoryContract.Repository {
 
     private final FirebaseFirestore firestore;
     private final CollectionReference userListsCollection;
@@ -29,10 +29,10 @@ public final class RemoteRepositoryImpl implements IRemoteRepository {
 
     private final UtilSnapshotListeners snapshotListeners;
 
-    public RemoteRepositoryImpl(FirebaseFirestore firestore,
-                                CollectionReference userListsCollection,
-                                CollectionReference itemsCollection,
-                                UtilSnapshotListeners snapshotListeners) {
+    public RemoteRepository(FirebaseFirestore firestore,
+                            CollectionReference userListsCollection,
+                            CollectionReference itemsCollection,
+                            UtilSnapshotListeners snapshotListeners) {
         this.firestore = firestore;
         this.userListsCollection = userListsCollection;
         this.itemsCollection = itemsCollection;

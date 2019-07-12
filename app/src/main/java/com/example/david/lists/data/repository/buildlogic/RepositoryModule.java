@@ -1,8 +1,7 @@
 package com.example.david.lists.data.repository.buildlogic;
 
-import com.example.david.lists.data.remote.IRemoteRepository;
-import com.example.david.lists.data.repository.IRepository;
-import com.example.david.lists.data.repository.RepositoryImpl;
+import com.example.david.lists.data.remote.IRemoteRepositoryContract;
+import com.example.david.lists.data.repository.IRepositoryContract;
 
 import javax.inject.Singleton;
 
@@ -13,7 +12,7 @@ import dagger.Provides;
 public final class RepositoryModule {
     @Singleton
     @Provides
-    IRepository repository(IRemoteRepository remoteRepository) {
-        return new RepositoryImpl(remoteRepository);
+    IRepositoryContract.Repository repository(IRemoteRepositoryContract.Repository remoteRepository) {
+        return new com.example.david.lists.data.repository.Repository(remoteRepository);
     }
 }

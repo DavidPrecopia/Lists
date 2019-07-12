@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -14,12 +14,12 @@ public final class WidgetConfigViewModelFactory extends ViewModelProvider.Androi
 
     @NonNull
     private final Application application;
-    private final IRepository repository;
+    private final IRepositoryContract.Repository repository;
     private final CompositeDisposable disposable;
     private final int widgetId;
 
     public WidgetConfigViewModelFactory(@NonNull Application application,
-                                        IRepository repository,
+                                        IRepositoryContract.Repository repository,
                                         CompositeDisposable disposable,
                                         int widgetId) {
         super(application);
@@ -32,9 +32,9 @@ public final class WidgetConfigViewModelFactory extends ViewModelProvider.Androi
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(WidgetConfigViewModelImpl.class)) {
+        if (modelClass.isAssignableFrom(WidgetConfigViewModel.class)) {
             //noinspection unchecked
-            return (T) new WidgetConfigViewModelImpl(application, repository, disposable, widgetId);
+            return (T) new WidgetConfigViewModel(application, repository, disposable, widgetId);
         } else {
             throw new IllegalArgumentException();
         }

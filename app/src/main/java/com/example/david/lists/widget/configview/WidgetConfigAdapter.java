@@ -16,14 +16,14 @@ import com.example.david.lists.view.userlistlist.UserListDiffCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class WidgetConfigAdapterImpl extends ListAdapter<UserList, WidgetConfigAdapterImpl.WidgetConfigViewHolder>
-        implements IWidgetConfigAdapter {
+public final class WidgetConfigAdapter extends ListAdapter<UserList, WidgetConfigAdapter.WidgetConfigViewHolder>
+        implements IWidgetConfigContract.Adapter {
 
     private final List<UserList> userLists;
 
-    private final IWidgetConfigViewModel viewModel;
+    private final IWidgetConfigContract.ViewModel viewModel;
 
-    public WidgetConfigAdapterImpl(IWidgetConfigViewModel viewModel) {
+    public WidgetConfigAdapter(IWidgetConfigContract.ViewModel viewModel) {
         super(new UserListDiffCallback());
         this.userLists = new ArrayList<>();
         this.viewModel = viewModel;

@@ -33,10 +33,10 @@ public class UserListListView extends ListViewBase
 
 
     @Inject
-    IUserListViewModel viewModel;
+    IUserListViewContract.ViewModel viewModel;
 
     @Inject
-    IUserListAdapter adapter;
+    IUserListViewContract.Adapter adapter;
 
     private UserListsFragmentListener userListsFragmentListener;
 

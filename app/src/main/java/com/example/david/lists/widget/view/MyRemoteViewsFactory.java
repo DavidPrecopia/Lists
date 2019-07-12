@@ -7,7 +7,7 @@ import android.widget.RemoteViewsService;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class MyRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
     private final List<Item> itemList;
     private final String userListId;
 
-    private final IRepository repository;
+    private final IRepositoryContract.Repository repository;
     private final CompositeDisposable disposable;
 
     private final AppWidgetManager appWidgetManager;
@@ -33,7 +33,7 @@ public class MyRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
 
     public MyRemoteViewsFactory(Application application,
                                 String userListId,
-                                IRepository repository,
+                                IRepositoryContract.Repository repository,
                                 CompositeDisposable disposable,
                                 AppWidgetManager appWidgetManager,
                                 int widgetId) {

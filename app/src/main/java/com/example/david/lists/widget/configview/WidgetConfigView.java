@@ -24,10 +24,10 @@ public class WidgetConfigView extends AppCompatActivity {
     private ActivityWidgetConfigBinding binding;
 
     @Inject
-    IWidgetConfigViewModel viewModel;
+    IWidgetConfigContract.ViewModel viewModel;
 
     @Inject
-    IWidgetConfigAdapter adapter;
+    IWidgetConfigContract.Adapter adapter;
     @Inject
     Provider<LinearLayoutManager> layoutManger;
     @Inject

@@ -12,7 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IRepository;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.widget.view.WidgetRemoteView;
@@ -29,10 +29,10 @@ import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
 
-public final class WidgetConfigViewModelImpl extends AndroidViewModel
-        implements IWidgetConfigViewModel {
+public final class WidgetConfigViewModel extends AndroidViewModel
+        implements IWidgetConfigContract.ViewModel {
 
-    private final IRepository repository;
+    private final IRepositoryContract.Repository repository;
     private final CompositeDisposable disposable;
 
     private final int widgetId;
@@ -43,7 +43,7 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
     private final SingleLiveEvent<Boolean> eventDisplayError;
     private final SingleLiveEvent<String> errorMessage;
 
-    WidgetConfigViewModelImpl(@NonNull Application application, IRepository repository, CompositeDisposable disposable, int widgetId) {
+    WidgetConfigViewModel(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable, int widgetId) {
         super(application);
         this.repository = repository;
         this.disposable = disposable;
@@ -75,7 +75,7 @@ public final class WidgetConfigViewModelImpl extends AndroidViewModel
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                WidgetConfigViewModelImpl.this.userLists.setValue(userLists);
+                WidgetConfigViewModel.this.userLists.setValue(userLists);
                 evaluateNewData(userLists);
             }
 

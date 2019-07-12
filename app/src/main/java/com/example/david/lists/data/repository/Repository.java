@@ -4,19 +4,19 @@ import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.remote.IRemoteRepository;
+import com.example.david.lists.data.remote.IRemoteRepositoryContract;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
 
-public final class RepositoryImpl implements IRepository {
+public final class Repository implements IRepositoryContract.Repository {
 
-    private final IRemoteRepository remote;
+    private final IRemoteRepositoryContract.Repository remote;
 
 
-    public RepositoryImpl(IRemoteRepository remoteDatabase) {
+    public Repository(IRemoteRepositoryContract.Repository remoteDatabase) {
         remote = remoteDatabase;
     }
 
