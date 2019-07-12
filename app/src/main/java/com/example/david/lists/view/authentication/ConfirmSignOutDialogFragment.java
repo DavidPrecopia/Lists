@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.david.lists.R;
-import com.example.david.lists.view.userlistlist.UserListFragment;
 
 public final class ConfirmSignOutDialogFragment extends DialogFragment {
 

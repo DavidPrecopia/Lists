@@ -15,7 +15,7 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepository;
 import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.widget.WidgetRemoteView;
+import com.example.david.lists.widget.view.WidgetRemoteView;
 
 import java.util.List;
 

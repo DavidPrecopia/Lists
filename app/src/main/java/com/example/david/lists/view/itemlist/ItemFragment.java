@@ -6,9 +6,9 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.di.view.itemlist.DaggerItemFragmentComponent;
 import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
 import com.example.david.lists.view.common.FragmentBase;
+import com.example.david.lists.view.itemlist.buldlogic.DaggerItemFragmentComponent;
 
 import javax.inject.Inject;
 

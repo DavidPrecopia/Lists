@@ -27,7 +27,7 @@
 -keep public class androidx.lifecycle.ProcessLifecycleOwnerInitializer
 -keep public class com.example.david.lists.ui.MainActivity
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigActivity
--keep public class com.example.david.lists.widget.MyAppWidgetProvider
+-keep public class com.example.david.lists.widget.view.MyAppWidgetProvider
 -keepclassmembers class com.example.david.lists.data.datamodel.** { *; }
 -keep public class com.crashlytics.android.CrashlyticsInitProvider
 

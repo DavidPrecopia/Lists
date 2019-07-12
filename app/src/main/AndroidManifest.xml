@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".application.ListsApplicationImpl"
+        android:name=".common.ListsApplicationImpl"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -34,7 +34,7 @@
 
 
         <receiver
-            android:name=".widget.MyAppWidgetProvider"
+            android:name=".widget.view.MyAppWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -46,7 +46,7 @@
         </receiver>
 
         <service
-            android:name=".widget.MyRemoteViewsService"
+            android:name=".widget.view.MyRemoteViewsService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 

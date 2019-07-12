@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.david.lists.R;
-import com.example.david.lists.application.ListsApplicationImpl;
+import com.example.david.lists.common.ListsApplicationImpl;
 
 public final class UtilNightMode {
     private UtilNightMode() {

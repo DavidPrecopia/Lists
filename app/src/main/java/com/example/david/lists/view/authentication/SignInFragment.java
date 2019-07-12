@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.R;
-import com.example.david.lists.di.view.authentication.DaggerSignInFragmentComponent;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.authentication.buildlogic.DaggerSignInFragmentComponent;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 

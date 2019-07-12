@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-import com.example.david.lists.widget.di.DaggerWidgetConfigComponent;
+import com.example.david.lists.widget.configactivity.buildlogic.DaggerWidgetConfigComponent;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
