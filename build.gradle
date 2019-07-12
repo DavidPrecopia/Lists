@@ -17,7 +17,7 @@ allprojects {
     ext {
         androidLibraries = "1.0.0"
         lifecycleExtensions = "2.0.0"
-        daggerVersion = "2.22.1"
+        daggerVersion = "2.23.2"
     }
     repositories {
         google()
