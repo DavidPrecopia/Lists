@@ -24,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public abstract class FragmentBase extends Fragment
+public abstract class ListViewBase extends Fragment
         implements TouchHelperCallback.MovementCallback {
 
     private FragmentBaseBinding binding;

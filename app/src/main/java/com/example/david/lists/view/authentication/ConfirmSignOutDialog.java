@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.david.lists.R;
 
-public final class ConfirmSignOutDialogFragment extends DialogFragment {
+public final class ConfirmSignOutDialog extends DialogFragment {
 
 
     public interface ConfirmSignOutCallback {

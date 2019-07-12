@@ -1,4 +1,4 @@
-package com.example.david.lists.view.addedit.item.buildlogic;
+package com.example.david.lists.view.addedit.userlist.buildlogic;
 
 import android.app.Application;
 
@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
-import com.example.david.lists.view.addedit.common.buildlogic.AddEditDialogFragmentCommonModule;
-import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
+import com.example.david.lists.view.addedit.common.buildlogic.AddEditDialogCommonModule;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
 
 import javax.inject.Named;
 
@@ -16,20 +16,19 @@ import dagger.Component;
 
 import static com.example.david.lists.view.addedit.common.buildlogic.AddEditNamedConstants.ID;
 import static com.example.david.lists.view.addedit.common.buildlogic.AddEditNamedConstants.TITLE;
-import static com.example.david.lists.view.addedit.common.buildlogic.AddEditNamedConstants.USER_LIST_ID;
 
 @ViewScope
 @Component(modules = {
-        AddEditItemDialogFragmentModule.class,
-        AddEditDialogFragmentCommonModule.class,
+        AddEditUserListDialogModule.class,
+        AddEditDialogCommonModule.class,
         ViewCommonModule.class
 })
-public interface AddEditItemDialogFragmentComponent {
-    void inject(AddEditItemDialogFragment fragment);
+public interface AddEditUserListDialogComponent {
+    void inject(AddEditUserListDialog fragment);
 
     @Component.Builder
     interface Builder {
-        AddEditItemDialogFragmentComponent build();
+        AddEditUserListDialogComponent build();
 
         @BindsInstance
         Builder application(Application application);
@@ -42,8 +41,5 @@ public interface AddEditItemDialogFragmentComponent {
 
         @BindsInstance
         Builder title(@Named(TITLE) String title);
-
-        @BindsInstance
-        Builder userListId(@Named(USER_LIST_ID) String userListId);
     }
 }

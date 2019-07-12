@@ -7,7 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public final class AddEditDialogFragmentCommonModule {
+public final class AddEditDialogCommonModule {
     @ViewScope
     @Provides
     UtilSoftKeyboard utilSoftKeyboard() {

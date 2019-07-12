@@ -1,4 +1,4 @@
-package com.example.david.lists.widget.configactivity;
+package com.example.david.lists.widget.configview;
 
 import android.view.LayoutInflater;
 import android.view.View;

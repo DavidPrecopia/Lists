@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 
 import com.example.david.lists.R;
 import com.example.david.lists.view.itemlist.ItemActivity;
-import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
+import com.example.david.lists.widget.configview.WidgetConfigView;
 
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
 import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
@@ -67,7 +67,7 @@ public final class WidgetRemoteView {
 
 
     private void setConfigActivityPendingIntent() {
-        Intent intent = new Intent(context, WidgetConfigActivity.class);
+        Intent intent = new Intent(context, WidgetConfigView.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         remoteViews.setOnClickPendingIntent(
                 R.id.widget_iv_settings,

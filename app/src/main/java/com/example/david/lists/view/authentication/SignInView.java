@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.R;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.view.authentication.buildlogic.DaggerSignInFragmentComponent;
+import com.example.david.lists.view.authentication.buildlogic.DaggerSignInViewComponent;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 
@@ -29,7 +29,7 @@ import static com.firebase.ui.auth.ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED;
 import static com.firebase.ui.auth.ErrorCodes.PROVIDER_ERROR;
 import static com.firebase.ui.auth.ErrorCodes.UNKNOWN_ERROR;
 
-public class SignInFragment extends Fragment {
+public class SignInView extends Fragment {
 
 
     public interface SignInFragmentCallback {
@@ -44,11 +44,11 @@ public class SignInFragment extends Fragment {
 
     private SignInFragmentCallback callback;
 
-    public SignInFragment() {
+    public SignInView() {
     }
 
-    public static SignInFragment getInstance() {
-        return new SignInFragment();
+    public static SignInView getInstance() {
+        return new SignInView();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void inject() {
-        DaggerSignInFragmentComponent.create().inject(this);
+        DaggerSignInViewComponent.create().inject(this);
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.david.lists.widget.configactivity;
+package com.example.david.lists.widget.configview;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
-import com.example.david.lists.widget.configactivity.buildlogic.DaggerWidgetConfigComponent;
+import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class WidgetConfigActivity extends AppCompatActivity {
+public class WidgetConfigView extends AppCompatActivity {
 
     private ActivityWidgetConfigBinding binding;
 
@@ -47,7 +47,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
     }
 
     private void inject() {
-        DaggerWidgetConfigComponent.builder()
+        DaggerWidgetConfigViewComponent.builder()
                 .application(getApplication())
                 .activity(this)
                 .widgetId(getWidgetId())

@@ -3,10 +3,10 @@ package com.example.david.lists.view.addedit.userlist;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.example.david.lists.view.addedit.common.AddEditDialogFragmentBase;
-import com.example.david.lists.view.addedit.userlist.buildlogic.DaggerAddEditUserListDialogFragmentComponent;
+import com.example.david.lists.view.addedit.common.AddEditDialogBase;
+import com.example.david.lists.view.addedit.userlist.buildlogic.DaggerAddEditUserListDialogComponent;
 
-public final class AddEditUserListDialogFragment extends AddEditDialogFragmentBase {
+public final class AddEditUserListDialog extends AddEditDialogBase {
 
     private String id;
     private String currentTitle;
@@ -14,11 +14,11 @@ public final class AddEditUserListDialogFragment extends AddEditDialogFragmentBa
     private static final String ARG_KEY_ID = "arg_key_id";
     private static final String ARG_KEY_TITLE = "arg_key_title";
 
-    public AddEditUserListDialogFragment() {
+    public AddEditUserListDialog() {
     }
 
-    public static AddEditUserListDialogFragment getInstance(String id, String title) {
-        AddEditUserListDialogFragment fragment = new AddEditUserListDialogFragment();
+    public static AddEditUserListDialog getInstance(String id, String title) {
+        AddEditUserListDialog fragment = new AddEditUserListDialog();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_ID, id);
         bundle.putString(ARG_KEY_TITLE, title);
@@ -40,7 +40,7 @@ public final class AddEditUserListDialogFragment extends AddEditDialogFragmentBa
     }
 
     private void inject() {
-        DaggerAddEditUserListDialogFragmentComponent.builder()
+        DaggerAddEditUserListDialogComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .id(id)

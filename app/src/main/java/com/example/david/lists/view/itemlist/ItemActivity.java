@@ -38,7 +38,7 @@ public class ItemActivity extends ActivityBase {
     }
 
     private Fragment getItemFragment() {
-        return ItemFragment.newInstance(
+        return ItemListView.newInstance(
                 getStringExtra(R.string.intent_extra_user_list_id),
                 getStringExtra(R.string.intent_extra_user_list_title)
         );

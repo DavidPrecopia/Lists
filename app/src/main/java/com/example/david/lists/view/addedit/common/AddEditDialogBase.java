@@ -20,7 +20,7 @@ import com.example.david.lists.util.UtilSoftKeyboard;
 
 import javax.inject.Inject;
 
-public abstract class AddEditDialogFragmentBase extends DialogFragment {
+public abstract class AddEditDialogBase extends DialogFragment {
 
     private AddEditDialogFragmentBinding binding;
 

@@ -23,7 +23,7 @@ import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
-final class UserListFragmentModule {
+final class UserListListViewModule {
     @ViewScope
     @Provides
     IUserListViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {

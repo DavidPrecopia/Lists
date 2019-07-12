@@ -6,13 +6,13 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
-import com.example.david.lists.view.addedit.item.AddEditItemDialogFragment;
-import com.example.david.lists.view.common.FragmentBase;
-import com.example.david.lists.view.itemlist.buldlogic.DaggerItemFragmentComponent;
+import com.example.david.lists.view.addedit.item.AddEditItemDialog;
+import com.example.david.lists.view.common.ListViewBase;
+import com.example.david.lists.view.itemlist.buldlogic.DaggerItemListViewComponent;
 
 import javax.inject.Inject;
 
-public class ItemFragment extends FragmentBase {
+public class ItemListView extends ListViewBase {
 
     @Inject
     IItemViewModel viewModel;
@@ -23,11 +23,11 @@ public class ItemFragment extends FragmentBase {
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
 
-    public ItemFragment() {
+    public ItemListView() {
     }
 
-    public static ItemFragment newInstance(String userListId, String userListTitle) {
-        ItemFragment fragment = new ItemFragment();
+    public static ItemListView newInstance(String userListId, String userListTitle) {
+        ItemListView fragment = new ItemListView();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_USER_LIST_ID, userListId);
         bundle.putString(ARG_KEY_USER_LIST_TITLE, userListTitle);
@@ -44,7 +44,7 @@ public class ItemFragment extends FragmentBase {
     }
 
     private void inject() {
-        DaggerItemFragmentComponent.builder()
+        DaggerItemListViewComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .movementCallback(this)
@@ -108,13 +108,13 @@ public class ItemFragment extends FragmentBase {
 
     private void openAddDialog(String userListId) {
         openDialogFragment(
-                AddEditItemDialogFragment.getInstance("", "", userListId)
+                AddEditItemDialog.getInstance("", "", userListId)
         );
     }
 
     private void openEditDialog(Item item) {
         openDialogFragment(
-                AddEditItemDialogFragment.getInstance(item.getId(), item.getTitle(), item.getUserListId())
+                AddEditItemDialog.getInstance(item.getId(), item.getTitle(), item.getUserListId())
         );
     }
 

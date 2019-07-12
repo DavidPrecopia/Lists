@@ -7,22 +7,22 @@ import androidx.fragment.app.Fragment;
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
-import com.example.david.lists.view.itemlist.ItemFragment;
+import com.example.david.lists.view.itemlist.ItemListView;
 
 import dagger.BindsInstance;
 import dagger.Component;
 
 @ViewScope
 @Component(modules = {
-        ItemFragmentModule.class,
+        ItemListViewModule.class,
         ViewCommonModule.class
 })
-public interface ItemFragmentComponent {
-    void inject(ItemFragment itemFragment);
+public interface ItemListViewComponent {
+    void inject(ItemListView itemFragment);
 
     @Component.Builder
     interface Builder {
-        ItemFragmentComponent build();
+        ItemListViewComponent build();
 
         @BindsInstance
         Builder application(Application application);

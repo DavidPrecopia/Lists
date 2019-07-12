@@ -12,8 +12,8 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IUserRepository;
 import com.example.david.lists.databinding.ActivityUserListBinding;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.view.authentication.ConfirmSignOutDialogFragment;
-import com.example.david.lists.view.authentication.SignInFragment;
+import com.example.david.lists.view.authentication.ConfirmSignOutDialog;
+import com.example.david.lists.view.authentication.SignInView;
 import com.example.david.lists.view.common.ActivityBase;
 import com.example.david.lists.view.itemlist.ItemActivity;
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListActivityComponent;
@@ -22,9 +22,9 @@ import com.firebase.ui.auth.AuthUI;
 import javax.inject.Inject;
 
 public class UserListActivity extends ActivityBase
-        implements UserListFragment.UserListsFragmentListener,
-        SignInFragment.SignInFragmentCallback,
-        ConfirmSignOutDialogFragment.ConfirmSignOutCallback,
+        implements UserListListView.UserListsFragmentListener,
+        SignInView.SignInFragmentCallback,
+        ConfirmSignOutDialog.ConfirmSignOutCallback,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ActivityUserListBinding binding;
@@ -73,13 +73,13 @@ public class UserListActivity extends ActivityBase
     }
 
     private void openAuthentication() {
-        addFragment(SignInFragment.getInstance(), binding.fragmentHolder.getId());
+        addFragment(SignInView.getInstance(), binding.fragmentHolder.getId());
     }
 
     private void initView() {
         binding.progressBar.setVisibility(View.GONE);
         if (newActivity) {
-            addFragment(UserListFragment.newInstance(), binding.fragmentHolder.getId());
+            addFragment(UserListListView.newInstance(), binding.fragmentHolder.getId());
         }
     }
 
@@ -115,10 +115,10 @@ public class UserListActivity extends ActivityBase
     @Override
     public void authMessage(int message) {
         switch (message) {
-            case UserListFragment.UserListsFragmentListener.SIGN_OUT:
+            case UserListListView.UserListsFragmentListener.SIGN_OUT:
                 confirmSignOut();
                 break;
-            case UserListFragment.UserListsFragmentListener.SIGN_IN:
+            case UserListListView.UserListsFragmentListener.SIGN_IN:
                 signIn();
                 break;
             default:
@@ -127,7 +127,7 @@ public class UserListActivity extends ActivityBase
     }
 
     private void confirmSignOut() {
-        openDialogFragment(new ConfirmSignOutDialogFragment());
+        openDialogFragment(new ConfirmSignOutDialog());
     }
 
     @Override

@@ -51,7 +51,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name=".widget.configactivity.WidgetConfigActivity"
+            android:name=".widget.configview.WidgetConfigView"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

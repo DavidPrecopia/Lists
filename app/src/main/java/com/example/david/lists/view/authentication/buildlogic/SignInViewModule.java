@@ -13,7 +13,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-final class SignInFragmentModule {
+final class SignInViewModule {
     @ViewScope
     @Provides
     Intent authenticationIntent() {

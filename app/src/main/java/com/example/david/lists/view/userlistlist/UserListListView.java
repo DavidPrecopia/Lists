@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.UtilNightMode;
-import com.example.david.lists.view.addedit.userlist.AddEditUserListDialogFragment;
-import com.example.david.lists.view.authentication.ConfirmSignOutDialogFragment;
-import com.example.david.lists.view.common.FragmentBase;
-import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListFragmentComponent;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
+import com.example.david.lists.view.authentication.ConfirmSignOutDialog;
+import com.example.david.lists.view.common.ListViewBase;
+import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent;
 
 import javax.inject.Inject;
 
-public class UserListFragment extends FragmentBase
-        implements ConfirmSignOutDialogFragment.ConfirmSignOutCallback {
+public class UserListListView extends ListViewBase
+        implements ConfirmSignOutDialog.ConfirmSignOutCallback {
 
 
     public interface UserListsFragmentListener {
@@ -41,11 +41,11 @@ public class UserListFragment extends FragmentBase
     private UserListsFragmentListener userListsFragmentListener;
 
 
-    public UserListFragment() {
+    public UserListListView() {
     }
 
-    public static UserListFragment newInstance() {
-        return new UserListFragment();
+    public static UserListListView newInstance() {
+        return new UserListListView();
     }
 
 
@@ -57,7 +57,7 @@ public class UserListFragment extends FragmentBase
     }
 
     private void inject() {
-        DaggerUserListFragmentComponent.builder()
+        DaggerUserListListViewComponent.builder()
                 .application(getActivity().getApplication())
                 .fragment(this)
                 .movementCallback(this)
@@ -150,13 +150,13 @@ public class UserListFragment extends FragmentBase
 
     private void openAddDialog() {
         openDialogFragment(
-                AddEditUserListDialogFragment.getInstance("", "")
+                AddEditUserListDialog.getInstance("", "")
         );
     }
 
     private void openEditDialog(UserList userList) {
         openDialogFragment(
-                AddEditUserListDialogFragment.getInstance(userList.getId(), userList.getTitle())
+                AddEditUserListDialog.getInstance(userList.getId(), userList.getTitle())
         );
     }
 
