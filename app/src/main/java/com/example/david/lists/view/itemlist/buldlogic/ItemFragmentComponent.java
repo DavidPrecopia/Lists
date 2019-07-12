@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.david.lists.common.buildlogic.RecyclerViewAdapterModule;
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
@@ -16,7 +15,6 @@ import dagger.Component;
 @ViewScope
 @Component(modules = {
         ItemFragmentModule.class,
-        RecyclerViewAdapterModule.class,
         ViewCommonModule.class
 })
 public interface ItemFragmentComponent {

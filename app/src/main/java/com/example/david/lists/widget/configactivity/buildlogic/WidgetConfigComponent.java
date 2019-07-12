@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.david.lists.common.buildlogic.RecyclerViewAdapterModule;
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.widget.configactivity.WidgetConfigActivity;
@@ -15,7 +14,6 @@ import dagger.Component;
 @ViewScope
 @Component(modules = {
         WidgetConfigModule.class,
-        RecyclerViewAdapterModule.class,
         ViewCommonModule.class
 })
 public interface WidgetConfigComponent {
