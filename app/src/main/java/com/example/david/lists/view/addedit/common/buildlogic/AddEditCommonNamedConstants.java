@@ -1,7 +1,7 @@
 package com.example.david.lists.view.addedit.common.buildlogic;
 
-public final class AddEditNamedConstants {
-    private AddEditNamedConstants() {
+public final class AddEditCommonNamedConstants {
+    private AddEditCommonNamedConstants() {
     }
 
     public final static String ID = "id";

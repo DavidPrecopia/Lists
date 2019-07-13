@@ -20,12 +20,13 @@ import com.example.david.lists.util.UtilSoftKeyboard;
 
 import javax.inject.Inject;
 
-public abstract class AddEditDialogBase extends DialogFragment {
+public abstract class AddEditDialogBase extends DialogFragment
+        implements IAddEditContract.View {
 
     private AddEditDialogFragmentBinding binding;
 
     @Inject
-    AddEditViewModelBase viewModel;
+    protected IAddEditContract.Logic logic;
 
     @Inject
     UtilSoftKeyboard utilSoftKeyboard;
@@ -59,12 +60,6 @@ public abstract class AddEditDialogBase extends DialogFragment {
         confirmClickListener();
         cancelClickListener();
         editTextListener();
-        observeViewModel();
-    }
-
-    private void observeViewModel() {
-        viewModel.getEventErrorMessage().observe(this, this::showError);
-        viewModel.getEventDismiss().observe(this, aVoid -> dismiss());
     }
 
     private void initEditText() {
@@ -82,18 +77,18 @@ public abstract class AddEditDialogBase extends DialogFragment {
     }
 
     private void confirmClickListener() {
-        binding.buttonConfirm.setOnClickListener(view -> viewModel.validateInput(getEnteredText()));
+        binding.buttonConfirm.setOnClickListener(view -> logic.validateInput(getEnteredText()));
     }
 
     private void cancelClickListener() {
-        binding.buttonCancel.setOnClickListener(view -> dismiss());
+        binding.buttonCancel.setOnClickListener(view -> finishView());
     }
 
     private void editTextListener() {
         binding.textInputEditText.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.validateInput(getEnteredText());
+                logic.validateInput(getEnteredText());
                 handled = true;
             }
             return handled;
@@ -105,13 +100,16 @@ public abstract class AddEditDialogBase extends DialogFragment {
         return binding.textInputEditText.getText().toString().trim();
     }
 
-    private void showError(String errorMsg) {
-        binding.textInputLayout.setError(errorMsg);
+
+    @Override
+    public void setStateError(String message) {
+        binding.textInputLayout.setError(message);
     }
 
 
     @Override
-    public void dismiss() {
+    public void finishView() {
+        logic.destroy();
         utilSoftKeyboard.hideKeyboard(getActivity().getApplication(), binding.getRoot());
         super.dismiss();
     }

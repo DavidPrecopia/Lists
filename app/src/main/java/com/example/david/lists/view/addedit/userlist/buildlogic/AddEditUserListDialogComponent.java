@@ -2,10 +2,9 @@ package com.example.david.lists.view.addedit.userlist.buildlogic;
 
 import android.app.Application;
 
-import androidx.fragment.app.Fragment;
-
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
+import com.example.david.lists.view.addedit.common.IAddEditContract;
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditDialogCommonModule;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
 
@@ -14,8 +13,8 @@ import javax.inject.Named;
 import dagger.BindsInstance;
 import dagger.Component;
 
-import static com.example.david.lists.view.addedit.common.buildlogic.AddEditNamedConstants.ID;
-import static com.example.david.lists.view.addedit.common.buildlogic.AddEditNamedConstants.TITLE;
+import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.ID;
+import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.TITLE;
 
 @ViewScope
 @Component(modules = {
@@ -34,7 +33,7 @@ public interface AddEditUserListDialogComponent {
         Builder application(Application application);
 
         @BindsInstance
-        Builder fragment(Fragment fragment);
+        Builder view(IAddEditContract.View view);
 
         @BindsInstance
         Builder id(@Named(ID) String id);
