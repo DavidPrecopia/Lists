@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.util.SingleLiveEvent;
 
 import java.util.List;
 
@@ -32,5 +33,13 @@ public interface IRemoteRepositoryContract {
         void updateItemPosition(Item item, int oldPosition, int newPosition);
 
         LiveData<List<UserList>> getEventUserListDeleted();
+    }
+
+    interface SnapshotListener {
+        Flowable<List<UserList>> getUserListFlowable();
+
+        Flowable<List<Item>> getItemFlowable(String userListId);
+
+        SingleLiveEvent<List<UserList>> getEventDeleteUserList();
     }
 }

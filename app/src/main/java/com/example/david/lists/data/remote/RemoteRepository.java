@@ -27,27 +27,27 @@ public final class RemoteRepository implements IRemoteRepositoryContract.Reposit
     private final CollectionReference userListsCollection;
     private final CollectionReference itemsCollection;
 
-    private final UtilSnapshotListeners snapshotListeners;
+    private final IRemoteRepositoryContract.SnapshotListener snapshotListener;
 
     public RemoteRepository(FirebaseFirestore firestore,
                             CollectionReference userListsCollection,
                             CollectionReference itemsCollection,
-                            UtilSnapshotListeners snapshotListeners) {
+                            IRemoteRepositoryContract.SnapshotListener snapshotListener) {
         this.firestore = firestore;
         this.userListsCollection = userListsCollection;
         this.itemsCollection = itemsCollection;
-        this.snapshotListeners = snapshotListeners;
+        this.snapshotListener = snapshotListener;
     }
 
 
     @Override
     public Flowable<List<UserList>> getUserLists() {
-        return snapshotListeners.getUserListFlowable();
+        return snapshotListener.getUserListFlowable();
     }
 
     @Override
     public Flowable<List<Item>> getItems(String userListId) {
-        return snapshotListeners.getItemFlowable(userListId);
+        return snapshotListener.getItemFlowable(userListId);
     }
 
 
@@ -185,7 +185,7 @@ public final class RemoteRepository implements IRemoteRepositoryContract.Reposit
 
     @Override
     public LiveData<List<UserList>> getEventUserListDeleted() {
-        return snapshotListeners.getEventDeleteUserList();
+        return snapshotListener.getEventDeleteUserList();
     }
 
 

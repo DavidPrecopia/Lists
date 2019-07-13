@@ -28,7 +28,7 @@ import io.reactivex.FlowableEmitter;
 import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_ITEM_LIST_ID;
 import static com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_POSITION;
 
-public final class UtilSnapshotListeners {
+public final class SnapshotListener implements IRemoteRepositoryContract.SnapshotListener {
 
     private final Flowable<List<UserList>> userListFlowable;
     private final CollectionReference userListCollection;
@@ -42,10 +42,10 @@ public final class UtilSnapshotListeners {
 
     private boolean recentLocalChanges;
 
-    public UtilSnapshotListeners(CollectionReference userListCollection,
-                                 CollectionReference itemCollection,
-                                 IRepositoryContract.UserRepository userRepository,
-                                 FirebaseFirestore firestore) {
+    public SnapshotListener(CollectionReference userListCollection,
+                            CollectionReference itemCollection,
+                            IRepositoryContract.UserRepository userRepository,
+                            FirebaseFirestore firestore) {
         this.userListFlowable = initUserListFlowable();
         this.userListCollection = userListCollection;
         this.itemCollection = itemCollection;
@@ -55,15 +55,18 @@ public final class UtilSnapshotListeners {
     }
 
 
-    Flowable<List<UserList>> getUserListFlowable() {
+    @Override
+    public Flowable<List<UserList>> getUserListFlowable() {
         return userListFlowable;
     }
 
-    Flowable<List<Item>> getItemFlowable(String userListId) {
+    @Override
+    public Flowable<List<Item>> getItemFlowable(String userListId) {
         return initItemFlowable(userListId);
     }
 
-    SingleLiveEvent<List<UserList>> getEventDeleteUserList() {
+    @Override
+    public SingleLiveEvent<List<UserList>> getEventDeleteUserList() {
         return eventDeleteUserList;
     }
 
