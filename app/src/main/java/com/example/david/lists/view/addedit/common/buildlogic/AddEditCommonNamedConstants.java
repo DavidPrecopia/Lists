@@ -7,4 +7,5 @@ public final class AddEditCommonNamedConstants {
     public final static String ID = "id";
     public final static String TITLE = "title";
     public final static String USER_LIST_ID = "userListId";
+    public final static String POSITION = "position";
 }

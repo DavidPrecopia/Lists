@@ -11,8 +11,6 @@ public interface IAddEditContract {
         String getCurrentTitle();
 
         void validateInput(String input);
-
-        void destroy();
     }
 
     interface ViewModel {

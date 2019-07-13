@@ -14,6 +14,7 @@ import dagger.BindsInstance;
 import dagger.Component;
 
 import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.ID;
+import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.POSITION;
 import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.TITLE;
 import static com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.USER_LIST_ID;
 
@@ -44,5 +45,8 @@ public interface AddEditItemDialogComponent {
 
         @BindsInstance
         Builder userListId(@Named(USER_LIST_ID) String userListId);
+
+        @BindsInstance
+        Builder position(@Named(POSITION) int position);
     }
 }

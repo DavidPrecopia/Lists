@@ -125,7 +125,7 @@ public class UserListListView extends ListViewBase
     }
 
     private void observeEventAdd() {
-        viewModel.getEventAdd().observe(this, aVoid -> openAddDialog());
+        viewModel.getEventAdd().observe(this, this::openAddDialog);
     }
 
     private void observeEventEdit() {
@@ -148,15 +148,15 @@ public class UserListListView extends ListViewBase
     }
 
 
-    private void openAddDialog() {
+    private void openAddDialog(int lastPosition) {
         openDialogFragment(
-                AddEditUserListDialog.getInstance("", "")
+                AddEditUserListDialog.getInstance("", "", lastPosition)
         );
     }
 
     private void openEditDialog(UserList userList) {
         openDialogFragment(
-                AddEditUserListDialog.getInstance(userList.getId(), userList.getTitle())
+                AddEditUserListDialog.getInstance(userList.getId(), userList.getTitle(), userList.getPosition())
         );
     }
 

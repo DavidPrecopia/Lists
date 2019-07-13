@@ -47,7 +47,7 @@ public interface IUserListViewContract {
 
         LiveData<String> getEventNotifyUserOfDeletion();
 
-        LiveData<Void> getEventAdd();
+        LiveData<Integer> getEventAdd();
 
         LiveData<UserList> getEventEdit();
 

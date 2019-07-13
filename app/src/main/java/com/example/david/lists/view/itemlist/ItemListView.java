@@ -108,13 +108,13 @@ public class ItemListView extends ListViewBase {
 
     private void openAddDialog(String userListId) {
         openDialogFragment(
-                AddEditItemDialog.getInstance("", "", userListId)
+                AddEditItemDialog.getInstance("", "", userListId, 0 /*TEMP PLACEHOLDER*/)
         );
     }
 
     private void openEditDialog(Item item) {
         openDialogFragment(
-                AddEditItemDialog.getInstance(item.getId(), item.getTitle(), item.getUserListId())
+                AddEditItemDialog.getInstance(item.getId(), item.getTitle(), item.getUserListId(), item.getPosition())
         );
     }
 

@@ -10,15 +10,17 @@ public final class AddEditUserListDialog extends AddEditDialogBase {
 
     private static final String ARG_KEY_ID = "arg_key_id";
     private static final String ARG_KEY_TITLE = "arg_key_title";
+    private static final String ARG_KEY_POSITION = "arg_key_position";
 
     public AddEditUserListDialog() {
     }
 
-    public static AddEditUserListDialog getInstance(String id, String title) {
+    public static AddEditUserListDialog getInstance(String id, String title, int position) {
         AddEditUserListDialog fragment = new AddEditUserListDialog();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_KEY_ID, id);
         bundle.putString(ARG_KEY_TITLE, title);
+        bundle.putInt(ARG_KEY_POSITION, position);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -35,6 +37,7 @@ public final class AddEditUserListDialog extends AddEditDialogBase {
                 .view(this)
                 .id(getArguments().getString(ARG_KEY_ID))
                 .title(getArguments().getString(ARG_KEY_TITLE))
+                .position(getArguments().getInt(ARG_KEY_POSITION))
                 .build()
                 .inject(this);
     }

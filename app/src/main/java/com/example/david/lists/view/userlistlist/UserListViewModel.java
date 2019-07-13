@@ -30,7 +30,7 @@ public final class UserListViewModel extends ViewModelBase
     private final MutableLiveData<List<UserList>> userLists;
 
     private final SingleLiveEvent<UserList> eventOpenUserList;
-    private final SingleLiveEvent<Void> eventAdd;
+    private final SingleLiveEvent<Integer> eventAdd;
     private final SingleLiveEvent<UserList> eventEdit;
 
     private final SingleLiveEvent<Void> eventSignOut;
@@ -104,7 +104,7 @@ public final class UserListViewModel extends ViewModelBase
 
     @Override
     public void addButtonClicked() {
-        eventAdd.call();
+        eventAdd.setValue(userLists.getValue().size());
     }
 
     @Override
@@ -276,7 +276,7 @@ public final class UserListViewModel extends ViewModelBase
     }
 
     @Override
-    public LiveData<Void> getEventAdd() {
+    public LiveData<Integer> getEventAdd() {
         return eventAdd;
     }
 

@@ -109,7 +109,6 @@ public abstract class AddEditDialogBase extends DialogFragment
 
     @Override
     public void finishView() {
-        logic.destroy();
         utilSoftKeyboard.hideKeyboard(getActivity().getApplication(), binding.getRoot());
         super.dismiss();
     }
