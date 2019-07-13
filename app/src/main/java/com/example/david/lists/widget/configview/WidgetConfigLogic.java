@@ -89,10 +89,11 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
 
     private void evaluateNewData() {
         List<UserList> userLists = viewModel.getViewData();
+        view.setData(userLists);
+
         if (userLists.isEmpty()) {
             view.setStateError(viewModel.getErrorMsgEmptyList());
         } else {
-            view.setData(userLists);
             view.setStateDisplayList();
         }
     }
