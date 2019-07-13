@@ -12,9 +12,9 @@ import com.example.david.lists.R;
 import com.example.david.lists.view.itemlist.ItemActivity;
 import com.example.david.lists.widget.configview.WidgetConfigView;
 
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyId;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefKeyTitle;
+import static com.example.david.lists.widget.UtilWidgetKeys.getSharedPrefName;
 
 public final class WidgetRemoteView {
 

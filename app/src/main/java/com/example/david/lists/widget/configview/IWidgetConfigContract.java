@@ -1,28 +1,59 @@
 package com.example.david.lists.widget.configview;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
 public interface IWidgetConfigContract {
-    interface ViewModel {
-        void userListClicked(UserList userList);
+    interface View {
+        void setData(List<UserList> list);
 
-        LiveData<List<UserList>> getUserLists();
+        void setStateDisplayList();
 
-        LiveData<Boolean> getEventDisplayLoading();
+        void setStateLoading();
 
-        LiveData<Void> getEventSuccessful();
+        void setStateError(String message);
 
-        LiveData<Boolean> getEventDisplayError();
+        void setResults(int widgetId, int resultCode);
 
-        LiveData<String> getErrorMessage();
+        void finishView(int widgetId);
+
+        void finishViewInvalidId();
     }
 
     interface Adapter {
-        void submitList(List<UserList> list);
+        void setData(List<UserList> list);
+    }
 
+    interface Logic {
+        void onStart(int appWidgetId);
+
+        void selectedUserList(UserList userList);
+
+        void onDestroy();
+    }
+
+    interface ViewModel {
+        void setViewData(List<UserList> list);
+
+        List<UserList> getViewData();
+
+        void setWidgetId(int widgetId);
+
+        int getWidgetId();
+
+        int getInvalidWidgetId();
+
+        int getResultOk();
+
+        int getResultCancelled();
+
+        String getErrorMsg();
+
+        String getErrorMsgEmptyList();
+
+        String getSharedPrefKeyId();
+
+        String getSharedPrefKeyTitle();
     }
 }

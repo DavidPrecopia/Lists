@@ -1,170 +1,88 @@
 package com.example.david.lists.widget.configview;
 
+import android.app.Activity;
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
-import android.content.SharedPreferences;
-import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.data.repository.IRepositoryContract;
-import com.example.david.lists.util.SingleLiveEvent;
-import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.widget.view.WidgetRemoteView;
+import com.example.david.lists.widget.UtilWidgetKeys;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subscribers.DisposableSubscriber;
+public final class WidgetConfigViewModel implements IWidgetConfigContract.ViewModel {
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle;
-import static com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName;
+    @NonNull
+    private final Application application;
 
-public final class WidgetConfigViewModel extends AndroidViewModel
-        implements IWidgetConfigContract.ViewModel {
+    private List<UserList> userLists;
+    private int widgetId;
 
-    private final IRepositoryContract.Repository repository;
-    private final CompositeDisposable disposable;
-
-    private final int widgetId;
-    private final MutableLiveData<List<UserList>> userLists;
-
-    private final MutableLiveData<Boolean> eventDisplayLoading;
-    private final SingleLiveEvent<Void> eventSuccessful;
-    private final SingleLiveEvent<Boolean> eventDisplayError;
-    private final SingleLiveEvent<String> errorMessage;
-
-    WidgetConfigViewModel(@NonNull Application application, IRepositoryContract.Repository repository, CompositeDisposable disposable, int widgetId) {
-        super(application);
-        this.repository = repository;
-        this.disposable = disposable;
-        this.widgetId = widgetId;
-        userLists = new MutableLiveData<>();
-        eventDisplayLoading = new MutableLiveData<>();
-        eventSuccessful = new SingleLiveEvent<>();
-        eventDisplayError = new SingleLiveEvent<>();
-        errorMessage = new SingleLiveEvent<>();
-
-        init();
-    }
-
-    private void init() {
-        eventDisplayLoading.setValue(true);
-        getUserListsFromRepository();
-    }
-
-
-    private void getUserListsFromRepository() {
-        disposable.add(repository.getAllUserLists()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(userListSubscriber())
-        );
-    }
-
-    private DisposableSubscriber<List<UserList>> userListSubscriber() {
-        return new DisposableSubscriber<List<UserList>>() {
-            @Override
-            public void onNext(List<UserList> userLists) {
-                WidgetConfigViewModel.this.userLists.setValue(userLists);
-                evaluateNewData(userLists);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                UtilExceptions.throwException(t);
-                errorMessage.setValue(getStringResource(R.string.error_msg_generic));
-                eventDisplayError.setValue(true);
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-    }
-
-    private void evaluateNewData(List<UserList> newUserListList) {
-        eventDisplayLoading.setValue(false);
-
-        if (newUserListList.isEmpty()) {
-            errorMessage.setValue(getStringResource(R.string.error_msg_no_user_lists));
-            eventDisplayError.setValue(true);
-        } else {
-            eventDisplayError.setValue(false);
-        }
+    public WidgetConfigViewModel(@NonNull Application application) {
+        this.application = application;
+        this.userLists = new ArrayList<>();
     }
 
 
     @Override
-    public void userListClicked(UserList userList) {
-        saveDetails(userList.getId(), userList.getTitle());
-        updateWidget();
-        eventSuccessful.call();
+    public void setViewData(List<UserList> list) {
+        this.userLists = list;
     }
-
-    private void saveDetails(String id, String title) {
-        SharedPreferences.Editor editor = getApplication().getSharedPreferences(
-                getSharedPrefName(getApplication()), MODE_PRIVATE
-        ).edit();
-        editor.putString(getSharedPrefKeyId(getApplication(), widgetId), id);
-        editor.putString(getSharedPrefKeyTitle(getApplication(), widgetId), title);
-        editor.apply();
-    }
-
-    private void updateWidget() {
-        RemoteViews remoteView = new WidgetRemoteView(getApplication(), widgetId).updateWidget();
-        AppWidgetManager.getInstance(getApplication()).updateAppWidget(widgetId, remoteView);
-    }
-
 
     @Override
-    public LiveData<List<UserList>> getUserLists() {
-        List<UserList> value = userLists.getValue();
-        if (value != null) {
-            evaluateNewData(value);
-        }
+    public List<UserList> getViewData() {
         return userLists;
     }
 
+
     @Override
-    public LiveData<Boolean> getEventDisplayLoading() {
-        return eventDisplayLoading;
+    public void setWidgetId(int widgetId) {
+        this.widgetId = widgetId;
     }
 
     @Override
-    public LiveData<Void> getEventSuccessful() {
-        return eventSuccessful;
+    public int getWidgetId() {
+        return widgetId;
     }
 
     @Override
-    public LiveData<Boolean> getEventDisplayError() {
-        return eventDisplayError;
-    }
-
-    @Override
-    public LiveData<String> getErrorMessage() {
-        return errorMessage;
-    }
-
-
-    private String getStringResource(int stringResId) {
-        return getApplication().getString(stringResId);
+    public int getInvalidWidgetId() {
+        return AppWidgetManager.INVALID_APPWIDGET_ID;
     }
 
 
     @Override
-    protected void onCleared() {
-        super.onCleared();
-        disposable.clear();
+    public int getResultOk() {
+        return Activity.RESULT_OK;
+    }
+
+    @Override
+    public int getResultCancelled() {
+        return Activity.RESULT_CANCELED;
+    }
+
+
+    @Override
+    public String getErrorMsg() {
+        return application.getString(R.string.error_msg_generic);
+    }
+
+    @Override
+    public String getErrorMsgEmptyList() {
+        return application.getString(R.string.error_msg_empty_user_list);
+    }
+
+
+    @Override
+    public String getSharedPrefKeyId() {
+        return UtilWidgetKeys.getSharedPrefKeyId(application, this.widgetId);
+    }
+
+    @Override
+    public String getSharedPrefKeyTitle() {
+        return UtilWidgetKeys.getSharedPrefKeyTitle(application, this.widgetId);
     }
 }

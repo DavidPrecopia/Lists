@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,18 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
 import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent;
+import com.example.david.lists.widget.view.WidgetRemoteView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class WidgetConfigView extends AppCompatActivity {
+public class WidgetConfigView extends AppCompatActivity
+        implements IWidgetConfigContract.View {
 
     private ActivityWidgetConfigBinding binding;
 
     @Inject
-    IWidgetConfigContract.ViewModel viewModel;
+    IWidgetConfigContract.Logic logic;
 
     @Inject
     IWidgetConfigContract.Adapter adapter;
@@ -33,43 +39,37 @@ public class WidgetConfigView extends AppCompatActivity {
     @Inject
     RecyclerView.ItemDecoration dividerItemDecorator;
 
-    private static final int INVALID_WIDGET_ID = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private int widgetId = INVALID_WIDGET_ID;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
-        // In case the user cancels
-        resultsIntent(RESULT_CANCELED);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_widget_config);
-        init();
+        initView();
+
+        logic.onStart(getWidgetId());
     }
 
     private void inject() {
         DaggerWidgetConfigViewComponent.builder()
                 .application(getApplication())
-                .activity(this)
+                .view(this)
                 .widgetId(getWidgetId())
                 .build()
                 .inject(this);
     }
 
-    private void init() {
-        getWidgetId();
-        initRecyclerView();
-        initToolbar();
-        observeViewModel();
+    private int getWidgetId() {
+        return getIntent().getExtras().getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+        );
     }
 
 
-    private int getWidgetId() {
-        widgetId = getIntent().getExtras()
-                .getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, INVALID_WIDGET_ID);
-        if (widgetId == INVALID_WIDGET_ID) {
-            finish();
-        }
-        return widgetId;
+    private void initView() {
+        getWidgetId();
+        initRecyclerView();
+        initToolbar();
     }
 
     private void initRecyclerView() {
@@ -86,76 +86,71 @@ public class WidgetConfigView extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.title_widget_config_activity);
     }
 
-    private void observeViewModel() {
-        observeUserLists();
-        observeEventDisplayingLoading();
-        observeEventDisplayError();
-        observeEventSuccessful();
-    }
 
-    private void observeUserLists() {
-        viewModel.getUserLists().observe(this, userLists -> adapter.submitList(userLists));
-    }
-
-    private void observeEventDisplayingLoading() {
-        viewModel.getEventDisplayLoading().observe(this, display -> {
-            if (display) {
-                showLoading();
-            } else {
-                hideLoading();
-            }
-        });
-    }
-
-    private void observeEventDisplayError() {
-        viewModel.getEventDisplayError().observe(this, display -> {
-            if (display) {
-                showError(viewModel.getErrorMessage().getValue());
-            } else {
-                hideError();
-            }
-        });
-    }
-
-
-    private void observeEventSuccessful() {
-        viewModel.getEventSuccessful().observe(this, aVoid -> successful());
-    }
-
-    private void successful() {
-        resultsIntent(RESULT_OK);
-        finish();
-    }
-
-
-    private void resultsIntent(int resultCode) {
+    @Override
+    public void setResults(int widgetId, int resultCode) {
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         setResult(resultCode, resultValue);
     }
 
-
-    private void showLoading() {
-        hideError();
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
+    @Override
+    public void finishView(int widgetId) {
+        updateWidget(widgetId);
+        super.finish();
     }
 
-    private void hideLoading() {
-        hideError();
+    private void updateWidget(int widgetId) {
+        RemoteViews remoteView = new WidgetRemoteView(getApplication(), widgetId).updateWidget();
+        AppWidgetManager.getInstance(getApplication()).updateAppWidget(widgetId, remoteView);
+    }
+
+    @Override
+    public void finishViewInvalidId() {
+        super.finish();
+    }
+
+
+    @Override
+    public void setData(List<UserList> list) {
+        adapter.setData(list);
+    }
+
+
+    @Override
+    public void setStateDisplayList() {
         binding.progressBar.setVisibility(View.GONE);
+        binding.tvError.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showError(String message) {
-        TextView tvError = binding.tvError;
+    @Override
+    public void setStateLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.tvError.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setStateError(String message) {
         binding.recyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.GONE);
+
+        TextView tvError = binding.tvError;
         tvError.setText(message);
         tvError.setVisibility(View.VISIBLE);
     }
 
-    private void hideError() {
-        binding.tvError.setVisibility(View.GONE);
+
+    @Override
+    protected void onDestroy() {
+        logic.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        logic.onDestroy();
+        super.onBackPressed();
     }
 }

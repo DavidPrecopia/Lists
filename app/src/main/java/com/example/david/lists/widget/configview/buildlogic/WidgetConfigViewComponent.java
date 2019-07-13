@@ -2,10 +2,9 @@ package com.example.david.lists.widget.configview.buildlogic;
 
 import android.app.Application;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
+import com.example.david.lists.widget.configview.IWidgetConfigContract;
 import com.example.david.lists.widget.configview.WidgetConfigView;
 
 import dagger.BindsInstance;
@@ -17,7 +16,9 @@ import dagger.Component;
         ViewCommonModule.class
 })
 public interface WidgetConfigViewComponent {
-    void inject(WidgetConfigView activity);
+    String SHARED_PREFS = "widget_shared_prefs";
+
+    void inject(WidgetConfigView view);
 
     @Component.Builder
     interface Builder {
@@ -27,7 +28,7 @@ public interface WidgetConfigViewComponent {
         Builder application(Application application);
 
         @BindsInstance
-        Builder activity(AppCompatActivity appCompatActivity);
+        Builder view(IWidgetConfigContract.View view);
 
         @BindsInstance
         Builder widgetId(int widgetId);

@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,12 +20,12 @@ public final class WidgetConfigAdapter extends ListAdapter<UserList, WidgetConfi
 
     private final List<UserList> userLists;
 
-    private final IWidgetConfigContract.ViewModel viewModel;
+    private final IWidgetConfigContract.Logic logic;
 
-    public WidgetConfigAdapter(IWidgetConfigContract.ViewModel viewModel) {
+    public WidgetConfigAdapter(IWidgetConfigContract.Logic logic) {
         super(new UserListDiffCallback());
         this.userLists = new ArrayList<>();
-        this.viewModel = viewModel;
+        this.logic = logic;
     }
 
     @NonNull
@@ -43,7 +42,7 @@ public final class WidgetConfigAdapter extends ListAdapter<UserList, WidgetConfi
     }
 
     @Override
-    public void submitList(@Nullable List<UserList> list) {
+    public void setData(List<UserList> list) {
         super.submitList(list);
         // In case the exact same List is submitted twice
         if (this.userLists != list) {
@@ -70,7 +69,7 @@ public final class WidgetConfigAdapter extends ListAdapter<UserList, WidgetConfi
 
         @Override
         public void onClick(View v) {
-            viewModel.userListClicked(
+            logic.selectedUserList(
                     userLists.get(getAdapterPosition())
             );
         }
