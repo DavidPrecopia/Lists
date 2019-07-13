@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.ListsApplication;
 import com.example.david.lists.data.repository.IRepositoryContract;
+import com.example.david.lists.util.ISchedulerProviderContract;
+import com.example.david.lists.util.SchedulerProvider;
 import com.example.david.lists.view.common.TouchHelperCallback;
 
 import dagger.Module;
@@ -43,6 +45,12 @@ public final class ViewCommonModule {
     @Provides
     CompositeDisposable disposable() {
         return new CompositeDisposable();
+    }
+
+    @ViewScope
+    @Provides
+    ISchedulerProviderContract schedulerProvider() {
+        return new SchedulerProvider();
     }
 
 
