@@ -18,11 +18,11 @@ final class MyRemoteViewsServiceModule {
     @Provides
     RemoteViewsService.RemoteViewsFactory remoteViewsFactory(Application application,
                                                              String userListId,
-                                                             IRepositoryContract.Repository repository,
+                                                             IRepositoryContract.Repository repo,
                                                              CompositeDisposable disposable,
                                                              AppWidgetManager appWidgetManager,
                                                              int appWidgetId) {
-        return new MyRemoteViewsFactory(application, userListId, repository, disposable, appWidgetManager, appWidgetId);
+        return new MyRemoteViewsFactory(application, userListId, repo, disposable, appWidgetManager, appWidgetId);
     }
 
     @Provides

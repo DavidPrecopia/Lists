@@ -25,7 +25,7 @@ public class MyRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
     private final List<Item> itemList;
     private final String userListId;
 
-    private final IRepositoryContract.Repository repository;
+    private final IRepositoryContract.Repository repo;
     private final CompositeDisposable disposable;
 
     private final AppWidgetManager appWidgetManager;
@@ -33,14 +33,14 @@ public class MyRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
 
     public MyRemoteViewsFactory(Application application,
                                 String userListId,
-                                IRepositoryContract.Repository repository,
+                                IRepositoryContract.Repository repo,
                                 CompositeDisposable disposable,
                                 AppWidgetManager appWidgetManager,
                                 int widgetId) {
         this.application = application;
         itemList = new ArrayList<>();
         this.userListId = userListId;
-        this.repository = repository;
+        this.repo = repo;
         this.disposable = disposable;
         this.appWidgetManager = appWidgetManager;
         this.widgetId = widgetId;
@@ -49,7 +49,7 @@ public class MyRemoteViewsFactory implements RemoteViewsService.RemoteViewsFacto
 
     @Override
     public void onCreate() {
-        disposable.add(repository.getItems(userListId)
+        disposable.add(repo.getItems(userListId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(itemListObserver())

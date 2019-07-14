@@ -17,7 +17,7 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
     private final IWidgetConfigContract.View view;
     private final IWidgetConfigContract.ViewModel viewModel;
 
-    private final IRepositoryContract.Repository repository;
+    private final IRepositoryContract.Repository repo;
     private final ISchedulerProviderContract schedulerProvider;
     private final CompositeDisposable disposable;
 
@@ -25,14 +25,14 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
 
     public WidgetConfigLogic(IWidgetConfigContract.View view,
                              IWidgetConfigContract.ViewModel viewModel,
-                             IRepositoryContract.Repository repository,
+                             IRepositoryContract.Repository repo,
                              ISchedulerProviderContract schedulerProvider,
                              CompositeDisposable disposable,
                              SharedPreferences sharedPrefs,
                              int widgetId) {
         this.view = view;
         this.viewModel = viewModel;
-        this.repository = repository;
+        this.repo = repo;
         this.schedulerProvider = schedulerProvider;
         this.disposable = disposable;
         this.sharedPrefs = sharedPrefs;
@@ -59,7 +59,7 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
 
 
     private void getUserLists() {
-        disposable.add(repository.getAllUserLists()
+        disposable.add(repo.getAllUserLists()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribeWith(userListSubscriber())
