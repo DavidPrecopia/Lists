@@ -23,17 +23,23 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
     private final ArrayList<UserList> userListList;
 
-    private final IUserListViewContract.ViewModel viewModel;
+    private IUserListViewContract.Logic logic;
+
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public UserListAdapter(IUserListViewContract.ViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public UserListAdapter(ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(new UserListDiffCallback());
         userListList = new ArrayList<>();
-        this.viewModel = viewModel;
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
     }
+
+    @Override
+    public void init(IUserListViewContract.Logic logic) {
+        this.logic = logic;
+    }
+
 
     @NonNull
     @Override
@@ -92,24 +98,22 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            viewModel.swipedLeft(UserListAdapter.this, adapterPosition);
+            logic.delete(adapterPosition);
         }
 
         @Override
         protected void edit(int adapterPosition) {
-            viewModel.edit(getItem(adapterPosition));
+            logic.edit(getItem(adapterPosition));
         }
 
         @Override
         protected void delete(int adapterPosition) {
-            viewModel.delete(UserListAdapter.this, adapterPosition);
+            logic.delete(adapterPosition);
         }
 
         @Override
         public void onClick(View v) {
-            viewModel.userListClicked(
-                    userListList.get(getAdapterPosition())
-            );
+            logic.userListSelected(userListList.get(getAdapterPosition()));
         }
     }
 }

@@ -15,10 +15,13 @@ public class ItemActivity extends ActivityBase {
 
     private ActivityItemBinding binding;
 
+    private boolean newActivity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
+        this.newActivity = (savedInstanceState == null);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_item);
         init();
     }

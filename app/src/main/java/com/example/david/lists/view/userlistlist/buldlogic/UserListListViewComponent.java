@@ -2,11 +2,10 @@ package com.example.david.lists.view.userlistlist.buldlogic;
 
 import android.app.Application;
 
-import androidx.fragment.app.Fragment;
-
 import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.view.common.TouchHelperCallback;
+import com.example.david.lists.view.userlistlist.IUserListViewContract;
 import com.example.david.lists.view.userlistlist.UserListListView;
 
 import dagger.BindsInstance;
@@ -18,7 +17,7 @@ import dagger.Component;
         ViewCommonModule.class
 })
 public interface UserListListViewComponent {
-    void inject(UserListListView userListFragment);
+    void inject(UserListListView userListListView);
 
     @Component.Builder
     interface Builder {
@@ -28,7 +27,7 @@ public interface UserListListViewComponent {
         Builder application(Application application);
 
         @BindsInstance
-        Builder fragment(Fragment fragment);
+        Builder view(IUserListViewContract.View view);
 
         @BindsInstance
         Builder movementCallback(TouchHelperCallback.MovementCallback movementCallback);

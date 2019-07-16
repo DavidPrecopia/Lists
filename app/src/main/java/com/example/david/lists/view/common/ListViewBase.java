@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -147,26 +148,33 @@ public abstract class ListViewBase extends Fragment
     }
 
 
-    protected void showLoading() {
-        hideError();
-        binding.progressBar.setVisibility(View.VISIBLE);
+    protected void displayLoading() {
+        binding.tvError.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.GONE);
         binding.fab.hide();
+
+        binding.progressBar.setVisibility(View.VISIBLE);
     }
 
-    protected void hideLoading() {
+    protected void displayList() {
         binding.progressBar.setVisibility(View.GONE);
+        binding.tvError.setVisibility(View.GONE);
+
         binding.recyclerView.setVisibility(View.VISIBLE);
         binding.fab.show();
     }
 
-    protected void showError(String errorMessage) {
-        hideLoading();
+    protected void displayError(String errorMessage) {
+        binding.progressBar.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.fab.hide();
+        
         binding.tvError.setText(errorMessage);
         binding.tvError.setVisibility(View.VISIBLE);
     }
 
-    protected void hideError() {
-        binding.tvError.setVisibility(View.GONE);
+
+    protected void toastMessage(String message) {
+        Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

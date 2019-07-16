@@ -1,4 +1,4 @@
-package com.example.david.lists.view.authentication;
+package com.example.david.lists.view.userlistlist;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,14 +10,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.example.david.lists.R;
+import com.example.david.lists.util.UtilExceptions;
 
-public final class ConfirmSignOutDialog extends DialogFragment {
+final class ConfirmSignOutDialog extends DialogFragment {
 
 
-    public interface ConfirmSignOutCallback {
-        void proceedWithSignOut();
+    interface ConfirmSignOutCallback {
+        void signOutConfirmed();
     }
 
 
@@ -26,7 +28,11 @@ public final class ConfirmSignOutDialog extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        callback = (ConfirmSignOutCallback) getActivity();
+        Fragment fragment = getTargetFragment();
+        if (fragment == null) {
+            UtilExceptions.throwException(new IllegalStateException("Parent fragment is required"));
+        }
+        callback = (ConfirmSignOutCallback) fragment;
     }
 
     @NonNull
@@ -43,8 +49,8 @@ public final class ConfirmSignOutDialog extends DialogFragment {
     private AlertDialog initAlertDialog() {
         return new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.confirm_sign_out_dialog_message)
-                .setNegativeButton(R.string.button_text_cancel, (dialog, which) -> dialog.cancel())
-                .setPositiveButton(R.string.button_text_yes, (dialog, which) -> callback.proceedWithSignOut())
+                .setNegativeButton(R.string.button_text_cancel, (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(R.string.button_text_yes, (dialog, which) -> callback.signOutConfirmed())
                 .create();
     }
 

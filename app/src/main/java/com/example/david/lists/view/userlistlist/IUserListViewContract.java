@@ -1,62 +1,73 @@
 package com.example.david.lists.view.userlistlist;
 
+import android.content.Intent;
 import android.view.MenuItem;
 
-import androidx.lifecycle.LiveData;
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.UserList;
 
 import java.util.List;
 
 public interface IUserListViewContract {
-    interface ViewModel {
-        void userListClicked(UserList userList);
+    interface View {
+        void openUserList(Intent intent);
 
-        void addButtonClicked();
+        void openAuthentication(Intent intent, int requestCode);
+
+        void openDialog(DialogFragment dialog);
+
+        void notifyUserOfDeletion(String message);
+
+        void setStateDisplayList();
+
+        void setStateLoading();
+
+        void setStateError(String message);
+
+        void recreateView();
+    }
+
+    interface Logic {
+        void onStart();
+
+        RecyclerView.Adapter getAdapter();
+
+        void userListSelected(UserList userList);
+
+        void add();
 
         void edit(UserList userList);
 
-        void dragging(Adapter adapter, int fromPosition, int toPosition);
+        void dragging(int fromPosition, int toPosition);
 
         void movedPermanently(int newPosition);
 
-        void swipedLeft(Adapter adapter, int position);
+        void delete(int position);
 
-        void delete(Adapter adapter, int position);
-
-        void undoRecentDeletion(Adapter adapter);
+        void undoRecentDeletion();
 
         void deletionNotificationTimedOut();
 
-        void onOptionsItemSelected(MenuItem menuItem);
-
         void signOut();
+
+        void signOutConfirmed();
+
+        void signIn();
+
+        void authResult(int requestCode, Intent data);
+
+        void nightMode(MenuItem item);
 
         int getMenuResource();
 
-
-        LiveData<List<UserList>> getUserLists();
-
-        LiveData<UserList> getEventOpenUserList();
-
-        LiveData<Boolean> getEventDisplayLoading();
-
-        LiveData<Boolean> getEventDisplayError();
-
-        LiveData<String> getErrorMessage();
-
-        LiveData<String> getEventNotifyUserOfDeletion();
-
-        LiveData<Integer> getEventAdd();
-
-        LiveData<UserList> getEventEdit();
-
-        LiveData<Void> getEventSignOut();
-
-        LiveData<Void> getEventSignIn();
+        void onDestroy();
     }
 
     interface Adapter {
+        void init(IUserListViewContract.Logic logic);
+
         void submitList(List<UserList> list);
 
         void move(int fromPosition, int toPosition);

@@ -1,7 +1,6 @@
 package com.example.david.lists.view.common;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -9,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.itemlist.ItemViewModel;
-import com.example.david.lists.view.userlistlist.UserListViewModel;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -18,11 +16,7 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     private final Application application;
 
     private final IRepositoryContract.Repository repository;
-    private IRepositoryContract.UserRepository userRepository;
-
     private final CompositeDisposable disposable;
-
-    private SharedPreferences sharedPrefsNightMode;
 
     private String userListId;
 
@@ -31,15 +25,6 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
         this.application = application;
         this.repository = repository;
         this.disposable = disposable;
-    }
-
-    /**
-     * Used to create {@link UserListViewModel}.
-     */
-    public ViewModelFactory(Application application, IRepositoryContract.Repository repository, IRepositoryContract.UserRepository userRepository, CompositeDisposable disposable, SharedPreferences sharedPrefsNightMode) {
-        this(application, repository, disposable);
-        this.userRepository = userRepository;
-        this.sharedPrefsNightMode = sharedPrefsNightMode;
     }
 
     /**
@@ -54,10 +39,7 @@ public final class ViewModelFactory extends ViewModelProvider.AndroidViewModelFa
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(UserListViewModel.class)) {
-            //noinspection unchecked
-            return (T) new UserListViewModel(application, repository, userRepository, disposable, sharedPrefsNightMode);
-        } else if (modelClass.isAssignableFrom(ItemViewModel.class)) {
+        if (modelClass.isAssignableFrom(ItemViewModel.class)) {
             //noinspection unchecked
             return (T) new ItemViewModel(application, repository, disposable, userListId);
         } else {

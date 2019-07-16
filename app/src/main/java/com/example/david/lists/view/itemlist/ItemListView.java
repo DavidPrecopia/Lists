@@ -70,9 +70,9 @@ public class ItemListView extends ListViewBase {
     private void observeEventDisplayError() {
         viewModel.getEventDisplayError().observe(this, display -> {
             if (display) {
-                showError(viewModel.getErrorMessage().getValue());
+                displayError(viewModel.getErrorMessage().getValue());
             } else {
-                hideError();
+                displayError("PLACEHOLDER");
             }
         });
     }
@@ -80,9 +80,9 @@ public class ItemListView extends ListViewBase {
     private void observeEventDisplayLoading() {
         viewModel.getEventDisplayLoading().observe(this, display -> {
             if (display) {
-                showLoading();
+                displayLoading();
             } else {
-                hideLoading();
+                displayList();
             }
         });
     }

@@ -1,45 +1,34 @@
 package com.example.david.lists.view.userlistlist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
-import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
-import com.example.david.lists.view.authentication.ConfirmSignOutDialog;
 import com.example.david.lists.view.common.ListViewBase;
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent;
 
 import javax.inject.Inject;
 
 public class UserListListView extends ListViewBase
-        implements ConfirmSignOutDialog.ConfirmSignOutCallback {
-
-
-    public interface UserListsFragmentListener {
-        int SIGN_OUT = 100;
-        int SIGN_IN = 200;
-
-        void authMessage(int message);
-
-        void openUserList(UserList userList);
-    }
-
+        implements IUserListViewContract.View,
+        ConfirmSignOutDialog.ConfirmSignOutCallback {
 
     @Inject
-    IUserListViewContract.ViewModel viewModel;
-
-    @Inject
-    IUserListViewContract.Adapter adapter;
-
-    private UserListsFragmentListener userListsFragmentListener;
-
+    IUserListViewContract.Logic logic;
 
     public UserListListView() {
     }
@@ -53,13 +42,12 @@ public class UserListListView extends ListViewBase
     public void onAttach(Context context) {
         inject();
         super.onAttach(context);
-        init();
     }
 
     private void inject() {
         DaggerUserListListViewComponent.builder()
                 .application(getActivity().getApplication())
-                .fragment(this)
+                .view(this)
                 .movementCallback(this)
                 .build()
                 .inject(this);
@@ -71,71 +59,23 @@ public class UserListListView extends ListViewBase
         setHasOptionsMenu(true);
     }
 
-    private void init() {
-        this.userListsFragmentListener = (UserListsFragmentListener) getActivity();
-        observeViewModel();
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        logic.onStart();
+        return view;
     }
 
-    private void observeViewModel() {
-        observeUserLists();
-        observeEventDisplayError();
-        observeEventDisplayLoading();
-        observeEventNotifyUserOfDeletion();
-        observeEventAdd();
-        observeEventEdit();
-        observeAccountEvents();
+    @Override
+    public void onDestroy() {
+        logic.onDestroy();
+        super.onDestroy();
     }
-
-    private void observeUserLists() {
-        viewModel.getUserLists().observe(this, userLists -> adapter.submitList(userLists));
-    }
-
-    private void observeAccountEvents() {
-        viewModel.getEventOpenUserList().observe(this, userList ->
-                userListsFragmentListener.openUserList(userList));
-        viewModel.getEventSignOut().observe(this, aVoid ->
-                userListsFragmentListener.authMessage(UserListsFragmentListener.SIGN_OUT));
-        viewModel.getEventSignIn().observe(this, aVoid ->
-                userListsFragmentListener.authMessage(UserListsFragmentListener.SIGN_IN));
-    }
-
-
-    private void observeEventDisplayError() {
-        viewModel.getEventDisplayError().observe(this, display -> {
-            if (display) {
-                showError(viewModel.getErrorMessage().getValue());
-            } else {
-                hideError();
-            }
-        });
-    }
-
-    private void observeEventDisplayLoading() {
-        viewModel.getEventDisplayLoading().observe(this, display -> {
-            if (display) {
-                showLoading();
-            } else {
-                hideLoading();
-            }
-        });
-    }
-
-    private void observeEventNotifyUserOfDeletion() {
-        viewModel.getEventNotifyUserOfDeletion().observe(this, this::notifyDeletionSnackbar);
-    }
-
-    private void observeEventAdd() {
-        viewModel.getEventAdd().observe(this, this::openAddDialog);
-    }
-
-    private void observeEventEdit() {
-        viewModel.getEventEdit().observe(this, this::openEditDialog);
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(viewModel.getMenuResource(), menu);
+        inflater.inflate(logic.getMenuResource(), menu);
         menu.findItem(R.id.menu_id_night_mode)
                 .setChecked(UtilNightMode.isNightModeEnabled(getActivity().getApplication()));
         super.onCreateOptionsMenu(menu, inflater);
@@ -143,53 +83,100 @@ public class UserListListView extends ListViewBase
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        viewModel.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.menu_id_sign_out:
+                logic.signOut();
+                break;
+            case R.id.menu_id_sign_in:
+                logic.signIn();
+                break;
+            case R.id.menu_id_night_mode:
+                logic.nightMode(item);
+                break;
+            default:
+                UtilExceptions.throwException(new IllegalArgumentException());
+        }
         return super.onOptionsItemSelected(item);
     }
 
 
-    private void openAddDialog(int lastPosition) {
-        openDialogFragment(
-                AddEditUserListDialog.getInstance("", "", lastPosition)
-        );
+    @Override
+    public void openUserList(Intent intent) {
+        startActivity(intent);
     }
 
-    private void openEditDialog(UserList userList) {
-        openDialogFragment(
-                AddEditUserListDialog.getInstance(userList.getId(), userList.getTitle(), userList.getPosition())
-        );
+    @Override
+    public void signOutConfirmed() {
+        logic.signOutConfirmed();
+    }
+
+    @Override
+    public void openAuthentication(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        logic.authResult(requestCode, data);
+    }
+
+    @Override
+    public void openDialog(DialogFragment dialog) {
+        openDialogFragment(dialog);
     }
 
 
     @Override
-    public void proceedWithSignOut() {
-        viewModel.signOut();
+    public void notifyUserOfDeletion(String message) {
+        notifyDeletionSnackbar(message);
+    }
+
+
+    @Override
+    public void setStateDisplayList() {
+        displayList();
+    }
+
+    @Override
+    public void setStateLoading() {
+        displayLoading();
+    }
+
+    @Override
+    public void setStateError(String message) {
+        displayError(message);
+    }
+
+    @Override
+    public void recreateView() {
+        getActivity().recreate();
     }
 
 
     @Override
     protected void addButtonClicked() {
-        viewModel.addButtonClicked();
+        logic.add();
     }
 
     @Override
     protected void undoRecentDeletion() {
-        viewModel.undoRecentDeletion(adapter);
+        logic.undoRecentDeletion();
     }
 
     @Override
     protected void deletionNotificationTimedOut() {
-        viewModel.deletionNotificationTimedOut();
+        logic.deletionNotificationTimedOut();
     }
 
     @Override
     protected void draggingListItem(int fromPosition, int toPosition) {
-        viewModel.dragging(adapter, fromPosition, toPosition);
+        logic.dragging(fromPosition, toPosition);
     }
 
     @Override
     protected void permanentlyMoved(int newPosition) {
-        viewModel.movedPermanently(newPosition);
+        logic.movedPermanently(newPosition);
     }
 
     @Override
@@ -204,6 +191,6 @@ public class UserListListView extends ListViewBase
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return (RecyclerView.Adapter) adapter;
+        return logic.getAdapter();
     }
 }
