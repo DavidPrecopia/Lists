@@ -8,6 +8,6 @@
     <string name="button_text_save">Save</string>
     <string name="button_text_yes">Yes</string>
 
-    <string name="error_empty_title_text_field">Cannot be empty</string>
-    <string name="error_title_unchanged">Title is unchanged</string>
+    <string name="error_msg_empty_title_text_field">Cannot be empty</string>
+    <string name="error_msg_title_unchanged">Title is unchanged</string>
 </resources>

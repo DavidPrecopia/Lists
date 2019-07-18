@@ -4,10 +4,10 @@
     <string name="intent_extra_auth_result">intent_extra_auth_result</string>
     <string name="intent_extra_auth_failure_reason">intent_extra_auth_failure_reason</string>
 
-    <string name="msg_sign_in_success">Welcome!</string>
+    <string name="msg_sign_in_successful">Welcome!</string>
     <string name="msg_sign_in_cancelled">Sign-in cancelled</string>
 
-    <string name="msg_signed_out_success">Successfully signed-out</string>
+    <string name="msg_signed_out_successful">Successfully signed-out</string>
 
-    <string name="error_sign_in_when_not_anonymous" translatable="false">User should only be able to sign-in if they are anonymous</string>
+    <string name="error_msg_sign_in_when_not_anonymous" translatable="false">User should only be able to sign-in if they are anonymous</string>
 </resources>

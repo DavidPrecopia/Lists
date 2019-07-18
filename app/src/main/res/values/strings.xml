@@ -9,8 +9,8 @@
     <string name="content_description_list_overflow_menu">Overflow menu</string>
     <string name="content_description_delete_icon">Delete</string>
 
-    <string name="message_user_list_deletion">List deleted</string>
-    <string name="message_user_list_deletion_parameter">\"%s\" has been deleted</string>
-    <string name="message_item_deletion">Item deleted</string>
-    <string name="message_undo">Undo</string>
+    <string name="msg_user_list_deletion">List deleted</string>
+    <string name="msg_user_list_deletion_parameter">\"%s\" has been deleted</string>
+    <string name="msg_item_deletion">Item deleted</string>
+    <string name="msg_undo">Undo</string>
 </resources>
