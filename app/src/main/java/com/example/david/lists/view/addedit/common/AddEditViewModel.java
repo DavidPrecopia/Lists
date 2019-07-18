@@ -87,11 +87,11 @@ public class AddEditViewModel implements IAddEditContract.ViewModel {
 
     @Override
     public String getMsgEmptyTitle() {
-        return application.getString(R.string.error_empty_title_text_field);
+        return application.getString(R.string.error_msg_empty_title_text_field);
     }
 
     @Override
     public String getMsgTitleUnchanged() {
-        return application.getString(R.string.error_title_unchanged);
+        return application.getString(R.string.error_msg_title_unchanged);
     }
 }

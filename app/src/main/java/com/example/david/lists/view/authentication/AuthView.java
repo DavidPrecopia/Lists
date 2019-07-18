@@ -39,7 +39,7 @@ public class AuthView extends ActivityBase
     protected void onCreate(Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
-        DataBindingUtil.setContentView(this, R.layout.view_auth);
+        DataBindingUtil.setContentView(this, R.layout.auth_view);
         logic.onStart();
     }
 

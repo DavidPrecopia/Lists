@@ -15,7 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.david.lists.R;
-import com.example.david.lists.databinding.AddEditDialogFragmentBinding;
+import com.example.david.lists.databinding.AddEditDialogBinding;
 import com.example.david.lists.util.UtilSoftKeyboard;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public abstract class AddEditDialogBase extends DialogFragment
         implements IAddEditContract.View {
 
-    private AddEditDialogFragmentBinding binding;
+    private AddEditDialogBinding binding;
 
     @Inject
     protected IAddEditContract.Logic logic;
@@ -34,7 +34,7 @@ public abstract class AddEditDialogBase extends DialogFragment
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_edit_dialog_fragment, null, false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.add_edit_dialog, null, false);
         this.binding = DataBindingUtil.bind(view);
         AlertDialog dialog = new AlertDialog.Builder(getActivity()).setView(view).create();
         init();

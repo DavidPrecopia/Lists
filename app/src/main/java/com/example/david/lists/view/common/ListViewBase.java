@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
-import com.example.david.lists.databinding.FragmentBaseBinding;
+import com.example.david.lists.databinding.ListViewBaseBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -28,7 +28,7 @@ import javax.inject.Provider;
 public abstract class ListViewBase extends Fragment
         implements TouchHelperCallback.MovementCallback {
 
-    private FragmentBaseBinding binding;
+    private ListViewBaseBinding binding;
 
     @Inject
     Provider<LinearLayoutManager> layoutManger;
@@ -40,7 +40,7 @@ public abstract class ListViewBase extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_base, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.list_view_base, container, false);
         init();
         return binding.getRoot();
     }
@@ -111,7 +111,7 @@ public abstract class ListViewBase extends Fragment
 
     protected void notifyDeletionSnackbar(String message) {
         Snackbar.make(binding.rootLayout, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.message_undo, view -> undoRecentDeletion())
+                .setAction(R.string.msg_undo, view -> undoRecentDeletion())
                 .addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {

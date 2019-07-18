@@ -175,7 +175,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     public void delete(int position) {
         adapter.remove(position);
         saveDeletedUserList(position);
-        view.notifyUserOfDeletion(getStringRes(R.string.message_user_list_deletion));
+        view.notifyUserOfDeletion(getStringRes(R.string.msg_user_list_deletion));
     }
 
     private void saveDeletedUserList(int position) {
@@ -189,7 +189,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     public void undoRecentDeletion() {
         if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
-                    getStringRes(R.string.error_invalid_action_undo_deletion)
+                    getStringRes(R.string.error_msg_invalid_action_undo_deletion)
             ));
         }
         reAdd();

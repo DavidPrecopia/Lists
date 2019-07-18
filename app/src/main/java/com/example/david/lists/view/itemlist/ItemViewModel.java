@@ -61,7 +61,7 @@ public final class ItemViewModel extends ViewModelBase
             for (UserList userList : userLists) {
                 if (userList.getId().equals(this.userListId)) {
                     Toast.makeText(getApplication(),
-                            getStringResource(R.string.message_user_list_deletion_parameter, userList.getTitle()),
+                            getStringResource(R.string.msg_user_list_deletion_parameter, userList.getTitle()),
                             Toast.LENGTH_SHORT
                     ).show();
                     eventFinish.call();
@@ -145,7 +145,7 @@ public final class ItemViewModel extends ViewModelBase
         saveDeletedItem(position);
 
         eventNotifyUserOfDeletion.setValue(
-                getStringResource(R.string.message_item_deletion)
+                getStringResource(R.string.msg_item_deletion)
         );
     }
 
@@ -160,7 +160,7 @@ public final class ItemViewModel extends ViewModelBase
     public void undoRecentDeletion(IItemViewContract.Adapter adapter) {
         if (tempItemList == null || tempItemPosition < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
-                    getStringResource(R.string.error_invalid_action_undo_deletion)
+                    getStringResource(R.string.error_msg_invalid_action_undo_deletion)
             ));
         }
         reAdd(adapter);

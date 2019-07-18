@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.databinding.ActivityWidgetConfigBinding;
+import com.example.david.lists.databinding.WidgetConfigViewBinding;
 import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent;
 import com.example.david.lists.widget.view.WidgetRemoteView;
 
@@ -27,7 +27,7 @@ import javax.inject.Provider;
 public class WidgetConfigView extends AppCompatActivity
         implements IWidgetConfigContract.View {
 
-    private ActivityWidgetConfigBinding binding;
+    private WidgetConfigViewBinding binding;
 
     @Inject
     IWidgetConfigContract.Logic logic;
@@ -43,7 +43,7 @@ public class WidgetConfigView extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_widget_config);
+        binding = DataBindingUtil.setContentView(this, R.layout.widget_config_view);
         initView();
 
         logic.onStart(getWidgetId());

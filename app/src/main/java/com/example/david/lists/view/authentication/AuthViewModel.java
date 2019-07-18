@@ -39,7 +39,7 @@ public class AuthViewModel implements IAuthContract.ViewModel {
 
     @Override
     public String getMsgSignInSucceed() {
-        return getStringRes(R.string.msg_sign_in_success);
+        return getStringRes(R.string.msg_sign_in_successful);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AuthViewModel implements IAuthContract.ViewModel {
 
     @Override
     public String getMsgSignOutSucceed() {
-        return getStringRes(R.string.msg_signed_out_success);
+        return getStringRes(R.string.msg_signed_out_successful);
     }
 
     @Override
