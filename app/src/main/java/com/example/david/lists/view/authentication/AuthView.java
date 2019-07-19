@@ -3,7 +3,6 @@ package com.example.david.lists.view.authentication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -76,7 +75,7 @@ public class AuthView extends ActivityBase
 
     @Override
     public void displayMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        super.toastMessage(message);
     }
 
 

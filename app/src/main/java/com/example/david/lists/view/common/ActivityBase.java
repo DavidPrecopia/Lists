@@ -26,15 +26,13 @@ public abstract class ActivityBase extends AppCompatActivity {
         dialogFragment.show(fragmentManager, null);
     }
 
-    // TODO Do I still need this?
     protected void removeAllFragments() {
         for (Fragment fragment : fragmentManager.getFragments()) {
             fragmentManager.beginTransaction().remove(fragment).commitNowAllowingStateLoss();
         }
     }
 
-    // TODO Do I still need this?
-    protected void toastMessage(int message) {
+    protected void toastMessage(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
