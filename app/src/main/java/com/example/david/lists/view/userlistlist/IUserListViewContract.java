@@ -35,7 +35,7 @@ public interface IUserListViewContract {
 
         RecyclerView.Adapter getAdapter();
 
-        void userListSelected(UserList userList);
+        void userListSelected(int position);
 
         void add();
 

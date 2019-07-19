@@ -14,14 +14,10 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.ListItemBinding;
 import com.example.david.lists.view.common.ListItemViewHolderBase;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter.UserListViewHolder>
         implements IUserListViewContract.Adapter {
-
-    private final ArrayList<UserList> userListList;
 
     private IUserListViewContract.Logic logic;
 
@@ -30,7 +26,6 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
     public UserListAdapter(ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
         super(new UserListDiffCallback());
-        userListList = new ArrayList<>();
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
     }
@@ -62,28 +57,20 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
     @Override
     public void submitList(@Nullable List<UserList> list) {
         super.submitList(list);
-        // In case the exact same List is submitted twice
-        if (this.userListList != list) {
-            userListList.clear();
-            userListList.addAll(list);
-        }
     }
 
     @Override
     public void move(int fromPosition, int toPosition) {
-        Collections.swap(userListList, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
     }
 
     @Override
     public void remove(int position) {
-        userListList.remove(position);
         notifyItemRemoved(position);
     }
 
     @Override
     public void reAdd(int position, UserList userList) {
-        userListList.add(position, userList);
         notifyItemInserted(position);
     }
 
@@ -113,7 +100,7 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
         @Override
         public void onClick(View v) {
-            logic.userListSelected(userListList.get(getAdapterPosition()));
+            logic.userListSelected(getAdapterPosition());
         }
     }
 }

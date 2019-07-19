@@ -115,8 +115,10 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
 
     @Override
-    public void userListSelected(UserList userList) {
-        view.openUserList(viewModel.getOpenUserListIntent(userList));
+    public void userListSelected(int position) {
+        view.openUserList(viewModel.getOpenUserListIntent(
+                viewModel.getViewData().get(position)
+        ));
     }
 
 
