@@ -18,6 +18,10 @@ import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListActivit
 
 import javax.inject.Inject;
 
+/**
+ * This does not have a Logic class because I (arbitrarily) feel
+ * it is overkill.
+ */
 public class UserListActivity extends ActivityBase
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
