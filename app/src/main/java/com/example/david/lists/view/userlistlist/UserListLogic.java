@@ -14,11 +14,8 @@ import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
-import com.example.david.lists.view.authentication.AuthView;
 import com.example.david.lists.view.authentication.IAuthContract;
-import com.example.david.lists.view.itemlist.ItemActivity;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,11 +31,9 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     @NonNull
     private final Application application;
 
-    // Will add ViewModel later
     private final IUserListViewContract.View view;
+    private final IUserListViewContract.ViewModel viewModel;
     private final IUserListViewContract.Adapter adapter;
-
-    private List<UserList> userLists;
 
     private final IRepositoryContract.Repository repo;
     private final ISchedulerProviderContract schedulerProvider;
@@ -46,28 +41,25 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
     private final IRepositoryContract.UserRepository userRepo;
 
-    private final List<UserList> tempUserLists;
-    private int tempUserListPosition;
-
     private static final int RESPONSE_CODE = 100;
 
     public UserListLogic(@NonNull Application application,
                          IUserListViewContract.View view,
-                         IUserListViewContract.Adapter adapter, IRepositoryContract.Repository repo,
+                         IUserListViewContract.ViewModel viewModel,
+                         IUserListViewContract.Adapter adapter,
+                         IRepositoryContract.Repository repo,
                          IRepositoryContract.UserRepository userRepo,
                          ISchedulerProviderContract schedulerProvider,
                          CompositeDisposable disposable) {
         this.view = view;
+        this.viewModel = viewModel;
         this.adapter = adapter;
-        this.userLists = new ArrayList<>();
+        this.adapter.init(this);
         this.application = application;
         this.userRepo = userRepo;
         this.repo = repo;
         this.schedulerProvider = schedulerProvider;
         this.disposable = disposable;
-
-        this.tempUserLists = new ArrayList<>();
-        this.tempUserListPosition = -1;
     }
 
 
@@ -96,13 +88,13 @@ public final class UserListLogic implements IUserListViewContract.Logic {
         return new DisposableSubscriber<List<UserList>>() {
             @Override
             public void onNext(List<UserList> userLists) {
-                UserListLogic.this.userLists = userLists;
+                viewModel.setViewData(userLists);
                 evaluateNewData();
             }
 
             @Override
             public void onError(Throwable t) {
-                view.setStateError(getStringRes(R.string.error_msg_generic));
+                view.setStateError(viewModel.getErrorMsg());
             }
 
             @Override
@@ -112,10 +104,10 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     }
 
     private void evaluateNewData() {
-        adapter.submitList(userLists);
-
-        if (userLists.isEmpty()) {
-            view.setStateError(getStringRes(R.string.error_msg_no_user_lists));
+        List<UserList> viewData = viewModel.getViewData();
+        adapter.submitList(viewData);
+        if (viewData.isEmpty()) {
+            view.setStateError(viewModel.getErrorMsgEmptyList());
         } else {
             view.setStateDisplayList();
         }
@@ -124,21 +116,14 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
     @Override
     public void userListSelected(UserList userList) {
-        view.openUserList(getOpenUserListIntent(userList));
-    }
-
-    private Intent getOpenUserListIntent(UserList userList) {
-        Intent intent = new Intent(application, ItemActivity.class);
-        intent.putExtra(getStringRes(R.string.intent_extra_user_list_id), userList.getId());
-        intent.putExtra(getStringRes(R.string.intent_extra_user_list_title), userList.getTitle());
-        return intent;
+        view.openUserList(viewModel.getOpenUserListIntent(userList));
     }
 
 
     @Override
     public void add() {
         view.openDialog(AddEditUserListDialog.getInstance(
-                "", "", userLists.size()
+                "", "", viewModel.getViewData().size()
         ));
     }
 
@@ -153,7 +138,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     @Override
     public void dragging(int fromPosition, int toPosition) {
         adapter.move(fromPosition, toPosition);
-        Collections.swap(userLists, fromPosition, toPosition);
+        Collections.swap(viewModel.getViewData(), fromPosition, toPosition);
     }
 
     @Override
@@ -162,7 +147,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
             return;
         }
 
-        UserList userList = userLists.get(newPosition);
+        UserList userList = viewModel.getViewData().get(newPosition);
         repo.updateUserListPosition(
                 userList,
                 userList.getPosition(),
@@ -175,21 +160,21 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     public void delete(int position) {
         adapter.remove(position);
         saveDeletedUserList(position);
-        view.notifyUserOfDeletion(getStringRes(R.string.msg_user_list_deletion));
+        view.notifyUserOfDeletion(viewModel.getMsgDeletion());
     }
 
     private void saveDeletedUserList(int position) {
-        tempUserLists.add(userLists.get(position));
-        tempUserListPosition = position;
-        userLists.remove(position);
+        viewModel.getTempList().add(viewModel.getViewData().get(position));
+        viewModel.setTempPosition(position);
+        viewModel.getViewData().remove(position);
     }
 
 
     @Override
     public void undoRecentDeletion() {
-        if (tempUserLists.isEmpty() || tempUserListPosition < 0) {
+        if (viewModel.getTempList().isEmpty() || viewModel.getTempPosition() < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
-                    getStringRes(R.string.error_msg_invalid_action_undo_deletion)
+                    viewModel.getMsgInvalidUndo()
             ));
         }
         reAdd();
@@ -197,27 +182,33 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     }
 
     private void reAdd() {
-        int lastDeletedPosition = (tempUserLists.size() - 1);
+        int lastDeletedPosition = (viewModel.getTempList().size() - 1);
         reAddUserListToAdapter(lastDeletedPosition);
         reAddUserListToLocalList(lastDeletedPosition);
-        tempUserLists.remove(lastDeletedPosition);
+        viewModel.getTempList().remove(lastDeletedPosition);
     }
 
     private void reAddUserListToAdapter(int lastDeletedPosition) {
-        adapter.reAdd(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
+        adapter.reAdd(
+                viewModel.getTempPosition(),
+                viewModel.getTempList().get(lastDeletedPosition)
+        );
     }
 
     private void reAddUserListToLocalList(int lastDeletedPosition) {
-        userLists.add(tempUserListPosition, tempUserLists.get(lastDeletedPosition));
+        viewModel.getViewData().add(
+                viewModel.getTempPosition(),
+                viewModel.getTempList().get(lastDeletedPosition)
+        );
     }
 
     @Override
     public void deletionNotificationTimedOut() {
-        if (tempUserLists.isEmpty()) {
+        if (viewModel.getTempList().isEmpty()) {
             return;
         }
-        repo.deleteUserLists(tempUserLists);
-        tempUserLists.clear();
+        repo.deleteUserLists(viewModel.getTempList());
+        viewModel.getTempList().clear();
     }
 
 
@@ -229,7 +220,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     @Override
     public void signOutConfirmed() {
         view.openAuthentication(
-                getAuthIntent(IAuthContract.AuthGoal.SIGN_OUT),
+                viewModel.getAuthIntent(IAuthContract.AuthGoal.SIGN_OUT),
                 RESPONSE_CODE
         );
     }
@@ -237,16 +228,9 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     @Override
     public void signIn() {
         view.openAuthentication(
-                getAuthIntent(IAuthContract.AuthGoal.SIGN_IN),
+                viewModel.getAuthIntent(IAuthContract.AuthGoal.SIGN_IN),
                 RESPONSE_CODE
         );
-    }
-
-    private Intent getAuthIntent(IAuthContract.AuthGoal authGoal) {
-        Intent intent = new Intent(application, AuthView.class);
-        // TODO Move to a ViewModel
-        intent.putExtra(getStringRes(R.string.intent_extra_auth), authGoal);
-        return intent;
     }
 
 
@@ -265,7 +249,7 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     }
 
     private boolean authWasSuccessful(Intent data) {
-        return data.getSerializableExtra(getStringRes(R.string.intent_extra_auth_result))
+        return data.getSerializableExtra(viewModel.getIntentExtraAuthResultKey())
                 == IAuthContract.AuthResult.AUTH_SUCCESS;
     }
 
@@ -286,11 +270,6 @@ public final class UserListLogic implements IUserListViewContract.Logic {
         return userRepo.isAnonymous()
                 ? R.menu.menu_sign_in
                 : R.menu.menu_sign_out;
-    }
-
-
-    private String getStringRes(int resId) {
-        return application.getString(resId);
     }
 
 

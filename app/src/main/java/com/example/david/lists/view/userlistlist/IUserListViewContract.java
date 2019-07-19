@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.view.authentication.IAuthContract;
 
 import java.util.List;
 
@@ -63,6 +64,32 @@ public interface IUserListViewContract {
         int getMenuResource();
 
         void onDestroy();
+    }
+
+    interface ViewModel {
+        void setViewData(List<UserList> userLists);
+
+        List<UserList> getViewData();
+
+        void setTempPosition(int position);
+
+        List<UserList> getTempList();
+
+        int getTempPosition();
+
+        Intent getOpenUserListIntent(UserList userList);
+
+        Intent getAuthIntent(IAuthContract.AuthGoal authGoal);
+
+        String getIntentExtraAuthResultKey();
+
+        String getMsgInvalidUndo();
+
+        String getMsgDeletion();
+
+        String getErrorMsg();
+
+        String getErrorMsgEmptyList();
     }
 
     interface Adapter {
