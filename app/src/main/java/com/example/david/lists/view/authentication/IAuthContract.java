@@ -10,7 +10,9 @@ public interface IAuthContract {
 
         void displayMessage(String message);
 
-        void setResult(Intent intent);
+        void setResult(IAuthContract.AuthResult result);
+
+        void setResultFailed(String reason);
 
         void finishView();
     }
@@ -22,10 +24,6 @@ public interface IAuthContract {
     }
 
     interface ViewModel {
-        Intent getIntent(IAuthContract.AuthResult result);
-
-        Intent getIntentFailed(String reason);
-
         int getAuthRequestCode();
 
         String getMsgSignInSucceed();

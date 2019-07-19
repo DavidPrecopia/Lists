@@ -80,9 +80,23 @@ public class AuthView extends ActivityBase
 
 
     @Override
-    public void setResult(Intent intent) {
+    public void setResult(IAuthContract.AuthResult result) {
+        setResult(RESULT_OK, getResultIntent(result));
+    }
+
+    @Override
+    public void setResultFailed(String failureReason) {
+        Intent intent = getResultIntent(IAuthContract.AuthResult.AUTH_FAILED);
+        intent.putExtra(getString(R.string.intent_extra_auth_failure_reason), failureReason);
         setResult(RESULT_OK, intent);
     }
+
+    private Intent getResultIntent(AuthResult result) {
+        Intent intent = new Intent();
+        intent.putExtra(getString(R.string.intent_extra_auth_result), result);
+        return intent;
+    }
+
 
     @Override
     public void finishView() {

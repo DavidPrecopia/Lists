@@ -1,13 +1,9 @@
 package com.example.david.lists.view.userlistlist;
 
 import android.app.Application;
-import android.content.Intent;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
-import com.example.david.lists.view.authentication.AuthView;
-import com.example.david.lists.view.authentication.IAuthContract;
-import com.example.david.lists.view.itemlist.ItemActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,22 +48,6 @@ public class UserListViewModel implements IUserListViewContract.ViewModel {
     @Override
     public int getTempPosition() {
         return tempPosition;
-    }
-
-
-    @Override
-    public Intent getOpenUserListIntent(UserList userList) {
-        Intent intent = new Intent(application, ItemActivity.class);
-        intent.putExtra(getStringRes(R.string.intent_extra_user_list_id), userList.getId());
-        intent.putExtra(getStringRes(R.string.intent_extra_user_list_title), userList.getTitle());
-        return intent;
-    }
-
-    @Override
-    public Intent getAuthIntent(IAuthContract.AuthGoal authGoal) {
-        Intent intent = new Intent(application, AuthView.class);
-        intent.putExtra(getStringRes(R.string.intent_extra_auth), authGoal);
-        return intent;
     }
 
 

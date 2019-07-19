@@ -1,7 +1,6 @@
 package com.example.david.lists.view.authentication;
 
 import android.app.Application;
-import android.content.Intent;
 
 import com.example.david.lists.R;
 
@@ -13,21 +12,6 @@ public class AuthViewModel implements IAuthContract.ViewModel {
 
     public AuthViewModel(Application application) {
         this.application = application;
-    }
-
-
-    @Override
-    public Intent getIntent(IAuthContract.AuthResult result) {
-        Intent intent = new Intent();
-        intent.putExtra(getStringRes(R.string.intent_extra_auth_result), result);
-        return intent;
-    }
-
-    @Override
-    public Intent getIntentFailed(String failureReason) {
-        Intent intent = getIntent(IAuthContract.AuthResult.AUTH_FAILED);
-        intent.putExtra(getStringRes(R.string.intent_extra_auth_failure_reason), failureReason);
-        return intent;
     }
 
 

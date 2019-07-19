@@ -3,7 +3,6 @@ package com.example.david.lists.view.userlistlist;
 import android.content.Intent;
 import android.view.MenuItem;
 
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.UserList;
@@ -13,11 +12,15 @@ import java.util.List;
 
 public interface IUserListViewContract {
     interface View {
-        void openUserList(Intent intent);
+        void openUserList(UserList userList);
 
-        void openAuthentication(Intent intent, int requestCode);
+        void confirmSignOut();
 
-        void openDialog(DialogFragment dialog);
+        void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode);
+
+        void openAddDialog(int position);
+
+        void openEditDialog(UserList userList);
 
         void notifyUserOfDeletion(String message);
 
@@ -76,10 +79,6 @@ public interface IUserListViewContract {
         List<UserList> getTempList();
 
         int getTempPosition();
-
-        Intent getOpenUserListIntent(UserList userList);
-
-        Intent getAuthIntent(IAuthContract.AuthGoal authGoal);
 
         String getIntentExtraAuthResultKey();
 

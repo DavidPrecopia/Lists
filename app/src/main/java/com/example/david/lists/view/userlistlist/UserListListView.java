@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
+import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
+import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
+import com.example.david.lists.view.authentication.AuthView;
+import com.example.david.lists.view.authentication.IAuthContract;
 import com.example.david.lists.view.common.ListViewBase;
+import com.example.david.lists.view.itemlist.ItemActivity;
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent;
 
 import javax.inject.Inject;
@@ -101,8 +105,17 @@ public class UserListListView extends ListViewBase
 
 
     @Override
-    public void openUserList(Intent intent) {
+    public void openUserList(UserList userList) {
+        Intent intent = new Intent(getActivity(), ItemActivity.class);
+        intent.putExtra(getString(R.string.intent_extra_user_list_id), userList.getId());
+        intent.putExtra(getString(R.string.intent_extra_user_list_title), userList.getTitle());
         startActivity(intent);
+    }
+
+
+    @Override
+    public void confirmSignOut() {
+        openDialogFragment(new ConfirmSignOutDialog());
     }
 
     @Override
@@ -111,7 +124,9 @@ public class UserListListView extends ListViewBase
     }
 
     @Override
-    public void openAuthentication(Intent intent, int requestCode) {
+    public void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode) {
+        Intent intent = new Intent(getActivity(), AuthView.class);
+        intent.putExtra(getString(R.string.intent_extra_auth), authGoal);
         startActivityForResult(intent, requestCode);
     }
 
@@ -121,9 +136,19 @@ public class UserListListView extends ListViewBase
         logic.authResult(requestCode, data);
     }
 
+
     @Override
-    public void openDialog(DialogFragment dialog) {
-        openDialogFragment(dialog);
+    public void openAddDialog(int position) {
+        openDialogFragment(AddEditUserListDialog.getInstance(
+                "", "", position
+        ));
+    }
+
+    @Override
+    public void openEditDialog(UserList userList) {
+        openDialogFragment(AddEditUserListDialog.getInstance(
+                userList.getId(), userList.getTitle(), userList.getPosition()
+        ));
     }
 
 

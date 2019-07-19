@@ -13,7 +13,6 @@ import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
-import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
 import com.example.david.lists.view.authentication.IAuthContract;
 
 import java.util.Collections;
@@ -116,24 +115,18 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
     @Override
     public void userListSelected(int position) {
-        view.openUserList(viewModel.getOpenUserListIntent(
-                viewModel.getViewData().get(position)
-        ));
+        view.openUserList(viewModel.getViewData().get(position));
     }
 
 
     @Override
     public void add() {
-        view.openDialog(AddEditUserListDialog.getInstance(
-                "", "", viewModel.getViewData().size()
-        ));
+        view.openAddDialog(viewModel.getViewData().size());
     }
 
     @Override
     public void edit(UserList userList) {
-        view.openDialog(AddEditUserListDialog.getInstance(
-                userList.getId(), userList.getTitle(), userList.getPosition()
-        ));
+        view.openEditDialog(userList);
     }
 
 
@@ -216,22 +209,20 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
     @Override
     public void signOut() {
-        view.openDialog(new ConfirmSignOutDialog());
+        view.confirmSignOut();
     }
 
     @Override
     public void signOutConfirmed() {
         view.openAuthentication(
-                viewModel.getAuthIntent(IAuthContract.AuthGoal.SIGN_OUT),
-                RESPONSE_CODE
+                IAuthContract.AuthGoal.SIGN_OUT, RESPONSE_CODE
         );
     }
 
     @Override
     public void signIn() {
         view.openAuthentication(
-                viewModel.getAuthIntent(IAuthContract.AuthGoal.SIGN_IN),
-                RESPONSE_CODE
+                IAuthContract.AuthGoal.SIGN_IN, RESPONSE_CODE
         );
     }
 

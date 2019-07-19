@@ -58,7 +58,7 @@ public class AuthLogic implements IAuthContract.Logic {
      * If the user cancels.
      */
     private void init() {
-        view.setResult(viewModel.getIntent(AUTH_CANCELLED));
+        view.setResult(AUTH_CANCELLED);
     }
 
 
@@ -103,15 +103,18 @@ public class AuthLogic implements IAuthContract.Logic {
     }
 
     private void signInSuccessful() {
-        finish(viewModel.getMsgSignInSucceed(), viewModel.getIntent(AUTH_SUCCESS));
+        view.setResult(AUTH_SUCCESS);
+        finish(viewModel.getMsgSignInSucceed());
     }
 
     private void signInFailed(IdpResponse response) {
         if (response == null) {
-            finish(viewModel.getMsgSignInCanceled(), viewModel.getIntent(AUTH_CANCELLED));
+            view.setResult(AUTH_CANCELLED);
+            finish(viewModel.getMsgSignInCanceled());
         } else {
             String reason = toFriendlyMessage(response.getError().getErrorCode());
-            finish(reason, viewModel.getIntentFailed(reason));
+            view.setResultFailed(reason);
+            finish(reason);
         }
     }
 
@@ -160,18 +163,19 @@ public class AuthLogic implements IAuthContract.Logic {
     }
 
     private void signOutSucceeded() {
-        finish(viewModel.getMsgSignOutSucceed(), viewModel.getIntent(AUTH_SUCCESS));
+        view.setResult(AUTH_SUCCESS);
+        finish(viewModel.getMsgSignOutSucceed());
     }
 
     private void signOutFailed(Exception e) {
         UtilExceptions.throwException(e);
-        finish(viewModel.getMsgSignOutFailed(), viewModel.getIntentFailed(viewModel.getMsgSignOutFailed()));
+        view.setResultFailed(viewModel.getMsgSignOutFailed());
+        finish(viewModel.getMsgSignOutFailed());
     }
 
 
-    private void finish(String message, Intent resultIntent) {
-        view.displayMessage(message);
-        view.setResult(resultIntent);
+    private void finish(String displayMessage) {
+        view.displayMessage(displayMessage);
         view.finishView();
     }
 }
