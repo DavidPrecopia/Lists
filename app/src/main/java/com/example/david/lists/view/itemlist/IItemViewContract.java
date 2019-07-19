@@ -1,51 +1,79 @@
 package com.example.david.lists.view.itemlist;
 
-import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
 
 import java.util.List;
 
 public interface IItemViewContract {
-    interface ViewModel {
+    interface View {
+        void openAddDialog(String userListId, int position);
+
+        void openEditDialog(Item item);
+
+        void notifyUserOfDeletion(String message);
+
+        void setStateDisplayList();
+
+        void setStateLoading();
+
+        void setStateError(String message);
+
+        void showMessage(String message);
+
+        void finishView();
+    }
+
+    interface Logic {
+        void onStart();
+
+        RecyclerView.Adapter getAdapter();
+
         void addButtonClicked();
 
-        void edit(Item item);
+        void edit(int position);
 
-        void dragging(Adapter adapter, int fromPosition, int toPosition);
+        void dragging(int fromPosition, int toPosition);
 
         void movedPermanently(int newPosition);
 
-        void swipedLeft(Adapter adapter, int position);
+        void delete(int position);
 
-        void delete(Adapter adapter, int position);
-
-        void undoRecentDeletion(Adapter adapter);
+        void undoRecentDeletion();
 
         void deletionNotificationTimedOut();
 
+        void onDestroy();
+    }
 
-        LiveData<List<Item>> getItemList();
+    interface ViewModel {
+        String getUserListId();
 
-        LiveData<Boolean> getEventDisplayLoading();
+        void setViewData(List<Item> items);
 
-        LiveData<String> getErrorMessage();
+        List<Item> getViewData();
 
-        LiveData<Boolean> getEventDisplayError();
+        void setTempPosition(int position);
 
-        LiveData<String> getEventNotifyUserOfDeletion();
+        List<Item> getTempList();
 
-        /**
-         * @return the UserListId of this Item.
-         */
-        LiveData<String> getEventAdd();
+        int getTempPosition();
 
-        LiveData<Item> getEventEdit();
+        String getMsgListDeleted(String title);
 
-        LiveData<Void> getEventFinish();
+        String getMsgItemDeleted();
+
+        String getErrorMsg();
+
+        String getErrorMsgEmptyList();
+
+        String getErrorMsgInvalidUndo();
     }
 
     interface Adapter {
+        void init(Logic logic);
+
         void submitList(List<Item> list);
 
         void move(int fromPosition, int toPosition);

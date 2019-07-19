@@ -2,17 +2,14 @@ package com.example.david.lists.view.itemlist.buldlogic;
 
 import android.app.Application;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.data.repository.IRepositoryContract;
-import com.example.david.lists.view.common.ViewModelFactory;
 import com.example.david.lists.view.itemlist.IItemViewContract;
 import com.example.david.lists.view.itemlist.ItemAdapter;
+import com.example.david.lists.view.itemlist.ItemLogic;
 import com.example.david.lists.view.itemlist.ItemViewModel;
 
 import dagger.Module;
@@ -23,22 +20,24 @@ import io.reactivex.disposables.CompositeDisposable;
 final class ItemListViewModule {
     @ViewScope
     @Provides
-    IItemViewContract.ViewModel viewModel(Fragment fragment, ViewModelProvider.Factory factory) {
-        return ViewModelProviders.of(fragment, factory).get(ItemViewModel.class);
+    IItemViewContract.Logic logic(IItemViewContract.View view,
+                                  IItemViewContract.ViewModel viewModel,
+                                  IItemViewContract.Adapter adapter,
+                                  IRepositoryContract.Repository repository,
+                                  CompositeDisposable disposable) {
+        return new ItemLogic(view, viewModel, adapter, repository, disposable);
     }
 
     @ViewScope
     @Provides
-    ViewModelProvider.Factory viewModelFactory(Application application,
-                                               IRepositoryContract.Repository repository,
-                                               CompositeDisposable disposable,
-                                               String userListId) {
-        return new ViewModelFactory(application, repository, disposable, userListId);
+    IItemViewContract.ViewModel viewModel(Application application, String userListId) {
+        return new ItemViewModel(application, userListId);
     }
 
     @ViewScope
     @Provides
-    IItemViewContract.Adapter adapter(IItemViewContract.ViewModel viewModel, ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
-        return new ItemAdapter(viewModel, viewBinderHelper, itemTouchHelper);
+    IItemViewContract.Adapter adapter(ViewBinderHelper viewBinderHelper,
+                                      ItemTouchHelper itemTouchHelper) {
+        return new ItemAdapter(viewBinderHelper, itemTouchHelper);
     }
 }

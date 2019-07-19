@@ -2,7 +2,12 @@ package com.example.david.lists.view.itemlist;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
@@ -12,13 +17,11 @@ import com.example.david.lists.view.itemlist.buldlogic.DaggerItemListViewCompone
 
 import javax.inject.Inject;
 
-public class ItemListView extends ListViewBase {
+public class ItemListView extends ListViewBase
+        implements IItemViewContract.View {
 
     @Inject
-    IItemViewContract.ViewModel viewModel;
-
-    @Inject
-    IItemViewContract.Adapter adapter;
+    IItemViewContract.Logic logic;
 
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
@@ -40,108 +43,108 @@ public class ItemListView extends ListViewBase {
     public void onAttach(Context context) {
         inject();
         super.onAttach(context);
-        observeViewModel();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        logic.onStart();
+        return view;
     }
 
     private void inject() {
         DaggerItemListViewComponent.builder()
                 .application(getActivity().getApplication())
-                .fragment(this)
+                .view(this)
                 .movementCallback(this)
                 .userListId(getArguments().getString(ARG_KEY_USER_LIST_ID))
                 .build()
                 .inject(this);
     }
 
-    private void observeViewModel() {
-        observeItemList();
-        observeEventDisplayLoading();
-        observeEventDisplayError();
-        observeEventNotifyUserOfDeletion();
-        observeEventAdd();
-        observeEventEdit();
-        observeEventFinish();
+
+    @Override
+    public void openAddDialog(String userListId, int position) {
+        openDialogFragment(AddEditItemDialog.getInstance(
+                "",
+                "",
+                userListId,
+                position
+        ));
     }
 
-    private void observeItemList() {
-        viewModel.getItemList().observe(this, items -> adapter.submitList(items));
-    }
-
-    private void observeEventDisplayError() {
-        viewModel.getEventDisplayError().observe(this, display -> {
-            if (display) {
-                displayError(viewModel.getErrorMessage().getValue());
-            } else {
-                displayError("PLACEHOLDER");
-            }
-        });
-    }
-
-    private void observeEventDisplayLoading() {
-        viewModel.getEventDisplayLoading().observe(this, display -> {
-            if (display) {
-                displayLoading();
-            } else {
-                displayList();
-            }
-        });
-    }
-
-    private void observeEventNotifyUserOfDeletion() {
-        viewModel.getEventNotifyUserOfDeletion().observe(this, this::notifyDeletionSnackbar);
-    }
-
-    private void observeEventAdd() {
-        viewModel.getEventAdd().observe(this, this::openAddDialog);
-    }
-
-    private void observeEventEdit() {
-        viewModel.getEventEdit().observe(this, this::openEditDialog);
-    }
-
-    private void observeEventFinish() {
-        viewModel.getEventFinish().observe(this, aVoid ->
-                getActivity().getSupportFragmentManager().popBackStack()
-        );
-    }
-
-
-    private void openAddDialog(String userListId) {
-        openDialogFragment(
-                AddEditItemDialog.getInstance("", "", userListId, 0 /*TEMP PLACEHOLDER*/)
-        );
-    }
-
-    private void openEditDialog(Item item) {
-        openDialogFragment(
-                AddEditItemDialog.getInstance(item.getId(), item.getTitle(), item.getUserListId(), item.getPosition())
-        );
+    @Override
+    public void openEditDialog(Item item) {
+        openDialogFragment(AddEditItemDialog.getInstance(
+                item.getId(),
+                item.getTitle(),
+                item.getUserListId(),
+                item.getPosition()
+        ));
     }
 
 
     @Override
+    public void notifyUserOfDeletion(String message) {
+        super.notifyDeletionSnackbar(message);
+    }
+
+    @Override
+    public void setStateDisplayList() {
+        super.displayList();
+    }
+
+    @Override
+    public void setStateLoading() {
+        super.displayLoading();
+    }
+
+    @Override
+    public void setStateError(String message) {
+        super.displayError(message);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        super.toastMessage(message);
+    }
+
+    @Override
+    public void finishView() {
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        logic.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
     protected void addButtonClicked() {
-        viewModel.addButtonClicked();
+        logic.addButtonClicked();
     }
 
     @Override
     protected void undoRecentDeletion() {
-        viewModel.undoRecentDeletion(adapter);
+        logic.undoRecentDeletion();
     }
 
     @Override
     protected void deletionNotificationTimedOut() {
-        viewModel.deletionNotificationTimedOut();
+        logic.deletionNotificationTimedOut();
     }
 
     @Override
     protected void draggingListItem(int fromPosition, int toPosition) {
-        viewModel.dragging(adapter, fromPosition, toPosition);
+        logic.dragging(fromPosition, toPosition);
     }
 
     @Override
     protected void permanentlyMoved(int newPosition) {
-        viewModel.movedPermanently(newPosition);
+        logic.movedPermanently(newPosition);
     }
 
     @Override
@@ -156,6 +159,6 @@ public class ItemListView extends ListViewBase {
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return (RecyclerView.Adapter) adapter;
+        return logic.getAdapter();
     }
 }
