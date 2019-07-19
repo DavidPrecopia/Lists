@@ -35,6 +35,8 @@ public interface IAuthContract {
         String getMsgSignOutSucceed();
 
         String getMsgSignOutFailed();
+
+        String getMsgSignInWhenNotAnon();
     }
 
 

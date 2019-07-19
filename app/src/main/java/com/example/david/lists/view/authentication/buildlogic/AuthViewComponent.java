@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.david.lists.common.buildlogic.ActivityCommonModule;
+import com.example.david.lists.common.buildlogic.ViewCommonModule;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.view.authentication.AuthView;
 import com.example.david.lists.view.authentication.IAuthContract;
@@ -15,7 +16,8 @@ import dagger.Component;
 @ViewScope
 @Component(modules = {
         AuthViewModule.class,
-        ActivityCommonModule.class
+        ActivityCommonModule.class,
+        ViewCommonModule.class
 })
 public interface AuthViewComponent {
     void inject(AuthView authView);

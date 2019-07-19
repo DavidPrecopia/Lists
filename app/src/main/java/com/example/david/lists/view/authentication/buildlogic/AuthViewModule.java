@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.example.david.lists.R;
 import com.example.david.lists.common.buildlogic.ViewScope;
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.view.authentication.AuthLogic;
 import com.example.david.lists.view.authentication.AuthViewModel;
 import com.example.david.lists.view.authentication.IAuthContract;
@@ -22,10 +23,11 @@ class AuthViewModule {
     @Provides
     IAuthContract.Logic logic(IAuthContract.View view,
                               IAuthContract.ViewModel viewModel,
+                              IRepositoryContract.UserRepository userRepo,
                               IAuthContract.AuthGoal authGoal,
                               Application application,
                               AuthUI authUi) {
-        return new AuthLogic(view, viewModel, authGoal, application, authUi);
+        return new AuthLogic(view, viewModel, userRepo, authGoal, application, authUi);
     }
 
     @ViewScope

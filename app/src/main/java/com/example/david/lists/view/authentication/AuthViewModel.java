@@ -57,6 +57,11 @@ public class AuthViewModel implements IAuthContract.ViewModel {
         return getStringRes(R.string.error_msg_generic);
     }
 
+    @Override
+    public String getMsgSignInWhenNotAnon() {
+        return getStringRes(R.string.error_msg_sign_in_when_not_anonymous);
+    }
+
 
     private String getStringRes(int resId) {
         return application.getString(resId);

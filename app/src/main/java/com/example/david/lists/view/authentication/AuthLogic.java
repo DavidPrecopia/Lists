@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
+import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.UtilExceptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -31,6 +32,8 @@ public class AuthLogic implements IAuthContract.Logic {
     private final IAuthContract.View view;
     private final IAuthContract.ViewModel viewModel;
 
+    private final IRepositoryContract.UserRepository userRepo;
+
     private final IAuthContract.AuthGoal authGoal;
 
     private final Application application;
@@ -38,11 +41,13 @@ public class AuthLogic implements IAuthContract.Logic {
 
     public AuthLogic(IAuthContract.View view,
                      IAuthContract.ViewModel viewModel,
+                     IRepositoryContract.UserRepository userRepo,
                      IAuthContract.AuthGoal authGoal,
                      Application application,
                      AuthUI authUi) {
         this.view = view;
         this.viewModel = viewModel;
+        this.userRepo = userRepo;
         this.authGoal = authGoal;
         this.application = application;
         this.authUi = authUi;
@@ -62,12 +67,21 @@ public class AuthLogic implements IAuthContract.Logic {
         switch (authGoal) {
             case SIGN_IN:
             case AUTH_ANON:
-                view.signIn(viewModel.getAuthRequestCode());
+                signIn();
                 break;
             case SIGN_OUT:
                 signOut();
                 break;
         }
+    }
+
+    private void signIn() {
+        if (!userRepo.isAnonymous()) {
+            UtilExceptions.throwException(new IllegalStateException(
+                    viewModel.getMsgSignInWhenNotAnon()
+            ));
+        }
+        view.signIn(viewModel.getAuthRequestCode());
     }
 
 
