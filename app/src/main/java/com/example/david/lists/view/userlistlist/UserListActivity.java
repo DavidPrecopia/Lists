@@ -121,9 +121,15 @@ public class UserListActivity extends ActivityBase
     }
 
 
+    /**
+     * When the user signs-out, all Fragments need to be removed
+     * to reset state.
+     */
     @Override
     public void recreate() {
-        removeAllFragments();
+        if (userRepo.signedOut()) {
+            removeAllFragments();
+        }
         super.recreate();
     }
 }
