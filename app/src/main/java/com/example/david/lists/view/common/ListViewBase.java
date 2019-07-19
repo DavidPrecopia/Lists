@@ -167,7 +167,7 @@ public abstract class ListViewBase extends Fragment
     protected void displayError(String errorMessage) {
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.GONE);
-        binding.fab.hide();
+        binding.fab.show();
         
         binding.tvError.setText(errorMessage);
         binding.tvError.setVisibility(View.VISIBLE);
