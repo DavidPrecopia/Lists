@@ -66,8 +66,10 @@ public class AuthLogic implements IAuthContract.Logic {
     public void onStart() {
         switch (authGoal) {
             case SIGN_IN:
-            case AUTH_ANON:
                 signIn();
+                break;
+            case AUTH_ANON:
+                signInAnon();
                 break;
             case SIGN_OUT:
                 signOut();
@@ -76,12 +78,17 @@ public class AuthLogic implements IAuthContract.Logic {
     }
 
     private void signIn() {
+        view.signIn(viewModel.getRequestCode());
+    }
+
+    private void signInAnon() {
+        // If the user is NOT anonymous, throw an Exception.
         if (!userRepo.isAnonymous()) {
             UtilExceptions.throwException(new IllegalStateException(
                     viewModel.getMsgSignInWhenNotAnon()
             ));
         }
-        view.signIn(viewModel.getRequestCode());
+        signIn();
     }
 
 
