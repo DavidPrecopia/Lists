@@ -24,7 +24,7 @@ public interface IAuthContract {
     }
 
     interface ViewModel {
-        int getAuthRequestCode();
+        int getRequestCode();
 
         String getMsgSignInSucceed();
 

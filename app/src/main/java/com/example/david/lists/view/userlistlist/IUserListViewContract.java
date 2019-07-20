@@ -80,6 +80,8 @@ public interface IUserListViewContract {
 
         int getTempPosition();
 
+        int getRequestCode();
+
         String getIntentExtraAuthResultKey();
 
         String getMsgInvalidUndo();

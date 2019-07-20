@@ -81,13 +81,13 @@ public class AuthLogic implements IAuthContract.Logic {
                     viewModel.getMsgSignInWhenNotAnon()
             ));
         }
-        view.signIn(viewModel.getAuthRequestCode());
+        view.signIn(viewModel.getRequestCode());
     }
 
 
     @Override
     public void signInResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == viewModel.getAuthRequestCode()) {
+        if (requestCode == viewModel.getRequestCode()) {
             evalSignInResult(IdpResponse.fromResultIntent(data), resultCode);
         } else {
             UtilExceptions.throwException(new IllegalArgumentException("Unknown request code"));

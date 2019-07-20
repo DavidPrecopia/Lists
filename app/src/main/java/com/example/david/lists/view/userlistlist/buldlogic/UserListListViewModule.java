@@ -35,7 +35,7 @@ final class UserListListViewModule {
     @ViewScope
     @Provides
     IUserListViewContract.ViewModel viewModel(Application application) {
-        return new UserListViewModel(application);
+        return new UserListViewModel(application, 100);
     }
 
     @ViewScope

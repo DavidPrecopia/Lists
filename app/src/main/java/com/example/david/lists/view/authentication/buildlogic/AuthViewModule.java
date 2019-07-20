@@ -33,7 +33,7 @@ class AuthViewModule {
     @ViewScope
     @Provides
     IAuthContract.ViewModel viewModel(Application application) {
-        return new AuthViewModel(application);
+        return new AuthViewModel(application, 101);
     }
 
     @ViewScope

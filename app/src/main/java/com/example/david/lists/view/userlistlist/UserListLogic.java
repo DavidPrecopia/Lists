@@ -40,8 +40,6 @@ public final class UserListLogic implements IUserListViewContract.Logic {
 
     private final IRepositoryContract.UserRepository userRepo;
 
-    private static final int RESPONSE_CODE = 100;
-
     public UserListLogic(@NonNull Application application,
                          IUserListViewContract.View view,
                          IUserListViewContract.ViewModel viewModel,
@@ -215,21 +213,21 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     @Override
     public void signOutConfirmed() {
         view.openAuthentication(
-                IAuthContract.AuthGoal.SIGN_OUT, RESPONSE_CODE
+                IAuthContract.AuthGoal.SIGN_OUT, viewModel.getRequestCode()
         );
     }
 
     @Override
     public void signIn() {
         view.openAuthentication(
-                IAuthContract.AuthGoal.SIGN_IN, RESPONSE_CODE
+                IAuthContract.AuthGoal.SIGN_IN, viewModel.getRequestCode()
         );
     }
 
 
     @Override
     public void authResult(int requestCode, Intent data) {
-        if (requestCode != RESPONSE_CODE) {
+        if (requestCode != viewModel.getRequestCode()) {
             return;
         }
         evalAuthResult(data);

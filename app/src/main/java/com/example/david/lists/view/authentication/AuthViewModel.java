@@ -8,16 +8,17 @@ public class AuthViewModel implements IAuthContract.ViewModel {
 
     private final Application application;
 
-    private static final int RESPONSE_CODE = 100;
+    private final int requestCode;
 
-    public AuthViewModel(Application application) {
+    public AuthViewModel(Application application, int requestCode) {
         this.application = application;
+        this.requestCode = requestCode;
     }
 
 
     @Override
-    public int getAuthRequestCode() {
-        return RESPONSE_CODE;
+    public int getRequestCode() {
+        return requestCode;
     }
 
 

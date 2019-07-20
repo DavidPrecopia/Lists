@@ -11,14 +11,16 @@ import java.util.List;
 public class UserListViewModel implements IUserListViewContract.ViewModel {
 
     private final Application application;
+    private final int requestCode;
 
     private List<UserList> userLists;
 
     private List<UserList> tempList;
     private int tempPosition;
 
-    public UserListViewModel(Application application) {
+    public UserListViewModel(Application application, int requestCode) {
         this.application = application;
+        this.requestCode = requestCode;
         this.userLists = new ArrayList<>();
         this.tempList = new ArrayList<>();
         this.tempPosition = -1;
@@ -50,6 +52,11 @@ public class UserListViewModel implements IUserListViewContract.ViewModel {
         return tempPosition;
     }
 
+
+    @Override
+    public int getRequestCode() {
+        return requestCode;
+    }
 
     @Override
     public String getIntentExtraAuthResultKey() {
