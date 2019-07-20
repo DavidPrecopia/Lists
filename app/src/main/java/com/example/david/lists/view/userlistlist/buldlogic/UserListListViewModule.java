@@ -10,8 +10,8 @@ import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.view.userlistlist.IUserListViewContract;
 import com.example.david.lists.view.userlistlist.UserListAdapter;
-import com.example.david.lists.view.userlistlist.UserListLogic;
-import com.example.david.lists.view.userlistlist.UserListViewModel;
+import com.example.david.lists.view.userlistlist.UserListListLogic;
+import com.example.david.lists.view.userlistlist.UserListListViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,13 +29,13 @@ final class UserListListViewModule {
                                           IRepositoryContract.UserRepository userRepo,
                                           ISchedulerProviderContract schedulerProvider,
                                           CompositeDisposable disposable) {
-        return new UserListLogic(application, view, viewModel, adapter, repo, userRepo, schedulerProvider, disposable);
+        return new UserListListLogic(application, view, viewModel, adapter, repo, userRepo, schedulerProvider, disposable);
     }
 
     @ViewScope
     @Provides
     IUserListViewContract.ViewModel viewModel(Application application) {
-        return new UserListViewModel(application, 100);
+        return new UserListListViewModel(application, 100);
     }
 
     @ViewScope

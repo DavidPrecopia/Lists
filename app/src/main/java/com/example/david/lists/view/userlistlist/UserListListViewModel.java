@@ -9,7 +9,7 @@ import com.example.david.lists.view.common.ViewModelBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserListViewModel extends ViewModelBase
+public class UserListListViewModel extends ViewModelBase
         implements IUserListViewContract.ViewModel {
 
     private final int requestCode;
@@ -19,7 +19,7 @@ public class UserListViewModel extends ViewModelBase
     private List<UserList> tempList;
     private int tempPosition;
 
-    public UserListViewModel(Application application, int requestCode) {
+    public UserListListViewModel(Application application, int requestCode) {
         super(application);
         this.requestCode = requestCode;
         this.userLists = new ArrayList<>();

@@ -9,7 +9,7 @@ import com.example.david.lists.view.common.ViewModelBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemViewModel extends ViewModelBase
+public class ItemListViewModel extends ViewModelBase
         implements IItemViewContract.ViewModel {
 
     private List<Item> viewData;
@@ -18,7 +18,7 @@ public class ItemViewModel extends ViewModelBase
     private final List<Item> tempList;
     private int tempPosition;
 
-    public ItemViewModel(Application application, String userListId) {
+    public ItemListViewModel(Application application, String userListId) {
         super(application);
         this.userListId = userListId;
         viewData = new ArrayList<>();

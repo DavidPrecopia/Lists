@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class ItemLogic extends ListViewLogicBase
+public final class ItemListLogic extends ListViewLogicBase
         implements IItemViewContract.Logic {
 
     private final IItemViewContract.View view;
@@ -25,12 +25,12 @@ public final class ItemLogic extends ListViewLogicBase
 
     private Observer<List<UserList>> repositoryObserver;
 
-    public ItemLogic(IItemViewContract.View view,
-                     IItemViewContract.ViewModel viewModel,
-                     IItemViewContract.Adapter adapter,
-                     IRepositoryContract.Repository repo,
-                     ISchedulerProviderContract schedulerProvider,
-                     CompositeDisposable disposable) {
+    public ItemListLogic(IItemViewContract.View view,
+                         IItemViewContract.ViewModel viewModel,
+                         IItemViewContract.Adapter adapter,
+                         IRepositoryContract.Repository repo,
+                         ISchedulerProviderContract schedulerProvider,
+                         CompositeDisposable disposable) {
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;

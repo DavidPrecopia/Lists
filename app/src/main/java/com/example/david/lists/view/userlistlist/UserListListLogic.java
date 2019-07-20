@@ -26,7 +26,7 @@ import io.reactivex.subscribers.DisposableSubscriber;
  * Unlike normal Logic classes, this will hold a reference to the
  * Android framework because it needs access to SharedPrefs and Intents.
  */
-public final class UserListLogic extends ListViewLogicBase
+public final class UserListListLogic extends ListViewLogicBase
         implements IUserListViewContract.Logic {
 
     @NonNull
@@ -38,14 +38,14 @@ public final class UserListLogic extends ListViewLogicBase
 
     private final IRepositoryContract.UserRepository userRepo;
 
-    public UserListLogic(@NonNull Application application,
-                         IUserListViewContract.View view,
-                         IUserListViewContract.ViewModel viewModel,
-                         IUserListViewContract.Adapter adapter,
-                         IRepositoryContract.Repository repo,
-                         IRepositoryContract.UserRepository userRepo,
-                         ISchedulerProviderContract schedulerProvider,
-                         CompositeDisposable disposable) {
+    public UserListListLogic(@NonNull Application application,
+                             IUserListViewContract.View view,
+                             IUserListViewContract.ViewModel viewModel,
+                             IUserListViewContract.Adapter adapter,
+                             IRepositoryContract.Repository repo,
+                             IRepositoryContract.UserRepository userRepo,
+                             ISchedulerProviderContract schedulerProvider,
+                             CompositeDisposable disposable) {
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
