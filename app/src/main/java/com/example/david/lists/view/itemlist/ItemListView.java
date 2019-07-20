@@ -112,7 +112,7 @@ public class ItemListView extends ListViewBase
 
     @Override
     public void finishView() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().finish();
     }
 
 

@@ -31,7 +31,7 @@ public interface IRepositoryContract {
 
         void updateItemPosition(Item item, int oldPosition, int newPosition);
 
-        LiveData<List<UserList>> getEventUserListDeleted();
+        Flowable<List<UserList>> getEventUserListDeleted();
     }
 
     interface UserRepository {

@@ -6,7 +6,6 @@ import com.crashlytics.android.Crashlytics;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
-import com.example.david.lists.util.SingleLiveEvent;
 import com.example.david.lists.util.UtilExceptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -38,7 +37,8 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
     private ListenerRegistration userListsSnapshotListener;
     private ListenerRegistration itemsSnapshotListener;
 
-    private final SingleLiveEvent<List<UserList>> eventDeleteUserList;
+    private final Flowable<List<UserList>> deletedUserListsFlowable;
+    private FlowableEmitter<List<UserList>> deletedUserListsEmitter;
 
     private boolean recentLocalChanges;
 
@@ -46,12 +46,27 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
                             CollectionReference itemCollection,
                             IRepositoryContract.UserRepository userRepository,
                             FirebaseFirestore firestore) {
+        this.deletedUserListsFlowable = initDeletedUserListsFlowable();
         this.userListFlowable = initUserListFlowable();
         this.userListCollection = userListCollection;
         this.itemCollection = itemCollection;
-        this.eventDeleteUserList = new SingleLiveEvent<>();
         recentLocalChanges = false;
+
         initFirebaseAuth(userRepository, firestore);
+    }
+
+    private Flowable<List<UserList>> initDeletedUserListsFlowable() {
+        return Flowable.create(
+                emitter -> this.deletedUserListsEmitter = emitter,
+                BackpressureStrategy.BUFFER
+        );
+    }
+
+    private Flowable<List<UserList>> initUserListFlowable() {
+        return Flowable.create(
+                this::userListQuerySnapshot,
+                BackpressureStrategy.BUFFER
+        );
     }
 
 
@@ -66,8 +81,8 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
     }
 
     @Override
-    public SingleLiveEvent<List<UserList>> getEventDeleteUserList() {
-        return eventDeleteUserList;
+    public Flowable<List<UserList>> getDeletedUserLists() {
+        return deletedUserListsFlowable;
     }
 
 
@@ -90,13 +105,6 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
         });
     }
 
-
-    private Flowable<List<UserList>> initUserListFlowable() {
-        return Flowable.create(
-                this::userListQuerySnapshot,
-                BackpressureStrategy.BUFFER
-        );
-    }
 
     private void userListQuerySnapshot(FlowableEmitter<List<UserList>> emitter) {
         // this saves a reference to the listener
@@ -124,12 +132,16 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
                 return;
             }
 
-            if (eventDeleteUserList.hasObservers()) {
+            if (deletedUserListsHasSubscribers()) {
                 checkIfUserListDeleted(queryDocumentSnapshots);
             }
 
             emitter.onNext(queryDocumentSnapshots.toObjects(UserList.class));
         };
+    }
+
+    private boolean deletedUserListsHasSubscribers() {
+        return deletedUserListsEmitter != null && !deletedUserListsEmitter.isCancelled();
     }
 
     private void checkIfUserListDeleted(QuerySnapshot queryDocumentSnapshots) {
@@ -142,7 +154,7 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
         if (deletedUserLists.isEmpty()) {
             return;
         }
-        eventDeleteUserList.postValue(deletedUserLists);
+        this.deletedUserListsEmitter.onNext(deletedUserLists);
     }
 
 

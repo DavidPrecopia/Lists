@@ -1,6 +1,5 @@
 package com.example.david.lists.view.itemlist;
 
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.data.datamodel.Item;
@@ -22,8 +21,6 @@ public final class ItemListLogic extends ListViewLogicBase
     private final IItemViewContract.View view;
     private final IItemViewContract.ViewModel viewModel;
     private final IItemViewContract.Adapter adapter;
-
-    private Observer<List<UserList>> repositoryObserver;
 
     public ItemListLogic(IItemViewContract.View view,
                          IItemViewContract.ViewModel viewModel,
@@ -48,21 +45,25 @@ public final class ItemListLogic extends ListViewLogicBase
     @Override
     public void onStart() {
         view.setStateLoading();
-        observeModel();
+        observeDeletedUserLists();
         getItems();
     }
 
 
-    private void observeModel() {
-        repositoryObserver = userLists -> {
-            for (UserList userList : userLists) {
-                if (userList.getId().equals(viewModel.getUserListId())) {
-                    view.showMessage(viewModel.getMsgListDeleted(userList.getTitle()));
-                    view.finishView();
-                }
-            }
-        };
-        repo.getEventUserListDeleted().observeForever(repositoryObserver);
+    private void observeDeletedUserLists() {
+        disposable.add(repo.getEventUserListDeleted()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe(userLists -> {
+                            for (UserList userList : userLists) {
+                                if (userList.getId().equals(viewModel.getUserListId())) {
+                                    view.showMessage(viewModel.getMsgListDeleted(userList.getTitle()));
+                                    view.finishView();
+                                }
+                            }
+                        },
+                        UtilExceptions::throwException)
+        );
     }
 
     private void getItems() {
@@ -191,6 +192,5 @@ public final class ItemListLogic extends ListViewLogicBase
     @Override
     public void onDestroy() {
         disposable.clear();
-        repo.getEventUserListDeleted().removeObserver(repositoryObserver);
     }
 }

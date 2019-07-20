@@ -1,7 +1,5 @@
 package com.example.david.lists.data.remote;
 
-import androidx.lifecycle.LiveData;
-
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.UtilExceptions;
@@ -184,8 +182,8 @@ public final class RemoteRepository implements IRemoteRepositoryContract.Reposit
 
 
     @Override
-    public LiveData<List<UserList>> getEventUserListDeleted() {
-        return snapshotListener.getEventDeleteUserList();
+    public Flowable<List<UserList>> getEventUserListDeleted() {
+        return snapshotListener.getDeletedUserLists();
     }
 
 
