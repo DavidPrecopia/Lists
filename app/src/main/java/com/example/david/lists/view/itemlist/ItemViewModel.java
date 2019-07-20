@@ -4,13 +4,13 @@ import android.app.Application;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.Item;
+import com.example.david.lists.view.common.ViewModelBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemViewModel implements IItemViewContract.ViewModel {
-
-    private final Application application;
+public class ItemViewModel extends ViewModelBase
+        implements IItemViewContract.ViewModel {
 
     private List<Item> viewData;
     private final String userListId;
@@ -19,7 +19,7 @@ public class ItemViewModel implements IItemViewContract.ViewModel {
     private int tempPosition;
 
     public ItemViewModel(Application application, String userListId) {
-        this.application = application;
+        super(application);
         this.userListId = userListId;
         viewData = new ArrayList<>();
         tempList = new ArrayList<>();
@@ -82,14 +82,5 @@ public class ItemViewModel implements IItemViewContract.ViewModel {
     @Override
     public String getErrorMsgInvalidUndo() {
         return getStringRes(R.string.error_msg_invalid_action_undo_deletion);
-    }
-
-
-    private String getStringRes(int resId) {
-        return application.getString(resId);
-    }
-
-    private String getStringRes(int resId, Object object) {
-        return application.getString(resId, object);
     }
 }

@@ -14,6 +14,7 @@ import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
 import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.authentication.IAuthContract;
+import com.example.david.lists.view.common.ListViewLogicBase;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,8 @@ import io.reactivex.subscribers.DisposableSubscriber;
  * Unlike normal Logic classes, this will hold a reference to the
  * Android framework because it needs access to SharedPrefs and Intents.
  */
-public final class UserListLogic implements IUserListViewContract.Logic {
+public final class UserListLogic extends ListViewLogicBase
+        implements IUserListViewContract.Logic {
 
     @NonNull
     private final Application application;
@@ -33,10 +35,6 @@ public final class UserListLogic implements IUserListViewContract.Logic {
     private final IUserListViewContract.View view;
     private final IUserListViewContract.ViewModel viewModel;
     private final IUserListViewContract.Adapter adapter;
-
-    private final IRepositoryContract.Repository repo;
-    private final ISchedulerProviderContract schedulerProvider;
-    private final CompositeDisposable disposable;
 
     private final IRepositoryContract.UserRepository userRepo;
 
@@ -48,15 +46,14 @@ public final class UserListLogic implements IUserListViewContract.Logic {
                          IRepositoryContract.UserRepository userRepo,
                          ISchedulerProviderContract schedulerProvider,
                          CompositeDisposable disposable) {
+        super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
         this.adapter = adapter;
-        this.adapter.init(this);
         this.application = application;
         this.userRepo = userRepo;
-        this.repo = repo;
-        this.schedulerProvider = schedulerProvider;
-        this.disposable = disposable;
+
+        this.adapter.init(this);
     }
 
 

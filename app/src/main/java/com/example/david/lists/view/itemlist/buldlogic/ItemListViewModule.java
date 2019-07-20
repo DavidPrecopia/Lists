@@ -24,10 +24,10 @@ final class ItemListViewModule {
     IItemViewContract.Logic logic(IItemViewContract.View view,
                                   IItemViewContract.ViewModel viewModel,
                                   IItemViewContract.Adapter adapter,
-                                  IRepositoryContract.Repository repository,
+                                  IRepositoryContract.Repository repo,
                                   ISchedulerProviderContract schedulerProvider,
                                   CompositeDisposable disposable) {
-        return new ItemLogic(view, viewModel, adapter, repository, schedulerProvider, disposable);
+        return new ItemLogic(view, viewModel, adapter, repo, schedulerProvider, disposable);
     }
 
     @ViewScope

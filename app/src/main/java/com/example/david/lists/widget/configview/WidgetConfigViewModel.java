@@ -8,21 +8,20 @@ import androidx.annotation.NonNull;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.view.common.ViewModelBase;
 import com.example.david.lists.widget.UtilWidgetKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class WidgetConfigViewModel implements IWidgetConfigContract.ViewModel {
-
-    @NonNull
-    private final Application application;
+public final class WidgetConfigViewModel extends ViewModelBase
+        implements IWidgetConfigContract.ViewModel {
 
     private List<UserList> userLists;
     private int widgetId;
 
     public WidgetConfigViewModel(@NonNull Application application) {
-        this.application = application;
+        super(application);
         this.userLists = new ArrayList<>();
     }
 
@@ -67,12 +66,12 @@ public final class WidgetConfigViewModel implements IWidgetConfigContract.ViewMo
 
     @Override
     public String getErrorMsg() {
-        return application.getString(R.string.error_msg_generic);
+        return getStringRes(R.string.error_msg_generic);
     }
 
     @Override
     public String getErrorMsgEmptyList() {
-        return application.getString(R.string.error_msg_empty_user_list);
+        return getStringRes(R.string.error_msg_empty_user_list);
     }
 
 

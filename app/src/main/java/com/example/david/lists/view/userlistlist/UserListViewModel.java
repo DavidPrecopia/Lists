@@ -4,13 +4,14 @@ import android.app.Application;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
+import com.example.david.lists.view.common.ViewModelBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserListViewModel implements IUserListViewContract.ViewModel {
+public class UserListViewModel extends ViewModelBase
+        implements IUserListViewContract.ViewModel {
 
-    private final Application application;
     private final int requestCode;
 
     private List<UserList> userLists;
@@ -19,7 +20,7 @@ public class UserListViewModel implements IUserListViewContract.ViewModel {
     private int tempPosition;
 
     public UserListViewModel(Application application, int requestCode) {
-        this.application = application;
+        super(application);
         this.requestCode = requestCode;
         this.userLists = new ArrayList<>();
         this.tempList = new ArrayList<>();
@@ -82,10 +83,5 @@ public class UserListViewModel implements IUserListViewContract.ViewModel {
     @Override
     public String getErrorMsgEmptyList() {
         return getStringRes(R.string.error_msg_no_user_lists);
-    }
-
-
-    private String getStringRes(int resId) {
-        return application.getString(resId);
     }
 }

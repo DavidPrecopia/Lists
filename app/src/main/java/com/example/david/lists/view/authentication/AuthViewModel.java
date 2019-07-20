@@ -3,15 +3,15 @@ package com.example.david.lists.view.authentication;
 import android.app.Application;
 
 import com.example.david.lists.R;
+import com.example.david.lists.view.common.ViewModelBase;
 
-public class AuthViewModel implements IAuthContract.ViewModel {
-
-    private final Application application;
+public class AuthViewModel extends ViewModelBase
+        implements IAuthContract.ViewModel {
 
     private final int requestCode;
 
     public AuthViewModel(Application application, int requestCode) {
-        this.application = application;
+        super(application);
         this.requestCode = requestCode;
     }
 
@@ -45,10 +45,5 @@ public class AuthViewModel implements IAuthContract.ViewModel {
     @Override
     public String getMsgSignInWhenNotAnon() {
         return getStringRes(R.string.error_msg_sign_in_when_not_anonymous);
-    }
-
-
-    private String getStringRes(int resId) {
-        return application.getString(resId);
     }
 }

@@ -8,6 +8,7 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.common.ListViewLogicBase;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,30 +16,25 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public final class ItemLogic implements IItemViewContract.Logic {
+public final class ItemLogic extends ListViewLogicBase
+        implements IItemViewContract.Logic {
 
     private final IItemViewContract.View view;
     private final IItemViewContract.ViewModel viewModel;
     private final IItemViewContract.Adapter adapter;
-
-    private final IRepositoryContract.Repository repository;
-    private final ISchedulerProviderContract schedulerProvider;
-    private final CompositeDisposable disposable;
 
     private Observer<List<UserList>> repositoryObserver;
 
     public ItemLogic(IItemViewContract.View view,
                      IItemViewContract.ViewModel viewModel,
                      IItemViewContract.Adapter adapter,
-                     IRepositoryContract.Repository repository,
+                     IRepositoryContract.Repository repo,
                      ISchedulerProviderContract schedulerProvider,
                      CompositeDisposable disposable) {
+        super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
         this.adapter = adapter;
-        this.repository = repository;
-        this.schedulerProvider = schedulerProvider;
-        this.disposable = disposable;
 
         adapter.init(this);
     }
@@ -66,11 +62,11 @@ public final class ItemLogic implements IItemViewContract.Logic {
                 }
             }
         };
-        repository.getEventUserListDeleted().observeForever(repositoryObserver);
+        repo.getEventUserListDeleted().observeForever(repositoryObserver);
     }
 
     private void getItems() {
-        disposable.add(repository.getItems(viewModel.getUserListId())
+        disposable.add(repo.getItems(viewModel.getUserListId())
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribeWith(itemSubscriber())
@@ -130,7 +126,7 @@ public final class ItemLogic implements IItemViewContract.Logic {
         }
 
         Item item = viewModel.getViewData().get(newPosition);
-        repository.updateItemPosition(
+        repo.updateItemPosition(
                 item,
                 item.getPosition(),
                 newPosition
@@ -187,7 +183,7 @@ public final class ItemLogic implements IItemViewContract.Logic {
         if (viewModel.getTempList().isEmpty()) {
             return;
         }
-        repository.deleteItems(viewModel.getTempList());
+        repo.deleteItems(viewModel.getTempList());
         viewModel.getTempList().clear();
     }
 
@@ -195,6 +191,6 @@ public final class ItemLogic implements IItemViewContract.Logic {
     @Override
     public void onDestroy() {
         disposable.clear();
-        repository.getEventUserListDeleted().removeObserver(repositoryObserver);
+        repo.getEventUserListDeleted().removeObserver(repositoryObserver);
     }
 }
