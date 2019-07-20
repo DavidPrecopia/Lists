@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
+import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
 
 import java.util.Collections;
@@ -21,6 +22,7 @@ public final class ItemLogic implements IItemViewContract.Logic {
     private final IItemViewContract.Adapter adapter;
 
     private final IRepositoryContract.Repository repository;
+    private final ISchedulerProviderContract schedulerProvider;
     private final CompositeDisposable disposable;
 
     private Observer<List<UserList>> repositoryObserver;
@@ -29,11 +31,13 @@ public final class ItemLogic implements IItemViewContract.Logic {
                      IItemViewContract.ViewModel viewModel,
                      IItemViewContract.Adapter adapter,
                      IRepositoryContract.Repository repository,
+                     ISchedulerProviderContract schedulerProvider,
                      CompositeDisposable disposable) {
         this.view = view;
         this.viewModel = viewModel;
         this.adapter = adapter;
         this.repository = repository;
+        this.schedulerProvider = schedulerProvider;
         this.disposable = disposable;
 
         adapter.init(this);
@@ -67,6 +71,8 @@ public final class ItemLogic implements IItemViewContract.Logic {
 
     private void getItems() {
         disposable.add(repository.getItems(viewModel.getUserListId())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .subscribeWith(itemSubscriber())
         );
     }

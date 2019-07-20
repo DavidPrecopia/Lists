@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.data.repository.IRepositoryContract;
+import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.view.itemlist.IItemViewContract;
 import com.example.david.lists.view.itemlist.ItemAdapter;
 import com.example.david.lists.view.itemlist.ItemLogic;
@@ -24,8 +25,9 @@ final class ItemListViewModule {
                                   IItemViewContract.ViewModel viewModel,
                                   IItemViewContract.Adapter adapter,
                                   IRepositoryContract.Repository repository,
+                                  ISchedulerProviderContract schedulerProvider,
                                   CompositeDisposable disposable) {
-        return new ItemLogic(view, viewModel, adapter, repository, disposable);
+        return new ItemLogic(view, viewModel, adapter, repository, schedulerProvider, disposable);
     }
 
     @ViewScope
