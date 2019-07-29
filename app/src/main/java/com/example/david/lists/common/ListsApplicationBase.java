@@ -1,8 +1,6 @@
 package com.example.david.lists.common;
 
 import android.app.Application;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -11,6 +9,7 @@ import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.common.buildlogic.AppComponent;
 import com.example.david.lists.common.buildlogic.DaggerAppComponent;
+import com.example.david.lists.util.UtilNetwork;
 import com.example.david.lists.util.UtilNightMode;
 
 import io.fabric.sdk.android.Fabric;
@@ -59,10 +58,12 @@ abstract class ListsApplicationBase extends Application {
     }
 
     private void checkNetworkConnection() {
-        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))
-                .getActiveNetworkInfo();
-        if (networkInfo == null) {
-            Toast.makeText(getApplicationContext(), R.string.error_msg_no_network_connection, Toast.LENGTH_LONG).show();
+        if (UtilNetwork.notConnected(appComponent.networkInfo())) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    R.string.error_msg_no_network_connection,
+                    Toast.LENGTH_LONG
+            ).show();
         }
     }
 
