@@ -102,12 +102,13 @@ dependencies {
     // Local testing
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest-library:2.1'
-    testImplementation 'org.mockito:mockito-core:2.28.2'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
 
     // Instrumentation testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'
