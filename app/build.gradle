@@ -97,7 +97,7 @@ dependencies {
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Leak Canary
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-1"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-2"
 
     // Local testing
     testImplementation 'junit:junit:4.12'
