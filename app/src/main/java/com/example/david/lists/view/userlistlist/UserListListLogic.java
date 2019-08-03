@@ -62,6 +62,7 @@ public final class UserListListLogic extends ListViewLogicBase
         disposable.add(repo.getAllUserLists()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
+                .onTerminateDetach()
                 .subscribeWith(userListSubscriber())
         );
     }

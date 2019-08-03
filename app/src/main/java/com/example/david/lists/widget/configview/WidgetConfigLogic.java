@@ -62,6 +62,7 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
         disposable.add(repo.getAllUserLists()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
+                .onTerminateDetach()
                 .subscribeWith(userListSubscriber())
         );
     }

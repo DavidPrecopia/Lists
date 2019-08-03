@@ -128,7 +128,7 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 UtilExceptions.throwException(e);
                 emitter.onError(e);
-            } else if (shouldReturn(queryDocumentSnapshots)) {
+            } else if (shouldReturn(emitter, queryDocumentSnapshots)) {
                 return;
             }
 
@@ -187,7 +187,7 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
             if (checkForErrorFromQuery(queryDocumentSnapshots, e)) {
                 UtilExceptions.throwException(e);
                 emitter.onError(e);
-            } else if (shouldReturn(queryDocumentSnapshots)) {
+            } else if (shouldReturn(emitter, queryDocumentSnapshots)) {
                 return;
             }
 
@@ -206,7 +206,11 @@ public final class SnapshotListener implements IRemoteRepositoryContract.Snapsho
         return false;
     }
 
-    private boolean shouldReturn(QuerySnapshot queryDocumentSnapshots) {
+    private boolean shouldReturn(FlowableEmitter emitter, QuerySnapshot queryDocumentSnapshots) {
+        if (emitter.isCancelled()) {
+            return true;
+        }
+
         if (isRecentLocalChanges()) {
             recentLocalChanges = false;
             return true;

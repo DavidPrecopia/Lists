@@ -41,6 +41,7 @@ public final class ItemListLogic extends ListViewLogicBase
         disposable.add(repo.getEventUserListDeleted()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
+                .onTerminateDetach()
                 .subscribe(userLists -> {
                             for (UserList userList : userLists) {
                                 if (userList.getId().equals(viewModel.getUserListId())) {
@@ -57,6 +58,7 @@ public final class ItemListLogic extends ListViewLogicBase
         disposable.add(repo.getItems(viewModel.getUserListId())
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
+                .onTerminateDetach()
                 .subscribeWith(itemSubscriber())
         );
     }
