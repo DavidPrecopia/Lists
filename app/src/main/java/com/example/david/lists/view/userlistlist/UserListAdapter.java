@@ -19,20 +19,18 @@ import java.util.List;
 public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter.UserListViewHolder>
         implements IUserListViewContract.Adapter {
 
-    private IUserListViewContract.Logic logic;
+    private final IUserListViewContract.Logic logic;
 
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public UserListAdapter(ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public UserListAdapter(IUserListViewContract.Logic logic,
+                           ViewBinderHelper viewBinderHelper,
+                           ItemTouchHelper itemTouchHelper) {
         super(new UserListDiffCallback());
+        this.logic = logic;
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
-    }
-
-    @Override
-    public void init(IUserListViewContract.Logic logic) {
-        this.logic = logic;
     }
 
 
@@ -85,7 +83,7 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            logic.delete(adapterPosition);
+            logic.delete(adapterPosition, UserListAdapter.this);
         }
 
         @Override
@@ -95,7 +93,7 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
         @Override
         protected void delete(int adapterPosition) {
-            logic.delete(adapterPosition);
+            logic.delete(adapterPosition, UserListAdapter.this);
         }
 
         @Override

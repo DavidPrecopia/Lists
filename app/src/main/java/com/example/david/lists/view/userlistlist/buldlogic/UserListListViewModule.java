@@ -22,14 +22,13 @@ final class UserListListViewModule {
     @ViewScope
     @Provides
     IUserListViewContract.Logic logic(Application application,
-                                          IUserListViewContract.View view,
-                                          IUserListViewContract.ViewModel viewModel,
-                                          IUserListViewContract.Adapter adapter,
-                                          IRepositoryContract.Repository repo,
-                                          IRepositoryContract.UserRepository userRepo,
-                                          ISchedulerProviderContract schedulerProvider,
-                                          CompositeDisposable disposable) {
-        return new UserListListLogic(application, view, viewModel, adapter, repo, userRepo, schedulerProvider, disposable);
+                                      IUserListViewContract.View view,
+                                      IUserListViewContract.ViewModel viewModel,
+                                      IRepositoryContract.Repository repo,
+                                      IRepositoryContract.UserRepository userRepo,
+                                      ISchedulerProviderContract schedulerProvider,
+                                      CompositeDisposable disposable) {
+        return new UserListListLogic(application, view, viewModel, repo, userRepo, schedulerProvider, disposable);
     }
 
     @ViewScope
@@ -40,8 +39,9 @@ final class UserListListViewModule {
 
     @ViewScope
     @Provides
-    IUserListViewContract.Adapter adapter(ViewBinderHelper viewBinderHelper,
+    IUserListViewContract.Adapter adapter(IUserListViewContract.Logic logic,
+                                          ViewBinderHelper viewBinderHelper,
                                           ItemTouchHelper itemTouchHelper) {
-        return new UserListAdapter(viewBinderHelper, itemTouchHelper);
+        return new UserListAdapter(logic, viewBinderHelper, itemTouchHelper);
     }
 }

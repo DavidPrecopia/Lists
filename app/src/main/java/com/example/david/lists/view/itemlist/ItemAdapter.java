@@ -18,19 +18,17 @@ import java.util.List;
 public final class ItemAdapter extends ListAdapter<Item, ItemAdapter.ItemViewHolder>
         implements IItemViewContract.Adapter {
 
-    private IItemViewContract.Logic logic;
+    private final IItemViewContract.Logic logic;
     private final ViewBinderHelper viewBinderHelper;
     private final ItemTouchHelper itemTouchHelper;
 
-    public ItemAdapter(ViewBinderHelper viewBinderHelper, ItemTouchHelper itemTouchHelper) {
+    public ItemAdapter(IItemViewContract.Logic logic,
+                       ViewBinderHelper viewBinderHelper,
+                       ItemTouchHelper itemTouchHelper) {
         super(new ItemDiffCallback());
+        this.logic = logic;
         this.viewBinderHelper = viewBinderHelper;
         this.itemTouchHelper = itemTouchHelper;
-    }
-
-    @Override
-    public void init(IItemViewContract.Logic logic) {
-        this.logic = logic;
     }
 
 
@@ -77,7 +75,7 @@ public final class ItemAdapter extends ListAdapter<Item, ItemAdapter.ItemViewHol
 
         @Override
         protected void swipedLeft(int adapterPosition) {
-            logic.delete(adapterPosition);
+            logic.delete(adapterPosition, ItemAdapter.this);
         }
 
         @Override
@@ -87,7 +85,7 @@ public final class ItemAdapter extends ListAdapter<Item, ItemAdapter.ItemViewHol
 
         @Override
         protected void delete(int adapterPosition) {
-            logic.delete(adapterPosition);
+            logic.delete(adapterPosition, ItemAdapter.this);
         }
     }
 }

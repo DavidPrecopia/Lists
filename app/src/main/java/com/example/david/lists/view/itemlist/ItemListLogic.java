@@ -1,7 +1,5 @@
 package com.example.david.lists.view.itemlist;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.david.lists.data.datamodel.Item;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
@@ -20,27 +18,16 @@ public final class ItemListLogic extends ListViewLogicBase
 
     private final IItemViewContract.View view;
     private final IItemViewContract.ViewModel viewModel;
-    private final IItemViewContract.Adapter adapter;
 
     public ItemListLogic(IItemViewContract.View view,
                          IItemViewContract.ViewModel viewModel,
-                         IItemViewContract.Adapter adapter,
                          IRepositoryContract.Repository repo,
                          ISchedulerProviderContract schedulerProvider,
                          CompositeDisposable disposable) {
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
-        this.adapter = adapter;
-
-        adapter.init(this);
     }
-
-    @Override
-    public RecyclerView.Adapter getAdapter() {
-        return (RecyclerView.Adapter) adapter;
-    }
-
 
     @Override
     public void onStart() {
@@ -95,7 +82,7 @@ public final class ItemListLogic extends ListViewLogicBase
 
     private void evaluateNewData() {
         List<Item> viewData = viewModel.getViewData();
-        adapter.submitList(viewData);
+        view.submitList(viewData);
         if (viewData.isEmpty()) {
             view.setStateError(viewModel.getErrorMsgEmptyList());
         } else {
@@ -115,7 +102,7 @@ public final class ItemListLogic extends ListViewLogicBase
 
 
     @Override
-    public void dragging(int fromPosition, int toPosition) {
+    public void dragging(int fromPosition, int toPosition, IItemViewContract.Adapter adapter) {
         Collections.swap(viewModel.getViewData(), fromPosition, toPosition);
         adapter.move(fromPosition, toPosition);
     }
@@ -136,7 +123,7 @@ public final class ItemListLogic extends ListViewLogicBase
 
 
     @Override
-    public void delete(int position) {
+    public void delete(int position, IItemViewContract.Adapter adapter) {
         adapter.remove(position);
         saveDeletedItem(position);
 
@@ -151,24 +138,24 @@ public final class ItemListLogic extends ListViewLogicBase
 
 
     @Override
-    public void undoRecentDeletion() {
+    public void undoRecentDeletion(IItemViewContract.Adapter adapter) {
         if (viewModel.getTempList().isEmpty() || viewModel.getTempPosition() < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     viewModel.getErrorMsgInvalidUndo()
             ));
         }
-        reAdd();
+        reAdd(adapter);
         deletionNotificationTimedOut();
     }
 
-    private void reAdd() {
+    private void reAdd(IItemViewContract.Adapter adapter) {
         int lastDeletedPosition = (viewModel.getTempList().size() - 1);
-        reAddItemToAdapter(lastDeletedPosition);
+        reAddItemToAdapter(lastDeletedPosition, adapter);
         reAddItemToLocalList(lastDeletedPosition);
         viewModel.getTempList().remove(lastDeletedPosition);
     }
 
-    private void reAddItemToAdapter(int lastDeletedPosition) {
+    private void reAddItemToAdapter(int lastDeletedPosition, IItemViewContract.Adapter adapter) {
         adapter.reAdd(lastDeletedPosition, viewModel.getTempList().get(lastDeletedPosition));
     }
 

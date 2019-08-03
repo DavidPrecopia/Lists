@@ -15,6 +15,8 @@ import com.example.david.lists.view.addedit.item.AddEditItemDialog;
 import com.example.david.lists.view.common.ListViewBase;
 import com.example.david.lists.view.itemlist.buldlogic.DaggerItemListViewComponent;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 public class ItemListView extends ListViewBase
@@ -22,6 +24,9 @@ public class ItemListView extends ListViewBase
 
     @Inject
     IItemViewContract.Logic logic;
+
+    @Inject
+    IItemViewContract.Adapter adapter;
 
     private static final String ARG_KEY_USER_LIST_ID = "user_list_id_key";
     private static final String ARG_KEY_USER_LIST_TITLE = "user_list_title_key";
@@ -86,6 +91,12 @@ public class ItemListView extends ListViewBase
 
 
     @Override
+    public void submitList(List<Item> viewData) {
+        adapter.submitList(viewData);
+    }
+
+
+    @Override
     public void notifyUserOfDeletion(String message) {
         super.notifyDeletionSnackbar(message);
     }
@@ -129,7 +140,7 @@ public class ItemListView extends ListViewBase
 
     @Override
     protected void undoRecentDeletion() {
-        logic.undoRecentDeletion();
+        logic.undoRecentDeletion(adapter);
     }
 
     @Override
@@ -139,7 +150,7 @@ public class ItemListView extends ListViewBase
 
     @Override
     protected void draggingListItem(int fromPosition, int toPosition) {
-        logic.dragging(fromPosition, toPosition);
+        logic.dragging(fromPosition, toPosition, adapter);
     }
 
     @Override
@@ -159,6 +170,6 @@ public class ItemListView extends ListViewBase
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return logic.getAdapter();
+        return (RecyclerView.Adapter) adapter;
     }
 }

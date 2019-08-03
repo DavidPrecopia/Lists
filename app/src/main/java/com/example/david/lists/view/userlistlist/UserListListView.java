@@ -25,6 +25,8 @@ import com.example.david.lists.view.common.ListViewBase;
 import com.example.david.lists.view.itemlist.ItemActivity;
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 public class UserListListView extends ListViewBase
@@ -33,6 +35,9 @@ public class UserListListView extends ListViewBase
 
     @Inject
     IUserListViewContract.Logic logic;
+
+    @Inject
+    IUserListViewContract.Adapter adapter;
 
     public UserListListView() {
     }
@@ -151,6 +156,10 @@ public class UserListListView extends ListViewBase
         ));
     }
 
+    @Override
+    public void submitList(List<UserList> viewData) {
+        adapter.submitList(viewData);
+    }
 
     @Override
     public void notifyUserOfDeletion(String message) {
@@ -186,7 +195,7 @@ public class UserListListView extends ListViewBase
 
     @Override
     protected void undoRecentDeletion() {
-        logic.undoRecentDeletion();
+        logic.undoRecentDeletion(adapter);
     }
 
     @Override
@@ -196,7 +205,7 @@ public class UserListListView extends ListViewBase
 
     @Override
     protected void draggingListItem(int fromPosition, int toPosition) {
-        logic.dragging(fromPosition, toPosition);
+        logic.dragging(fromPosition, toPosition, adapter);
     }
 
     @Override
@@ -216,6 +225,6 @@ public class UserListListView extends ListViewBase
 
     @Override
     protected RecyclerView.Adapter getAdapter() {
-        return logic.getAdapter();
+        return (RecyclerView.Adapter) adapter;
     }
 }

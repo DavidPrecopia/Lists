@@ -23,11 +23,10 @@ final class ItemListViewModule {
     @Provides
     IItemViewContract.Logic logic(IItemViewContract.View view,
                                   IItemViewContract.ViewModel viewModel,
-                                  IItemViewContract.Adapter adapter,
                                   IRepositoryContract.Repository repo,
                                   ISchedulerProviderContract schedulerProvider,
                                   CompositeDisposable disposable) {
-        return new ItemListLogic(view, viewModel, adapter, repo, schedulerProvider, disposable);
+        return new ItemListLogic(view, viewModel, repo, schedulerProvider, disposable);
     }
 
     @ViewScope
@@ -38,8 +37,9 @@ final class ItemListViewModule {
 
     @ViewScope
     @Provides
-    IItemViewContract.Adapter adapter(ViewBinderHelper viewBinderHelper,
+    IItemViewContract.Adapter adapter(IItemViewContract.Logic logic,
+                                      ViewBinderHelper viewBinderHelper,
                                       ItemTouchHelper itemTouchHelper) {
-        return new ItemAdapter(viewBinderHelper, itemTouchHelper);
+        return new ItemAdapter(logic, viewBinderHelper, itemTouchHelper);
     }
 }

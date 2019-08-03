@@ -3,8 +3,6 @@ package com.example.david.lists.view.userlistlist;
 import android.content.Intent;
 import android.view.MenuItem;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.view.authentication.IAuthContract;
 
@@ -22,6 +20,8 @@ public interface IUserListViewContract {
 
         void openEditDialog(UserList userList);
 
+        void submitList(List<UserList> viewData);
+
         void notifyUserOfDeletion(String message);
 
         void setStateDisplayList();
@@ -36,21 +36,19 @@ public interface IUserListViewContract {
     interface Logic {
         void onStart();
 
-        RecyclerView.Adapter getAdapter();
-
         void userListSelected(int position);
 
         void add();
 
         void edit(UserList userList);
 
-        void dragging(int fromPosition, int toPosition);
+        void dragging(int fromPosition, int toPosition, IUserListViewContract.Adapter adapter);
 
         void movedPermanently(int newPosition);
 
-        void delete(int position);
+        void delete(int position, IUserListViewContract.Adapter adapter);
 
-        void undoRecentDeletion();
+        void undoRecentDeletion(Adapter adapter);
 
         void deletionNotificationTimedOut();
 
@@ -94,8 +92,6 @@ public interface IUserListViewContract {
     }
 
     interface Adapter {
-        void init(IUserListViewContract.Logic logic);
-
         void submitList(List<UserList> list);
 
         void move(int fromPosition, int toPosition);

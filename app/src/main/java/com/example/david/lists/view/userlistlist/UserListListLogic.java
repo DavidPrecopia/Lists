@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
@@ -34,14 +33,12 @@ public final class UserListListLogic extends ListViewLogicBase
 
     private final IUserListViewContract.View view;
     private final IUserListViewContract.ViewModel viewModel;
-    private final IUserListViewContract.Adapter adapter;
 
     private final IRepositoryContract.UserRepository userRepo;
 
     public UserListListLogic(@NonNull Application application,
                              IUserListViewContract.View view,
                              IUserListViewContract.ViewModel viewModel,
-                             IUserListViewContract.Adapter adapter,
                              IRepositoryContract.Repository repo,
                              IRepositoryContract.UserRepository userRepo,
                              ISchedulerProviderContract schedulerProvider,
@@ -49,11 +46,8 @@ public final class UserListListLogic extends ListViewLogicBase
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
-        this.adapter = adapter;
         this.application = application;
         this.userRepo = userRepo;
-
-        this.adapter.init(this);
     }
 
 
@@ -61,12 +55,6 @@ public final class UserListListLogic extends ListViewLogicBase
     public void onStart() {
         view.setStateLoading();
         getAllUserLists();
-    }
-
-
-    @Override
-    public RecyclerView.Adapter getAdapter() {
-        return (RecyclerView.Adapter) adapter;
     }
 
 
@@ -99,7 +87,7 @@ public final class UserListListLogic extends ListViewLogicBase
 
     private void evaluateNewData() {
         List<UserList> viewData = viewModel.getViewData();
-        adapter.submitList(viewData);
+        view.submitList(viewData);
         if (viewData.isEmpty()) {
             view.setStateError(viewModel.getErrorMsgEmptyList());
         } else {
@@ -126,7 +114,7 @@ public final class UserListListLogic extends ListViewLogicBase
 
 
     @Override
-    public void dragging(int fromPosition, int toPosition) {
+    public void dragging(int fromPosition, int toPosition, IUserListViewContract.Adapter adapter) {
         adapter.move(fromPosition, toPosition);
         Collections.swap(viewModel.getViewData(), fromPosition, toPosition);
     }
@@ -147,7 +135,7 @@ public final class UserListListLogic extends ListViewLogicBase
 
 
     @Override
-    public void delete(int position) {
+    public void delete(int position, IUserListViewContract.Adapter adapter) {
         adapter.remove(position);
         saveDeletedUserList(position);
         view.notifyUserOfDeletion(viewModel.getMsgDeletion());
@@ -161,24 +149,24 @@ public final class UserListListLogic extends ListViewLogicBase
 
 
     @Override
-    public void undoRecentDeletion() {
+    public void undoRecentDeletion(IUserListViewContract.Adapter adapter) {
         if (viewModel.getTempList().isEmpty() || viewModel.getTempPosition() < 0) {
             UtilExceptions.throwException(new UnsupportedOperationException(
                     viewModel.getMsgInvalidUndo()
             ));
         }
-        reAdd();
+        reAdd(adapter);
         deletionNotificationTimedOut();
     }
 
-    private void reAdd() {
+    private void reAdd(IUserListViewContract.Adapter adapter) {
         int lastDeletedPosition = (viewModel.getTempList().size() - 1);
-        reAddUserListToAdapter(lastDeletedPosition);
+        reAddUserListToAdapter(lastDeletedPosition, adapter);
         reAddUserListToLocalList(lastDeletedPosition);
         viewModel.getTempList().remove(lastDeletedPosition);
     }
 
-    private void reAddUserListToAdapter(int lastDeletedPosition) {
+    private void reAddUserListToAdapter(int lastDeletedPosition, IUserListViewContract.Adapter adapter) {
         adapter.reAdd(
                 viewModel.getTempPosition(),
                 viewModel.getTempList().get(lastDeletedPosition)

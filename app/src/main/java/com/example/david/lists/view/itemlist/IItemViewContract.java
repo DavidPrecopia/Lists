@@ -1,7 +1,5 @@
 package com.example.david.lists.view.itemlist;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.david.lists.data.datamodel.Item;
 
 import java.util.List;
@@ -11,6 +9,8 @@ public interface IItemViewContract {
         void openAddDialog(String userListId, int position);
 
         void openEditDialog(Item item);
+
+        void submitList(List<Item> viewData);
 
         void notifyUserOfDeletion(String message);
 
@@ -28,19 +28,17 @@ public interface IItemViewContract {
     interface Logic {
         void onStart();
 
-        RecyclerView.Adapter getAdapter();
-
         void addButtonClicked();
 
         void edit(int position);
 
-        void dragging(int fromPosition, int toPosition);
+        void dragging(int fromPosition, int toPosition, IItemViewContract.Adapter adapter);
 
         void movedPermanently(int newPosition);
 
-        void delete(int position);
+        void delete(int position, IItemViewContract.Adapter adapter);
 
-        void undoRecentDeletion();
+        void undoRecentDeletion(IItemViewContract.Adapter adapter);
 
         void deletionNotificationTimedOut();
 
@@ -72,8 +70,6 @@ public interface IItemViewContract {
     }
 
     interface Adapter {
-        void init(Logic logic);
-
         void submitList(List<Item> list);
 
         void move(int fromPosition, int toPosition);
