@@ -8,6 +8,7 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
+import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.userlistlist.IUserListViewContract;
 import com.example.david.lists.view.userlistlist.UserListAdapter;
 import com.example.david.lists.view.userlistlist.UserListListLogic;
@@ -21,14 +22,14 @@ import io.reactivex.disposables.CompositeDisposable;
 final class UserListListViewModule {
     @ViewScope
     @Provides
-    IUserListViewContract.Logic logic(Application application,
-                                      IUserListViewContract.View view,
+    IUserListViewContract.Logic logic(IUserListViewContract.View view,
                                       IUserListViewContract.ViewModel viewModel,
                                       IRepositoryContract.Repository repo,
                                       IRepositoryContract.UserRepository userRepo,
                                       ISchedulerProviderContract schedulerProvider,
-                                      CompositeDisposable disposable) {
-        return new UserListListLogic(application, view, viewModel, repo, userRepo, schedulerProvider, disposable);
+                                      CompositeDisposable disposable,
+                                      UtilNightMode utilNightMode) {
+        return new UserListListLogic(view, viewModel, repo, userRepo, schedulerProvider, disposable, utilNightMode);
     }
 
     @ViewScope
@@ -43,5 +44,11 @@ final class UserListListViewModule {
                                           ViewBinderHelper viewBinderHelper,
                                           ItemTouchHelper itemTouchHelper) {
         return new UserListAdapter(logic, viewBinderHelper, itemTouchHelper);
+    }
+
+    @ViewScope
+    @Provides
+    UtilNightMode utilNightMode(Application application) {
+        return new UtilNightMode(application);
     }
 }

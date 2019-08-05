@@ -68,10 +68,11 @@ abstract class ListsApplicationBase extends Application {
     }
 
     private void setNightMode() {
-        if (UtilNightMode.isNightModeEnabled(this)) {
-            UtilNightMode.setNight(this);
+        UtilNightMode utilNightMode = new UtilNightMode(this);
+        if (utilNightMode.isNightModeEnabled()) {
+            utilNightMode.setNight();
         } else {
-            UtilNightMode.setDay(this);
+            utilNightMode.setDay();
         }
     }
 

@@ -9,40 +9,45 @@ import com.example.david.lists.R;
 import com.example.david.lists.common.ListsApplication;
 
 public final class UtilNightMode {
-    private UtilNightMode() {
+
+    private final Application application;
+
+    public UtilNightMode(Application application) {
+        this.application = application;
     }
 
-    public static void setDay(Application application) {
-        setMode(application, AppCompatDelegate.MODE_NIGHT_NO);
+
+    public void setDay() {
+        setMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
-    public static void setNight(Application application) {
-        setMode(application, AppCompatDelegate.MODE_NIGHT_YES);
+    public void setNight() {
+        setMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
-    public static boolean isNightModeEnabled(Application application) {
+    public boolean isNightModeEnabled() {
         return AppCompatDelegate.MODE_NIGHT_YES ==
-                getSharedPrefs(application).getInt(getKey(application), -1);
+                getSharedPrefs().getInt(getKey(), -1);
     }
 
 
-    private static void setMode(Application application, int mode) {
-        saveChange(application, mode);
+    private void setMode(int mode) {
+        saveChange(mode);
         AppCompatDelegate.setDefaultNightMode(mode);
     }
 
-    private static void saveChange(Application application, int mode) {
-        SharedPreferences.Editor editor = getSharedPrefs(application).edit();
-        editor.putInt(getKey(application), mode);
+    private void saveChange(int mode) {
+        SharedPreferences.Editor editor = getSharedPrefs().edit();
+        editor.putInt(getKey(), mode);
         editor.apply();
     }
 
 
-    private static SharedPreferences getSharedPrefs(Application application) {
+    private SharedPreferences getSharedPrefs() {
         return ((ListsApplication) application).getAppComponent().sharedPrefsNightMode();
     }
 
-    private static String getKey(Application application) {
+    private String getKey() {
         return application.getString(R.string.night_mode_shared_pref_key);
     }
 }

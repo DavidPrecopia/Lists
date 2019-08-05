@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog;
 import com.example.david.lists.view.authentication.AuthView;
 import com.example.david.lists.view.authentication.IAuthContract;
@@ -86,7 +85,7 @@ public class UserListListView extends ListViewBase
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(logic.getMenuResource(), menu);
         menu.findItem(R.id.menu_id_night_mode)
-                .setChecked(UtilNightMode.isNightModeEnabled(getActivity().getApplication()));
+                .setChecked(logic.isNightModeEnabled());
         super.onCreateOptionsMenu(menu, inflater);
     }
 

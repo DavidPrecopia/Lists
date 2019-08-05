@@ -1,10 +1,7 @@
 package com.example.david.lists.view.userlistlist;
 
-import android.app.Application;
 import android.content.Intent;
 import android.view.MenuItem;
-
-import androidx.annotation.NonNull;
 
 import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
@@ -28,26 +25,25 @@ import io.reactivex.subscribers.DisposableSubscriber;
 public final class UserListListLogic extends ListViewLogicBase
         implements IUserListViewContract.Logic {
 
-    @NonNull
-    private final Application application;
-
     private final IUserListViewContract.View view;
     private final IUserListViewContract.ViewModel viewModel;
 
     private final IRepositoryContract.UserRepository userRepo;
 
-    public UserListListLogic(@NonNull Application application,
-                             IUserListViewContract.View view,
+    private final UtilNightMode utilNightMode;
+
+    public UserListListLogic(IUserListViewContract.View view,
                              IUserListViewContract.ViewModel viewModel,
                              IRepositoryContract.Repository repo,
                              IRepositoryContract.UserRepository userRepo,
                              ISchedulerProviderContract schedulerProvider,
-                             CompositeDisposable disposable) {
+                             CompositeDisposable disposable,
+                             UtilNightMode utilNightMode) {
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
-        this.application = application;
         this.userRepo = userRepo;
+        this.utilNightMode = utilNightMode;
     }
 
 
@@ -235,10 +231,10 @@ public final class UserListListLogic extends ListViewLogicBase
     public void nightMode(MenuItem item) {
         if (item.isChecked()) {
             item.setChecked(false);
-            UtilNightMode.setDay(application);
+            utilNightMode.setDay();
         } else {
             item.setChecked(true);
-            UtilNightMode.setNight(application);
+            utilNightMode.setNight();
         }
     }
 
@@ -247,6 +243,11 @@ public final class UserListListLogic extends ListViewLogicBase
         return userRepo.isAnonymous()
                 ? R.menu.menu_sign_in
                 : R.menu.menu_sign_out;
+    }
+
+    @Override
+    public boolean isNightModeEnabled() {
+        return utilNightMode.isNightModeEnabled();
     }
 
 

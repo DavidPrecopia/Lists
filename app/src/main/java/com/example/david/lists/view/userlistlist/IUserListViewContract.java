@@ -64,6 +64,8 @@ public interface IUserListViewContract {
 
         int getMenuResource();
 
+        boolean isNightModeEnabled();
+
         void onDestroy();
     }
 
