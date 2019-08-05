@@ -1,7 +1,5 @@
 package com.example.david.lists.widget.configview;
 
-import android.content.SharedPreferences;
-
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
@@ -21,21 +19,17 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
     private final ISchedulerProviderContract schedulerProvider;
     private final CompositeDisposable disposable;
 
-    private final SharedPreferences sharedPrefs;
-
     public WidgetConfigLogic(IWidgetConfigContract.View view,
                              IWidgetConfigContract.ViewModel viewModel,
                              IRepositoryContract.Repository repo,
                              ISchedulerProviderContract schedulerProvider,
                              CompositeDisposable disposable,
-                             SharedPreferences sharedPrefs,
                              int widgetId) {
         this.view = view;
         this.viewModel = viewModel;
         this.repo = repo;
         this.schedulerProvider = schedulerProvider;
         this.disposable = disposable;
-        this.sharedPrefs = sharedPrefs;
 
         init(widgetId);
     }
@@ -108,10 +102,12 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
     }
 
     private void saveDetails(String id, String title) {
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString(viewModel.getSharedPrefKeyId(), id);
-        editor.putString(viewModel.getSharedPrefKeyTitle(), title);
-        editor.apply();
+        view.saveDetails(
+                id,
+                title,
+                viewModel.getSharedPrefKeyId(),
+                viewModel.getSharedPrefKeyTitle()
+        );
     }
 
 

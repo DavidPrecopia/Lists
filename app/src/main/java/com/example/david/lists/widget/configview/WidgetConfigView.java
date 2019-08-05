@@ -2,6 +2,7 @@ package com.example.david.lists.widget.configview;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -17,11 +18,13 @@ import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.databinding.WidgetConfigViewBinding;
 import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent;
+import com.example.david.lists.widget.configview.buildlogic.WidgetConfigViewComponent;
 import com.example.david.lists.widget.view.WidgetRemoteView;
 
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 public class WidgetConfigView extends AppCompatActivity
@@ -31,6 +34,10 @@ public class WidgetConfigView extends AppCompatActivity
 
     @Inject
     IWidgetConfigContract.Logic logic;
+
+    @Inject
+    @Named(WidgetConfigViewComponent.SHARED_PREFS)
+    SharedPreferences sharedPrefs;
 
     @Inject
     IWidgetConfigContract.Adapter adapter;
@@ -92,6 +99,14 @@ public class WidgetConfigView extends AppCompatActivity
         Intent resultValue = new Intent();
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         setResult(resultCode, resultValue);
+    }
+
+    @Override
+    public void saveDetails(String id, String title, String sharedPrefKeyId, String sharedPrefKeyTitle) {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(sharedPrefKeyId, id);
+        editor.putString(sharedPrefKeyTitle, title);
+        editor.apply();
     }
 
     @Override

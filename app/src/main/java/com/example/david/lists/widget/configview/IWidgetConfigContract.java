@@ -16,6 +16,8 @@ public interface IWidgetConfigContract {
 
         void setResults(int widgetId, int resultCode);
 
+        void saveDetails(String id, String title, String sharedPrefKeyId, String sharedPrefKeyTitle);
+
         void finishView(int widgetId);
 
         void finishViewInvalidId();

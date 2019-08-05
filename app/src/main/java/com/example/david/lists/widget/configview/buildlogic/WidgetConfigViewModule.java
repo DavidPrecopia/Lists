@@ -29,9 +29,8 @@ final class WidgetConfigViewModule {
                                       IRepositoryContract.Repository repo,
                                       ISchedulerProviderContract schedulerProvider,
                                       CompositeDisposable disposable,
-                                      @Named(WidgetConfigViewComponent.SHARED_PREFS) SharedPreferences sharedPrefs,
                                       int widgetId) {
-        return new WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable, sharedPrefs, widgetId);
+        return new WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable, widgetId);
     }
 
     @ViewScope
