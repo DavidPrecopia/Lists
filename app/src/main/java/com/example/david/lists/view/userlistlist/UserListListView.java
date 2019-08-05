@@ -38,6 +38,9 @@ public class UserListListView extends ListViewBase
     @Inject
     IUserListViewContract.Adapter adapter;
 
+    private int authRequestCode;
+    private String intentExtraAuthResultKey;
+
     public UserListListView() {
     }
 
@@ -83,10 +86,21 @@ public class UserListListView extends ListViewBase
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(logic.getMenuResource(), menu);
+        inflateMenu(menu, inflater);
+        initMenuSetCheckedState(menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void inflateMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(
+                logic.isUserAnon() ? R.menu.menu_sign_in : R.menu.menu_sign_out,
+                menu
+        );
+    }
+
+    private void initMenuSetCheckedState(Menu menu) {
         menu.findItem(R.id.menu_id_night_mode)
                 .setChecked(logic.isNightModeEnabled());
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -99,7 +113,10 @@ public class UserListListView extends ListViewBase
                 logic.signIn();
                 break;
             case R.id.menu_id_night_mode:
-                logic.nightMode(item);
+                boolean checkedState = item.isChecked();
+                // Set to inverse of current checked state.
+                item.setChecked(!checkedState);
+                logic.setNightMode(checkedState);
                 break;
             default:
                 UtilExceptions.throwException(new IllegalArgumentException());
@@ -128,7 +145,10 @@ public class UserListListView extends ListViewBase
     }
 
     @Override
-    public void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode) {
+    public void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode, String intentExtraAuthResultKey) {
+        this.authRequestCode = requestCode;
+        this.intentExtraAuthResultKey = intentExtraAuthResultKey;
+
         Intent intent = new Intent(getActivity(), AuthView.class);
         intent.putExtra(getString(R.string.intent_extra_auth), authGoal);
         startActivityForResult(intent, requestCode);
@@ -136,9 +156,16 @@ public class UserListListView extends ListViewBase
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        logic.authResult(requestCode, data);
+        if (requestCode != authRequestCode) {
+            return;
+        }
+        logic.authResult(getIntentExtra(data));
     }
+
+    private IAuthContract.AuthResult getIntentExtra(Intent data) {
+        return (IAuthContract.AuthResult) data.getSerializableExtra(intentExtraAuthResultKey);
+    }
+
 
 
     @Override

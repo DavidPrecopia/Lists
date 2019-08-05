@@ -1,9 +1,5 @@
 package com.example.david.lists.view.userlistlist;
 
-import android.content.Intent;
-import android.view.MenuItem;
-
-import com.example.david.lists.R;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
@@ -18,10 +14,6 @@ import java.util.List;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-/**
- * Unlike normal Logic classes, this will hold a reference to the
- * Android framework because it needs access to SharedPrefs and Intents.
- */
 public final class UserListListLogic extends ListViewLogicBase
         implements IUserListViewContract.Logic {
 
@@ -194,55 +186,47 @@ public final class UserListListLogic extends ListViewLogicBase
 
     @Override
     public void signOutConfirmed() {
-        view.openAuthentication(
-                IAuthContract.AuthGoal.SIGN_OUT, viewModel.getRequestCode()
-        );
+        openAuthView(IAuthContract.AuthGoal.SIGN_OUT);
     }
 
     @Override
     public void signIn() {
+        openAuthView(IAuthContract.AuthGoal.SIGN_IN);
+    }
+
+    private void openAuthView(IAuthContract.AuthGoal authGoal) {
         view.openAuthentication(
-                IAuthContract.AuthGoal.SIGN_IN, viewModel.getRequestCode()
+                authGoal,
+                viewModel.getRequestCode(),
+                viewModel.getIntentExtraAuthResultKey()
         );
     }
 
 
     @Override
-    public void authResult(int requestCode, Intent data) {
-        if (requestCode != viewModel.getRequestCode()) {
-            return;
-        }
-        evalAuthResult(data);
-    }
-
-    private void evalAuthResult(Intent data) {
-        if (authWasSuccessful(data)) {
+    public void authResult(IAuthContract.AuthResult authResult) {
+        if (authIsValid(authResult)) {
             view.recreateView();
         }
     }
 
-    private boolean authWasSuccessful(Intent data) {
-        return data.getSerializableExtra(viewModel.getIntentExtraAuthResultKey())
-                == IAuthContract.AuthResult.AUTH_SUCCESS;
+    private boolean authIsValid(IAuthContract.AuthResult authResult) {
+        return authResult == IAuthContract.AuthResult.AUTH_SUCCESS;
     }
 
 
     @Override
-    public void nightMode(MenuItem item) {
-        if (item.isChecked()) {
-            item.setChecked(false);
+    public void setNightMode(boolean isMenuItemChecked) {
+        if (isMenuItemChecked) {
             utilNightMode.setDay();
         } else {
-            item.setChecked(true);
             utilNightMode.setNight();
         }
     }
 
     @Override
-    public int getMenuResource() {
-        return userRepo.isAnonymous()
-                ? R.menu.menu_sign_in
-                : R.menu.menu_sign_out;
+    public boolean isUserAnon() {
+        return userRepo.isAnonymous();
     }
 
     @Override

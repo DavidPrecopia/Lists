@@ -1,8 +1,5 @@
 package com.example.david.lists.view.userlistlist;
 
-import android.content.Intent;
-import android.view.MenuItem;
-
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.view.authentication.IAuthContract;
 
@@ -14,7 +11,7 @@ public interface IUserListViewContract {
 
         void confirmSignOut();
 
-        void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode);
+        void openAuthentication(IAuthContract.AuthGoal authGoal, int requestCode, String intentExtraAuthResultKey);
 
         void openAddDialog(int position);
 
@@ -58,11 +55,11 @@ public interface IUserListViewContract {
 
         void signIn();
 
-        void authResult(int requestCode, Intent data);
+        void authResult(IAuthContract.AuthResult authResult);
 
-        void nightMode(MenuItem item);
+        void setNightMode(boolean isMenuItemChecked);
 
-        int getMenuResource();
+        boolean isUserAnon();
 
         boolean isNightModeEnabled();
 
