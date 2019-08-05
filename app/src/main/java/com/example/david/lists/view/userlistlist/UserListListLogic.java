@@ -3,8 +3,8 @@ package com.example.david.lists.view.userlistlist;
 import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
+import com.example.david.lists.util.IUtilNightModeContract;
 import com.example.david.lists.util.UtilExceptions;
-import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.authentication.IAuthContract;
 import com.example.david.lists.view.common.ListViewLogicBase;
 
@@ -22,7 +22,7 @@ public final class UserListListLogic extends ListViewLogicBase
 
     private final IRepositoryContract.UserRepository userRepo;
 
-    private final UtilNightMode utilNightMode;
+    private final IUtilNightModeContract utilNightMode;
 
     public UserListListLogic(IUserListViewContract.View view,
                              IUserListViewContract.ViewModel viewModel,
@@ -30,7 +30,7 @@ public final class UserListListLogic extends ListViewLogicBase
                              IRepositoryContract.UserRepository userRepo,
                              ISchedulerProviderContract schedulerProvider,
                              CompositeDisposable disposable,
-                             UtilNightMode utilNightMode) {
+                             IUtilNightModeContract utilNightMode) {
         super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;

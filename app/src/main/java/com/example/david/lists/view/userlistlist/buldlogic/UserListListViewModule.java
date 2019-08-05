@@ -8,6 +8,7 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.david.lists.common.buildlogic.ViewScope;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
+import com.example.david.lists.util.IUtilNightModeContract;
 import com.example.david.lists.util.UtilNightMode;
 import com.example.david.lists.view.userlistlist.IUserListViewContract;
 import com.example.david.lists.view.userlistlist.UserListAdapter;
@@ -28,7 +29,7 @@ final class UserListListViewModule {
                                       IRepositoryContract.UserRepository userRepo,
                                       ISchedulerProviderContract schedulerProvider,
                                       CompositeDisposable disposable,
-                                      UtilNightMode utilNightMode) {
+                                      IUtilNightModeContract utilNightMode) {
         return new UserListListLogic(view, viewModel, repo, userRepo, schedulerProvider, disposable, utilNightMode);
     }
 
@@ -48,7 +49,7 @@ final class UserListListViewModule {
 
     @ViewScope
     @Provides
-    UtilNightMode utilNightMode(Application application) {
+    IUtilNightModeContract utilNightMode(Application application) {
         return new UtilNightMode(application);
     }
 }

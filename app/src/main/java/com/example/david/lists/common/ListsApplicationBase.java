@@ -9,6 +9,7 @@ import com.example.david.lists.BuildConfig;
 import com.example.david.lists.R;
 import com.example.david.lists.common.buildlogic.AppComponent;
 import com.example.david.lists.common.buildlogic.DaggerAppComponent;
+import com.example.david.lists.util.IUtilNightModeContract;
 import com.example.david.lists.util.UtilNetwork;
 import com.example.david.lists.util.UtilNightMode;
 
@@ -68,7 +69,7 @@ abstract class ListsApplicationBase extends Application {
     }
 
     private void setNightMode() {
-        UtilNightMode utilNightMode = new UtilNightMode(this);
+        IUtilNightModeContract utilNightMode = new UtilNightMode(this);
         if (utilNightMode.isNightModeEnabled()) {
             utilNightMode.setNight();
         } else {

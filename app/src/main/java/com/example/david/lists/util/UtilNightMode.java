@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.example.david.lists.R;
 import com.example.david.lists.common.ListsApplication;
 
-public final class UtilNightMode {
+public final class UtilNightMode implements IUtilNightModeContract {
 
     private final Application application;
 
@@ -17,14 +17,17 @@ public final class UtilNightMode {
     }
 
 
+    @Override
     public void setDay() {
         setMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
+    @Override
     public void setNight() {
         setMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
+    @Override
     public boolean isNightModeEnabled() {
         return AppCompatDelegate.MODE_NIGHT_YES ==
                 getSharedPrefs().getInt(getKey(), -1);
