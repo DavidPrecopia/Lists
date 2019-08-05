@@ -1,12 +1,8 @@
 package com.example.david.lists.util;
 
-import android.app.Application;
-
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,43 +12,24 @@ import static org.hamcrest.Matchers.is;
 @RunWith(AndroidJUnit4.class)
 public class UtilNightModeTest {
 
-    private Application application;
-
-    @Before
-    public void init() {
-        application = ApplicationProvider.getApplicationContext();
-    }
+    private UtilNightMode utilNightMode = new UtilNightMode(
+            ApplicationProvider.getApplicationContext()
+    );
 
 
     @Test
     public void setDayTest() {
-        UtilNightMode.setDay(application);
+        utilNightMode.setDay();
         assertNightModeEnabled(false);
     }
 
     @Test
     public void setNightTest() {
-        UtilNightMode.setNight(application);
+        utilNightMode.setNight();
         assertNightModeEnabled(true);
     }
 
     private void assertNightModeEnabled(boolean expectation) {
-        assertThat(UtilNightMode.isNightModeEnabled(application), is(expectation));
-    }
-
-
-    @Test(expected = Exception.class)
-    public void setDayTestNullArgument() {
-        UtilNightMode.setDay(null);
-    }
-
-    @Test(expected = Exception.class)
-    public void setNightNullArgument() {
-        UtilNightMode.setNight(null);
-    }
-
-    @Test(expected = Exception.class)
-    public void checkIfNightModeIsEnabledNullArgument() {
-        UtilNightMode.isNightModeEnabled(null);
+        assertThat(utilNightMode.isNightModeEnabled(), is(expectation));
     }
 }
