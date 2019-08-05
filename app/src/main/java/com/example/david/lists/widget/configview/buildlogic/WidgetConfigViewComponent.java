@@ -29,8 +29,5 @@ public interface WidgetConfigViewComponent {
 
         @BindsInstance
         Builder view(IWidgetConfigContract.View view);
-
-        @BindsInstance
-        Builder widgetId(int widgetId);
     }
 }

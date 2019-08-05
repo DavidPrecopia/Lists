@@ -60,7 +60,6 @@ public class WidgetConfigView extends AppCompatActivity
         DaggerWidgetConfigViewComponent.builder()
                 .application(getApplication())
                 .view(this)
-                .widgetId(getWidgetId())
                 .build()
                 .inject(this);
     }

@@ -23,18 +23,23 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
                              IWidgetConfigContract.ViewModel viewModel,
                              IRepositoryContract.Repository repo,
                              ISchedulerProviderContract schedulerProvider,
-                             CompositeDisposable disposable,
-                             int widgetId) {
+                             CompositeDisposable disposable) {
         this.view = view;
         this.viewModel = viewModel;
         this.repo = repo;
         this.schedulerProvider = schedulerProvider;
         this.disposable = disposable;
-
-        init(widgetId);
     }
 
-    private void init(int widgetId) {
+
+    @Override
+    public void onStart(int widgetId) {
+        verifyWidgetId(widgetId);
+        view.setStateLoading();
+        getUserLists();
+    }
+
+    private void verifyWidgetId(int widgetId) {
         viewModel.setWidgetId(widgetId);
         // In case the user cancels without selecting anything.
         view.setResults(widgetId, viewModel.getResultCancelled());
@@ -42,13 +47,6 @@ public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
         if (widgetId == viewModel.getInvalidWidgetId()) {
             view.finishViewInvalidId();
         }
-    }
-
-
-    @Override
-    public void onStart(int widgetId) {
-        view.setStateLoading();
-        getUserLists();
     }
 
 

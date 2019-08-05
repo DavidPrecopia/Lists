@@ -28,9 +28,8 @@ final class WidgetConfigViewModule {
                                       IWidgetConfigContract.ViewModel viewModel,
                                       IRepositoryContract.Repository repo,
                                       ISchedulerProviderContract schedulerProvider,
-                                      CompositeDisposable disposable,
-                                      int widgetId) {
-        return new WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable, widgetId);
+                                      CompositeDisposable disposable) {
+        return new WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable);
     }
 
     @ViewScope
