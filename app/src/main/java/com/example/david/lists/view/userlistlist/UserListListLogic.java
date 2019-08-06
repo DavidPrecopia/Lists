@@ -125,6 +125,9 @@ public final class UserListListLogic extends ListViewLogicBase
 
     @Override
     public void delete(int position, IUserListViewContract.Adapter adapter) {
+        if (position < 0) {
+            UtilExceptions.throwException(new IllegalArgumentException());
+        }
         adapter.remove(position);
         saveDeletedUserList(position);
         view.notifyUserOfDeletion(viewModel.getMsgDeletion());
