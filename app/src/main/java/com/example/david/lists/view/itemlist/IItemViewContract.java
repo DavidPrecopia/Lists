@@ -28,7 +28,7 @@ public interface IItemViewContract {
     interface Logic {
         void onStart();
 
-        void addButtonClicked();
+        void add();
 
         void edit(int position);
 

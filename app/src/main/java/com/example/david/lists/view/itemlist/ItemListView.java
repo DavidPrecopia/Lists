@@ -135,7 +135,7 @@ public class ItemListView extends ListViewBase
 
     @Override
     protected void addButtonClicked() {
-        logic.addButtonClicked();
+        logic.add();
     }
 
     @Override

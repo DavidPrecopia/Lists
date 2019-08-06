@@ -93,12 +93,15 @@ public final class ItemListLogic extends ListViewLogicBase
     }
 
     @Override
-    public void addButtonClicked() {
+    public void add() {
         view.openAddDialog(viewModel.getUserListId(), viewModel.getViewData().size());
     }
 
     @Override
     public void edit(int position) {
+        if (position < 0) {
+            UtilExceptions.throwException(new IllegalArgumentException());
+        }
         view.openEditDialog(viewModel.getViewData().get(position));
     }
 
@@ -112,9 +115,8 @@ public final class ItemListLogic extends ListViewLogicBase
     @Override
     public void movedPermanently(int newPosition) {
         if (newPosition < 0) {
-            return;
+            UtilExceptions.throwException(new IllegalArgumentException());
         }
-
         Item item = viewModel.getViewData().get(newPosition);
         repo.updateItemPosition(
                 item,
@@ -126,9 +128,11 @@ public final class ItemListLogic extends ListViewLogicBase
 
     @Override
     public void delete(int position, IItemViewContract.Adapter adapter) {
+        if (position < 0) {
+            UtilExceptions.throwException(new IllegalArgumentException());
+        }
         adapter.remove(position);
         saveDeletedItem(position);
-
         view.notifyUserOfDeletion(viewModel.getMsgItemDeleted());
     }
 
@@ -158,12 +162,15 @@ public final class ItemListLogic extends ListViewLogicBase
     }
 
     private void reAddItemToAdapter(int lastDeletedPosition, IItemViewContract.Adapter adapter) {
-        adapter.reAdd(lastDeletedPosition, viewModel.getTempList().get(lastDeletedPosition));
+        adapter.reAdd(
+                viewModel.getTempPosition(),
+                viewModel.getTempList().get(lastDeletedPosition)
+        );
     }
 
     private void reAddItemToLocalList(int lastDeletedPosition) {
         viewModel.getViewData().add(
-                lastDeletedPosition,
+                viewModel.getTempPosition(),
                 viewModel.getTempList().get(lastDeletedPosition)
         );
     }
