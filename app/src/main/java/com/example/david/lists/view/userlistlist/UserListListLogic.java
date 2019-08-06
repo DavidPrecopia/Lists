@@ -97,8 +97,11 @@ public final class UserListListLogic extends ListViewLogicBase
     }
 
     @Override
-    public void edit(UserList userList) {
-        view.openEditDialog(userList);
+    public void edit(int position) {
+        if (position < 0) {
+            UtilExceptions.throwException(new IllegalArgumentException());
+        }
+        view.openEditDialog(viewModel.getViewData().get(position));
     }
 
 
@@ -111,9 +114,8 @@ public final class UserListListLogic extends ListViewLogicBase
     @Override
     public void movedPermanently(int newPosition) {
         if (newPosition < 0) {
-            return;
+            UtilExceptions.throwException(new IllegalArgumentException());
         }
-
         UserList userList = viewModel.getViewData().get(newPosition);
         repo.updateUserListPosition(
                 userList,

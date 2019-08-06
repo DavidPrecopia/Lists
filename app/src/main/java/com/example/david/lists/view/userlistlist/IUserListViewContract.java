@@ -37,7 +37,7 @@ public interface IUserListViewContract {
 
         void add();
 
-        void edit(UserList userList);
+        void edit(int position);
 
         void dragging(int fromPosition, int toPosition, IUserListViewContract.Adapter adapter);
 

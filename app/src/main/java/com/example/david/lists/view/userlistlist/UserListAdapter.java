@@ -88,7 +88,7 @@ public final class UserListAdapter extends ListAdapter<UserList, UserListAdapter
 
         @Override
         protected void edit(int adapterPosition) {
-            logic.edit(getItem(adapterPosition));
+            logic.edit(adapterPosition);
         }
 
         @Override

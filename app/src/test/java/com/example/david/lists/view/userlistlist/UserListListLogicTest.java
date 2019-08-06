@@ -30,8 +30,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -95,6 +93,7 @@ public class UserListListLogicTest {
      * - Set View state loading.
      * - Get List from repo.
      * - Save List to ViewModel.
+     * - Submit the List to the View.
      * - Set View state display list.
      */
     @Test
@@ -106,6 +105,7 @@ public class UserListListLogicTest {
 
         verify(view).setStateLoading();
         verify(viewModel).setViewData(userListList);
+        verify(view).submitList(userListList);
         verify(view).setStateDisplayList();
     }
 
@@ -114,7 +114,8 @@ public class UserListListLogicTest {
      * - Set View state loading.
      * - Get List from repo.
      * - Save List to ViewModel.
-     * - Set View state error with message from ViewModel.
+     * - Submit the List to the View.
+     * - Set View state error with message from the ViewModel.
      */
     @Test
     public void onStartEmptyList() {
@@ -128,6 +129,7 @@ public class UserListListLogicTest {
 
         verify(view).setStateLoading();
         verify(viewModel).setViewData(emptyList);
+        verify(view).submitList(userListList);
         verify(view).setStateError(errorMsg);
     }
 
@@ -197,19 +199,35 @@ public class UserListListLogicTest {
 
     /**
      * Normal behavior
-     * - {@link View#openEditDialog(UserList)} is invoked.
+     * - Get the UserList at the passed-in position.
+     * - Invoked {@link View#openEditDialog(UserList)}.
      */
     @Test
     public void edit() {
-        logic.edit(userList);
+        int editPosition = 0;
+        List<UserList> editUserLists = new ArrayList<>();
+        editUserLists.add(userList);
+
+        when(viewModel.getViewData()).thenReturn(editUserLists);
+
+        logic.edit(editPosition);
 
         verify(view).openEditDialog(userList);
+    }
+
+    /**
+     * Error behavior - invalid position,
+     * - Exception is thrown.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void editInvalidPosition() {
+        logic.edit(invalidPosition);
     }
 
 
     /**
      * Normal behavior
-     * - Updated the Adapter with {@link Adapter#submitList(List)}
+     * - Updated the Adapter with {@link Adapter#move(int, int)}
      * - Update the ViewModel's view data.
      */
     @Test
@@ -237,31 +255,33 @@ public class UserListListLogicTest {
      */
     @Test
     public void movedPermanently() {
-        when(viewModel.getViewData()).thenReturn(userListList);
+        int newPosition = 0;
+        List<UserList> moveUserLists = new ArrayList<>();
+        moveUserLists.add(userList);
 
-        logic.movedPermanently(position);
+        when(viewModel.getViewData()).thenReturn(moveUserLists);
+
+        logic.movedPermanently(newPosition);
 
         verify(repo).updateUserListPosition(userList, userList.getPosition(), position);
     }
 
     /**
      * Error behavior - invalid position,
-     * - Method returns without invoking the repo.
+     * - Throws an Exception
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void movedPermanentlyInvalidPosition() {
         logic.movedPermanently(invalidPosition);
-
-        verify(repo, never()).updateUserListPosition(any(), anyInt(), anyInt());
     }
 
 
     /**
      * Normal behavior
      * - Remove from the Adapter.
-     * - Remove from the view data in the ViewModel.
-     * - Save the deleted UserList's position to the ViewModel.
      * - Save the deleted UserList itself to the ViewModel's temp list.
+     * - Save the deleted UserList's position to the ViewModel.
+     * - Remove from the view data in the ViewModel.
      * - Notify user of deletion.
      */
     @Test
