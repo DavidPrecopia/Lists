@@ -1,9 +1,11 @@
 package com.example.david.lists.view.authentication;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 
 import com.example.david.lists.R;
 import com.example.david.lists.view.common.ViewModelBase;
+import com.firebase.ui.auth.ErrorCodes;
 
 public class AuthViewModel extends ViewModelBase
         implements IAuthContract.ViewModel {
@@ -31,6 +33,13 @@ public class AuthViewModel extends ViewModelBase
     public String getMsgSignInCanceled() {
         return getStringRes(R.string.msg_sign_in_cancelled);
     }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public String getSignInErrorMsg(int errorCode) {
+        return ErrorCodes.toFriendlyMessage(errorCode);
+    }
+
 
     @Override
     public String getMsgSignOutSucceed() {

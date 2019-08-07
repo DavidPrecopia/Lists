@@ -11,6 +11,8 @@ import com.example.david.lists.R;
 import com.example.david.lists.view.authentication.IAuthContract.AuthResult;
 import com.example.david.lists.view.authentication.buildlogic.DaggerAuthViewComponent;
 import com.example.david.lists.view.common.ActivityBase;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -34,12 +36,18 @@ public class AuthView extends ActivityBase
     @Inject
     Provider<Intent> authIntent;
 
+    @Inject
+    AuthUI authUi;
+
+    private int authRequestCode;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         inject();
         super.onCreate(savedInstanceState);
         DataBindingUtil.setContentView(this, R.layout.auth_view);
-        logic.onStart();
+        logic.onStart(getAuthGoal());
     }
 
     private void inject() {
@@ -47,7 +55,6 @@ public class AuthView extends ActivityBase
                 .application(getApplication())
                 .activity(this)
                 .view(this)
-                .authGoal(getAuthGoal())
                 .build()
                 .inject(this);
     }
@@ -60,18 +67,39 @@ public class AuthView extends ActivityBase
 
 
     @Override
-    public void signIn(int responseCode) {
+    public void signIn(int requestCode) {
+        this.authRequestCode = requestCode;
         startActivityForResult(
                 authIntent.get(),
-                responseCode
+                requestCode
         );
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        logic.signInResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+    public void signOut() {
+        authUi.signOut(getApplicationContext())
+                .addOnSuccessListener(aVoid -> logic.signOutSucceeded())
+                .addOnFailureListener(logic::signOutFailed);
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == authRequestCode) {
+            evalSignInResult(IdpResponse.fromResultIntent(data), resultCode);
+        }
+    }
+
+    private void evalSignInResult(IdpResponse response, int resultCode) {
+        if (resultCode == RESULT_OK) {
+            logic.signInSuccessful();
+        } else if (response == null) {
+            logic.signInCancelled();
+        } else {
+            logic.signInFailed(response.getError().getErrorCode());
+        }
+    }
+
 
     @Override
     public void displayMessage(String message) {

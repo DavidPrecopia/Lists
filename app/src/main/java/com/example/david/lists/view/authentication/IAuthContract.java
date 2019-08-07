@@ -1,12 +1,10 @@
 package com.example.david.lists.view.authentication;
 
-import android.content.Intent;
-
-import androidx.annotation.Nullable;
-
 public interface IAuthContract {
     interface View {
-        void signIn(int responseCode);
+        void signIn(int requestCode);
+
+        void signOut();
 
         void displayMessage(String message);
 
@@ -18,9 +16,17 @@ public interface IAuthContract {
     }
 
     interface Logic {
-        void onStart();
+        void onStart(IAuthContract.AuthGoal authGoal);
 
-        void signInResult(int requestCode, int resultCode, @Nullable Intent data);
+        void signInSuccessful();
+
+        void signInCancelled();
+
+        void signInFailed(int errorCode);
+
+        void signOutSucceeded();
+
+        void signOutFailed(Exception e);
     }
 
     interface ViewModel {
@@ -31,6 +37,8 @@ public interface IAuthContract {
         String getMsgSignInCanceled();
 
         String getMsgSignOutSucceed();
+
+        String getSignInErrorMsg(int errorCode);
 
         String getMsgSignOutFailed();
 

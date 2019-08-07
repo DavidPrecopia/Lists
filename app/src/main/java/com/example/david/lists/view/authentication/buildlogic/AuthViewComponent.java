@@ -34,8 +34,5 @@ public interface AuthViewComponent {
 
         @BindsInstance
         Builder activity(AppCompatActivity activity);
-
-        @BindsInstance
-        Builder authGoal(IAuthContract.AuthGoal authGoal);
     }
 }
