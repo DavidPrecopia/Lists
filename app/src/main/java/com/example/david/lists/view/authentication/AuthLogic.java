@@ -71,7 +71,7 @@ public class AuthLogic implements IAuthContract.Logic {
 
     @Override
     public void signInFailed(int errorCode) {
-        String reason = viewModel.getSignInErrorMsg(errorCode);
+        String reason = viewModel.getMsgSignInError(errorCode);
         view.setResultFailed(reason);
         finish(reason);
     }
@@ -89,8 +89,9 @@ public class AuthLogic implements IAuthContract.Logic {
     @Override
     public void signOutFailed(Exception e) {
         UtilExceptions.throwException(e);
-        view.setResultFailed(viewModel.getMsgSignOutFailed());
-        finish(viewModel.getMsgSignOutFailed());
+        String msg = viewModel.getMsgSignOutFailed();
+        view.setResultFailed(msg);
+        finish(msg);
     }
 
 

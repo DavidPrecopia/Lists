@@ -36,7 +36,7 @@ public class AuthViewModel extends ViewModelBase
 
     @SuppressLint("RestrictedApi")
     @Override
-    public String getSignInErrorMsg(int errorCode) {
+    public String getMsgSignInError(int errorCode) {
         return ErrorCodes.toFriendlyMessage(errorCode);
     }
 

@@ -38,7 +38,7 @@ public interface IAuthContract {
 
         String getMsgSignOutSucceed();
 
-        String getSignInErrorMsg(int errorCode);
+        String getMsgSignInError(int errorCode);
 
         String getMsgSignOutFailed();
 
