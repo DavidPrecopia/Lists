@@ -35,7 +35,7 @@ public class AddEditViewModel implements IAddEditContract.ViewModel {
     }
 
     @Override
-    public IAddEditContract.TaskType getCurrentTaskType() {
+    public IAddEditContract.TaskType getTaskType() {
         return currentTaskType;
     }
 
@@ -56,7 +56,7 @@ public class AddEditViewModel implements IAddEditContract.ViewModel {
     }
 
     @Override
-    public void setLastPosition(int position) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -80,7 +80,7 @@ public class AddEditViewModel implements IAddEditContract.ViewModel {
     }
 
     @Override
-    public int getLastPosition() {
+    public int getPosition() {
         return position;
     }
 

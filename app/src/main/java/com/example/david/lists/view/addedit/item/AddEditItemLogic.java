@@ -23,9 +23,9 @@ public class AddEditItemLogic extends AddEditLogicBase {
 
     @Override
     public void save(String newTitle) {
-        if (viewModel.getCurrentTaskType() == TASK_ADD) {
-            repository.addItem(new Item(newTitle, viewModel.getLastPosition(), viewModel.getUserListId()));
-        } else if (viewModel.getCurrentTaskType() == TASK_EDIT) {
+        if (viewModel.getTaskType() == TASK_ADD) {
+            repository.addItem(new Item(newTitle, viewModel.getPosition(), viewModel.getUserListId()));
+        } else if (viewModel.getTaskType() == TASK_EDIT) {
             repository.renameItem(viewModel.getId(), newTitle);
         }
     }

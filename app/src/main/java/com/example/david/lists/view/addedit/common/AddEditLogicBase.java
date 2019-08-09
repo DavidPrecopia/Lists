@@ -28,7 +28,7 @@ public abstract class AddEditLogicBase implements IAddEditContract.Logic {
         viewModel.setId(id);
         viewModel.setCurrentTitle(title);
         viewModel.setUserListId(userListId);
-        viewModel.setLastPosition(position);
+        viewModel.setPosition(position);
 
         setTaskType();
     }

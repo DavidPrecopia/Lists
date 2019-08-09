@@ -22,9 +22,9 @@ public class AddEditUserListLogic extends AddEditLogicBase {
 
     @Override
     public void save(String newTitle) {
-        if (viewModel.getCurrentTaskType() == TASK_ADD) {
-            repository.addUserList(new UserList(newTitle, viewModel.getLastPosition()));
-        } else if (viewModel.getCurrentTaskType() == TASK_EDIT) {
+        if (viewModel.getTaskType() == TASK_ADD) {
+            repository.addUserList(new UserList(newTitle, viewModel.getPosition()));
+        } else if (viewModel.getTaskType() == TASK_EDIT) {
             repository.renameUserList(viewModel.getId(), newTitle);
         }
     }

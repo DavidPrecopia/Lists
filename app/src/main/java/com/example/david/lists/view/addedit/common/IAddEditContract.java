@@ -16,7 +16,7 @@ public interface IAddEditContract {
     interface ViewModel {
         void setTaskType(TaskType taskType);
 
-        TaskType getCurrentTaskType();
+        TaskType getTaskType();
 
         void setId(String id);
 
@@ -24,7 +24,7 @@ public interface IAddEditContract {
 
         void setUserListId(String userListId);
 
-        void setLastPosition(int position);
+        void setPosition(int position);
 
         String getId();
 
@@ -32,7 +32,7 @@ public interface IAddEditContract {
 
         String getUserListId();
 
-        int getLastPosition();
+        int getPosition();
 
         String getMsgEmptyTitle();
 
