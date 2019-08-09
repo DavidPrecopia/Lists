@@ -4,31 +4,27 @@ import com.example.david.lists.data.datamodel.UserList;
 import com.example.david.lists.data.repository.IRepositoryContract;
 import com.example.david.lists.util.ISchedulerProviderContract;
 import com.example.david.lists.util.UtilExceptions;
+import com.example.david.lists.view.common.ListViewLogicBase;
 
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public class WidgetConfigLogic implements IWidgetConfigContract.Logic {
+public class WidgetConfigLogic extends ListViewLogicBase
+        implements IWidgetConfigContract.Logic {
 
     private final IWidgetConfigContract.View view;
     private final IWidgetConfigContract.ViewModel viewModel;
-
-    private final IRepositoryContract.Repository repo;
-    private final ISchedulerProviderContract schedulerProvider;
-    private final CompositeDisposable disposable;
 
     public WidgetConfigLogic(IWidgetConfigContract.View view,
                              IWidgetConfigContract.ViewModel viewModel,
                              IRepositoryContract.Repository repo,
                              ISchedulerProviderContract schedulerProvider,
                              CompositeDisposable disposable) {
+        super(repo, schedulerProvider, disposable);
         this.view = view;
         this.viewModel = viewModel;
-        this.repo = repo;
-        this.schedulerProvider = schedulerProvider;
-        this.disposable = disposable;
     }
 
 
