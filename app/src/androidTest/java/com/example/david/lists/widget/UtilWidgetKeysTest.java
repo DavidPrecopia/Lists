@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.david.lists.R;
-import com.example.david.lists.util.UtilWidgetKeys;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class UtilWidgetKeysTest {
 
     @Test
     public void sharedPrefsName() {
-        String result = com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName(context);
+        String result = UtilWidgetKeys.getSharedPrefName(context);
         assertThat(result, is(context.getString(R.string.widget_shared_prefs_name)));
     }
 
@@ -48,7 +47,7 @@ public class UtilWidgetKeysTest {
     }
 
     private void sharedPrefsKeyId(int value) {
-        String result = com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId(context, value);
+        String result = UtilWidgetKeys.getSharedPrefKeyId(context, value);
         assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_id, value)));
     }
 
@@ -64,19 +63,19 @@ public class UtilWidgetKeysTest {
     }
 
     private void sharedPrefsKeyTitle(int value) {
-        String result = com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyTitle(context, value);
+        String result = UtilWidgetKeys.getSharedPrefKeyTitle(context, value);
         assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_title, value)));
     }
 
 
     @Test(expected = Exception.class)
     public void sharedPrefsNameNullArgument() {
-        com.example.david.lists.util.UtilWidgetKeys.getSharedPrefName(null);
+        UtilWidgetKeys.getSharedPrefName(null);
     }
 
     @Test(expected = Exception.class)
     public void sharedPrefsKeyIdNullArgument() {
-        com.example.david.lists.util.UtilWidgetKeys.getSharedPrefKeyId(null, 0);
+        UtilWidgetKeys.getSharedPrefKeyId(null, 0);
     }
 
     @Test(expected = Exception.class)
