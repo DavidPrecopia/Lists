@@ -72,7 +72,7 @@ public class WidgetConfigViewModelTest {
         viewModel.setWidgetId(widgetId);
         assertThat(
                 viewModel.getSharedPrefKeyId(),
-                is(UtilWidgetKeys.getSharedPrefKeyId(application, widgetId))
+                is(UtilWidgetKeys.INSTANCE.getSharedPrefKeyId(application, widgetId))
         );
     }
 
@@ -81,7 +81,7 @@ public class WidgetConfigViewModelTest {
         viewModel.setWidgetId(widgetId);
         assertThat(
                 viewModel.getSharedPrefKeyTitle(),
-                is(UtilWidgetKeys.getSharedPrefKeyTitle(application, widgetId))
+                is(UtilWidgetKeys.INSTANCE.getSharedPrefKeyTitle(application, widgetId))
         );
     }
 }

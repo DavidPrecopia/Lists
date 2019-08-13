@@ -8,7 +8,6 @@ import com.example.david.lists.util.ISchedulerProviderContract;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,8 +40,6 @@ public class WidgetConfigLogicTest {
     @Spy
     private CompositeDisposable disposable;
 
-
-    @InjectMocks
     private WidgetConfigLogic logic;
 
 
@@ -52,7 +49,6 @@ public class WidgetConfigLogicTest {
     private UserList userList = new UserList(id, new UserList(title, position));
 
     private int widgetIdValid = 100;
-    private int widgetIdInvalid = -1;
 
     private int resultCanceled = 0;
 
@@ -60,16 +56,18 @@ public class WidgetConfigLogicTest {
     @Before
     public void setUp() {
         SchedulerProviderMockInit.init(schedulerProvider);
+        logic = new WidgetConfigLogic(
+                view, viewModel, widgetIdValid, repo, schedulerProvider, disposable
+        );
     }
 
 
     /**
      * Expected, normal behavior - when a valid widget ID is passed-in,
-     * - Save the widget ID to the ViewModel.
-     * - Set the View's result to cancelled.
      * - Set the View's state to loading.
      * - Get the List of UserLists from the repo.
      * - Save the List to the ViewModel.
+     * - Set the View's data
      * - Set the View's state to display list.
      */
     @Test
@@ -77,17 +75,15 @@ public class WidgetConfigLogicTest {
         List<UserList> userLists = new ArrayList<>();
         userLists.add(userList);
 
-        when(viewModel.getInvalidWidgetId()).thenReturn(widgetIdInvalid);
-        when(viewModel.getResultCancelled()).thenReturn(resultCanceled);
         when(viewModel.getViewData()).thenReturn(userLists);
         when(repo.getAllUserLists()).thenReturn(Flowable.just(userLists));
 
-        logic.onStart(widgetIdValid);
+        logic.onStart();
 
-        verify(viewModel).setWidgetId(widgetIdValid);
         verify(view).setResults(widgetIdValid, resultCanceled);
         verify(view).setStateLoading();
         verify(viewModel).setViewData(userLists);
+        verify(view).setData(userLists);
         verify(view).setStateDisplayList();
     }
 
@@ -96,20 +92,17 @@ public class WidgetConfigLogicTest {
      * - Save the widget ID to the ViewModel.
      * - Set the View's result to cancelled.
      * - Finish the View.
-     * <p>
-     * Unlike the real code, the code in the method under test will continue to
-     * execute after the View has been told to finished,
-     * thus I need to stub the methods that are called post finish.
      */
     @Test
     public void onStartWithInvalidWidgetId() {
-        when(viewModel.getViewData()).thenReturn(new ArrayList<>());
-        when(repo.getAllUserLists()).thenReturn(Flowable.just(new ArrayList<>()));
-
+        int widgetIdInvalid = -1;
         when(viewModel.getInvalidWidgetId()).thenReturn(widgetIdInvalid);
         when(viewModel.getResultCancelled()).thenReturn(resultCanceled);
 
-        logic.onStart(widgetIdInvalid);
+        // Instantiate with an invalid widget ID.
+        new WidgetConfigLogic(
+                view, viewModel, widgetIdInvalid, repo, schedulerProvider, disposable
+        );
 
         verify(viewModel).setWidgetId(widgetIdInvalid);
         verify(view).setResults(widgetIdInvalid, resultCanceled);
@@ -118,11 +111,10 @@ public class WidgetConfigLogicTest {
 
     /**
      * Error behavior - when the repo returns an empty List,
-     * - Save the widget ID to the ViewModel.
-     * - Set the View's result to cancelled.
      * - Set the View's state to loading.
      * - Get the List of UserLists from the repo.
      * - Save the List to the ViewModel.
+     * - Set the View's data
      * - Set the View's state to display error with message from ViewModel.
      */
     @Test
@@ -130,25 +122,22 @@ public class WidgetConfigLogicTest {
         List<UserList> userLists = new ArrayList<>();
         String emptyListError = "error";
 
-        when(viewModel.getInvalidWidgetId()).thenReturn(widgetIdInvalid);
-        when(viewModel.getResultCancelled()).thenReturn(resultCanceled);
         when(viewModel.getViewData()).thenReturn(userLists);
         when(viewModel.getErrorMsgEmptyList()).thenReturn(emptyListError);
         when(repo.getAllUserLists()).thenReturn(Flowable.just(userLists));
 
-        logic.onStart(widgetIdValid);
+        logic.onStart();
 
         verify(viewModel).setWidgetId(widgetIdValid);
         verify(view).setResults(widgetIdValid, resultCanceled);
         verify(view).setStateLoading();
         verify(viewModel).setViewData(userLists);
+        verify(view).setData(userLists);
         verify(view).setStateError(emptyListError);
     }
 
     /**
      * Error behavior - when the repo throws an error,
-     * - Save the widget ID to the ViewModel.
-     * - Set the View's result to cancelled.
      * - Set the View's state to loading.
      * - Get the List of UserLists from the repo.
      * - Repo thrown an error
@@ -159,12 +148,10 @@ public class WidgetConfigLogicTest {
         Throwable throwable = new Throwable();
         String error = "error";
 
-        when(viewModel.getInvalidWidgetId()).thenReturn(widgetIdInvalid);
-        when(viewModel.getResultCancelled()).thenReturn(resultCanceled);
         when(viewModel.getErrorMsg()).thenReturn(error);
         when(repo.getAllUserLists()).thenReturn(Flowable.error(throwable));
 
-        logic.onStart(widgetIdValid);
+        logic.onStart();
 
         verify(viewModel).setWidgetId(widgetIdValid);
         verify(view).setResults(widgetIdValid, resultCanceled);
@@ -185,25 +172,20 @@ public class WidgetConfigLogicTest {
         String sharedPrefId = "id";
         String sharedPrefTitle = "title";
 
+        List<UserList> userLists = new ArrayList<>();
+        userLists.add(userList);
+
+        when(viewModel.getViewData()).thenReturn(userLists);
         when(viewModel.getWidgetId()).thenReturn(widgetIdValid);
         when(viewModel.getResultOk()).thenReturn(resultOk);
         when(viewModel.getSharedPrefKeyId()).thenReturn(sharedPrefId);
         when(viewModel.getSharedPrefKeyTitle()).thenReturn(sharedPrefTitle);
 
-        logic.selectedUserList(userList);
+        logic.selectedUserList(position);
 
         verify(view).saveDetails(userList.getId(), userList.getTitle(), sharedPrefId, sharedPrefTitle);
         verify(view).setResults(widgetIdValid, resultOk);
         verify(view).finishView(widgetIdValid);
-    }
-
-    /**
-     * Error behavior - null passed-in.
-     * Should throw a NPE.
-     */
-    @Test(expected = NullPointerException.class)
-    public void selectedUserListNullPassedIn() {
-        logic.selectedUserList(null);
     }
 
 

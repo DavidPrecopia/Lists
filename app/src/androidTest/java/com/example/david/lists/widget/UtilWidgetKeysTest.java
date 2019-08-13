@@ -31,7 +31,7 @@ public class UtilWidgetKeysTest {
 
     @Test
     public void sharedPrefsName() {
-        String result = UtilWidgetKeys.getSharedPrefName(context);
+        String result = UtilWidgetKeys.INSTANCE.getSharedPrefName(context);
         assertThat(result, is(context.getString(R.string.widget_shared_prefs_name)));
     }
 
@@ -47,7 +47,7 @@ public class UtilWidgetKeysTest {
     }
 
     private void sharedPrefsKeyId(int value) {
-        String result = UtilWidgetKeys.getSharedPrefKeyId(context, value);
+        String result = UtilWidgetKeys.INSTANCE.getSharedPrefKeyId(context, value);
         assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_id, value)));
     }
 
@@ -63,23 +63,23 @@ public class UtilWidgetKeysTest {
     }
 
     private void sharedPrefsKeyTitle(int value) {
-        String result = UtilWidgetKeys.getSharedPrefKeyTitle(context, value);
+        String result = UtilWidgetKeys.INSTANCE.getSharedPrefKeyTitle(context, value);
         assertThat(result, is(context.getString(R.string.widget_key_shared_pref_user_list_title, value)));
     }
 
 
     @Test(expected = Exception.class)
     public void sharedPrefsNameNullArgument() {
-        UtilWidgetKeys.getSharedPrefName(null);
+        UtilWidgetKeys.INSTANCE.getSharedPrefName(null);
     }
 
     @Test(expected = Exception.class)
     public void sharedPrefsKeyIdNullArgument() {
-        UtilWidgetKeys.getSharedPrefKeyId(null, 0);
+        UtilWidgetKeys.INSTANCE.getSharedPrefKeyId(null, 0);
     }
 
     @Test(expected = Exception.class)
     public void sharedPrefsKeyTitleNullArgument() {
-        UtilWidgetKeys.getSharedPrefKeyTitle(null, 0);
+        UtilWidgetKeys.INSTANCE.getSharedPrefKeyTitle(null, 0);
     }
 }
