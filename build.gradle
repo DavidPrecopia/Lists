@@ -19,8 +19,8 @@ buildscript {
 allprojects {
     apply plugin: 'checkstyle'
     ext {
-        androidLibraries = "1.0.0"
-        lifecycleExtensions = "2.0.0"
+        androidLibrariesVersion = "1.0.0"
+        lifecycleExtensionsVersion = "2.0.0"
         daggerVersion = "2.24"
         mockitoVersion = "3.0.0"
     }
