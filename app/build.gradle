@@ -97,7 +97,7 @@ dependencies {
 
     // Dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
-    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
     // Timber
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
