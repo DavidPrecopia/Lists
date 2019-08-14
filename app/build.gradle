@@ -65,6 +65,10 @@ dependencies {
     implementation "androidx.core:core-ktx:1.0.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
+    //Anko
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-design:$ankoVersion"
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
     implementation "com.google.android.material:material:$androidLibrariesVersion"
