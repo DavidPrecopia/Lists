@@ -84,7 +84,7 @@ public class UserListListLogicTest {
 
     @Before
     public void setUp() {
-        SchedulerProviderMockInit.init(schedulerProvider);
+        SchedulerProviderMockInit.INSTANCE.init(schedulerProvider);
     }
 
 
@@ -129,7 +129,7 @@ public class UserListListLogicTest {
 
         verify(view).setStateLoading();
         verify(viewModel).setViewData(emptyList);
-        verify(view).submitList(userListList);
+        verify(view).submitList(emptyList);
         verify(view).setStateError(errorMsg);
     }
 

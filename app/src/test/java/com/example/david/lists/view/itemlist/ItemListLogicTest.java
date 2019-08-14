@@ -76,7 +76,7 @@ public class ItemListLogicTest {
 
     @Before
     public void setUp() {
-        SchedulerProviderMockInit.init(schedulerProvider);
+        SchedulerProviderMockInit.INSTANCE.init(schedulerProvider);
     }
 
 
