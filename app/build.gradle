@@ -75,13 +75,11 @@ dependencies {
 
     // Swipe Reveal Layout
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensionsVersion"
 
     //Anko
     implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
 
     // Fragment KTX
-    //noinspection GradleDependency
     implementation "androidx.fragment:fragment-ktx:1.1.0-rc04"
 
     // Firebase
