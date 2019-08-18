@@ -5,6 +5,8 @@
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/caches/
+/.idea/gradle.xml
+/.idea/misc.xml
 /.idea/checkstyle-idea.xml
 /.idea/encodings.xml
 /.idea/inspectionProfiles/Project_Default.xml
@@ -18,9 +20,3 @@
 /app/fabric.properties
 lists_keystore.jks
 keystore.properties
-
-\.idea/gradle\.xml
-
-\.idea/misc\.xml
-
-app/\.attach_pid22860
