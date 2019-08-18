@@ -39,7 +39,7 @@ class WidgetConfigLogicTest {
     private val position = 0
     private val title = "title"
     private val id = "qwerty"
-    private val userList = UserList(id, UserList(title, position))
+    private val userList = UserList(title, position, id)
 
     private val widgetIdValid = 100
 
@@ -65,19 +65,17 @@ class WidgetConfigLogicTest {
      */
     @Test
     fun onStartWithValidWidgetId() {
-        val userLists = ArrayList<UserList>().apply {
-            add(userList)
-        }
+        val userLists = listOf(userList)
 
         `when`(viewModel.viewData).thenReturn(userLists)
-        `when`(repo.allUserLists).thenReturn(Flowable.just(userLists))
+        `when`(repo.getUserLists).thenReturn(Flowable.just(userLists))
 
         logic.onStart()
 
         verify(view).setResults(widgetIdValid, resultCanceled)
         verify(view).setStateLoading()
         verify(viewModel).viewData = userLists
-        verify(view).setData(userLists)
+        verify(view).setViewData(userLists)
         verify(view).setStateDisplayList()
     }
 
@@ -118,7 +116,7 @@ class WidgetConfigLogicTest {
 
         `when`(viewModel.viewData).thenReturn(userLists)
         `when`(viewModel.errorMsgEmptyList).thenReturn(emptyListError)
-        `when`(repo.allUserLists).thenReturn(Flowable.just(userLists))
+        `when`(repo.getUserLists).thenReturn(Flowable.just(userLists))
 
         logic.onStart()
 
@@ -126,7 +124,7 @@ class WidgetConfigLogicTest {
         verify(view).setResults(widgetIdValid, resultCanceled)
         verify(view).setStateLoading()
         verify(viewModel).viewData = userLists
-        verify(view).setData(userLists)
+        verify(view).setViewData(userLists)
         verify(view).setStateError(emptyListError)
     }
 
@@ -140,17 +138,17 @@ class WidgetConfigLogicTest {
     @Test
     fun onStartRepoThrowsError() {
         val throwable = Throwable()
-        val error = "error"
+        val errorMsg = "error"
 
-        `when`(viewModel.errorMsg).thenReturn(error)
-        `when`(repo.allUserLists).thenReturn(Flowable.error(throwable))
+        `when`(viewModel.errorMsg).thenReturn(errorMsg)
+        `when`(repo.getUserLists).thenReturn(Flowable.error(throwable))
 
         logic.onStart()
 
         verify(viewModel).widgetId = widgetIdValid
         verify(view).setResults(widgetIdValid, resultCanceled)
         verify(view).setStateLoading()
-        verify(view).setStateError(error)
+        verify(view).setStateError(errorMsg)
     }
 
 
@@ -166,9 +164,7 @@ class WidgetConfigLogicTest {
         val sharedPrefId = "id"
         val sharedPrefTitle = "title"
 
-        val userLists = ArrayList<UserList>().apply {
-            add(userList)
-        }
+        val userLists = listOf(userList)
 
         `when`(viewModel.viewData).thenReturn(userLists)
         `when`(viewModel.widgetId).thenReturn(widgetIdValid)

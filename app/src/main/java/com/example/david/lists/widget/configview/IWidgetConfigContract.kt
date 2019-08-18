@@ -4,7 +4,7 @@ import com.example.david.lists.data.datamodel.UserList
 
 interface IWidgetConfigContract {
     interface View {
-        fun setData(list: List<UserList>)
+        fun setViewData(list: List<UserList>)
 
         fun setStateDisplayList()
 

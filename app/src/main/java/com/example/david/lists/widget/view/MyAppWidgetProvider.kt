@@ -6,9 +6,9 @@ import android.content.Context
 
 class MyAppWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (appWidgetId in appWidgetIds) {
-//            val remoteViews = WidgetRemoteView(context, widgetId).updateWidget()
-//            appWidgetManager.updateAppWidget(widgetId, remoteViews)
+        for (widgetId in appWidgetIds) {
+            val remoteViews = WidgetRemoteView(context, widgetId).updateWidget()
+            appWidgetManager.updateAppWidget(widgetId, remoteViews)
         }
     }
 }

@@ -8,7 +8,6 @@ import com.example.david.lists.view.common.ListViewLogicBase
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.DisposableSubscriber
-import timber.log.Timber
 
 class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
                         private val viewModel: IWidgetConfigContract.ViewModel,
@@ -37,7 +36,7 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
 
 
     private fun getUserLists() {
-        disposable.add(repo.allUserLists
+        disposable.add(repo.getUserLists
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .onTerminateDetach()
@@ -47,9 +46,8 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
 
     private fun userListSubscriber() = object : DisposableSubscriber<List<UserList>>() {
         override fun onNext(userLists: List<UserList>) {
-            Timber.d("onNext")
             viewModel.viewData = userLists
-            evaluateNewData()
+            evalNewData()
         }
 
         override fun onError(t: Throwable) {
@@ -62,8 +60,8 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
         }
     }
 
-    private fun evaluateNewData() {
-        view.setData(viewModel.viewData)
+    private fun evalNewData() {
+        view.setViewData(viewModel.viewData)
 
         if (viewModel.viewData.isEmpty()) {
             view.setStateError(viewModel.errorMsgEmptyList)

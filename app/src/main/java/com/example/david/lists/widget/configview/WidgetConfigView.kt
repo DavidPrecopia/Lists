@@ -4,8 +4,10 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
@@ -28,12 +30,11 @@ class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
     lateinit var sharedPrefs: SharedPreferences
 
     @Inject
-    lateinit var viewAdapter: IWidgetConfigContract.Adapter
+    lateinit var adapter: IWidgetConfigContract.Adapter
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>
     @Inject
     lateinit var dividerItemDecorator: RecyclerView.ItemDecoration
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +67,7 @@ class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
             setHasFixedSize(true)
             layoutManager = layoutManger.get()
             addItemDecoration(dividerItemDecorator)
-            adapter = viewAdapter as RecyclerView.Adapter<*>
+            adapter = this@WidgetConfigView.adapter as RecyclerView.Adapter<*>
         }
     }
 
@@ -84,10 +85,10 @@ class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
     }
 
     override fun saveDetails(id: String, title: String, sharedPrefKeyId: String, sharedPrefKeyTitle: String) {
-        sharedPrefs.edit().apply {
+        sharedPrefs.edit {
             putString(sharedPrefKeyId, id)
             putString(sharedPrefKeyTitle, title)
-        }.apply()
+        }
     }
 
     override fun finishView(widgetId: Int) {
@@ -105,29 +106,29 @@ class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
     }
 
 
-    override fun setData(list: List<UserList>) {
-        viewAdapter.setData(list)
+    override fun setViewData(list: List<UserList>) {
+        adapter.setData(list)
     }
 
 
     override fun setStateDisplayList() {
-        progress_bar.visibility = View.GONE
-        tv_error.visibility = View.GONE
-        recycler_view.visibility = View.VISIBLE
+        progress_bar.isGone = true
+        tv_error.isGone = true
+        recycler_view.isVisible = true
     }
 
     override fun setStateLoading() {
-        progress_bar.visibility = View.VISIBLE
-        tv_error.visibility = View.GONE
-        recycler_view.visibility = View.GONE
+        tv_error.isGone = true
+        recycler_view.isGone = true
+        progress_bar.isVisible = true
     }
 
     override fun setStateError(message: String) {
-        recycler_view.visibility = View.GONE
-        progress_bar.visibility = View.GONE
+        recycler_view.isGone = true
+        progress_bar.isGone = true
 
         tv_error.text = message
-        tv_error.visibility = View.VISIBLE
+        tv_error.isVisible = true
     }
 
 

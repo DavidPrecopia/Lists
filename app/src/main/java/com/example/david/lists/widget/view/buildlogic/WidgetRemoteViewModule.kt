@@ -20,6 +20,7 @@ import com.example.david.lists.widget.view.IWidgetRemoteViewContract.Companion.L
 import com.example.david.lists.widget.view.MyRemoteViewsService
 import dagger.Module
 import dagger.Provides
+import org.jetbrains.anko.intentFor
 import javax.inject.Named
 
 @Module
@@ -36,10 +37,10 @@ class WidgetRemoteViewModule {
     fun titleIntent(context: Context,
                     @Named(LIST_ID) listId: String,
                     @Named(LIST_TITLE) listTitle: String): Intent {
-        return Intent(context, ItemActivity::class.java).apply {
-            putExtra(context.getString(R.string.intent_extra_user_list_id), listId)
-            putExtra(context.getString(R.string.intent_extra_user_list_title), listTitle)
-        }
+        return context.intentFor<ItemActivity>(
+                context.getString(R.string.intent_extra_user_list_id) to listId,
+                context.getString(R.string.intent_extra_user_list_title) to listTitle
+        )
     }
 
     @ViewScope
@@ -47,9 +48,9 @@ class WidgetRemoteViewModule {
     @Named(INTENT_CONFIG)
     fun configActivityIntent(context: Context,
                              appWidgetId: Int): Intent {
-        return Intent(context, WidgetConfigView::class.java).apply {
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-        }
+        return context.intentFor<WidgetConfigView>(
+                AppWidgetManager.EXTRA_APPWIDGET_ID to appWidgetId
+        )
     }
 
     @ViewScope
@@ -58,9 +59,10 @@ class WidgetRemoteViewModule {
     fun adapterIntent(context: Context,
                       @Named(LIST_ID) listId: String,
                       appWidgetId: Int): Intent {
-        return Intent(context, MyRemoteViewsService::class.java).apply {
-            putExtra(context.getString(R.string.intent_extra_user_list_id), listId)
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        return context.intentFor<MyRemoteViewsService>(
+                context.getString(R.string.intent_extra_user_list_id) to listId,
+                AppWidgetManager.EXTRA_APPWIDGET_ID to appWidgetId
+        ).apply {
             // So the system can distinguish between the different widget instances
             data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
         }

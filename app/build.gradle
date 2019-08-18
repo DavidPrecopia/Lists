@@ -8,6 +8,11 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+// enables LayoutContainer
+androidExtensions {
+    experimental = true
+}
+
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
@@ -54,9 +59,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding {
-        enabled true
-    }
 }
 
 dependencies {
@@ -64,10 +66,6 @@ dependencies {
 
     implementation "androidx.core:core-ktx:1.0.2"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-
-    //Anko
-    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
-    implementation "org.jetbrains.anko:anko-design:$ankoVersion"
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
@@ -77,10 +75,14 @@ dependencies {
 
     // Swipe Reveal Layout
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
-
-    // LiveData and ViewModel
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleExtensionsVersion"
+
+    //Anko
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+
+    // Fragment KTX
+    //noinspection GradleDependency
+    implementation "androidx.fragment:fragment-ktx:1.1.0-rc04"
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:17.0.1'
@@ -113,6 +115,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:hamcrest-library:2.1'
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 
     // Instrumentation testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

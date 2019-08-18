@@ -5,20 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.databinding.WidgetConfigListItemBinding
 import com.example.david.lists.view.userlistlist.UserListDiffCallback
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.widget_config_list_item.*
 
 class WidgetConfigAdapter(private val logic: IWidgetConfigContract.Logic) :
         ListAdapter<UserList, WidgetConfigAdapter.WidgetConfigViewHolder>(UserListDiffCallback()),
         IWidgetConfigContract.Adapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = WidgetConfigViewHolder(
-            WidgetConfigListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.widget_config_list_item, parent, false)
     )
 
     override fun onBindViewHolder(holder: WidgetConfigViewHolder, position: Int) {
-        holder.bindView(getItem(position))
+        holder.bindView(getItem(position).title)
     }
 
     override fun setData(list: List<UserList>) {
@@ -26,16 +28,20 @@ class WidgetConfigAdapter(private val logic: IWidgetConfigContract.Logic) :
     }
 
 
-    inner class WidgetConfigViewHolder(private val binding: WidgetConfigListItemBinding) :
-            RecyclerView.ViewHolder(binding.root),
+    inner class WidgetConfigViewHolder(private val view: View) :
+            RecyclerView.ViewHolder(view),
+            LayoutContainer,
             View.OnClickListener {
 
+        override val containerView: View?
+            get() = view
+
         init {
-            binding.root.setOnClickListener(this)
+            view.setOnClickListener(this)
         }
 
-        fun bindView(userList: UserList) {
-            binding.tvTitle.text = userList.title
+        fun bindView(title: String) {
+            tv_title.text = title
         }
 
         override fun onClick(v: View) {

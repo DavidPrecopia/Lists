@@ -32,8 +32,10 @@ class MyRemoteViewsFactory(private val packageName: String,
 
     private fun itemListObserver() = object : DisposableSubscriber<List<Item>>() {
         override fun onNext(newItemList: List<Item>) {
-            itemList.clear()
-            itemList.addAll(newItemList)
+            itemList.apply {
+                clear()
+                addAll(newItemList)
+            }
             appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list_view)
         }
 

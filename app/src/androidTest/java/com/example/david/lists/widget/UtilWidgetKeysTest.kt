@@ -8,18 +8,24 @@ import org.hamcrest.Matchers.`is`
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Verify the correct values are retrieved.
+ */
 @RunWith(AndroidJUnit4::class)
 class UtilWidgetKeysTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
     private val maxValue = Integer.MAX_VALUE
     private val minValue = Integer.MIN_VALUE
 
 
     @Test
     fun sharedPrefsName() {
-        val result = UtilWidgetKeys.getSharedPrefName(context)
-        assertThat(result, `is`(context.getString(R.string.widget_shared_prefs_name)))
+        assertThat(
+                UtilWidgetKeys.getSharedPrefName(context),
+                `is`(context.getString(R.string.widget_shared_prefs_name))
+        )
     }
 
 
@@ -34,8 +40,10 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyId(value: Int) {
-        val result = UtilWidgetKeys.getSharedPrefKeyId(context, value)
-        assertThat(result, `is`(context.getString(R.string.widget_key_shared_pref_user_list_id, value)))
+        assertThat(
+                UtilWidgetKeys.getSharedPrefKeyId(context, value),
+                `is`(context.getString(R.string.widget_key_shared_pref_user_list_id, value))
+        )
     }
 
 
@@ -50,7 +58,9 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyTitle(value: Int) {
-        val result = UtilWidgetKeys.getSharedPrefKeyTitle(context, value)
-        assertThat(result, `is`(context.getString(R.string.widget_key_shared_pref_user_list_title, value)))
+        assertThat(
+                UtilWidgetKeys.getSharedPrefKeyTitle(context, value),
+                `is`(context.getString(R.string.widget_key_shared_pref_user_list_title, value))
+        )
     }
 }
