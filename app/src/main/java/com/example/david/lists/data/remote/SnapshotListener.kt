@@ -11,6 +11,7 @@ import com.example.david.lists.util.UtilExceptions
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.DocumentChange.Type.REMOVED
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.ktx.toObjects
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
@@ -78,7 +79,7 @@ class SnapshotListener(private val userListCollection: CollectionReference,
     private fun getUserListEventListener(emitter: FlowableEmitter<List<UserList>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
-                    emitter.onNext(querySnapshot!!.toObjects(UserList::class.java))
+                    emitter.onNext(querySnapshot!!.toObjects())
                 }
 
                 if (deletedUserListsHasSubscribers()) {
@@ -125,7 +126,7 @@ class SnapshotListener(private val userListCollection: CollectionReference,
     private fun getItemEventListener(emitter: FlowableEmitter<List<Item>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
-                    emitter.onNext(querySnapshot!!.toObjects(Item::class.java))
+                    emitter.onNext(querySnapshot!!.toObjects())
                 }
             }
 
