@@ -20,8 +20,8 @@ android {
         applicationId "com.example.david.lists"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 12
-        versionName "2.0"
+        versionCode 13
+        versionName "2.0.1"
         // This ensures that ProGuard removes un-supported language resources.
         // https://developer.android.com/studio/build/shrink-code#unused-alt-resources
         resConfig "en"
