@@ -2,7 +2,6 @@ package com.example.david.lists.view.addedit.common
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -37,12 +36,10 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
         return dialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Needs to be called from `onCreateView()` otherwise `dialog` returns null.
-        utilSoftKeyboard.showKeyboardInDialog(dialog!!, text_input_edit_text)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
+        utilSoftKeyboard.showKeyboardInDialog(text_input_edit_text)
     }
-
 
     private fun init() {
         initEditText()
@@ -97,7 +94,12 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
 
 
     override fun finishView() {
-        utilSoftKeyboard.hideKeyboard(constraint_layout)
-        super.dismiss()
+        dismiss()
+    }
+
+
+    override fun onStop() {
+        utilSoftKeyboard.hideKeyboard()
+        super.onStop()
     }
 }
