@@ -64,10 +64,10 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "androidx.core:core-ktx:1.0.2"
+    implementation "androidx.core:core-ktx:$coreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "androidx.appcompat:appcompat:$coreVersion"
 
     implementation "com.google.android.material:material:$androidLibrariesVersion"
     implementation "androidx.recyclerview:recyclerview:$androidLibrariesVersion"
@@ -80,7 +80,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
 
     // Fragment KTX
-    implementation "androidx.fragment:fragment-ktx:1.1.0-rc04"
+    implementation "androidx.fragment:fragment-ktx:1.1.0"
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:17.1.0'

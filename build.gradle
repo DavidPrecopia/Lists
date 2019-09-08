@@ -21,6 +21,7 @@ allprojects {
     apply plugin: 'checkstyle'
     ext {
         ankoVersion = "0.10.8"
+        coreVersion = "1.1.0"
         androidLibrariesVersion = "1.0.0"
         lifecycleExtensionsVersion = "2.0.0"
         daggerVersion = "2.24"
