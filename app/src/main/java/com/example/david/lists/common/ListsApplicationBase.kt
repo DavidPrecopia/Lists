@@ -1,6 +1,7 @@
 package com.example.david.lists.common
 
 import android.app.Application
+import android.os.Looper
 
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
@@ -12,6 +13,8 @@ import com.example.david.lists.util.UtilNetwork
 import com.example.david.lists.util.UtilNightMode
 
 import io.fabric.sdk.android.Fabric
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.longToast
 
 internal abstract class ListsApplicationBase : Application() {
@@ -47,9 +50,21 @@ internal abstract class ListsApplicationBase : Application() {
 
 
     private fun init() {
+        initRxAndroidSchedulers()
         checkNetworkConnection()
         setNightMode()
         initFabric()
+    }
+
+    /**
+     * This means events flowing to the main thread do not
+     * have to wait for vsync, decreasing the likelihood of frame drops.
+     * https://twitter.com/jakewharton/status/1170437658776133636?s=12
+     */
+    private fun initRxAndroidSchedulers() {
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler{
+            AndroidSchedulers.from(Looper.getMainLooper(), true)
+        }
     }
 
     private fun checkNetworkConnection() {
