@@ -88,7 +88,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:21.1.1'
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:19.0.0'
-    implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     // Firebase Crashlytics
     // This cannot be in the `releaseImplementation` configuration because Crashlytics
