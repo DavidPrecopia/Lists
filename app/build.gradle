@@ -83,9 +83,9 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.1.0"
 
     // Firebase
-    implementation 'com.google.firebase:firebase-core:17.1.0'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
     // Cloud Firestore
-    implementation 'com.google.firebase:firebase-firestore-ktx:21.0.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.1.1'
     // Firebase Authentication
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
