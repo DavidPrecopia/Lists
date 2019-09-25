@@ -50,9 +50,8 @@ android {
         }
         debug {
             applicationIdSuffix ".debug"
-            // Prevents Crashlytics from updating app resources with its own unique build ID.
-            // This is not needed for the debug build.
-            ext.alwaysUpdateBuildId = false
+            // Disables Crashlytics
+            ext.enableCrashlytics = false
         }
     }
     compileOptions {

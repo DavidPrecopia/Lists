@@ -2,7 +2,6 @@ package com.example.david.lists.common
 
 import android.app.Application
 import android.os.Looper
-
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.example.david.lists.BuildConfig
@@ -11,7 +10,6 @@ import com.example.david.lists.common.buildlogic.AppComponent
 import com.example.david.lists.common.buildlogic.DaggerAppComponent
 import com.example.david.lists.util.UtilNetwork
 import com.example.david.lists.util.UtilNightMode
-
 import io.fabric.sdk.android.Fabric
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -53,7 +51,7 @@ internal abstract class ListsApplicationBase : Application() {
         initRxAndroidSchedulers()
         checkNetworkConnection()
         setNightMode()
-        initFabric()
+        initCrashlytics()
     }
 
     /**
@@ -83,7 +81,7 @@ internal abstract class ListsApplicationBase : Application() {
         }
     }
 
-    private fun initFabric() {
+    private fun initCrashlytics() {
         // Initializes Fabric only for builds that are not of the debug build type.
         val crashlyticsKit = Crashlytics.Builder()
                 .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
