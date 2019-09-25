@@ -45,7 +45,7 @@ class MyRemoteViewsServiceModule {
     @Provides
     @Named(USER_LIST_ID)
     fun userListId(intent: Intent, application: Application): String {
-        return intent.getStringExtra(application.getString(R.string.intent_extra_user_list_id))
+        return intent.getStringExtra(application.getString(R.string.intent_extra_user_list_id))!!
     }
 
     @ViewScope
