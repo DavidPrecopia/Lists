@@ -2,14 +2,11 @@ package com.example.david.lists.common
 
 import android.app.Application
 import android.os.Looper
-import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.AppComponent
 import com.example.david.lists.common.buildlogic.DaggerAppComponent
-import com.example.david.lists.util.UtilNetwork
 import com.example.david.lists.util.UtilNightMode
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
-import org.jetbrains.anko.longToast
 
 internal abstract class ListsApplicationBase : Application() {
 
@@ -45,7 +42,6 @@ internal abstract class ListsApplicationBase : Application() {
 
     private fun init() {
         initRxAndroidSchedulers()
-        checkNetworkConnection()
         setNightMode()
     }
 
@@ -57,12 +53,6 @@ internal abstract class ListsApplicationBase : Application() {
     private fun initRxAndroidSchedulers() {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler {
             AndroidSchedulers.from(Looper.getMainLooper(), true)
-        }
-    }
-
-    private fun checkNetworkConnection() {
-        if (UtilNetwork.notConnected(appComponent.networkInfo())) {
-            longToast(R.string.error_msg_no_network_connection)
         }
     }
 
