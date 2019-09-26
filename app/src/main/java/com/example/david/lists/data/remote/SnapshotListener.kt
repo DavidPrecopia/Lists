@@ -1,7 +1,5 @@
 package com.example.david.lists.data.remote
 
-import android.util.Log
-import com.crashlytics.android.Crashlytics
 import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.data.remote.RemoteRepositoryConstants.FIELD_ITEM_USER_LIST_ID
@@ -149,14 +147,7 @@ class SnapshotListener(private val userListCollection: CollectionReference,
     }
 
     private fun queryError(querySnapshot: QuerySnapshot?, e: FirebaseFirestoreException?): Boolean {
-        if (e !== null) {
-            return true
-        } else if (querySnapshot === null) {
-            Crashlytics.log(
-                    Log.ERROR,
-                    RemoteRepository::class.java.simpleName,
-                    "QueryDocumentSnapshot is null"
-            )
+        if (e !== null || querySnapshot === null) {
             return true
         }
         return false

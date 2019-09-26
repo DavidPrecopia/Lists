@@ -2,15 +2,11 @@ package com.example.david.lists.common
 
 import android.app.Application
 import android.os.Looper
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
-import com.example.david.lists.BuildConfig
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.AppComponent
 import com.example.david.lists.common.buildlogic.DaggerAppComponent
 import com.example.david.lists.util.UtilNetwork
 import com.example.david.lists.util.UtilNightMode
-import io.fabric.sdk.android.Fabric
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.longToast
@@ -51,7 +47,6 @@ internal abstract class ListsApplicationBase : Application() {
         initRxAndroidSchedulers()
         checkNetworkConnection()
         setNightMode()
-        initCrashlytics()
     }
 
     /**
@@ -60,7 +55,7 @@ internal abstract class ListsApplicationBase : Application() {
      * https://twitter.com/jakewharton/status/1170437658776133636?s=12
      */
     private fun initRxAndroidSchedulers() {
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler{
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler {
             AndroidSchedulers.from(Looper.getMainLooper(), true)
         }
     }
@@ -79,13 +74,5 @@ internal abstract class ListsApplicationBase : Application() {
         } else {
             utilNightMode.setDay()
         }
-    }
-
-    private fun initCrashlytics() {
-        // Initializes Fabric only for builds that are not of the debug build type.
-        val crashlyticsKit = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
-                .build()
-        Fabric.with(this, crashlyticsKit)
     }
 }
