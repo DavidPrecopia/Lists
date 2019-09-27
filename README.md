@@ -14,9 +14,9 @@ This app utilizes Firebase's Cloud Firestore to synchronize between devices and 
 - Drag to rearrange
 - Supports keyboard navigation.
 - Available authentication methods:
-  - Email
   - Google account
-  - Remain anonymous
+  - Email
+  - Phone number
 
 # Screenshots
 
