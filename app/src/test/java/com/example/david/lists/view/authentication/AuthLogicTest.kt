@@ -6,10 +6,10 @@ import com.nhaarman.mockitokotlin2.mock
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -64,39 +64,6 @@ class AuthLogicTest {
 
         verify(view).setResult(AuthResult.AUTH_CANCELLED)
         verify(view).signOut()
-    }
-
-    /**
-     * Normal behavior - [AuthGoal.AUTH_ANON],
-     * - Set View's result [AuthResult.AUTH_CANCELLED].
-     * - Check if user is anon.
-     * - Invoke [View.signIn].
-     */
-    @Test
-    fun onStartAuthAnon() {
-        `when`(viewModel.requestCode).thenReturn(requestCode)
-        `when`(userRepo.isAnonymous).thenReturn(true)
-
-        logic.onStart(AuthGoal.AUTH_ANON)
-
-        verify(view).setResult(AuthResult.AUTH_CANCELLED)
-        verify(view).signIn(requestCode)
-    }
-
-    /**
-     * Error behavior - [AuthGoal.AUTH_ANON] when not anon,
-     * - Set View's result [AuthResult.AUTH_CANCELLED].
-     * - User is not anon.
-     * - Exception is thrown.
-     */
-    @Test(expected = IllegalStateException::class)
-    fun onStartAuthAnonUserNotAnon() {
-        `when`(userRepo.isAnonymous).thenReturn(false)
-
-        logic.onStart(AuthGoal.AUTH_ANON)
-
-        verify(view).setResult(AuthResult.AUTH_CANCELLED)
-        verify(view, never()).signIn(anyInt())
     }
 
 

@@ -2,7 +2,6 @@ package com.example.david.lists.view.userlistlist
 
 import com.example.david.lists.SchedulerProviderMockInit
 import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.data.repository.IRepositoryContract.Repository
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.IUtilNightModeContract
@@ -36,9 +35,6 @@ class UserListListLogicTest {
 
     @Mock
     private lateinit var repo: Repository
-
-    @Mock
-    private lateinit var userRepo: IRepositoryContract.UserRepository
 
     @Mock
     private lateinit var schedulerProvider: ISchedulerProviderContract
@@ -412,25 +408,6 @@ class UserListListLogicTest {
 
     /**
      * Normal behavior
-     * - Invoke [View.openAuthentication]
-     */
-    @Test
-    fun signIn() {
-        val authGoal = IAuthContract.AuthGoal.SIGN_IN
-        val requestCode = 100
-        val intentExtraKey = "key"
-
-        `when`(viewModel.requestCode).thenReturn(requestCode)
-        `when`(viewModel.intentExtraAuthResultKey).thenReturn(intentExtraKey)
-
-        logic.signIn()
-
-        verify(view).openAuthentication(authGoal, requestCode, intentExtraKey)
-    }
-
-
-    /**
-     * Normal behavior
      * - [AuthResult.AUTH_SUCCESS] parameter
      * - Invoke [View.recreateView]
      */
@@ -486,23 +463,6 @@ class UserListListLogicTest {
         logic.setNightMode(true)
 
         verify(utilNightMode).setDay()
-    }
-
-
-    /**
-     * Normal behavior
-     * - Verify true is returned when the user is anonymous.
-     */
-    @Test
-    fun isUserAnon() {
-        val isAnon = true
-
-        `when`(userRepo.isAnonymous).thenReturn(isAnon)
-
-        assertThat(
-                logic.isUserAnon,
-                `is`(isAnon)
-        )
     }
 
     /**

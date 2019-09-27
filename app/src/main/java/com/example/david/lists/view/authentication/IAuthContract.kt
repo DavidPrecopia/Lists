@@ -36,8 +36,6 @@ interface IAuthContract {
 
         val msgSignInCanceled: String
 
-        val msgSignInWhenNotAnon: String
-
         fun getMsgSignInError(errorCode: Int): String
 
         val msgSignOutSucceed: String
@@ -54,7 +52,6 @@ interface IAuthContract {
 
     enum class AuthGoal {
         SIGN_IN,
-        SIGN_OUT,
-        AUTH_ANON
+        SIGN_OUT
     }
 }

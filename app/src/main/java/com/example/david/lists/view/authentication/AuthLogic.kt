@@ -1,15 +1,13 @@
 package com.example.david.lists.view.authentication
 
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.UtilExceptions
-import com.example.david.lists.view.authentication.IAuthContract.AuthGoal.*
-
+import com.example.david.lists.view.authentication.IAuthContract.AuthGoal.SIGN_IN
+import com.example.david.lists.view.authentication.IAuthContract.AuthGoal.SIGN_OUT
 import com.example.david.lists.view.authentication.IAuthContract.AuthResult.AUTH_CANCELLED
 import com.example.david.lists.view.authentication.IAuthContract.AuthResult.AUTH_SUCCESS
 
 class AuthLogic(private val view: IAuthContract.View,
-                private val viewModel: IAuthContract.ViewModel,
-                private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
+                private val viewModel: IAuthContract.ViewModel) : IAuthContract.Logic {
 
 
     override fun onStart(authGoal: IAuthContract.AuthGoal) {
@@ -21,23 +19,12 @@ class AuthLogic(private val view: IAuthContract.View,
     private fun evalAuthGoal(authGoal: IAuthContract.AuthGoal) {
         when (authGoal) {
             SIGN_IN -> signIn()
-            AUTH_ANON -> signInAnon()
             SIGN_OUT -> signOut()
         }
     }
 
     private fun signIn() {
         view.signIn(viewModel.requestCode)
-    }
-
-    private fun signInAnon() {
-        // If the user is NOT anonymous, throw an Exception.
-        if (!userRepo.isAnonymous) {
-            UtilExceptions.throwException(IllegalStateException(
-                    viewModel.msgSignInWhenNotAnon
-            ))
-        }
-        signIn()
     }
 
     override fun signInSuccessful() {

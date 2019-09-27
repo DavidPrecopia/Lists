@@ -69,16 +69,9 @@ class UserListListView : ListViewBase(), IUserListViewContract.View, ConfirmSign
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflateMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_sign_out, menu)
         initMenuSetCheckedState(menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun inflateMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(
-                if (logic.isUserAnon) R.menu.menu_sign_in else R.menu.menu_sign_out,
-                menu
-        )
     }
 
     private fun initMenuSetCheckedState(menu: Menu) {
@@ -88,7 +81,6 @@ class UserListListView : ListViewBase(), IUserListViewContract.View, ConfirmSign
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_id_sign_out -> logic.signOut()
-            R.id.menu_id_sign_in -> logic.signIn()
             R.id.menu_id_night_mode -> {
                 with(item.isChecked) {
                     logic.setNightMode(this)

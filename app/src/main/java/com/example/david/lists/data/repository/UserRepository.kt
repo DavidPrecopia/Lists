@@ -11,9 +11,6 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
     override val signedOut
         get() = firebaseAuth.currentUser == null
 
-    override val isAnonymous: Boolean
-        get() = firebaseAuth.currentUser!!.isAnonymous
-
     init {
         firebaseAuth.addAuthStateListener {
             if (this.signedOut) {

@@ -17,9 +17,6 @@ class AuthViewModel(application: Application, override val requestCode: Int) :
     override val msgSignInCanceled: String
         get() = getStringRes(R.string.msg_sign_in_cancelled)
 
-    override val msgSignInWhenNotAnon: String
-        get() = getStringRes(R.string.error_msg_sign_in_when_not_anonymous)
-
     @SuppressLint("RestrictedApi")
     override fun getMsgSignInError(errorCode: Int) =
             ErrorCodes.toFriendlyMessage(errorCode)

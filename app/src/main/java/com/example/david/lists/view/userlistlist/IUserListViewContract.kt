@@ -29,8 +29,6 @@ interface IUserListViewContract {
     }
 
     interface Logic {
-        val isUserAnon: Boolean
-
         val isNightModeEnabled: Boolean
 
         fun onStart()
@@ -54,8 +52,6 @@ interface IUserListViewContract {
         fun signOut()
 
         fun signOutConfirmed()
-
-        fun signIn()
 
         fun authResult(authResult: IAuthContract.AuthResult)
 

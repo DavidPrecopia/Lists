@@ -35,8 +35,6 @@ interface IRepositoryContract {
     interface UserRepository {
         val signedOut: Boolean
 
-        val isAnonymous: Boolean
-
         fun userSignedOutObservable(): LiveData<Boolean>
     }
 }

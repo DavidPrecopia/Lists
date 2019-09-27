@@ -13,7 +13,6 @@ import java.util.*
 
 class UserListListLogic(private val view: IUserListViewContract.View,
                         private val viewModel: IUserListViewContract.ViewModel,
-                        private val userRepo: IRepositoryContract.UserRepository,
                         private val utilNightMode: IUtilNightModeContract,
                         repo: IRepositoryContract.Repository,
                         schedulerProvider: ISchedulerProviderContract,
@@ -21,8 +20,6 @@ class UserListListLogic(private val view: IUserListViewContract.View,
         ListViewLogicBase(repo, schedulerProvider, disposable),
         IUserListViewContract.Logic {
 
-    override val isUserAnon: Boolean
-        get() = userRepo.isAnonymous
 
     override val isNightModeEnabled: Boolean
         get() = utilNightMode.nightModeEnabled
@@ -167,16 +164,8 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
     override fun signOutConfirmed() {
-        openAuthView(IAuthContract.AuthGoal.SIGN_OUT)
-    }
-
-    override fun signIn() {
-        openAuthView(IAuthContract.AuthGoal.SIGN_IN)
-    }
-
-    private fun openAuthView(authGoal: IAuthContract.AuthGoal) {
         view.openAuthentication(
-                authGoal,
+                IAuthContract.AuthGoal.SIGN_OUT,
                 viewModel.requestCode,
                 viewModel.intentExtraAuthResultKey
         )

@@ -25,12 +25,11 @@ internal class UserListListViewModule {
     @Provides
     fun logic(view: IUserListViewContract.View,
               viewModel: IUserListViewContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository,
               utilNightMode: IUtilNightModeContract,
               repo: IRepositoryContract.Repository,
               schedulerProvider: ISchedulerProviderContract,
               disposable: CompositeDisposable): IUserListViewContract.Logic {
-        return UserListListLogic(view, viewModel, userRepo, utilNightMode, repo, schedulerProvider, disposable)
+        return UserListListLogic(view, viewModel, utilNightMode, repo, schedulerProvider, disposable)
     }
 
     @ViewScope
