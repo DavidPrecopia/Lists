@@ -50,6 +50,7 @@ internal class AuthViewModule {
     private val providers: List<AuthUI.IdpConfig>
         get() = listOf(
                 AuthUI.IdpConfig.GoogleBuilder().build(),
-                AuthUI.IdpConfig.EmailBuilder().build()
+                AuthUI.IdpConfig.EmailBuilder().build(),
+                AuthUI.IdpConfig.PhoneBuilder().build()
         )
 }
