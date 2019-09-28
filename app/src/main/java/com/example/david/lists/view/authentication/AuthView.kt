@@ -17,9 +17,7 @@ import javax.inject.Provider
  * The result code will always be [Activity.RESULT_OK],
  * see the Intent's extras for more information - see [AuthResult].
  *
- *
  * If authentication failed, the returned Intent will contain the reason why.
- *
  *
  * This is an Activity, instead of a Fragment, because Firebase Auth depends
  * upon [Activity.onActivityResult] and this
@@ -39,9 +37,9 @@ class AuthView : ActivityBase(), IAuthContract.View {
     private var authRequestCode: Int = 0
 
     private val authGoal: IAuthContract.AuthGoal
-        get() = intent
-                .extras!!
-                .getSerializable(getString(R.string.intent_extra_auth)) as IAuthContract.AuthGoal
+        get() = intent.getSerializableExtra(
+                getString(R.string.intent_extra_auth)
+        ) as IAuthContract.AuthGoal
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
