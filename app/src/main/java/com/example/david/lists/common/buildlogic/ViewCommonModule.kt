@@ -36,7 +36,7 @@ class ViewCommonModule {
 
     @Provides
     fun sharedPrefs(appComponent: AppComponent): SharedPreferences {
-        return appComponent.sharedPrefsNightMode()
+        return appComponent.sharedPrefs()
     }
 
     @Provides

@@ -16,7 +16,7 @@ import javax.inject.Singleton
     RepositoryModule::class,
     UserRepositoryModule::class,
     RemoteRepositoryModule::class,
-    SharedPrefsNightModeModule::class,
+    SharedPrefsModule::class,
     UtilNightModeModule::class,
     FirebaseAuthModule::class
 ])
@@ -27,7 +27,7 @@ interface AppComponent {
 
     fun utilNightMode(): IUtilNightModeContract
 
-    fun sharedPrefsNightMode(): SharedPreferences
+    fun sharedPrefs(): SharedPreferences
 
     @Component.Builder
     interface Builder {
