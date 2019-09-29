@@ -2,19 +2,17 @@ package com.example.david.lists.common.buildlogic
 
 import android.app.Application
 import android.content.SharedPreferences
-
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.david.lists.common.ListsApplication
 import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
+import com.example.david.lists.util.IUtilNightModeContract
 import com.example.david.lists.util.SchedulerProvider
 import com.example.david.lists.view.common.TouchHelperCallback
-
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +30,12 @@ class ViewCommonModule {
     }
 
     @Provides
-    fun sharedPreferences(appComponent: AppComponent): SharedPreferences {
+    fun utilNightMode(appComponent: AppComponent): IUtilNightModeContract {
+        return appComponent.utilNightMode()
+    }
+
+    @Provides
+    fun sharedPrefs(appComponent: AppComponent): SharedPreferences {
         return appComponent.sharedPrefsNightMode()
     }
 

@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Looper
 import com.example.david.lists.common.buildlogic.AppComponent
 import com.example.david.lists.common.buildlogic.DaggerAppComponent
-import com.example.david.lists.util.UtilNightMode
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
 
@@ -57,7 +56,7 @@ internal abstract class ListsApplicationBase : Application() {
     }
 
     private fun setNightMode() {
-        val utilNightMode = UtilNightMode(this)
+        val utilNightMode = appComponent.utilNightMode()
 
         if (utilNightMode.nightModeEnabled) {
             utilNightMode.setNight()

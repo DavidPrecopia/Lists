@@ -9,7 +9,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class SharedPreferencesModule {
+class SharedPrefsNightModeModule {
     @Singleton
     @Provides
     fun sharedPreferences(application: Application): SharedPreferences {
