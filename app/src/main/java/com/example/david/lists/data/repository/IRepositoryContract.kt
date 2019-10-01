@@ -48,6 +48,8 @@ interface IRepositoryContract {
 
         val emailVerified: Boolean
 
+        fun sendVerificationEmail(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+
         fun reloadUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun userSignedOutObservable(): LiveData<Boolean>

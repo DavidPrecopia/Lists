@@ -11,7 +11,6 @@ import com.example.david.lists.view.userlistlist.UserListActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.auth_view.*
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.longToast
@@ -90,15 +89,6 @@ class AuthView : ActivityBase(), IAuthContract.View {
         }
     }
 
-
-    override fun sendEmailVerification(user: FirebaseUser) {
-        user.sendEmailVerification(actionCodeSettings.get())
-                .addOnSuccessListener {
-                    logic.sentEmailVerification()
-                }.addOnFailureListener { exception ->
-                    logic.failedToSendEmailVerification(exception)
-                }
-    }
 
     override fun displayEmailSentMessage(email: String) {
         progress_bar.visibility = View.GONE

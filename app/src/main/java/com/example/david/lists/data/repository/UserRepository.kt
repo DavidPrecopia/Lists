@@ -16,6 +16,8 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
 
     private val userSignedOutObservable = MutableLiveData<Boolean>()
 
+    private val userNullException = NullPointerException("User is null")
+
     init {
         firebaseAuth.addAuthStateListener {
             if (this.signedOut) {
@@ -46,12 +48,20 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
         get() = user?.isEmailVerified ?: false
 
 
+    override fun sendVerificationEmail(successListener: OnSuccessListener<in Void>,
+                                       failureListener: OnFailureListener) {
+        user?.sendEmailVerification()
+                ?.addOnSuccessListener(successListener)
+                ?.addOnFailureListener(failureListener)
+                ?: failureListener.onFailure(userNullException)
+    }
+
     override fun reloadUser(successListener: OnSuccessListener<in Void>,
                             failureListener: OnFailureListener) {
         user?.reload()
                 ?.addOnSuccessListener(successListener)
                 ?.addOnFailureListener(failureListener)
-                ?: failureListener.onFailure(NullPointerException("User is null"))
+                ?: failureListener.onFailure(userNullException)
     }
 
     override fun userSignedOutObservable() = userSignedOutObservable

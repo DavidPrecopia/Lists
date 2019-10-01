@@ -64,43 +64,40 @@ class AuthLogic(private val view: IAuthContract.View,
     }
 
 
-    /**
-     * If the email verification has been sent and the user clicked the link,
-     * the user needs to resign-in.
-     * If they have not verified their email when this happens,
-     * the verification email will be sent again.
-     */
     private fun verifyEmail() {
-        when {
-            viewModel.emailVerificationSent -> emailSent()
-            else -> view.sendEmailVerification(userRepo.user!!)
+        when (viewModel.emailVerificationSent) {
+            true -> userRepo.reloadUser(
+                    successfullyReloadedUser(),
+                    failedToReloadUser()
+            )
+            false -> userRepo.sendVerificationEmail(
+                    successfullySentEmail(),
+                    failedToSendEmail()
+            )
         }
     }
 
-    private fun emailSent() {
-        userRepo.reloadUser(
-                OnSuccessListener {
-                    when {
-                        userRepo.emailVerified -> {
-                            view.displayMessage(viewModel.msgSignInSucceed)
-                            view.openMainActivity(viewModel.mainActivityRequestCode)
-                        }
-                        else -> view.displayEmailSentMessage(userRepo.email!!)
-                    }
-                },
-                OnFailureListener { e ->
-                    UtilExceptions.throwException(e)
-                    view.signIn(viewModel.signInRequestCode)
-                }
-        )
+    private fun successfullyReloadedUser() = OnSuccessListener<Void> {
+        when (userRepo.emailVerified) {
+            true -> {
+                view.displayMessage(viewModel.msgSignInSucceed)
+                view.openMainActivity(viewModel.mainActivityRequestCode)
+            }
+            false -> view.displayEmailSentMessage(userRepo.email!!)
+        }
     }
 
-    override fun sentEmailVerification() {
+    private fun failedToReloadUser() = OnFailureListener { e ->
+        UtilExceptions.throwException(e)
+        view.signIn(viewModel.signInRequestCode)
+    }
+
+    private fun successfullySentEmail() = OnSuccessListener<Void> {
         viewModel.emailVerificationSent = true
         view.displayEmailSentMessage(userRepo.email!!)
     }
 
-    override fun failedToSendEmailVerification(e: Exception) {
+    private fun failedToSendEmail() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
         finish(viewModel.msgSignInError)
     }

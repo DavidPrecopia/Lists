@@ -1,14 +1,10 @@
 package com.example.david.lists.view.authentication
 
-import com.google.firebase.auth.FirebaseUser
-
 interface IAuthContract {
     interface View {
         fun signIn(requestCode: Int)
 
         fun signOut()
-
-        fun sendEmailVerification(user: FirebaseUser)
 
         fun displayEmailSentMessage(email: String)
 
@@ -27,10 +23,6 @@ interface IAuthContract {
         fun signInSuccessful()
 
         fun signInCancelled()
-
-        fun sentEmailVerification()
-
-        fun failedToSendEmailVerification(e: Exception)
 
         fun signInFailed(errorCode: Int)
 
