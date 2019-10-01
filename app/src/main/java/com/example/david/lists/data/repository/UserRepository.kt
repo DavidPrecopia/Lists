@@ -1,6 +1,8 @@
 package com.example.david.lists.data.repository
 
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -43,6 +45,14 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
     override val emailVerified
         get() = user?.isEmailVerified ?: false
 
+
+    override fun reloadUser(successListener: OnSuccessListener<in Void>,
+                            failureListener: OnFailureListener) {
+        user?.reload()
+                ?.addOnSuccessListener(successListener)
+                ?.addOnFailureListener(failureListener)
+                ?: failureListener.onFailure(NullPointerException("User is null"))
+    }
 
     override fun userSignedOutObservable() = userSignedOutObservable
 }

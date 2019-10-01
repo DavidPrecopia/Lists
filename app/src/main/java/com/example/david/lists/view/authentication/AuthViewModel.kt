@@ -40,15 +40,16 @@ class AuthViewModel(application: Application,
     override val msgSignInCanceled: String
         get() = getStringRes(R.string.msg_sign_in_cancelled)
 
-    override val msgReSignIn: String
-        get() = getStringRes(R.string.msg_re_sign_in)
-
     override val msgSignInError: String
         get() = getStringRes(R.string.msg_sign_in_error)
 
     @SuppressLint("RestrictedApi")
     override fun getMsgSignInError(errorCode: Int) =
             ErrorCodes.toFriendlyMessage(errorCode)
+
+
+    override val msgEmailNotVerified: String
+        get() = getStringRes(R.string.msg_email_not_verified)
 
 
     override val msgSignOutSucceed: String

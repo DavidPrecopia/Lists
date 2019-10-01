@@ -50,11 +50,11 @@ interface IAuthContract {
 
         val msgSignInCanceled: String
 
-        val msgReSignIn: String
-
         val msgSignInError: String
 
         fun getMsgSignInError(errorCode: Int): String
+
+        val msgEmailNotVerified: String
 
         val msgSignOutSucceed: String
 

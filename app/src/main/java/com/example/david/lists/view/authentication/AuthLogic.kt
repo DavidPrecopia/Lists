@@ -2,6 +2,8 @@ package com.example.david.lists.view.authentication
 
 import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.UtilExceptions
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 
 class AuthLogic(private val view: IAuthContract.View,
                 private val viewModel: IAuthContract.ViewModel,
@@ -68,20 +70,34 @@ class AuthLogic(private val view: IAuthContract.View,
      * the verification email will be sent again.
      */
     private fun verifyEmail() {
-        when (viewModel.emailVerificationSent) {
-            true -> {
-                view.displayMessage(viewModel.msgReSignIn)
-                view.signIn(viewModel.signInRequestCode)
-            }
-            false -> view.sendEmailVerification(userRepo.user!!)
+        when {
+            viewModel.emailVerificationSent -> emailSent()
+            else -> view.sendEmailVerification(userRepo.user!!)
         }
+    }
+
+    private fun emailSent() {
+        userRepo.reloadUser(
+                OnSuccessListener {
+                    when {
+                        userRepo.emailVerified -> {
+                            view.displayMessage(viewModel.msgSignInSucceed)
+                            view.openMainActivity(viewModel.mainActivityRequestCode)
+                        }
+                        else -> view.displayEmailSentMessage(userRepo.email!!)
+                    }
+                },
+                OnFailureListener { e ->
+                    UtilExceptions.throwException(e)
+                    view.signIn(viewModel.signInRequestCode)
+                }
+        )
     }
 
     override fun sentEmailVerification() {
         viewModel.emailVerificationSent = true
         view.displayEmailSentMessage(userRepo.email!!)
     }
-
 
     override fun failedToSendEmailVerification(e: Exception) {
         UtilExceptions.throwException(e)

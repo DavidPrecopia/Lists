@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 
 import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.data.datamodel.UserList
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseUser
 
 import io.reactivex.Flowable
@@ -45,6 +47,8 @@ interface IRepositoryContract {
         val hasEmail: Boolean
 
         val emailVerified: Boolean
+
+        fun reloadUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun userSignedOutObservable(): LiveData<Boolean>
     }
