@@ -30,7 +30,7 @@ interface IAuthContract {
 
         fun sentEmailVerification()
 
-        fun failedToSendEmailVerification(e: java.lang.Exception)
+        fun failedToSendEmailVerification(e: Exception)
 
         fun signInFailed(errorCode: Int)
 
