@@ -14,7 +14,8 @@ class ItemActivity : ActivityBase() {
         inject()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item)
-        this.newActivity = savedInstanceState == null
+
+        this.newActivity = savedInstanceState === null
         init()
     }
 
