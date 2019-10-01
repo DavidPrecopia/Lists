@@ -28,7 +28,6 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".view.itemlist.ItemActivity"
-            android:launchMode="singleTop"
             android:parentActivityName=".view.userlistlist.UserListActivity" />
 
         <receiver
