@@ -14,6 +14,7 @@ class AuthLogic(private val view: IAuthContract.View,
             userRepo.userVerified -> view.openMainActivity(viewModel.mainActivityRequestCode)
             userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
             userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
+            else -> UtilExceptions.throwException(IllegalStateException())
         }
     }
 
