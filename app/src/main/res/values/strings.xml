@@ -8,6 +8,7 @@
     <string name="content_description_list_item_drag">Hold to drag</string>
     <string name="content_description_list_overflow_menu">Overflow menu</string>
     <string name="content_description_delete_icon">Delete</string>
+    <string name="content_description_green_checkmark">Green checkmark</string>
 
     <string name="msg_user_list_deletion">List deleted</string>
     <string name="msg_user_list_deletion_parameter">\"%s\" has been deleted</string>

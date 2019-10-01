@@ -2,29 +2,48 @@ package com.example.david.lists.view.authentication.buildlogic
 
 import android.app.Application
 import android.content.Intent
+import android.content.SharedPreferences
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
+import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.view.authentication.AuthLogic
 import com.example.david.lists.view.authentication.AuthViewModel
 import com.example.david.lists.view.authentication.IAuthContract
 import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.ActionCodeSettings
 import dagger.Module
 import dagger.Provides
 
 @Module
 internal class AuthViewModule {
+
+    companion object {
+        // This URL is irrelevant - using Google because it safe.
+        private const val CONTINUE_URL = "https://www.google.com/"
+        // The minimum versionCode that supports email verification
+        private const val MINIMUM_VERSION_CODE = "14"
+    }
+
+
     @ViewScope
     @Provides
     fun logic(view: IAuthContract.View,
-              viewModel: IAuthContract.ViewModel): IAuthContract.Logic {
-        return AuthLogic(view, viewModel)
+              viewModel: IAuthContract.ViewModel,
+              userRepo: IRepositoryContract.UserRepository): IAuthContract.Logic {
+        return AuthLogic(view, viewModel, userRepo)
     }
 
     @ViewScope
     @Provides
-    fun viewModel(application: Application): IAuthContract.ViewModel {
-        return AuthViewModel(application, 101)
+    fun viewModel(application: Application,
+                  sharedPrefs: SharedPreferences): IAuthContract.ViewModel {
+        return AuthViewModel(
+                application,
+                sharedPrefs,
+                application.getString(R.string.email_verification_sent_shared_pref_key)
+        )
     }
+
 
     @ViewScope
     @Provides
@@ -53,4 +72,18 @@ internal class AuthViewModule {
                 AuthUI.IdpConfig.EmailBuilder().build(),
                 AuthUI.IdpConfig.PhoneBuilder().build()
         )
+
+
+    @ViewScope
+    @Provides
+    fun actionCodeSettings(application: Application): ActionCodeSettings {
+        return ActionCodeSettings.newBuilder()
+                .setUrl(CONTINUE_URL)
+                .setAndroidPackageName(
+                        application.packageName,
+                        false,
+                        MINIMUM_VERSION_CODE
+                )
+                .build()
+    }
 }

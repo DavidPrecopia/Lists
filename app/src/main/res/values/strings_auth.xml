@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="intent_extra_auth">intent_extra_auth</string>
-    <string name="intent_extra_auth_result">intent_extra_auth_result</string>
-    <string name="intent_extra_auth_failure_reason">intent_extra_auth_failure_reason</string>
-
     <string name="msg_sign_in_successful">Welcome!</string>
     <string name="msg_sign_in_cancelled">Sign-in cancelled</string>
+    <string name="msg_re_sign_in">Please sign-in again</string>
+    <string name="msg_sign_in_error">Please try again later</string>
 
     <string name="msg_signed_out_successful">Successfully signed-out</string>
+
+    <string name="email_verification_sent_shared_pref_key">email_verification_sent_shared_pref_key</string>
+
+    <string name="email_sent_title">Sign-in email sent</string>
+    <string name="email_sent_message">A sign-in email with additionally instructions has been sent to %1$s.
+        Check your email to complete sign-in
+        \n\nYou will need to sign-in again after verification.</string>
 </resources>

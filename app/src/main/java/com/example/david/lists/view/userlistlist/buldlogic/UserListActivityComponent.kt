@@ -11,7 +11,6 @@ import dagger.Component
 
 @ViewScope
 @Component(modules = [
-    UserListActivityModule::class,
     ActivityCommonModule::class,
     ViewCommonModule::class
 ])

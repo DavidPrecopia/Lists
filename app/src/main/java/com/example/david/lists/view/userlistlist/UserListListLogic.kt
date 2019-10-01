@@ -5,7 +5,6 @@ import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.IUtilNightModeContract
 import com.example.david.lists.util.UtilExceptions
-import com.example.david.lists.view.authentication.IAuthContract
 import com.example.david.lists.view.common.ListViewLogicBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.DisposableSubscriber
@@ -164,22 +163,8 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
     override fun signOutConfirmed() {
-        view.openAuthentication(
-                IAuthContract.AuthGoal.SIGN_OUT,
-                viewModel.requestCode,
-                viewModel.intentExtraAuthResultKey
-        )
+        view.signOut(viewModel.signOutResultCode)
     }
-
-
-    override fun authResult(authResult: IAuthContract.AuthResult) {
-        if (authIsValid(authResult)) {
-            view.recreateView()
-        }
-    }
-
-    private fun authIsValid(authResult: IAuthContract.AuthResult) =
-            authResult === IAuthContract.AuthResult.AUTH_SUCCESS
 
 
     override fun setNightMode(isMenuItemChecked: Boolean) {

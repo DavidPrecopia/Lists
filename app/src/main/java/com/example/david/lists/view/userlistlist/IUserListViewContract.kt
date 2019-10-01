@@ -1,7 +1,6 @@
 package com.example.david.lists.view.userlistlist
 
 import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.view.authentication.IAuthContract
 
 interface IUserListViewContract {
     interface View {
@@ -9,7 +8,7 @@ interface IUserListViewContract {
 
         fun confirmSignOut()
 
-        fun openAuthentication(authGoal: IAuthContract.AuthGoal, requestCode: Int, intentExtraAuthResultKey: String)
+        fun signOut(resultCode: Int)
 
         fun openAddDialog(position: Int)
 
@@ -24,8 +23,6 @@ interface IUserListViewContract {
         fun setStateLoading()
 
         fun setStateError(message: String)
-
-        fun recreateView()
     }
 
     interface Logic {
@@ -53,8 +50,6 @@ interface IUserListViewContract {
 
         fun signOutConfirmed()
 
-        fun authResult(authResult: IAuthContract.AuthResult)
-
         fun setNightMode(isMenuItemChecked: Boolean)
 
         fun onDestroy()
@@ -67,10 +62,6 @@ interface IUserListViewContract {
 
         var tempPosition: Int
 
-        val requestCode: Int
-
-        val intentExtraAuthResultKey: String
-
         val msgInvalidUndo: String
 
         val msgDeletion: String
@@ -78,6 +69,8 @@ interface IUserListViewContract {
         val errorMsg: String
 
         val errorMsgEmptyList: String
+
+        val signOutResultCode: Int
     }
 
     interface Adapter {

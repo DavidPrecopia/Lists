@@ -3,22 +3,22 @@ package com.example.david.lists.view.authentication
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.example.david.lists.R
-import com.example.david.lists.view.authentication.IAuthContract.AuthResult
 import com.example.david.lists.view.authentication.buildlogic.DaggerAuthViewComponent
 import com.example.david.lists.view.common.ActivityBase
+import com.example.david.lists.view.userlistlist.UserListActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import org.jetbrains.anko.toast
+import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.FirebaseUser
+import kotlinx.android.synthetic.main.auth_view.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.longToast
 import javax.inject.Inject
 import javax.inject.Provider
 
 /**
- * The result code will always be [Activity.RESULT_OK],
- * see the Intent's extras for more information - see [AuthResult].
- *
- * If authentication failed, the returned Intent will contain the reason why.
- *
  * This is an Activity, instead of a Fragment, because Firebase Auth depends
  * upon [Activity.onActivityResult] and this
  * needs to return an Intent to its caller.
@@ -32,21 +32,21 @@ class AuthView : ActivityBase(), IAuthContract.View {
     lateinit var authIntent: Provider<Intent>
 
     @Inject
-    lateinit var authUi: AuthUI
+    lateinit var authUi: Provider<AuthUI>
 
-    private var authRequestCode: Int = 0
+    @Inject
+    lateinit var actionCodeSettings: Provider<ActionCodeSettings>
 
-    private val authGoal: IAuthContract.AuthGoal
-        get() = intent.getSerializableExtra(
-                getString(R.string.intent_extra_auth)
-        ) as IAuthContract.AuthGoal
+
+    private var mainActivityRequestCode: Int = 0
+    private var signInRequestCode: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_view)
-        logic.onStart(authGoal)
+        logic.onStart()
     }
 
     private fun inject() {
@@ -60,7 +60,7 @@ class AuthView : ActivityBase(), IAuthContract.View {
 
 
     override fun signIn(requestCode: Int) {
-        this.authRequestCode = requestCode
+        signInRequestCode = requestCode
         startActivityForResult(
                 authIntent.get(),
                 requestCode
@@ -68,7 +68,7 @@ class AuthView : ActivityBase(), IAuthContract.View {
     }
 
     override fun signOut() {
-        authUi.signOut(applicationContext)
+        authUi.get().signOut(applicationContext)
                 .addOnSuccessListener { logic.signOutSucceeded() }
                 .addOnFailureListener { logic.signOutFailed(it) }
     }
@@ -76,8 +76,9 @@ class AuthView : ActivityBase(), IAuthContract.View {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == authRequestCode) {
-            evalSignInResult(IdpResponse.fromResultIntent(data), resultCode)
+        when (requestCode) {
+            mainActivityRequestCode -> logic.onActivityResult(resultCode)
+            signInRequestCode -> evalSignInResult(IdpResponse.fromResultIntent(data), resultCode)
         }
     }
 
@@ -90,26 +91,34 @@ class AuthView : ActivityBase(), IAuthContract.View {
     }
 
 
+    override fun sendEmailVerification(user: FirebaseUser) {
+        user.sendEmailVerification(actionCodeSettings.get())
+                .addOnSuccessListener {
+                    logic.sentEmailVerification()
+                }.addOnFailureListener { exception ->
+                    logic.failedToSendEmailVerification(exception)
+                }
+    }
+
+    override fun displayEmailSentMessage(email: String) {
+        progress_bar.visibility = View.GONE
+        email_sent_body.text = getString(R.string.email_sent_message, email)
+        email_sent_group.visibility = View.VISIBLE
+    }
+
+
     override fun displayMessage(message: String) {
-        toast(message)
+        longToast(message)
     }
 
 
-    override fun setResult(result: AuthResult) {
-        setResult(Activity.RESULT_OK, getResultIntent(result))
+    override fun openMainActivity(requestCode: Int) {
+        mainActivityRequestCode = requestCode
+        startActivityForResult(
+                intentFor<UserListActivity>(),
+                requestCode
+        )
     }
-
-    override fun setResultFailed(reason: String) {
-        val intent = getResultIntent(AuthResult.AUTH_FAILED).apply {
-            putExtra(getString(R.string.intent_extra_auth_failure_reason), reason)
-        }
-        setResult(Activity.RESULT_OK, intent)
-    }
-
-    private fun getResultIntent(result: AuthResult) = Intent().apply {
-        putExtra(getString(R.string.intent_extra_auth_result), result)
-    }
-
 
     override fun finishView() {
         finish()

@@ -1,7 +1,6 @@
 package com.example.david.lists.view.userlistlist
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,24 +11,21 @@ import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog
-import com.example.david.lists.view.authentication.AuthView
-import com.example.david.lists.view.authentication.IAuthContract
 import com.example.david.lists.view.common.ListViewBase
 import com.example.david.lists.view.itemlist.ItemActivity
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent
 import org.jetbrains.anko.intentFor
 import javax.inject.Inject
 
-class UserListListView : ListViewBase(), IUserListViewContract.View, ConfirmSignOutDialog.ConfirmSignOutCallback {
+class UserListListView : ListViewBase(),
+        IUserListViewContract.View,
+        ConfirmSignOutDialog.ConfirmSignOutCallback {
 
     @Inject
     lateinit var logic: IUserListViewContract.Logic
 
     @Inject
     lateinit var adapter: IUserListViewContract.Adapter
-
-    private var authRequestCode: Int = 0
-    private var intentExtraAuthResultKey: String? = null
 
     override val title: String
         get() = getString(R.string.app_name)
@@ -109,25 +105,11 @@ class UserListListView : ListViewBase(), IUserListViewContract.View, ConfirmSign
         logic.signOutConfirmed()
     }
 
-    override fun openAuthentication(authGoal: IAuthContract.AuthGoal, requestCode: Int, intentExtraAuthResultKey: String) {
-        this.authRequestCode = requestCode
-        this.intentExtraAuthResultKey = intentExtraAuthResultKey
-
-        val intent = context!!.intentFor<AuthView>(
-                getString(R.string.intent_extra_auth) to authGoal
-        )
-        startActivityForResult(intent, requestCode)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode != authRequestCode) {
-            return
+    override fun signOut(resultCode: Int) {
+        with(activity!!) {
+            setResult(resultCode)
+            finish()
         }
-        logic.authResult(getIntentExtra(data!!))
-    }
-
-    private fun getIntentExtra(data: Intent): IAuthContract.AuthResult {
-        return data.getSerializableExtra(intentExtraAuthResultKey) as IAuthContract.AuthResult
     }
 
 
@@ -162,10 +144,6 @@ class UserListListView : ListViewBase(), IUserListViewContract.View, ConfirmSign
 
     override fun setStateError(message: String) {
         displayError(message)
-    }
-
-    override fun recreateView() {
-        activity!!.recreate()
     }
 
 

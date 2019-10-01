@@ -1,62 +1,91 @@
 package com.example.david.lists.view.authentication
 
+import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.UtilExceptions
-import com.example.david.lists.view.authentication.IAuthContract.AuthGoal.SIGN_IN
-import com.example.david.lists.view.authentication.IAuthContract.AuthGoal.SIGN_OUT
-import com.example.david.lists.view.authentication.IAuthContract.AuthResult.AUTH_CANCELLED
-import com.example.david.lists.view.authentication.IAuthContract.AuthResult.AUTH_SUCCESS
 
 class AuthLogic(private val view: IAuthContract.View,
-                private val viewModel: IAuthContract.ViewModel) : IAuthContract.Logic {
+                private val viewModel: IAuthContract.ViewModel,
+                private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
 
-
-    override fun onStart(authGoal: IAuthContract.AuthGoal) {
-        // In case the user cancels.
-        view.setResult(AUTH_CANCELLED)
-        evalAuthGoal(authGoal)
-    }
-
-    private fun evalAuthGoal(authGoal: IAuthContract.AuthGoal) {
-        when (authGoal) {
-            SIGN_IN -> signIn()
-            SIGN_OUT -> signOut()
+    override fun onStart() {
+        when {
+            userRepo.userVerified -> view.openMainActivity(viewModel.mainActivityRequestCode)
+            userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
+            userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
         }
     }
 
-    private fun signIn() {
-        view.signIn(viewModel.requestCode)
+    override fun onActivityResult(resultCode: Int) {
+        when (resultCode) {
+            IAuthContract.FINISH -> view.finishView()
+            IAuthContract.SIGN_OUT -> signOut()
+        }
     }
 
+
     override fun signInSuccessful() {
-        view.setResult(AUTH_SUCCESS)
-        finish(viewModel.msgSignInSucceed)
+        when (userRepo.hasEmail && userRepo.emailVerified.not()) {
+            true -> verifyEmail()
+            false -> {
+                view.displayMessage(viewModel.msgSignInSucceed)
+                view.openMainActivity(viewModel.mainActivityRequestCode)
+            }
+        }
     }
 
     override fun signInCancelled() {
-        view.setResult(AUTH_CANCELLED)
         finish(viewModel.msgSignInCanceled)
     }
 
     override fun signInFailed(errorCode: Int) {
-        val reason = viewModel.getMsgSignInError(errorCode)
-        view.setResultFailed(reason)
-        finish(reason)
+        finish(viewModel.getMsgSignInError(errorCode))
     }
 
+
     private fun signOut() {
+        // Need to re-set state in case the user
+        // signs-in with an unverified email.
+        viewModel.emailVerificationSent = false
         view.signOut()
     }
 
     override fun signOutSucceeded() {
-        view.setResult(AUTH_SUCCESS)
-        finish(viewModel.msgSignOutSucceed)
+        view.displayMessage(viewModel.msgSignOutSucceed)
+        view.signIn(viewModel.signInRequestCode)
     }
 
     override fun signOutFailed(e: Exception) {
         UtilExceptions.throwException(e)
-        val msg = viewModel.msgSignOutFailed
-        view.setResultFailed(msg)
-        finish(msg)
+        view.displayMessage(viewModel.msgSignOutFailed)
+        view.openMainActivity(viewModel.mainActivityRequestCode)
+    }
+
+
+    /**
+     * If the email verification has been sent and the user clicked the link,
+     * the user needs to resign-in.
+     * If they have not verified their email when this happens,
+     * the verification email will be sent again.
+     */
+    private fun verifyEmail() {
+        when (viewModel.emailVerificationSent) {
+            true -> {
+                view.displayMessage(viewModel.msgReSignIn)
+                view.signIn(viewModel.signInRequestCode)
+            }
+            false -> view.sendEmailVerification(userRepo.user!!)
+        }
+    }
+
+    override fun sentEmailVerification() {
+        viewModel.emailVerificationSent = true
+        view.displayEmailSentMessage(userRepo.email!!)
+    }
+
+
+    override fun failedToSendEmailVerification(e: Exception) {
+        UtilExceptions.throwException(e)
+        finish(viewModel.msgSignInError)
     }
 
 

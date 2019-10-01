@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 
 import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.data.datamodel.UserList
+import com.google.firebase.auth.FirebaseUser
 
 import io.reactivex.Flowable
 
@@ -33,7 +34,17 @@ interface IRepositoryContract {
     }
 
     interface UserRepository {
+        val user: FirebaseUser?
+
+        val email: String?
+
         val signedOut: Boolean
+
+        val userVerified: Boolean
+
+        val hasEmail: Boolean
+
+        val emailVerified: Boolean
 
         fun userSignedOutObservable(): LiveData<Boolean>
     }

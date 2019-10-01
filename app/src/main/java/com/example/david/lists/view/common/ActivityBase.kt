@@ -15,12 +15,4 @@ abstract class ActivityBase : AppCompatActivity() {
             add(containerViewId, fragment)
         }
     }
-
-    protected fun removeAllFragments() {
-        for (fragment in fragmentManager.fragments) {
-            fragmentManager.commit(allowStateLoss = true) {
-                remove(fragment)
-            }
-        }
-    }
 }

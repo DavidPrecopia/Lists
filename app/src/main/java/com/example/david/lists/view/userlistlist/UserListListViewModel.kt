@@ -3,11 +3,11 @@ package com.example.david.lists.view.userlistlist
 import android.app.Application
 import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
+import com.example.david.lists.view.authentication.IAuthContract
 import com.example.david.lists.view.common.ViewModelBase
 import java.util.*
 
-class UserListListViewModel(application: Application, override val requestCode: Int) :
-        ViewModelBase(application),
+class UserListListViewModel(application: Application) : ViewModelBase(application),
         IUserListViewContract.ViewModel {
 
     override var viewData: MutableList<UserList> = ArrayList()
@@ -15,10 +15,6 @@ class UserListListViewModel(application: Application, override val requestCode: 
     override val tempList: MutableList<UserList> = ArrayList()
 
     override var tempPosition: Int = -1
-
-
-    override val intentExtraAuthResultKey: String
-        get() = getStringRes(R.string.intent_extra_auth_result)
 
 
     override val msgInvalidUndo: String
@@ -32,4 +28,8 @@ class UserListListViewModel(application: Application, override val requestCode: 
 
     override val errorMsgEmptyList: String
         get() = getStringRes(R.string.error_msg_no_user_lists)
+
+
+    override val signOutResultCode: Int
+        get() = IAuthContract.SIGN_OUT
 }

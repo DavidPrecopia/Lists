@@ -31,7 +31,7 @@ internal class UserListListViewModule {
     @ViewScope
     @Provides
     fun viewModel(application: Application): IUserListViewContract.ViewModel {
-        return UserListListViewModel(application, 100)
+        return UserListListViewModel(application)
     }
 
     @ViewScope
