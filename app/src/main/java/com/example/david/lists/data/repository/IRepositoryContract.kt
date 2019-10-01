@@ -1,13 +1,10 @@
 package com.example.david.lists.data.repository
 
 import androidx.lifecycle.LiveData
-
 import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.data.datamodel.UserList
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.auth.FirebaseUser
-
 import io.reactivex.Flowable
 
 interface IRepositoryContract {
@@ -36,8 +33,6 @@ interface IRepositoryContract {
     }
 
     interface UserRepository {
-        val user: FirebaseUser?
-
         val email: String?
 
         val signedOut: Boolean

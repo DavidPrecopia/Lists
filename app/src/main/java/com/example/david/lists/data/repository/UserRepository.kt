@@ -14,6 +14,9 @@ import com.google.firebase.auth.FirebaseUser
 class UserRepository(private val firebaseAuth: FirebaseAuth) :
         IRepositoryContract.UserRepository {
 
+    private val user: FirebaseUser?
+        get() = firebaseAuth.currentUser
+
     private val userSignedOutObservable = MutableLiveData<Boolean>()
 
     private val userNullException = NullPointerException("User is null")
@@ -26,9 +29,6 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
         }
     }
 
-
-    override val user: FirebaseUser?
-        get() = firebaseAuth.currentUser
 
     override val email: String?
         get() = user?.email
