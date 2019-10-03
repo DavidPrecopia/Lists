@@ -17,7 +17,13 @@ buildscript {
     }
 }
 
+plugins {
+    // https://github.com/jlleitschuh/ktlint-gradle
+    id "org.jlleitschuh.gradle.ktlint" version "9.0.0"
+}
+
 allprojects {
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
     ext {
         ankoVersion = "0.10.8"
         coreVersion = "1.1.0"
