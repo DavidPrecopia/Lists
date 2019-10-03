@@ -3,6 +3,7 @@ package com.example.david.lists.data.repository
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -11,7 +12,8 @@ import com.google.firebase.auth.FirebaseUser
  * retrieving the user via [FirebaseAuth.getCurrentUser] ensures that
  * I am getting fresh information.
  */
-class UserRepository(private val firebaseAuth: FirebaseAuth) :
+class UserRepository(private val firebaseAuth: FirebaseAuth,
+                     private val actionCodeSettings: ActionCodeSettings) :
         IRepositoryContract.UserRepository {
 
     private val user: FirebaseUser?
@@ -50,7 +52,7 @@ class UserRepository(private val firebaseAuth: FirebaseAuth) :
 
     override fun sendVerificationEmail(successListener: OnSuccessListener<in Void>,
                                        failureListener: OnFailureListener) {
-        user?.sendEmailVerification()
+        user?.sendEmailVerification(actionCodeSettings)
                 ?.addOnSuccessListener(successListener)
                 ?.addOnFailureListener(failureListener)
                 ?: failureListener.onFailure(userNullException)

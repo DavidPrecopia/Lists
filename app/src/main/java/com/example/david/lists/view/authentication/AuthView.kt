@@ -10,7 +10,6 @@ import com.example.david.lists.view.common.ActivityBase
 import com.example.david.lists.view.userlistlist.UserListActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.ActionCodeSettings
 import kotlinx.android.synthetic.main.auth_view.*
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.longToast
@@ -32,9 +31,6 @@ class AuthView : ActivityBase(), IAuthContract.View {
 
     @Inject
     lateinit var authUi: Provider<AuthUI>
-
-    @Inject
-    lateinit var actionCodeSettings: Provider<ActionCodeSettings>
 
 
     private var mainActivityRequestCode: Int = 0
