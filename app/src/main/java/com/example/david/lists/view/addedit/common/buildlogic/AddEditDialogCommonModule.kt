@@ -21,7 +21,7 @@ class AddEditDialogCommonModule {
     @ViewScope
     @Provides
     fun inputMethodManager(application: Application): InputMethodManager {
-        return application.getSystemService<InputMethodManager>()!!
+        return application.getSystemService()!!
     }
 
     @ViewScope
