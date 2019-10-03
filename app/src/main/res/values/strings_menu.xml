@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="menu_item_title_log_out">Sign Out</string>
-    <string name="menu_item_title_log_in">Sign In</string>
 
     <string name="menu_item_title_edit">Edit</string>
     <string name="menu_item_title_delete">Delete</string>
