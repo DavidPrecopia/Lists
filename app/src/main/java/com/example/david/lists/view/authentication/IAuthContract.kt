@@ -29,6 +29,8 @@ interface IAuthContract {
         fun signOutSucceeded()
 
         fun signOutFailed(e: Exception)
+
+        fun verifyEmail()
     }
 
     interface ViewModel {

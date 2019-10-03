@@ -64,7 +64,7 @@ class AuthLogic(private val view: IAuthContract.View,
     }
 
 
-    private fun verifyEmail() {
+    override fun verifyEmail() {
         when (viewModel.emailVerificationSent) {
             true -> userRepo.reloadUser(
                     successfullyReloadedUser(),

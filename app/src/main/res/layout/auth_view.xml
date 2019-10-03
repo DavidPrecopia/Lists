@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="email_sent_title,email_sent_body,email_sent_image" />
+        app:constraint_referenced_ids="email_sent_title,email_sent_image,email_sent_body,check_email_button" />
 
     <TextView
         android:id="@+id/email_sent_title"
@@ -55,5 +55,15 @@
         app:layout_constraintStart_toStartOf="@id/email_sent_title"
         app:layout_constraintTop_toBottomOf="@id/email_sent_image"
         tools:text="@string/email_sent_message" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/check_email_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:text="@string/email_verified_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

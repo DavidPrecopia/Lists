@@ -45,6 +45,8 @@ class AuthView : ActivityBase(), IAuthContract.View {
         inject()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.auth_view)
+
+        initClickListener()
         logic.onStart()
     }
 
@@ -55,6 +57,10 @@ class AuthView : ActivityBase(), IAuthContract.View {
                 .view(this)
                 .build()
                 .inject(this)
+    }
+
+    private fun initClickListener() {
+        check_email_button.setOnClickListener { logic.verifyEmail() }
     }
 
 

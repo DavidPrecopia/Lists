@@ -12,4 +12,5 @@
     <string name="email_sent_title">Sign-in email sent</string>
     <string name="email_sent_message">A sign-in email with additionally instructions has been sent to %1$s.
         \n\nCheck your email to complete sign-in</string>
+    <string name="email_verified_button">Email Verified</string>
 </resources>
