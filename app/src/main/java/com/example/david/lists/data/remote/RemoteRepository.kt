@@ -129,8 +129,10 @@ class RemoteRepository(private val firestore: FirebaseFirestore,
 
     }
 
-    private fun getNewTempPosition(oldPosition: Int, newPosition: Int) =
-            if (newPosition > oldPosition) newPosition + 0.5 else newPosition - 0.5
+    private fun getNewTempPosition(oldPosition: Int, newPosition: Int) = when {
+        newPosition > oldPosition -> newPosition + 0.5
+        else -> newPosition - 0.5
+    }
 
 
     private fun reorderConsecutively(querySnapshot: QuerySnapshot) {

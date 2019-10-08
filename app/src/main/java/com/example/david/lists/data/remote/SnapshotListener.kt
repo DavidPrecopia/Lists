@@ -13,6 +13,7 @@ import com.google.firebase.firestore.ktx.toObjects
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
+import timber.log.Timber
 import java.util.*
 
 class SnapshotListener(private val userListCollection: CollectionReference,
@@ -77,6 +78,7 @@ class SnapshotListener(private val userListCollection: CollectionReference,
     private fun getUserListEventListener(emitter: FlowableEmitter<List<UserList>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
+                    Timber.d("emitter onNext")
                     emitter.onNext(querySnapshot!!.toObjects())
                 }
 
@@ -131,41 +133,33 @@ class SnapshotListener(private val userListCollection: CollectionReference,
 
     private fun validQuery(querySnapshot: QuerySnapshot?,
                            e: FirebaseFirestoreException?,
-                           emitter: FlowableEmitter<*>): Boolean {
-        if (querySnapshot === null) {
-            return false
-        }
-
-        if (queryError(querySnapshot, e)) {
+                           emitter: FlowableEmitter<*>) = when {
+        querySnapshot === null -> false
+        queryError(querySnapshot, e) -> {
             UtilExceptions.throwException(e!!)
             emitter.onError(e)
-            return false
-        } else if (shouldReturn(emitter, querySnapshot)) {
-            return false
+            false
         }
-        return true
+        shouldReturn(emitter, querySnapshot) -> false
+        else -> true
     }
 
-    private fun queryError(querySnapshot: QuerySnapshot?, e: FirebaseFirestoreException?): Boolean {
-        if (e !== null || querySnapshot === null) {
-            return true
-        }
-        return false
+    private fun queryError(querySnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) = when {
+        e !== null || querySnapshot === null -> true
+        else -> false
     }
 
-    private fun shouldReturn(emitter: FlowableEmitter<*>, querySnapshot: QuerySnapshot): Boolean {
-        if (emitter.isCancelled) {
-            return true
-        }
-
-        if (recentLocalChanges) {
+    private fun shouldReturn(emitter: FlowableEmitter<*>, querySnapshot: QuerySnapshot) = when {
+        emitter.isCancelled -> true
+        recentLocalChanges -> {
             recentLocalChanges = recentLocalChanges.not()
-            return true
-        } else if (fromLocalCache(querySnapshot)) {
-            recentLocalChanges = true
-            return false
+            true
         }
-        return false
+        fromLocalCache(querySnapshot) -> {
+            recentLocalChanges = true
+            false
+        }
+        else -> false
     }
 
     /**

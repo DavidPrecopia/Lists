@@ -62,11 +62,9 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
 
     private fun evalNewData() {
         view.setViewData(viewModel.viewData)
-
-        if (viewModel.viewData.isEmpty()) {
-            view.setStateError(viewModel.errorMsgEmptyList)
-        } else {
-            view.setStateDisplayList()
+        when {
+            viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
+            else -> view.setStateDisplayList()
         }
     }
 

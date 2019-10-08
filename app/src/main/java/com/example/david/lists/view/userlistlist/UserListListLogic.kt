@@ -58,11 +58,9 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
     private fun evalNewData() {
         view.setViewData(viewModel.viewData)
-
-        if (viewModel.viewData.isEmpty()) {
-            view.setStateError(viewModel.errorMsgEmptyList)
-        } else {
-            view.setStateDisplayList()
+        when {
+            viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
+            else -> view.setStateDisplayList()
         }
     }
 
@@ -168,10 +166,9 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
 
     override fun setNightMode(isMenuItemChecked: Boolean) {
-        if (isMenuItemChecked) {
-            utilNightMode.setDay()
-        } else {
-            utilNightMode.setNight()
+        when {
+            isMenuItemChecked -> utilNightMode.setDay()
+            else -> utilNightMode.setNight()
         }
     }
 
