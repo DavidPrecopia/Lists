@@ -43,6 +43,7 @@ class RemoteRepositoryModule {
     fun firebaseFirestoreSettings(): FirebaseFirestoreSettings {
         val cacheSize = (10 * 1024 * 1024).toLong() // 10mb
         return FirebaseFirestoreSettings.Builder()
+                // This specifies the cache size threshold - default is 40mb.
                 .setCacheSizeBytes(cacheSize)
                 .build()
     }
