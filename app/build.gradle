@@ -61,6 +61,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
     implementation "androidx.appcompat:appcompat:$coreVersion"
+    implementation "androidx.activity:activity-ktx:1.0.0"
+    implementation "androidx.fragment:fragment-ktx:$coreVersion"
 
     implementation "com.google.android.material:material:$androidLibrariesVersion"
     implementation "androidx.recyclerview:recyclerview:$androidLibrariesVersion"
