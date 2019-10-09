@@ -6,14 +6,13 @@ import com.example.david.lists.view.common.ActivityBase
 import com.example.david.lists.view.itemlist.buldlogic.DaggerItemActivityComponent
 import kotlinx.android.synthetic.main.activity_item.*
 
-class ItemActivity : ActivityBase() {
+class ItemActivity : ActivityBase(R.layout.activity_item) {
 
     private var newActivity: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item)
 
         this.newActivity = savedInstanceState === null
         init()

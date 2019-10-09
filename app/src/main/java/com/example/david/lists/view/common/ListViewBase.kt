@@ -1,9 +1,7 @@
 package com.example.david.lists.view.common
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -20,7 +18,8 @@ import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Provider
 
-abstract class ListViewBase : Fragment(), TouchHelperCallback.MovementCallback {
+abstract class ListViewBase : Fragment(R.layout.list_view_base),
+        TouchHelperCallback.MovementCallback {
 
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>
@@ -32,10 +31,6 @@ abstract class ListViewBase : Fragment(), TouchHelperCallback.MovementCallback {
     lateinit var itemTouchHelper: ItemTouchHelper
 
     protected abstract val title: String
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.list_view_base, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

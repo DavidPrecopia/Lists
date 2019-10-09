@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import javax.inject.Inject
 
-abstract class ActivityBase : AppCompatActivity() {
+abstract class ActivityBase(layoutRes: Int) : AppCompatActivity(layoutRes) {
     @Inject
     lateinit var fragmentManager: FragmentManager
 

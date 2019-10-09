@@ -10,7 +10,8 @@ import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListActivit
 import kotlinx.android.synthetic.main.activity_user_list.*
 import javax.inject.Inject
 
-class UserListActivity : ActivityBase(), SharedPreferences.OnSharedPreferenceChangeListener {
+class UserListActivity : ActivityBase(R.layout.activity_user_list),
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
     lateinit var sharedPrefs: SharedPreferences
@@ -21,7 +22,6 @@ class UserListActivity : ActivityBase(), SharedPreferences.OnSharedPreferenceCha
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_list)
 
         this.newActivity = savedInstanceState === null
         initView()

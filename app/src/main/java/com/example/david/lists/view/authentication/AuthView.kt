@@ -21,7 +21,7 @@ import javax.inject.Provider
  * upon [Activity.onActivityResult] and this
  * needs to return an Intent to its caller.
  */
-class AuthView : ActivityBase(), IAuthContract.View {
+class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
 
     @Inject
     lateinit var logic: IAuthContract.Logic
@@ -40,7 +40,6 @@ class AuthView : ActivityBase(), IAuthContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.auth_view)
 
         initClickListener()
         logic.onStart()

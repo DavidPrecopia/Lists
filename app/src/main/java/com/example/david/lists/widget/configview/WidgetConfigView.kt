@@ -20,7 +20,8 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Provider
 
-class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
+class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
+        IWidgetConfigContract.View {
 
     @Inject
     lateinit var logic: IWidgetConfigContract.Logic
@@ -40,7 +41,6 @@ class WidgetConfigView : AppCompatActivity(), IWidgetConfigContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.widget_config_view)
         initView()
 
         logic.onStart()
