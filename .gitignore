@@ -10,3 +10,4 @@
 /app/fabric.properties
 lists_keystore.jks
 keystore.properties
+/app/src/main/gen/
