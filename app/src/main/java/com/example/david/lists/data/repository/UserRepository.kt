@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GetTokenResult
 
 /**
  * I do not have [FirebaseUser] as a constructor parameter because
@@ -60,11 +61,20 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
 
     override fun reloadUser(successListener: OnSuccessListener<in Void>,
                             failureListener: OnFailureListener) {
+        user?.getIdToken(true)
+                ?.addOnSuccessListener(reload(successListener, failureListener))
+                ?.addOnFailureListener(failureListener)
+                ?: failureListener.onFailure(userNullException)
+    }
+
+    private fun reload(successListener: OnSuccessListener<in Void>,
+                       failureListener: OnFailureListener) = OnSuccessListener<GetTokenResult> {
         user?.reload()
                 ?.addOnSuccessListener(successListener)
                 ?.addOnFailureListener(failureListener)
                 ?: failureListener.onFailure(userNullException)
     }
+
 
     override fun userSignedOutObservable() = userSignedOutObservable
 }
