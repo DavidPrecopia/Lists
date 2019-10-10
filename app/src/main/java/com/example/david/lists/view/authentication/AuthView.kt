@@ -55,7 +55,7 @@ class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
     }
 
     private fun initClickListener() {
-        check_email_button.setOnClickListener { logic.verifyEmail() }
+        check_email_button.setOnClickListener { logic.verifyEmailButtonClicked() }
     }
 
 

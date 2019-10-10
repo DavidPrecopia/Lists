@@ -64,7 +64,13 @@ class AuthLogic(private val view: IAuthContract.View,
     }
 
 
-    override fun verifyEmail() {
+    override fun verifyEmailButtonClicked() {
+        view.hideEmailSentMessage()
+        verifyEmail()
+    }
+
+
+    private fun verifyEmail() {
         when (viewModel.emailVerificationSent) {
             true -> userRepo.reloadUser(
                     successfullyReloadedUser(),

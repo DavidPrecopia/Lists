@@ -32,7 +32,7 @@ interface IAuthContract {
 
         fun signOutFailed(e: Exception)
 
-        fun verifyEmail()
+        fun verifyEmailButtonClicked()
     }
 
     interface ViewModel {
