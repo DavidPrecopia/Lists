@@ -97,6 +97,10 @@ class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
         email_sent_group.visibility = View.VISIBLE
     }
 
+    override fun hideEmailSentMessage() {
+        email_sent_group.visibility = View.GONE
+        progress_bar.visibility = View.VISIBLE
+    }
 
     override fun displayMessage(message: String) {
         longToast(message)

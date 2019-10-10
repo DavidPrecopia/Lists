@@ -80,6 +80,7 @@ class AuthLogic(private val view: IAuthContract.View,
     private fun successfullyReloadedUser() = OnSuccessListener<Void> {
         when (userRepo.emailVerified) {
             true -> {
+                view.hideEmailSentMessage()
                 view.displayMessage(viewModel.msgSignInSucceed)
                 view.openMainActivity(viewModel.mainActivityRequestCode)
             }

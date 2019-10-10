@@ -8,6 +8,8 @@ interface IAuthContract {
 
         fun displayEmailSentMessage(email: String)
 
+        fun hideEmailSentMessage()
+
         fun displayMessage(message: String)
 
         fun openMainActivity(requestCode: Int)
