@@ -13,7 +13,6 @@ import com.google.firebase.firestore.ktx.toObjects
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
-import timber.log.Timber
 import java.util.*
 
 class SnapshotListener(private val userListCollection: CollectionReference,
@@ -78,7 +77,6 @@ class SnapshotListener(private val userListCollection: CollectionReference,
     private fun getUserListEventListener(emitter: FlowableEmitter<List<UserList>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
-                    Timber.d("emitter onNext")
                     emitter.onNext(querySnapshot!!.toObjects())
                 }
 
