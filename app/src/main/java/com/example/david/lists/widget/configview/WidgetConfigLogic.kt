@@ -11,27 +11,22 @@ import io.reactivex.subscribers.DisposableSubscriber
 
 class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
                         private val viewModel: IWidgetConfigContract.ViewModel,
-                        widgetId: Int,
                         repo: IRepositoryContract.Repository,
                         schedulerProvider: ISchedulerProviderContract,
                         disposable: CompositeDisposable) :
         ListViewLogicBase(repo, schedulerProvider, disposable),
         IWidgetConfigContract.Logic {
 
-    init {
+
+    override fun onStart(widgetId: Int) {
+        view.setStateLoading()
         viewModel.widgetId = widgetId
-        // In case the user cancels without selecting anything.
         view.setResults(widgetId, viewModel.resultCancelled)
 
-        if (widgetId == viewModel.invalidWidgetId) {
-            view.finishViewInvalidId()
+        when (widgetId) {
+            viewModel.invalidWidgetId -> view.finishViewInvalidId()
+            else -> getUserLists()
         }
-    }
-
-
-    override fun onStart() {
-        view.setStateLoading()
-        getUserLists()
     }
 
 

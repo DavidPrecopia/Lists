@@ -26,7 +26,7 @@ interface IWidgetConfigContract {
     }
 
     interface Logic {
-        fun onStart()
+        fun onStart(widgetId: Int)
 
         fun selectedUserList(position: Int)
 

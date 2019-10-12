@@ -38,12 +38,18 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
     lateinit var dividerItemDecorator: RecyclerView.ItemDecoration
 
 
+    private val widgetId: Int
+        get() = intent.extras?.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+        )!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
         initView()
 
-        logic.onStart()
+        logic.onStart(widgetId)
     }
 
     private fun inject() {
@@ -51,7 +57,6 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
                 .application(application)
                 .context(applicationContext)
                 .view(this)
-                .intent(intent)
                 .build()
                 .inject(this)
     }
