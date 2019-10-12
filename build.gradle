@@ -30,7 +30,7 @@ allprojects {
         androidLibrariesVersion = "1.0.0"
         lifecycleExtensionsVersion = "2.0.0"
         daggerVersion = "2.24"
-        mockitoVersion = "3.0.0"
+        junitVersion = "5.1.1"
     }
     repositories {
         google()

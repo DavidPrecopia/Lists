@@ -103,16 +103,15 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-3"
 
     // Local testing
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.hamcrest:hamcrest-library:2.1'
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "org.assertj:assertj-core:3.13.2"
 
     // Instrumentation testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'
