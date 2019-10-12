@@ -19,10 +19,9 @@ class ItemListLogic(private val view: IItemViewContract.View,
         IItemViewContract.Logic {
 
     override fun onStart() {
-        if (viewModel.viewData.isEmpty()) {
-            view.setStateLoading()
-        } else {
-            view.setViewData(viewModel.viewData)
+        when {
+            viewModel.viewData.isEmpty() -> view.setStateLoading()
+            else -> view.setViewData(viewModel.viewData)
         }
         observeDeletedUserLists()
         getItems()
@@ -92,9 +91,6 @@ class ItemListLogic(private val view: IItemViewContract.View,
     }
 
     override fun edit(position: Int) {
-        if (position < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         view.openEditDialog(viewModel.viewData[position])
     }
 
@@ -105,9 +101,6 @@ class ItemListLogic(private val view: IItemViewContract.View,
     }
 
     override fun movedPermanently(newPosition: Int) {
-        if (newPosition < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         val item = viewModel.viewData[newPosition]
         repo.updateItemPosition(
                 item,
@@ -118,12 +111,9 @@ class ItemListLogic(private val view: IItemViewContract.View,
 
 
     override fun delete(position: Int, adapter: IItemViewContract.Adapter) {
-        if (position < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         adapter.remove(position)
         saveDeletedItem(position)
-        view.notifyUserOfDeletion(viewModel.msgItemDeleted)
+        view.notifyUserOfDeletion(viewModel.msgDeletion)
     }
 
     private fun saveDeletedItem(position: Int) {

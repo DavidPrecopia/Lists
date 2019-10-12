@@ -52,15 +52,15 @@ interface IItemViewContract {
 
         var tempPosition: Int
 
-        val msgItemDeleted: String
+        val msgDeletion: String
+
+        fun getMsgListDeleted(title: String): String
 
         val errorMsg: String
 
         val errorMsgEmptyList: String
 
         val errorMsgInvalidUndo: String
-
-        fun getMsgListDeleted(title: String): String
     }
 
     interface Adapter {

@@ -62,13 +62,13 @@ interface IUserListViewContract {
 
         var tempPosition: Int
 
-        val msgInvalidUndo: String
-
         val msgDeletion: String
 
         val errorMsg: String
 
         val errorMsgEmptyList: String
+
+        val errorMsgInvalidUndo: String
 
         val signOutResultCode: Int
     }

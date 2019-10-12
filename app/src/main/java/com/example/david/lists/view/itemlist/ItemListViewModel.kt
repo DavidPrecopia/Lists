@@ -17,8 +17,12 @@ class ItemListViewModel(application: Application, override val userListId: Strin
     override var tempPosition: Int = -1
 
 
-    override val msgItemDeleted: String
+    override val msgDeletion: String
         get() = getStringRes(R.string.msg_item_deletion)
+
+    override fun getMsgListDeleted(title: String) =
+            getStringRes(R.string.msg_user_list_deletion_parameter, title)
+
 
     override val errorMsg: String
         get() = getStringRes(R.string.error_msg_generic)
@@ -28,8 +32,4 @@ class ItemListViewModel(application: Application, override val userListId: Strin
 
     override val errorMsgInvalidUndo: String
         get() = getStringRes(R.string.error_msg_invalid_action_undo_deletion)
-
-
-    override fun getMsgListDeleted(title: String) =
-            getStringRes(R.string.msg_user_list_deletion_parameter, title)
 }

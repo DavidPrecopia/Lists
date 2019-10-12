@@ -25,10 +25,9 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
 
     override fun onStart() {
-        if (viewModel.viewData.isEmpty()) {
-            view.setStateLoading()
-        } else {
-            view.setViewData(viewModel.viewData)
+        when {
+            viewModel.viewData.isEmpty() -> view.setStateLoading()
+            else -> view.setViewData(viewModel.viewData)
         }
         getAllUserLists()
     }
@@ -75,9 +74,6 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
     override fun edit(position: Int) {
-        if (position < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         view.openEditDialog(viewModel.viewData[position])
     }
 
@@ -88,9 +84,6 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
     override fun movedPermanently(newPosition: Int) {
-        if (newPosition < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         val userList = viewModel.viewData[newPosition]
         repo.updateUserListPosition(
                 userList,
@@ -101,9 +94,6 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
 
     override fun delete(position: Int, adapter: IUserListViewContract.Adapter) {
-        if (position < 0) {
-            UtilExceptions.throwException(IllegalArgumentException())
-        }
         adapter.remove(position)
         saveDeletedUserList(position)
         view.notifyUserOfDeletion(viewModel.msgDeletion)
@@ -119,7 +109,7 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     override fun undoRecentDeletion(adapter: IUserListViewContract.Adapter) {
         if (viewModel.tempList.isEmpty() || viewModel.tempPosition < 0) {
             UtilExceptions.throwException(UnsupportedOperationException(
-                    viewModel.msgInvalidUndo
+                    viewModel.errorMsgInvalidUndo
             ))
         }
         reAdd(adapter)

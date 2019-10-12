@@ -17,17 +17,18 @@ class UserListListViewModel(application: Application) : ViewModelBase(applicatio
     override var tempPosition: Int = -1
 
 
-    override val msgInvalidUndo: String
-        get() = getStringRes(R.string.error_msg_invalid_action_undo_deletion)
-
     override val msgDeletion: String
         get() = getStringRes(R.string.msg_user_list_deletion)
+
 
     override val errorMsg: String
         get() = getStringRes(R.string.error_msg_generic)
 
     override val errorMsgEmptyList: String
         get() = getStringRes(R.string.error_msg_no_user_lists)
+
+    override val errorMsgInvalidUndo: String
+        get() = getStringRes(R.string.error_msg_invalid_action_undo_deletion)
 
 
     override val signOutResultCode: Int
