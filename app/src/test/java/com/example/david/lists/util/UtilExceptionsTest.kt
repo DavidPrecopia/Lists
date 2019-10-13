@@ -1,18 +1,24 @@
 package com.example.david.lists.util
 
-import org.junit.Test
-import org.mockito.Mockito.*
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class UtilExceptionsTest {
-    @Test(expected = RuntimeException::class)
-    fun throwRuntimeExceptionTest() {
-        UtilExceptions.throwException(RuntimeException())
+    @Test
+    fun `Throw RuntimeException`() {
+        assertThrows<java.lang.RuntimeException> {
+            UtilExceptions.throwException(RuntimeException())
+        }
     }
 
     @Test
-    fun throwThrowableExceptionTest() {
-        val throwableMock = mock(Throwable::class.java)
+    fun `Throw ThrowableException`() {
+        val throwableMock = mockk<Throwable>(relaxed = true)
+
         UtilExceptions.throwException(throwableMock)
-        verify(throwableMock, times(1)).printStackTrace()
+
+        verify(atMost = 1) { throwableMock.printStackTrace() }
     }
 }

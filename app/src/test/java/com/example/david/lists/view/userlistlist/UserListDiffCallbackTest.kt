@@ -1,55 +1,35 @@
 package com.example.david.lists.view.userlistlist
 
 import com.example.david.lists.data.datamodel.UserList
-import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
 class UserListDiffCallbackTest {
 
-    private val oneId = "id_one"
-    private val oneTitle = "title_one"
-    private val onePosition = 1
-    private val one = UserList(oneTitle, onePosition, oneId)
-
-    private val twoId = "id_two"
-    private val twoTitle = "title_two"
-    private val twoPosition = 2
-    private val two = UserList(twoTitle, twoPosition, twoId)
+    private val one = UserList("title_one", 1, "id_one")
+    private val two = UserList("title_two", 2, "id_two")
 
     private val diffCallback = UserListDiffCallback()
 
 
     @Test
-    fun areItemsTheSameTrue() {
-        assertThat(
-                diffCallback.areItemsTheSame(one, one),
-                `is`(true)
-        )
+    fun `areItemsTheSame - True`() {
+        assertThat(diffCallback.areItemsTheSame(one, one)).isTrue()
     }
 
     @Test
-    fun areItemsTheSameFalse() {
-        assertThat(
-                diffCallback.areItemsTheSame(one, two),
-                `is`(false)
-        )
+    fun `areItemsTheSame - False`() {
+        assertThat(diffCallback.areItemsTheSame(one, two)).isFalse()
     }
 
 
     @Test
-    fun areContentsTheSameTrue() {
-        assertThat(
-                diffCallback.areContentsTheSame(one, one),
-                `is`(true)
-        )
+    fun `areContentsTheSame - True`() {
+        assertThat(diffCallback.areContentsTheSame(one, one)).isTrue()
     }
 
     @Test
-    fun areContentsTheSameFalse() {
-        assertThat(
-                diffCallback.areContentsTheSame(one, two),
-                `is`(false)
-        )
+    fun `areContentsTheSame - False`() {
+        assertThat(diffCallback.areContentsTheSame(one, two)).isFalse()
     }
 }
