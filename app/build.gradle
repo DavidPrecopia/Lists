@@ -60,22 +60,22 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation "androidx.core:core-ktx:$coreVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    implementation "androidx.core:core-ktx:$core_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    implementation "androidx.appcompat:appcompat:$coreVersion"
+    implementation "androidx.appcompat:appcompat:$core_version"
     implementation "androidx.activity:activity-ktx:1.0.0"
-    implementation "androidx.fragment:fragment-ktx:$coreVersion"
+    implementation "androidx.fragment:fragment-ktx:$core_version"
 
-    implementation "com.google.android.material:material:$androidLibrariesVersion"
-    implementation "androidx.recyclerview:recyclerview:$androidLibrariesVersion"
+    implementation "com.google.android.material:material:$android_libraries_version"
+    implementation "androidx.recyclerview:recyclerview:$android_libraries_version"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // Swipe Reveal Layout
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     //Anko
-    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:17.2.0'
@@ -93,8 +93,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
 
     // Dagger
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     // Timber
     debugImplementation 'com.jakewharton.timber:timber:4.7.1'
@@ -103,9 +103,9 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.0-beta-3"
 
     // Local testing
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "org.assertj:assertj-core:3.13.2"
 
