@@ -3,8 +3,7 @@ package com.example.david.lists.widget
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.david.lists.R
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -22,10 +21,8 @@ class UtilWidgetKeysTest {
 
     @Test
     fun sharedPrefsName() {
-        assertThat(
-                UtilWidgetKeys.getSharedPrefName(context),
-                `is`(context.getString(R.string.widget_shared_prefs_name))
-        )
+        assertThat(UtilWidgetKeys.getSharedPrefName(context))
+                .isEqualTo(context.getString(R.string.widget_shared_prefs_name))
     }
 
 
@@ -40,10 +37,8 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyId(value: Int) {
-        assertThat(
-                UtilWidgetKeys.getSharedPrefKeyId(context, value),
-                `is`(context.getString(R.string.widget_key_shared_pref_user_list_id, value))
-        )
+        assertThat(UtilWidgetKeys.getSharedPrefKeyId(context, value))
+                .isEqualTo(context.getString(R.string.widget_key_shared_pref_user_list_id, value))
     }
 
 
@@ -58,9 +53,7 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyTitle(value: Int) {
-        assertThat(
-                UtilWidgetKeys.getSharedPrefKeyTitle(context, value),
-                `is`(context.getString(R.string.widget_key_shared_pref_user_list_title, value))
-        )
+        assertThat(UtilWidgetKeys.getSharedPrefKeyTitle(context, value))
+                .isEqualTo(context.getString(R.string.widget_key_shared_pref_user_list_title, value))
     }
 }

@@ -3,8 +3,7 @@ package com.example.david.lists.util
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.david.lists.common.ListsApplication
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -27,9 +26,6 @@ class UtilNightModeTest {
     }
 
     private fun assertNightModeEnabled(expectation: Boolean) {
-        assertThat(
-                utilNightMode.nightModeEnabled,
-                `is`(expectation)
-        )
+        assertThat(utilNightMode.nightModeEnabled).isEqualTo(expectation)
     }
 }

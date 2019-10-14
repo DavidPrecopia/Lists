@@ -6,8 +6,7 @@ import android.appwidget.AppWidgetManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.david.lists.widget.UtilWidgetKeys
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -31,45 +30,37 @@ class WidgetConfigViewModelTest {
 
     @Test
     fun getInvalidWidgetId() {
-        assertThat(
-                viewModel.invalidWidgetId,
-                `is`(AppWidgetManager.INVALID_APPWIDGET_ID)
-        )
+        assertThat(viewModel.invalidWidgetId)
+                .isEqualTo(AppWidgetManager.INVALID_APPWIDGET_ID)
     }
 
 
     @Test
     fun getResultOk() {
-        assertThat(
-                viewModel.resultOk,
-                `is`(Activity.RESULT_OK)
-        )
+        assertThat(viewModel.resultOk)
+                .isEqualTo(Activity.RESULT_OK)
     }
 
     @Test
     fun getResultCancelled() {
-        assertThat(
-                viewModel.resultCancelled,
-                `is`(Activity.RESULT_CANCELED)
-        )
+        assertThat(viewModel.resultCancelled)
+                .isEqualTo(Activity.RESULT_CANCELED)
     }
 
 
     @Test
     fun getSharedPrefKeyId() {
         viewModel.widgetId = widgetId
-        assertThat(
-                viewModel.sharedPrefKeyId,
-                `is`(UtilWidgetKeys.getSharedPrefKeyId(application, widgetId))
-        )
+
+        assertThat(viewModel.sharedPrefKeyId)
+                .isEqualTo(UtilWidgetKeys.getSharedPrefKeyId(application, widgetId))
     }
 
     @Test
     fun getSharedPrefKeyTitle() {
         viewModel.widgetId = widgetId
-        assertThat(
-                viewModel.sharedPrefKeyTitle,
-                `is`(UtilWidgetKeys.getSharedPrefKeyTitle(application, widgetId))
-        )
+
+        assertThat(viewModel.sharedPrefKeyTitle)
+                .isEqualTo(UtilWidgetKeys.getSharedPrefKeyTitle(application, widgetId))
     }
 }
