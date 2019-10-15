@@ -1,14 +1,16 @@
 package com.example.david.lists.widget.view.buildlogic
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.RemoteViews
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.view.itemlist.ItemActivity
 import com.example.david.lists.widget.UtilWidgetKeys
 import com.example.david.lists.widget.buildlogic.SharedPrefsModule.Companion.SHARED_PREFS
 import com.example.david.lists.widget.configview.WidgetConfigView
@@ -36,11 +38,16 @@ class WidgetRemoteViewModule {
     @Named(INTENT_TITLE)
     fun titleIntent(context: Context,
                     @Named(LIST_ID) listId: String,
-                    @Named(LIST_TITLE) listTitle: String): Intent {
-        return context.intentFor<ItemActivity>(
-                context.getString(R.string.intent_extra_user_list_id) to listId,
-                context.getString(R.string.intent_extra_user_list_title) to listTitle
-        )
+                    @Named(LIST_TITLE) listTitle: String): PendingIntent {
+        return NavDeepLinkBuilder(context)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.itemListView)
+                // Using String literals until I find a reliable solution.
+                .setArguments(bundleOf(
+                        "user_list_id" to listId,
+                        "user_list_title" to listTitle
+                ))
+                .createPendingIntent()
     }
 
     @ViewScope

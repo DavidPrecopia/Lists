@@ -1,27 +1,23 @@
 package com.example.david.lists.view.authentication
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.david.lists.R
 import com.example.david.lists.view.authentication.buildlogic.DaggerAuthViewComponent
-import com.example.david.lists.view.common.ActivityBase
-import com.example.david.lists.view.userlistlist.UserListActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import kotlinx.android.synthetic.main.auth_view.*
-import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.longToast
 import javax.inject.Inject
 import javax.inject.Provider
 
-/**
- * This is an Activity, instead of a Fragment, because Firebase Auth depends
- * upon [Activity.onActivityResult] and this
- * needs to return an Intent to its caller.
- */
-class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
+class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
 
     @Inject
     lateinit var logic: IAuthContract.Logic
@@ -32,23 +28,25 @@ class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
     @Inject
     lateinit var authUi: Provider<AuthUI>
 
+    private val args: AuthViewArgs by navArgs()
 
-    private var mainActivityRequestCode: Int = 0
     private var signInRequestCode: Int = 0
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onAttach(context: Context) {
         inject()
-        super.onCreate(savedInstanceState)
+        super.onAttach(context)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initClickListener()
-        logic.onStart()
+        logic.onStart(args.signOut)
     }
 
     private fun inject() {
         DaggerAuthViewComponent.builder()
-                .application(application)
-                .activity(this)
+                .application(activity!!.application)
                 .view(this)
                 .build()
                 .inject(this)
@@ -68,16 +66,15 @@ class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
     }
 
     override fun signOut() {
-        authUi.get().signOut(applicationContext)
+        authUi.get().signOut(activity!!.application)
                 .addOnSuccessListener { logic.signOutSucceeded() }
                 .addOnFailureListener { logic.signOutFailed(it) }
     }
 
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            mainActivityRequestCode -> logic.onActivityResult(resultCode)
             signInRequestCode -> evalSignInResult(IdpResponse.fromResultIntent(data), resultCode)
         }
     }
@@ -103,19 +100,17 @@ class AuthView : ActivityBase(R.layout.auth_view), IAuthContract.View {
     }
 
     override fun displayMessage(message: String) {
-        longToast(message)
+        context!!.longToast(message)
     }
 
 
-    override fun openMainActivity(requestCode: Int) {
-        mainActivityRequestCode = requestCode
-        startActivityForResult(
-                intentFor<UserListActivity>(),
-                requestCode
+    override fun openMainView() {
+        findNavController().navigate(
+                AuthViewDirections.actionAuthViewToUserListListView()
         )
     }
 
     override fun finishView() {
-        finish()
+        activity!!.finish()
     }
 }

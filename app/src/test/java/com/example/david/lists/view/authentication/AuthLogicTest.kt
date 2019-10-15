@@ -31,7 +31,6 @@ class AuthLogicTest {
     @BeforeEach
     fun init() {
         every { viewModel.signInRequestCode } returns requestCode
-        every { viewModel.mainActivityRequestCode } returns requestCode
     }
 
 
@@ -39,7 +38,7 @@ class AuthLogicTest {
     inner class OnStart {
         /**
          * - User is verified.
-         * - Open the MainActivity.
+         * - Open the main view.
          */
         @Test
         fun `onStart - User Verified`() {
@@ -47,7 +46,20 @@ class AuthLogicTest {
 
             logic.onStart()
 
-            verify { view.openMainActivity(requestCode) }
+            verify { view.openMainView() }
+        }
+
+        /**
+         * - Sign out
+         * - Set verification email sent to false.
+         * - Call sign-out on the View.
+         */
+        @Test
+        fun `onStart - Sign Out`() {
+            logic.onStart(true)
+
+            verify { viewModel.emailVerificationSent = false }
+            verify { view.signOut() }
         }
 
         /**
@@ -148,7 +160,7 @@ class AuthLogicTest {
          * - Email will be verified.
          * - Hide the email sent message.
          * - Display welcome message.
-         * - Open the MainActivity.
+         * - Open the main view.
          */
         @Test
         fun `onStart - Email not verified, verification sent, successfully reload user, email verified`() {
@@ -177,7 +189,7 @@ class AuthLogicTest {
 
             verify { view.hideEmailSentMessage() }
             verify { view.displayMessage(message) }
-            verify { view.openMainActivity(requestCode) }
+            verify { view.openMainView() }
         }
 
         /**
@@ -282,34 +294,6 @@ class AuthLogicTest {
 
 
     @Nested
-    inner class OnActivityResult {
-        /**
-         * - [IAuthContract.ResultCode.FINISH].
-         * - Finish the View.
-         */
-        @Test
-        fun `onActivityResult - Finish`() {
-            logic.onActivityResult(IAuthContract.FINISH)
-
-            verify { view.finishView() }
-        }
-
-        /**
-         * - [IAuthContract.ResultCode.SIGN_OUT].
-         * - Set verification email sent to false.
-         * - Call sign-out on the View.
-         */
-        @Test
-        fun `onActivityResult - Sign Out`() {
-            logic.onActivityResult(IAuthContract.SIGN_OUT)
-
-            verify { viewModel.emailVerificationSent = false }
-            verify { view.signOut() }
-        }
-    }
-
-
-    @Nested
     inner class SignIn {
         /**
          * - User has an email, but it is not verified.
@@ -334,7 +318,7 @@ class AuthLogicTest {
         /**
          * - User has email and it is verified.
          * - Display welcome message.
-         * - Open the MainActivity.
+         * - Open the main view.
          */
         @Test
         fun `signInSuccessful - User has email and it is verified`() {
@@ -345,13 +329,13 @@ class AuthLogicTest {
             logic.signInSuccessful()
 
             verify { view.displayMessage(message) }
-            verify { view.openMainActivity(requestCode) }
+            verify { view.openMainView() }
         }
 
         /**
          * - User does not have an email.
          * - Display welcome message.
-         * - Open the MainActivity.
+         * - Open the main view.
          */
         @Test
         fun `signInSuccessful - User does not have an email`() {
@@ -361,7 +345,7 @@ class AuthLogicTest {
             logic.signInSuccessful()
 
             verify { view.displayMessage(message) }
-            verify { view.openMainActivity(requestCode) }
+            verify { view.openMainView() }
         }
 
 
@@ -417,7 +401,7 @@ class AuthLogicTest {
         /**
          * - Throw an Exception.
          * - Display message.
-         * - Re-open the MainActivity.
+         * - Re-open the main view.
          */
         @Test
         fun signOutFailed() {
@@ -426,7 +410,7 @@ class AuthLogicTest {
             logic.signOutFailed(Exception())
 
             verify { view.displayMessage(message) }
-            verify { view.openMainActivity(requestCode) }
+            verify { view.openMainView() }
         }
     }
 

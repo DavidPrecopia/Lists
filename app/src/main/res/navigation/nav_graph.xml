@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/authView">
+
+    <fragment
+        android:id="@+id/authView"
+        android:name="com.example.david.lists.view.authentication.AuthView"
+        android:label="AuthView">
+        <action
+            android:id="@+id/action_authView_to_userListListView"
+            app:destination="@id/userListListView"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/authView"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="signOut"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/userListListView"
+        android:name="com.example.david.lists.view.userlistlist.UserListListView"
+        android:label="UserListListView">
+        <action
+            android:id="@+id/action_userListListView_to_itemListView"
+            app:destination="@id/itemListView" />
+        <action
+            android:id="@+id/action_userListListView_to_confirmSignOutDialog"
+            app:destination="@id/confirmSignOutDialog" />
+        <action
+            android:id="@+id/action_userListListView_to_addEditUserListDialog"
+            app:destination="@id/addEditUserListDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/addEditUserListDialog"
+        android:name="com.example.david.lists.view.addedit.userlist.AddEditUserListDialog"
+        android:label="AddEditUserListDialog">
+        <argument
+            android:name="user_list_id"
+            app:argType="string" />
+        <argument
+            android:name="user_list_title"
+            app:argType="string" />
+        <argument
+            android:name="user_list_position"
+            app:argType="integer" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/confirmSignOutDialog"
+        android:name="com.example.david.lists.view.authentication.ConfirmSignOutDialog"
+        android:label="ConfirmSignOutDialog">
+        <action
+            android:id="@+id/action_confirmSignOutDialog_to_authView"
+            app:destination="@id/authView"
+            app:popUpTo="@id/authView"
+            app:popUpToInclusive="true" />
+    </dialog>
+
+
+    <fragment
+        android:id="@+id/itemListView"
+        android:name="com.example.david.lists.view.itemlist.ItemListView"
+        android:label="ItemListView">
+        <argument
+            android:name="user_list_id"
+            app:argType="string" />
+        <argument
+            android:name="user_list_title"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_itemListView_to_addEditItemDialog"
+            app:destination="@id/addEditItemDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/addEditItemDialog"
+        android:name="com.example.david.lists.view.addedit.item.AddEditItemDialog"
+        android:label="AddEditItemDialog">
+        <argument
+            android:name="item_id"
+            app:argType="string" />
+        <argument
+            android:name="item_title"
+            app:argType="string" />
+        <argument
+            android:name="user_list_id"
+            app:argType="string" />
+        <argument
+            android:name="item_position"
+            app:argType="integer" />
+    </dialog>
+</navigation>

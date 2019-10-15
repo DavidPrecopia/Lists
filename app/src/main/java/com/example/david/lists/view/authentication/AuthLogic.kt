@@ -9,19 +9,13 @@ class AuthLogic(private val view: IAuthContract.View,
                 private val viewModel: IAuthContract.ViewModel,
                 private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
 
-    override fun onStart() {
+    override fun onStart(signOut: Boolean) {
         when {
-            userRepo.userVerified -> view.openMainActivity(viewModel.mainActivityRequestCode)
+            signOut -> signOut()
+            userRepo.userVerified -> view.openMainView()
             userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
             userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
             else -> UtilExceptions.throwException(IllegalStateException())
-        }
-    }
-
-    override fun onActivityResult(resultCode: Int) {
-        when (resultCode) {
-            IAuthContract.FINISH -> view.finishView()
-            IAuthContract.SIGN_OUT -> signOut()
         }
     }
 
@@ -31,7 +25,7 @@ class AuthLogic(private val view: IAuthContract.View,
             true -> verifyEmail()
             false -> {
                 view.displayMessage(viewModel.msgSignInSucceed)
-                view.openMainActivity(viewModel.mainActivityRequestCode)
+                view.openMainView()
             }
         }
     }
@@ -60,7 +54,7 @@ class AuthLogic(private val view: IAuthContract.View,
     override fun signOutFailed(e: Exception) {
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgSignOutFailed)
-        view.openMainActivity(viewModel.mainActivityRequestCode)
+        view.openMainView()
     }
 
 
@@ -88,7 +82,7 @@ class AuthLogic(private val view: IAuthContract.View,
             true -> {
                 view.hideEmailSentMessage()
                 view.displayMessage(viewModel.msgSignInSucceed)
-                view.openMainActivity(viewModel.mainActivityRequestCode)
+                view.openMainView()
             }
             false -> view.displayEmailSentMessage(userRepo.email!!)
         }

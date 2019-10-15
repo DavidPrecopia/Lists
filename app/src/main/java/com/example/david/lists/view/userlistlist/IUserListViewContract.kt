@@ -8,8 +8,6 @@ interface IUserListViewContract {
 
         fun confirmSignOut()
 
-        fun signOut(resultCode: Int)
-
         fun openAddDialog(position: Int)
 
         fun openEditDialog(userList: UserList)
@@ -48,8 +46,6 @@ interface IUserListViewContract {
 
         fun signOut()
 
-        fun signOutConfirmed()
-
         fun setNightMode(isMenuItemChecked: Boolean)
 
         fun onDestroy()
@@ -69,8 +65,6 @@ interface IUserListViewContract {
         val errorMsgEmptyList: String
 
         val errorMsgInvalidUndo: String
-
-        val signOutResultCode: Int
     }
 
     interface Adapter {

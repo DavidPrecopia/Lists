@@ -150,10 +150,6 @@ class UserListListLogic(private val view: IUserListViewContract.View,
         view.confirmSignOut()
     }
 
-    override fun signOutConfirmed() {
-        view.signOut(viewModel.signOutResultCode)
-    }
-
 
     override fun setNightMode(isMenuItemChecked: Boolean) {
         when {

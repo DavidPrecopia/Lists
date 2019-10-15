@@ -33,7 +33,7 @@ class WidgetRemoteView(private val context: Context,
 
     @Inject
     @field:Named(INTENT_TITLE)
-    lateinit var titleIntent: Intent
+    lateinit var titleIntent: PendingIntent
 
     @Inject
     @field:Named(INTENT_CONFIG)
@@ -63,7 +63,7 @@ class WidgetRemoteView(private val context: Context,
     private fun setTitlePendingIntent() {
         remoteViews.setOnClickPendingIntent(
                 R.id.widget_tv_title,
-                getPendingIntent(titleIntent)
+                titleIntent
         )
     }
 

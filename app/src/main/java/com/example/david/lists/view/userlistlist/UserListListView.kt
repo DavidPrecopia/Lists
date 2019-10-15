@@ -6,20 +6,17 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.util.UtilExceptions
-import com.example.david.lists.view.addedit.userlist.AddEditUserListDialog
 import com.example.david.lists.view.common.ListViewBase
-import com.example.david.lists.view.itemlist.ItemActivity
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent
-import org.jetbrains.anko.intentFor
 import javax.inject.Inject
 
 class UserListListView : ListViewBase(),
-        IUserListViewContract.View,
-        ConfirmSignOutDialog.ConfirmSignOutCallback {
+        IUserListViewContract.View {
 
     @Inject
     lateinit var logic: IUserListViewContract.Logic
@@ -30,10 +27,6 @@ class UserListListView : ListViewBase(),
     override val title: String
         get() = getString(R.string.app_name)
 
-
-    companion object {
-        fun newInstance() = UserListListView()
-    }
 
     override fun onAttach(context: Context) {
         inject()
@@ -90,39 +83,34 @@ class UserListListView : ListViewBase(),
 
 
     override fun openUserList(userList: UserList) {
-        startActivity(context!!.intentFor<ItemActivity>(
-                getString(R.string.intent_extra_user_list_id) to userList.id,
-                getString(R.string.intent_extra_user_list_title) to userList.title
+        findNavController().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
+                userList.id,
+                userList.title
         ))
     }
 
 
     override fun confirmSignOut() {
-        openDialogFragment(ConfirmSignOutDialog(this))
-    }
-
-    override fun signOutConfirmed() {
-        logic.signOutConfirmed()
-    }
-
-    override fun signOut(resultCode: Int) {
-        with(activity!!) {
-            setResult(resultCode)
-            finish()
-        }
+        findNavController().navigate(
+                UserListListViewDirections.actionUserListListViewToConfirmSignOutDialog()
+        )
     }
 
 
     override fun openAddDialog(position: Int) {
-        openDialogFragment(AddEditUserListDialog.getInstance(
-                "", "", position
-        ))
+        findNavController().navigate(
+                UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
+                        "", "", position
+                )
+        )
     }
 
     override fun openEditDialog(userList: UserList) {
-        openDialogFragment(AddEditUserListDialog.getInstance(
-                userList.id, userList.title, userList.position
-        ))
+        findNavController().navigate(
+                UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
+                        userList.id, userList.title, userList.position
+                )
+        )
     }
 
     override fun setViewData(viewData: List<UserList>) {

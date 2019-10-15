@@ -5,7 +5,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -121,12 +120,6 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
 
     override fun movedPermanently(newPosition: Int) {
         permanentlyMoved(newPosition)
-    }
-
-
-    protected fun openDialogFragment(dialogFragment: DialogFragment) {
-        dialogFragment.setTargetFragment(this, 0)
-        dialogFragment.show(activity!!.supportFragmentManager, null)
     }
 
 

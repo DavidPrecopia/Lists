@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="intent_extra_user_list_id" translatable="false">intent_extra_user_list_id</string>
+    <string name="intent_extra_user_list_title" translatable="false">intent_extra_user_list_title</string>
+
     <string name="widget_shared_prefs_name" translatable="false">widget_shared_preferences_name</string>
     <string name="widget_key_shared_pref_user_list_title" translatable="false">widget_shared_prefs_title_key_%1$d</string>
     <string name="widget_key_shared_pref_user_list_id" translatable="false">widget_shared_prefs_id_key_%1$d</string>

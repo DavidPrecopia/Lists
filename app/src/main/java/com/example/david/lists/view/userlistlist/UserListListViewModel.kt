@@ -3,7 +3,6 @@ package com.example.david.lists.view.userlistlist
 import android.app.Application
 import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.view.authentication.IAuthContract
 import com.example.david.lists.view.common.ViewModelBase
 import java.util.*
 
@@ -29,8 +28,4 @@ class UserListListViewModel(application: Application) : ViewModelBase(applicatio
 
     override val errorMsgInvalidUndo: String
         get() = getStringRes(R.string.error_msg_invalid_action_undo_deletion)
-
-
-    override val signOutResultCode: Int
-        get() = IAuthContract.SIGN_OUT
 }

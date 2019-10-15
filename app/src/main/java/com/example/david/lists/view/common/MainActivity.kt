@@ -1,46 +1,29 @@
-package com.example.david.lists.view.userlistlist
+package com.example.david.lists.view.common
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.example.david.lists.R
-import com.example.david.lists.view.authentication.IAuthContract
-import com.example.david.lists.view.common.ActivityBase
-import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListActivityComponent
-import kotlinx.android.synthetic.main.activity_user_list.*
+import com.example.david.lists.view.common.buildlogic.DaggerMainActivityComponent
 import javax.inject.Inject
 
-class UserListActivity : ActivityBase(R.layout.activity_user_list),
+class MainActivity : AppCompatActivity(R.layout.activity_main),
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
     lateinit var sharedPrefs: SharedPreferences
 
-    private var newActivity = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
-
-        this.newActivity = savedInstanceState === null
-        initView()
     }
 
     private fun inject() {
-        DaggerUserListActivityComponent.builder()
+        DaggerMainActivityComponent.builder()
                 .application(application)
-                .activity(this)
                 .build()
                 .inject(this)
-    }
-
-
-    private fun initView() {
-        progress_bar.visibility = View.GONE
-        if (newActivity) {
-            addFragment(UserListListView.newInstance(), fragment_holder.id)
-        }
     }
 
 
@@ -58,11 +41,5 @@ class UserListActivity : ActivityBase(R.layout.activity_user_list),
     override fun onPause() {
         super.onPause()
         sharedPrefs.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-
-    override fun onBackPressed() {
-        setResult(IAuthContract.FINISH)
-        super.onBackPressed()
     }
 }

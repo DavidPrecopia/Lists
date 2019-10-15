@@ -18,15 +18,11 @@ class AuthViewModel(application: Application,
 
     companion object {
         private const val SIGN_IN_REQUEST_CODE = 1001
-        private const val MAIN_ACTIVITY_REQUEST_CODE = 1002
     }
 
 
     override val signInRequestCode: Int
         get() = SIGN_IN_REQUEST_CODE
-
-    override val mainActivityRequestCode: Int
-        get() = MAIN_ACTIVITY_REQUEST_CODE
 
 
     override var emailVerificationSent: Boolean

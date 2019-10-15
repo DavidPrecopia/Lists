@@ -12,15 +12,13 @@ interface IAuthContract {
 
         fun displayMessage(message: String)
 
-        fun openMainActivity(requestCode: Int)
+        fun openMainView()
 
         fun finishView()
     }
 
     interface Logic {
-        fun onStart()
-
-        fun onActivityResult(resultCode: Int)
+        fun onStart(signOut: Boolean = false)
 
         fun signInSuccessful()
 
@@ -38,8 +36,6 @@ interface IAuthContract {
     interface ViewModel {
         val signInRequestCode: Int
 
-        val mainActivityRequestCode: Int
-
         var emailVerificationSent: Boolean
 
         val msgSignInSucceed: String
@@ -55,10 +51,5 @@ interface IAuthContract {
         val msgSignOutSucceed: String
 
         val msgSignOutFailed: String
-    }
-
-    companion object ResultCode {
-        const val FINISH = 5000
-        const val SIGN_OUT = 5002
     }
 }

@@ -432,31 +432,14 @@ class UserListListLogicTest {
     }
 
 
-    @Nested
-    inner class SignOut {
-        /**
-         * - Invokes [IUserListViewContract.View.confirmSignOut]
-         */
-        @Test
-        fun signOut() {
-            logic.signOut()
+    /**
+     * - Invokes [IUserListViewContract.View.confirmSignOut]
+     */
+    @Test
+    fun signOut() {
+        logic.signOut()
 
-            verify { view.confirmSignOut() }
-        }
-
-        /**
-         * - Invokes [IUserListViewContract.View.signOut]
-         */
-        @Test
-        fun signOutConfirmed() {
-            val resultCode = 100
-
-            every { viewModel.signOutResultCode } returns resultCode
-
-            logic.signOutConfirmed()
-
-            verify { view.signOut(resultCode) }
-        }
+        verify { view.confirmSignOut() }
     }
 
 
