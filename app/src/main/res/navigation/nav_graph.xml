@@ -27,13 +27,25 @@
         android:label="UserListListView">
         <action
             android:id="@+id/action_userListListView_to_itemListView"
-            app:destination="@id/itemListView" />
+            app:destination="@id/itemListView"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_userListListView_to_confirmSignOutDialog"
-            app:destination="@id/confirmSignOutDialog" />
+            app:destination="@id/confirmSignOutDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_userListListView_to_addEditUserListDialog"
-            app:destination="@id/addEditUserListDialog" />
+            app:destination="@id/addEditUserListDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
@@ -75,7 +87,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_itemListView_to_addEditItemDialog"
-            app:destination="@id/addEditItemDialog" />
+            app:destination="@id/addEditItemDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
