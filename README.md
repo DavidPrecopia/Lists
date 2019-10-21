@@ -2,7 +2,14 @@
 
 Keeps lists synchronized across different devices.
 
-This app utilizes Firebase's Cloud Firestore to synchronize between devices and FirebaseAuth to authenticate users.
+**Technical Features**
+
+- Firebase Cloud Firestore to synchronize between Android devices.
+- Firebase Authentication to authenticate users.
+- MVP-like architecture with dependency injection via Dagger2.
+- Multithreading with RxJava 2.
+- Unit testing with JUnit 5, AssertJ, and MockK.
+- Originally written in Java, completely converted to Kotlin.
 
 **Features**
 
