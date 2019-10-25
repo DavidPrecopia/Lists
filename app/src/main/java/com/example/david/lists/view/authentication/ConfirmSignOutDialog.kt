@@ -12,7 +12,7 @@ import com.example.david.lists.R
 internal class ConfirmSignOutDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return initAlertDialog().apply {
-            // `show` need to be called first
+            // `show` needs to be called first
             show()
             setButtonColors(this)
         }
