@@ -1,6 +1,7 @@
 package com.example.david.lists.view.userlistlist.buldlogic
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 
 import com.example.david.lists.common.buildlogic.ViewCommonModule
 import com.example.david.lists.common.buildlogic.ViewScope
@@ -25,6 +26,9 @@ interface UserListListViewComponent {
 
         @BindsInstance
         fun application(application: Application): Builder
+
+        @BindsInstance
+        fun fragment(fragment: Fragment): Builder
 
         @BindsInstance
         fun view(view: IUserListViewContract.View): Builder

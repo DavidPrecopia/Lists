@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,9 @@ import javax.inject.Provider
 
 abstract class ListViewBase : Fragment(R.layout.list_view_base),
         TouchHelperCallback.MovementCallback {
+
+    @Inject
+    lateinit var navController: NavController
 
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>

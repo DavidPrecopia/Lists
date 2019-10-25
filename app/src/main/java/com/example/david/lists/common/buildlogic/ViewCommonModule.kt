@@ -2,6 +2,9 @@ package com.example.david.lists.common.buildlogic
 
 import android.app.Application
 import android.content.SharedPreferences
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +45,12 @@ class ViewCommonModule {
     @Provides
     fun appComponent(application: Application): AppComponent {
         return (application as ListsApplication).appComponent
+    }
+
+
+    @Provides
+    fun navController(fragment: Fragment): NavController {
+        return fragment.findNavController()
     }
 
 
