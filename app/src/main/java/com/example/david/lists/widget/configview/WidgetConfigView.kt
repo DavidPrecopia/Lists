@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.widget.buildlogic.SharedPrefsModule.Companion.SHARED_PREFS
+import com.example.david.lists.widget.buildlogic.SHARED_PREFS
 import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent
 import com.example.david.lists.widget.view.WidgetRemoteView
 import kotlinx.android.synthetic.main.widget_config_view.*

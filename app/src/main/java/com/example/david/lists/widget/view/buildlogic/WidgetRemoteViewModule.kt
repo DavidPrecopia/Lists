@@ -12,7 +12,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.widget.UtilWidgetKeys
-import com.example.david.lists.widget.buildlogic.SharedPrefsModule.Companion.SHARED_PREFS
+import com.example.david.lists.widget.buildlogic.SHARED_PREFS
 import com.example.david.lists.widget.configview.WidgetConfigView
 import com.example.david.lists.widget.view.IWidgetRemoteViewContract.Companion.INTENT_ADAPTER
 import com.example.david.lists.widget.view.IWidgetRemoteViewContract.Companion.INTENT_CONFIG

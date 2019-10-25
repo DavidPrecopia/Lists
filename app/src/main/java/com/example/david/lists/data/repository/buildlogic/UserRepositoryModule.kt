@@ -9,16 +9,13 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+// This URL is irrelevant - using Google because it safe.
+private const val CONTINUE_URL = "https://www.google.com/"
+// The minimum versionCode that supports email verification
+private const val MINIMUM_VERSION_CODE = "14"
+
 @Module
 class UserRepositoryModule {
-
-    companion object {
-        // This URL is irrelevant - using Google because it safe.
-        private const val CONTINUE_URL = "https://www.google.com/"
-        // The minimum versionCode that supports email verification
-        private const val MINIMUM_VERSION_CODE = "14"
-    }
-
     @Singleton
     @Provides
     fun userRepository(firebaseAuth: FirebaseAuth,

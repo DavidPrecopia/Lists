@@ -8,12 +8,10 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
+const val SHARED_PREFS = "widget_shared_prefs"
+
 @Module
 class SharedPrefsModule {
-    companion object {
-        const val SHARED_PREFS = "widget_shared_prefs"
-    }
-
     @ViewScope
     @Provides
     @Named(SHARED_PREFS)
