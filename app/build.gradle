@@ -83,8 +83,6 @@ dependencies {
     //Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
 
-    // Firebase
-    implementation 'com.google.firebase:firebase-core:17.2.0'
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx:21.1.1'
     // Firebase Authentication
