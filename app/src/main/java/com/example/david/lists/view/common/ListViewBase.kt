@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback.*
+import dagger.Lazy
 import kotlinx.android.synthetic.main.list_view_base.*
 import org.jetbrains.anko.toast
 import javax.inject.Inject
@@ -25,7 +26,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
         TouchHelperCallback.MovementCallback {
 
     @Inject
-    lateinit var navController: NavController
+    lateinit var navController: Lazy<NavController>
 
     @Inject
     lateinit var appBarConfiguration: AppBarConfiguration
@@ -80,7 +81,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     private fun initToolbar() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         toolbar.setupWithNavController(
-                navController,
+                navController.get(),
                 appBarConfiguration
         )
     }

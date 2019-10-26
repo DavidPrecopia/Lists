@@ -47,7 +47,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
 
 
     override fun openAddDialog(userListId: String, position: Int) {
-        navController.navigate(
+        navController.get().navigate(
                 ItemListViewDirections.actionItemListViewToAddEditItemDialog(
                         "", "", userListId, position
                 )
@@ -55,7 +55,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
     }
 
     override fun openEditDialog(item: Item) {
-        navController.navigate(
+        navController.get().navigate(
                 ItemListViewDirections.actionItemListViewToAddEditItemDialog(
                         item.id, item.title, item.userListId, item.position
                 )

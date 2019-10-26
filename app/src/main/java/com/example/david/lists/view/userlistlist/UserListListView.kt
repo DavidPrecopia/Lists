@@ -83,7 +83,7 @@ class UserListListView : ListViewBase(),
 
 
     override fun openUserList(userList: UserList) {
-        navController.navigate(UserListListViewDirections.actionUserListListViewToItemListView(
+        navController.get().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
                 userList.title,
                 userList.id,
                 userList.title
@@ -92,14 +92,14 @@ class UserListListView : ListViewBase(),
 
 
     override fun confirmSignOut() {
-        navController.navigate(
+        navController.get().navigate(
                 UserListListViewDirections.actionUserListListViewToConfirmSignOutDialog()
         )
     }
 
 
     override fun openAddDialog(position: Int) {
-        navController.navigate(
+        navController.get().navigate(
                 UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         "", "", position
                 )
@@ -107,7 +107,7 @@ class UserListListView : ListViewBase(),
     }
 
     override fun openEditDialog(userList: UserList) {
-        navController.navigate(
+        navController.get().navigate(
                 UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         userList.id, userList.title, userList.position
                 )
