@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/authView"
         android:name="com.example.david.lists.view.authentication.AuthView"
-        android:label="AuthView">
+        android:label="@string/app_name">
         <action
             android:id="@+id/action_authView_to_userListListView"
             app:destination="@id/userListListView"
@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/userListListView"
         android:name="com.example.david.lists.view.userlistlist.UserListListView"
-        android:label="UserListListView">
+        android:label="@string/app_name">
         <action
             android:id="@+id/action_userListListView_to_itemListView"
             app:destination="@id/itemListView"
@@ -78,7 +78,10 @@
     <fragment
         android:id="@+id/itemListView"
         android:name="com.example.david.lists.view.itemlist.ItemListView"
-        android:label="ItemListView">
+        android:label="{toolbar_title}">
+        <argument
+            android:name="toolbar_title"
+            app:argType="string" />
         <argument
             android:name="user_list_id"
             app:argType="string" />

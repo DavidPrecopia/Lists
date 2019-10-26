@@ -7,6 +7,8 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,9 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
 
     @Inject
     lateinit var navController: NavController
+
+    @Inject
+    lateinit var appBarConfiguration: AppBarConfiguration
 
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>
@@ -73,10 +78,10 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
 
     private fun initToolbar() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        (activity as AppCompatActivity).supportActionBar!!.apply {
-            title = this@ListViewBase.title
-            setDisplayHomeAsUpEnabled(enableUpNavigationOnToolbar())
-        }
+        toolbar.setupWithNavController(
+                navController,
+                appBarConfiguration
+        )
     }
 
     private fun initFab() {

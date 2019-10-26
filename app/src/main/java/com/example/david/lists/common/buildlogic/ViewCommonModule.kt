@@ -5,11 +5,13 @@ import android.content.SharedPreferences
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.ViewBinderHelper
+import com.example.david.lists.R
 import com.example.david.lists.common.ListsApplication
 import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
@@ -51,6 +53,14 @@ class ViewCommonModule {
     @Provides
     fun navController(fragment: Fragment): NavController {
         return fragment.findNavController()
+    }
+
+    @Provides
+    fun appBarConfiguration(): AppBarConfiguration {
+        return AppBarConfiguration
+                // top-level destinations, thus they should not display up-navigation
+                .Builder(R.id.authView, R.id.userListListView)
+                .build()
     }
 
 
