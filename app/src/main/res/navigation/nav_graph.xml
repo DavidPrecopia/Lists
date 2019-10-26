@@ -74,7 +74,11 @@
             app:popUpToInclusive="true" />
     </dialog>
 
-
+    <!--
+        BE MINDFUL OF: the arguments' names are referenced via String literals
+        when constructing the PendingIntent for the Widget.
+        This is due to the Navigation library's limitations.
+    -->
     <fragment
         android:id="@+id/itemListView"
         android:name="com.example.david.lists.view.itemlist.ItemListView"
