@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -132,29 +133,42 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     }
 
 
-    protected fun displayLoading() {
-        tv_error.isGone = true
-        recycler_view.isGone = true
-        fab.hide()
+    /**
+     * Because I am not using LiveData, the Logic classes will attempt to
+     * manipulate the UI when the View is in an invalid state to do so.
+     */
+    private fun validLifecycleState() =
+            lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
 
-        progress_bar.isVisible = true
+    protected fun displayLoading() {
+        if (validLifecycleState()) {
+            tv_error.isGone = true
+            recycler_view.isGone = true
+            fab.hide()
+
+            progress_bar.isVisible = true
+        }
     }
 
     protected fun displayList() {
-        progress_bar.isGone = true
-        tv_error.isGone = true
+        if (validLifecycleState()) {
+            progress_bar.isGone = true
+            tv_error.isGone = true
 
-        recycler_view.isVisible = true
-        fab.show()
+            recycler_view.isVisible = true
+            fab.show()
+        }
     }
 
     protected fun displayError(errorMessage: String) {
-        progress_bar.isGone = true
-        recycler_view.isGone = true
-        fab.show()
+        if (validLifecycleState()) {
+            progress_bar?.isGone = true
+            recycler_view?.isGone = true
+            fab?.show()
 
-        tv_error.text = errorMessage
-        tv_error.isVisible = true
+            tv_error?.text = errorMessage
+            tv_error?.isVisible = true
+        }
     }
 
 
