@@ -28,19 +28,19 @@ class WidgetRemoteView(private val context: Context,
     lateinit var remoteViews: RemoteViews
 
     @Inject
-    @field:Named(LIST_TITLE)
+    @Named(LIST_TITLE)
     lateinit var listTitle: String
 
     @Inject
-    @field:Named(INTENT_TITLE)
+    @Named(INTENT_TITLE)
     lateinit var titleIntent: PendingIntent
 
     @Inject
-    @field:Named(INTENT_CONFIG)
+    @Named(INTENT_CONFIG)
     lateinit var configActivityIntent: Intent
 
     @Inject
-    @field:Named(INTENT_ADAPTER)
+    @Named(INTENT_ADAPTER)
     lateinit var adapterIntent: Intent
 
 

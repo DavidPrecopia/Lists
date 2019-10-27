@@ -27,7 +27,7 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
     lateinit var logic: IWidgetConfigContract.Logic
 
     @Inject
-    @field:Named(SHARED_PREFS)
+    @Named(SHARED_PREFS)
     lateinit var sharedPrefs: SharedPreferences
 
     @Inject
