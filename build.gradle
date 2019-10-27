@@ -30,7 +30,7 @@ allprojects {
         core_version = "1.1.0"
         android_libraries_version = "1.0.0"
         anko_version = "0.10.8"
-        dagger_version = "2.24"
+        dagger_version = "2.25.2"
         junit_version = "5.5.2"
     }
     repositories {
