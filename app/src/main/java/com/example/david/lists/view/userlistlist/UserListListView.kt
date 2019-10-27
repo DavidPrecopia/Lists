@@ -84,7 +84,6 @@ class UserListListView : ListViewBase(),
 
     override fun openUserList(userList: UserList) {
         navController.get().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
-                userList.title,
                 userList.id,
                 userList.title
         ))

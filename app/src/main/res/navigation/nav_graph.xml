@@ -82,10 +82,7 @@
     <fragment
         android:id="@+id/itemListView"
         android:name="com.example.david.lists.view.itemlist.ItemListView"
-        android:label="{toolbar_title}">
-        <argument
-            android:name="toolbar_title"
-            app:argType="string" />
+        android:label="ItemListView">
         <argument
             android:name="user_list_id"
             app:argType="string" />

@@ -44,7 +44,6 @@ class WidgetRemoteViewModule {
                 .setDestination(R.id.itemListView)
                 // Using String literals until I find a reliable solution.
                 .setArguments(bundleOf(
-                        "toolbar_title" to listTitle,
                         "user_list_id" to listId,
                         "user_list_title" to listTitle
                 ))

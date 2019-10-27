@@ -8,8 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,9 +25,6 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
 
     @Inject
     lateinit var navController: Lazy<NavController>
-
-    @Inject
-    lateinit var appBarConfiguration: AppBarConfiguration
 
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>
@@ -79,11 +74,14 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     }
 
     private fun initToolbar() {
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.setupWithNavController(
-                navController.get(),
-                appBarConfiguration
-        )
+        with(toolbar) {
+            (activity as AppCompatActivity).setSupportActionBar(this)
+            title = this@ListViewBase.title
+            if (enableUpNavigationOnToolbar()) {
+                setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+                setNavigationOnClickListener { navController.get().navigateUp() }
+            }
+        }
     }
 
     private fun initFab() {
