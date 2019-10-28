@@ -32,6 +32,7 @@ allprojects {
         anko_version = "0.10.8"
         dagger_version = "2.25.2"
         junit_version = "5.5.2"
+        assertj_version = "3.13.2"
     }
     repositories {
         google()
