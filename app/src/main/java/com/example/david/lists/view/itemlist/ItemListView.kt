@@ -89,7 +89,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
     }
 
     override fun finishView() {
-        activity!!.finish()
+        navController.get().navigateUp()
     }
 
 
