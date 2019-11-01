@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback.*
 import dagger.Lazy
 import kotlinx.android.synthetic.main.list_view_base.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Provider
