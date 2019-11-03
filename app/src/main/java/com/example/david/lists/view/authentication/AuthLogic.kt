@@ -9,9 +9,10 @@ class AuthLogic(private val view: IAuthContract.View,
                 private val viewModel: IAuthContract.ViewModel,
                 private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
 
-    override fun onStart(signOut: Boolean) {
+    override fun onStart(signOut: Boolean, deleteAccount: Boolean) {
         when {
             signOut -> signOut()
+            deleteAccount -> deleteAccount()
             userRepo.userVerified -> view.openMainView()
             userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
             userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
@@ -54,6 +55,24 @@ class AuthLogic(private val view: IAuthContract.View,
     override fun signOutFailed(e: Exception) {
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgSignOutFailed)
+        view.openMainView()
+    }
+
+
+    private fun deleteAccount() {
+        userRepo.deleteUser(
+                accountDeletionSucceeded(),
+                accountDeletionFailed()
+        )
+    }
+
+    private fun accountDeletionSucceeded() = OnSuccessListener<Void> {
+        view.displayMessage(viewModel.msgAccountDeletionSucceed)
+        view.signIn(viewModel.signInRequestCode)
+    }
+
+    private fun accountDeletionFailed() = OnFailureListener {
+        view.displayMessage(viewModel.msgAccountDeletionFailed)
         view.openMainView()
     }
 

@@ -18,7 +18,7 @@ interface IAuthContract {
     }
 
     interface Logic {
-        fun onStart(signOut: Boolean = false)
+        fun onStart(signOut: Boolean = false, deleteAccount: Boolean = false)
 
         fun signInSuccessful()
 
@@ -51,5 +51,9 @@ interface IAuthContract {
         val msgSignOutSucceed: String
 
         val msgSignOutFailed: String
+
+        val msgAccountDeletionSucceed: String
+
+        val msgAccountDeletionFailed: String
     }
 }

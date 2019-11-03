@@ -18,6 +18,10 @@
             android:name="signOut"
             android:defaultValue="false"
             app:argType="boolean" />
+        <argument
+            android:name="deleteAccount"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 
 
@@ -33,15 +37,15 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_userListListView_to_confirmSignOutDialog"
-            app:destination="@id/confirmSignOutDialog"
+            android:id="@+id/action_userListListView_to_addEditUserListDialog"
+            app:destination="@id/addEditUserListDialog"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_userListListView_to_addEditUserListDialog"
-            app:destination="@id/addEditUserListDialog"
+            android:id="@+id/action_userListListView_to_preferencesView"
+            app:destination="@id/preferencesView"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -61,17 +65,6 @@
         <argument
             android:name="user_list_position"
             app:argType="integer" />
-    </dialog>
-
-    <dialog
-        android:id="@+id/confirmSignOutDialog"
-        android:name="com.example.david.lists.view.authentication.ConfirmSignOutDialog"
-        android:label="ConfirmSignOutDialog">
-        <action
-            android:id="@+id/action_confirmSignOutDialog_to_authView"
-            app:destination="@id/authView"
-            app:popUpTo="@id/authView"
-            app:popUpToInclusive="true" />
     </dialog>
 
     <!--
@@ -114,5 +107,48 @@
         <argument
             android:name="item_position"
             app:argType="integer" />
+    </dialog>
+
+
+    <fragment
+        android:id="@+id/preferencesView"
+        android:name="com.example.david.lists.view.preferences.PreferencesView"
+        android:label="PreferencesView">
+        <action
+            android:id="@+id/action_preferencesView_to_confirmSignOutDialog"
+            app:destination="@id/confirmSignOutDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_preferencesView_to_confirmAccountDeletionDialog"
+            app:destination="@id/confirmAccountDeletionDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/confirmSignOutDialog"
+        android:name="com.example.david.lists.view.preferences.dialogs.ConfirmSignOutDialog"
+        android:label="ConfirmSignOutDialog">
+        <action
+            android:id="@+id/action_confirmSignOutDialog_to_authView"
+            app:destination="@id/authView"
+            app:popUpTo="@id/authView"
+            app:popUpToInclusive="true" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/confirmAccountDeletionDialog"
+        android:name="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog"
+        android:label="ConfirmAccountDeletionDialog">
+        <action
+            android:id="@+id/action_confirmAccountDeletionDialog_to_authView"
+            app:destination="@id/authView"
+            app:popUpTo="@id/authView"
+            app:popUpToInclusive="true" />
     </dialog>
 </navigation>

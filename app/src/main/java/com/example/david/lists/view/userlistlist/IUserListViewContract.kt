@@ -6,7 +6,7 @@ interface IUserListViewContract {
     interface View {
         fun openUserList(userList: UserList)
 
-        fun confirmSignOut()
+        fun openPreferences()
 
         fun openAddDialog(position: Int)
 
@@ -44,7 +44,7 @@ interface IUserListViewContract {
 
         fun deletionNotificationTimedOut()
 
-        fun signOut()
+        fun preferencesSelected()
 
         fun setNightMode(isMenuItemChecked: Boolean)
 

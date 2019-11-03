@@ -44,7 +44,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickListener()
-        logic.onStart(args.signOut)
+        logic.onStart(args.signOut, args.deleteAccount)
     }
 
     private fun inject() {

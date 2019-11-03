@@ -433,13 +433,13 @@ class UserListListLogicTest {
 
 
     /**
-     * - Invokes [IUserListViewContract.View.confirmSignOut]
+     * - Invokes [IUserListViewContract.View.openPreferences]
      */
     @Test
-    fun signOut() {
-        logic.signOut()
+    fun preferencesSelected() {
+        logic.preferencesSelected()
 
-        verify { view.confirmSignOut() }
+        verify { view.openPreferences() }
     }
 
 

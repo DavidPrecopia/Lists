@@ -1,6 +1,8 @@
 package com.example.david.lists.data.repository
 
+import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.ActionCodeSettings
@@ -14,7 +16,9 @@ import com.google.firebase.auth.GetTokenResult
  * I am getting fresh information.
  */
 class UserRepository(private val firebaseAuth: FirebaseAuth,
-                     private val actionCodeSettings: ActionCodeSettings) :
+                     private val actionCodeSettings: ActionCodeSettings,
+                     private val authUI: AuthUI,
+                     private val application: Application) :
         IRepositoryContract.UserRepository {
 
     private val user: FirebaseUser?
@@ -73,6 +77,13 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
                 ?.addOnSuccessListener(successListener)
                 ?.addOnFailureListener(failureListener)
                 ?: failureListener.onFailure(userNullException)
+    }
+
+
+    override fun deleteUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+        authUI.delete(application)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener)
     }
 
 

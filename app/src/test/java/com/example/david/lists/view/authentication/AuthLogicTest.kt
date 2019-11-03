@@ -44,7 +44,7 @@ class AuthLogicTest {
         fun `onStart - User Verified`() {
             every { userRepo.userVerified } returns true
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             verify { view.openMainView() }
         }
@@ -56,10 +56,65 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Sign Out`() {
-            logic.onStart(true)
+            logic.onStart(signOut = true, deleteAccount = false)
 
             verify { viewModel.emailVerificationSent = false }
             verify { view.signOut() }
+        }
+
+        /**
+         * - Delete the user via the UserRepo.
+         * - Display message.
+         * - Display sign-in.
+         */
+        @Test
+        fun `onStart - Delete Account - succeeded`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+
+            every { viewModel.msgAccountDeletionSucceed } returns message
+            every {
+                userRepo.deleteUser(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure))
+            } answers { Unit }
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            // Need to manually call the listener because the UserRepo is mocked.
+            captureArgSuccess.captured.onSuccess(null)
+
+            verify { userRepo.deleteUser(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { view.displayMessage(message) }
+            verify { view.signIn(requestCode) }
+        }
+
+        /**
+         * - Delete the user via the UserRepo.
+         * - Display message.
+         * - Re-open the main view.
+         */
+        @Test
+        fun `onStart - Delete Account - failed`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = Exception()
+
+            every { viewModel.msgAccountDeletionFailed } returns message
+            every {
+                userRepo.deleteUser(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure))
+            } answers { Unit }
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            // Need to manually call the listener because the UserRepo is mocked.
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { userRepo.deleteUser(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { view.displayMessage(message) }
+            verify { view.openMainView() }
         }
 
         /**
@@ -71,7 +126,7 @@ class AuthLogicTest {
             every { userRepo.userVerified } returns false
             every { userRepo.signedOut } returns true
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             verify { view.signIn(requestCode) }
         }
@@ -102,7 +157,7 @@ class AuthLogicTest {
                         failureListener = capture(captureArgFailure))
             } answers { Unit }
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             // Need to manually call the listener because the UserRepo is mocked.
             captureArgSuccess.captured.onSuccess(null)
@@ -142,7 +197,7 @@ class AuthLogicTest {
                         failureListener = capture(captureArgFailure))
             } answers { Unit }
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             // Need to manually call the listener because the UserRepo is mocked.
             captureArgFailure.captured.onFailure(exception)
@@ -179,7 +234,7 @@ class AuthLogicTest {
                         failureListener = capture(captureArgFailure))
             } answers { Unit }
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             // Need to change the mock's response to simulate the user being reloaded.
             every { userRepo.emailVerified } returns true
@@ -218,7 +273,7 @@ class AuthLogicTest {
                         failureListener = capture(captureArgFailure))
             } answers { Unit }
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             // Need to manually call the listener because the UserRepo is mocked.
             captureArgSuccess.captured.onSuccess(null)
@@ -252,7 +307,7 @@ class AuthLogicTest {
                         failureListener = capture(captureArgFailure))
             } answers { Unit }
 
-            logic.onStart()
+            logic.onStart(signOut = false, deleteAccount = false)
 
             // Need to manually call the listener because the UserRepo is mocked.
             captureArgFailure.captured.onFailure(exception)
@@ -272,7 +327,7 @@ class AuthLogicTest {
             every { userRepo.emailVerified } returns true
 
             assertThrows<IllegalStateException> {
-                logic.onStart()
+                logic.onStart(signOut = false, deleteAccount = false)
             }
         }
 
@@ -287,7 +342,7 @@ class AuthLogicTest {
             every { userRepo.hasEmail } returns false
 
             assertThrows<IllegalStateException> {
-                logic.onStart()
+                logic.onStart(signOut = false, deleteAccount = false)
             }
         }
     }

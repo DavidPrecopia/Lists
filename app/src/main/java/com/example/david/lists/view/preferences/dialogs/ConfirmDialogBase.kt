@@ -1,4 +1,4 @@
-package com.example.david.lists.view.authentication
+package com.example.david.lists.view.preferences.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
@@ -6,10 +6,9 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
 
-internal class ConfirmSignOutDialog : DialogFragment() {
+abstract class ConfirmDialogBase : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return initAlertDialog().apply {
             // `show` needs to be called first
@@ -18,19 +17,8 @@ internal class ConfirmSignOutDialog : DialogFragment() {
         }
     }
 
-    private fun initAlertDialog(): AlertDialog {
-        return AlertDialog.Builder(activity!!)
-                .setMessage(R.string.confirm_sign_out_dialog_message)
-                .setNegativeButton(R.string.button_text_cancel) { dialog, _ -> dialog.dismiss() }
-                .setPositiveButton(R.string.button_text_yes) { _, _ -> signOut() }
-                .create()
-    }
+    abstract fun initAlertDialog(): AlertDialog
 
-    private fun signOut() {
-        findNavController().navigate(
-                ConfirmSignOutDialogDirections.actionConfirmSignOutDialogToAuthView(true)
-        )
-    }
 
     private fun setButtonColors(alertDialog: AlertDialog) {
         setButtonTextColor(alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE))

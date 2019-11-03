@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preferences_title">Preferences</string>
+
+    <string name="preferences_key_log_out">preferences_key_log_out</string>
+    <string name="preferences_title_log_out">Sign-Out</string>
+    <string name="preferences_description_log_out">Sign-out of the app.</string>
+
+    <string name="preferences_key_delete_account">preferences_key_delete_account</string>
+    <string name="preferences_title_delete_account">Delete Account</string>
+    <string name="preferences_description_delete_account">Permanently delete your account.\nCANNOT BE UNDONE.</string>
+</resources>

@@ -146,8 +146,8 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
 
-    override fun signOut() {
-        view.confirmSignOut()
+    override fun preferencesSelected() {
+        view.openPreferences()
     }
 
 

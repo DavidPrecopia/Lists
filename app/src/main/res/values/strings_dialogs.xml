@@ -3,10 +3,12 @@
     <string name="hint_add_edit">Title</string>
 
     <string name="confirm_sign_out_dialog_message">Are you sure you want to sign-out?</string>
+    <string name="confirm_account_delete_dialog_message">Are you sure that you want to permanently delete your account?\nTHIS CANNOT BE UNDONE.</string>
 
     <string name="button_text_cancel">Cancel</string>
     <string name="button_text_save">Save</string>
     <string name="button_text_yes">Yes</string>
+    <string name="button_text_delete_account">Delete Account</string>
 
     <string name="error_msg_empty_title_text_field">Cannot be empty</string>
     <string name="error_msg_title_unchanged">Title is unchanged</string>

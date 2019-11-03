@@ -47,6 +47,8 @@ interface IRepositoryContract {
 
         fun reloadUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
+        fun deleteUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+
         fun userSignedOutObservable(): LiveData<Boolean>
     }
 }

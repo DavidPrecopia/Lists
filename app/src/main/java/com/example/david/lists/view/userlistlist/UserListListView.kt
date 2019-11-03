@@ -58,7 +58,7 @@ class UserListListView : ListViewBase(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_sign_out, menu)
+        inflater.inflate(R.menu.toolbar_menu, menu)
         initMenuSetCheckedState(menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -69,7 +69,7 @@ class UserListListView : ListViewBase(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_id_sign_out -> logic.signOut()
+            R.id.menu_id_preferences -> logic.preferencesSelected()
             R.id.menu_id_night_mode -> {
                 with(item.isChecked) {
                     logic.setNightMode(this)
@@ -90,9 +90,9 @@ class UserListListView : ListViewBase(),
     }
 
 
-    override fun confirmSignOut() {
+    override fun openPreferences() {
         navController.get().navigate(
-                UserListListViewDirections.actionUserListListViewToConfirmSignOutDialog()
+                UserListListViewDirections.actionUserListListViewToPreferencesView()
         )
     }
 

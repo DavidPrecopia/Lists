@@ -3,6 +3,7 @@ package com.example.david.lists.data.repository.buildlogic
 import android.app.Application
 import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.data.repository.UserRepository
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
@@ -19,8 +20,10 @@ class UserRepositoryModule {
     @Singleton
     @Provides
     fun userRepository(firebaseAuth: FirebaseAuth,
-                       actionCodeSettings: ActionCodeSettings): IRepositoryContract.UserRepository {
-        return UserRepository(firebaseAuth, actionCodeSettings)
+                       actionCodeSettings: ActionCodeSettings,
+                       authUI: AuthUI,
+                       application: Application): IRepositoryContract.UserRepository {
+        return UserRepository(firebaseAuth, actionCodeSettings, authUI, application)
     }
 
     @Singleton
@@ -34,5 +37,11 @@ class UserRepositoryModule {
                         MINIMUM_VERSION_CODE
                 )
                 .build()
+    }
+
+    @Singleton
+    @Provides
+    fun authUi(): AuthUI {
+        return AuthUI.getInstance()
     }
 }
