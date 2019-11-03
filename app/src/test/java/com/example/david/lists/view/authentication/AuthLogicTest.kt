@@ -115,6 +115,7 @@ class AuthLogicTest {
 
 
         /**
+         * - Delete user
          * - Delete the user via the UserRepo.
          * - Display message.
          * - Display sign-in.
@@ -128,7 +129,8 @@ class AuthLogicTest {
             every {
                 userRepo.deleteUser(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = true)
@@ -142,6 +144,7 @@ class AuthLogicTest {
         }
 
         /**
+         * - Delete user
          * - Delete the user via the UserRepo.
          * - Display message.
          * - Re-open the main view.
@@ -156,7 +159,8 @@ class AuthLogicTest {
             every {
                 userRepo.deleteUser(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = true)
@@ -206,7 +210,8 @@ class AuthLogicTest {
             every {
                 userRepo.sendVerificationEmail(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = false)
@@ -246,7 +251,8 @@ class AuthLogicTest {
             every {
                 userRepo.sendVerificationEmail(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = false)
@@ -283,7 +289,8 @@ class AuthLogicTest {
             every {
                 userRepo.reloadUser(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = false)
@@ -322,7 +329,8 @@ class AuthLogicTest {
             every {
                 userRepo.reloadUser(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = false)
@@ -356,7 +364,8 @@ class AuthLogicTest {
             every {
                 userRepo.reloadUser(
                         successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure))
+                        failureListener = capture(captureArgFailure)
+                )
             } answers { Unit }
 
             logic.onStart(signOut = false, deleteAccount = false)
