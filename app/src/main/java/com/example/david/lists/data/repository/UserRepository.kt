@@ -80,6 +80,13 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
     }
 
 
+    override fun signOut(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+        authUI.signOut(application)
+                .addOnSuccessListener(successListener)
+                .addOnFailureListener(failureListener)
+    }
+
+
     override fun deleteUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
         authUI.delete(application)
                 .addOnSuccessListener(successListener)

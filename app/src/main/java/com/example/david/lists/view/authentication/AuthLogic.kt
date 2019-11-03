@@ -44,15 +44,18 @@ class AuthLogic(private val view: IAuthContract.View,
         // Need to re-set state in case the user
         // signs-in with an unverified email.
         viewModel.emailVerificationSent = false
-        view.signOut()
+        userRepo.signOut(
+                signOutSucceeded(),
+                signOutFailed()
+        )
     }
 
-    override fun signOutSucceeded() {
+    private fun signOutSucceeded() = OnSuccessListener<Void> {
         view.displayMessage(viewModel.msgSignOutSucceed)
         view.signIn(viewModel.signInRequestCode)
     }
 
-    override fun signOutFailed(e: Exception) {
+    private fun signOutFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgSignOutFailed)
         view.openMainView()

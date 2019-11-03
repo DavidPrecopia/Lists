@@ -52,15 +52,67 @@ class AuthLogicTest {
         /**
          * - Sign out
          * - Set verification email sent to false.
-         * - Call sign-out on the View.
+         * - Sign-out via the UserRepo.
+         * - Display message.
+         * - Display sign-in.
          */
         @Test
-        fun `onStart - Sign Out`() {
+        fun `onStart - Sign Out - succeeded`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+
+            every { viewModel.msgSignOutSucceed } returns message
+            every {
+                userRepo.signOut(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
             logic.onStart(signOut = true, deleteAccount = false)
 
+            // Need to manually call the listener because the UserRepo is mocked.
+            captureArgSuccess.captured.onSuccess(null)
+
             verify { viewModel.emailVerificationSent = false }
-            verify { view.signOut() }
+            verify { userRepo.signOut(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { view.displayMessage(message) }
+            verify { view.signIn(requestCode) }
         }
+
+        /**
+         * - Sign out
+         * - Set verification email sent to false.
+         * - Sign-out via the UserRepo.
+         * - Throw an Exception.
+         * - Display message.
+         * - Re-open the main view.
+         */
+        @Test
+        fun `onStart - Sign Out - failed`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = Exception()
+
+            every { viewModel.msgSignOutFailed } returns message
+            every {
+                userRepo.signOut(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onStart(signOut = true, deleteAccount = false)
+
+            // Need to manually call the listener because the UserRepo is mocked.
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { viewModel.emailVerificationSent = false }
+            verify { userRepo.signOut(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { view.displayMessage(message) }
+            verify { view.openMainView() }
+        }
+
 
         /**
          * - Delete the user via the UserRepo.
@@ -435,40 +487,6 @@ class AuthLogicTest {
             verify { view.finishView() }
         }
     }
-
-
-    @Nested
-    inner class SignOut {
-        /**
-         * - Display message.
-         * - Display sign-in.
-         */
-        @Test
-        fun signOutSucceeded() {
-            every { viewModel.msgSignOutSucceed } returns message
-
-            logic.signOutSucceeded()
-
-            verify { view.displayMessage(message) }
-            verify { view.signIn(requestCode) }
-        }
-
-        /**
-         * - Throw an Exception.
-         * - Display message.
-         * - Re-open the main view.
-         */
-        @Test
-        fun signOutFailed() {
-            every { viewModel.msgSignOutFailed } returns message
-
-            logic.signOutFailed(Exception())
-
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
-        }
-    }
-
 
     /**
      * - Hide email sent message.

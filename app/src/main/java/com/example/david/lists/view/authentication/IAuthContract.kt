@@ -4,8 +4,6 @@ interface IAuthContract {
     interface View {
         fun signIn(requestCode: Int)
 
-        fun signOut()
-
         fun displayEmailSentMessage(email: String)
 
         fun hideEmailSentMessage()
@@ -25,10 +23,6 @@ interface IAuthContract {
         fun signInCancelled()
 
         fun signInFailed(errorCode: Int)
-
-        fun signOutSucceeded()
-
-        fun signOutFailed(e: Exception)
 
         fun verifyEmailButtonClicked()
     }

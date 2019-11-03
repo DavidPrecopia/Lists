@@ -69,13 +69,6 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
         )
     }
 
-    override fun signOut() {
-        authUi.get().signOut(activity!!.application)
-                .addOnSuccessListener { logic.signOutSucceeded() }
-                .addOnFailureListener { logic.signOutFailed(it) }
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
