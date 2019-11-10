@@ -39,6 +39,10 @@ Inside of a list
 
 <img src="screenshots/items.jpg" width=30% />
 
+Preferences
+
+<img src="screenshots/preferences.jpg" width=30% />
+
 Night mode
 
 <img src="screenshots/night_mode.jpg" width=30% />
