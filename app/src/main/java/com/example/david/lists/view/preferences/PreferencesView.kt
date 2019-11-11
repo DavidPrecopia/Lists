@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
 import com.example.david.lists.view.preferences.buildlogic.DaggerPreferencesViewComponent
-import dagger.Lazy
 import kotlinx.android.synthetic.main.preferences_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
@@ -19,9 +18,6 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
     @Inject
     lateinit var logic: IPreferencesViewContract.Logic
 
-    @Inject
-    lateinit var navController: Lazy<NavController>
-
 
     override fun onAttach(context: Context) {
         inject()
@@ -30,7 +26,6 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
     private fun inject() {
         DaggerPreferencesViewComponent.builder()
-                .fragment(this)
                 .view(this)
                 .build()
                 .inject(this)
@@ -51,7 +46,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
             (activity as AppCompatActivity).setSupportActionBar(this)
             title = context.getString(R.string.preferences_title)
             setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-            setNavigationOnClickListener { navController.get().navigateUp() }
+            setNavigationOnClickListener { findNavController().navigateUp() }
         }
     }
 
@@ -62,13 +57,13 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
 
     override fun confirmSignOut() {
-        navController.get().navigate(
+        findNavController().navigate(
                 PreferencesViewDirections.actionPreferencesViewToConfirmSignOutDialog()
         )
     }
 
     override fun confirmAccountDeletion() {
-        navController.get().navigate(
+        findNavController().navigate(
                 PreferencesViewDirections.actionPreferencesViewToConfirmAccountDeletionDialog()
         )
     }

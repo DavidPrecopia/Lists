@@ -7,14 +7,13 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback.*
-import dagger.Lazy
 import kotlinx.android.synthetic.main.list_view_base.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.toast
@@ -23,9 +22,6 @@ import javax.inject.Provider
 
 abstract class ListViewBase : Fragment(R.layout.list_view_base),
         TouchHelperCallback.MovementCallback {
-
-    @Inject
-    lateinit var navController: Lazy<NavController>
 
     @Inject
     lateinit var layoutManger: Provider<LinearLayoutManager>
@@ -80,7 +76,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
             title = this@ListViewBase.title
             if (enableUpNavigationOnToolbar()) {
                 setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-                setNavigationOnClickListener { navController.get().navigateUp() }
+                setNavigationOnClickListener { findNavController().navigateUp() }
             }
         }
     }

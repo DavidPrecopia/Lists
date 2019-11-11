@@ -3,6 +3,7 @@ package com.example.david.lists.view.itemlist
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.data.datamodel.Item
@@ -38,7 +39,6 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
         DaggerItemListViewComponent.builder()
                 .application(activity!!.application)
                 .view(this)
-                .fragment(this)
                 .movementCallback(this)
                 .userListId(args.userListId)
                 .build()
@@ -47,7 +47,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
 
 
     override fun openAddDialog(userListId: String, position: Int) {
-        navController.get().navigate(
+        findNavController().navigate(
                 ItemListViewDirections.actionItemListViewToAddEditItemDialog(
                         "", "", userListId, position
                 )
@@ -55,7 +55,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
     }
 
     override fun openEditDialog(item: Item) {
-        navController.get().navigate(
+        findNavController().navigate(
                 ItemListViewDirections.actionItemListViewToAddEditItemDialog(
                         item.id, item.title, item.userListId, item.position
                 )
@@ -89,7 +89,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
     }
 
     override fun finishView() {
-        navController.get().navigateUp()
+        findNavController().navigateUp()
     }
 
 

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.example.david.lists.data.datamodel.UserList
@@ -36,7 +37,6 @@ class UserListListView : ListViewBase(),
         DaggerUserListListViewComponent.builder()
                 .application(activity!!.application)
                 .view(this)
-                .fragment(this)
                 .movementCallback(this)
                 .build()
                 .inject(this)
@@ -83,7 +83,7 @@ class UserListListView : ListViewBase(),
 
 
     override fun openUserList(userList: UserList) {
-        navController.get().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
+        findNavController().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
                 userList.id,
                 userList.title
         ))
@@ -91,14 +91,14 @@ class UserListListView : ListViewBase(),
 
 
     override fun openPreferences() {
-        navController.get().navigate(
+        findNavController().navigate(
                 UserListListViewDirections.actionUserListListViewToPreferencesView()
         )
     }
 
 
     override fun openAddDialog(position: Int) {
-        navController.get().navigate(
+        findNavController().navigate(
                 UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         "", "", position
                 )
@@ -106,7 +106,7 @@ class UserListListView : ListViewBase(),
     }
 
     override fun openEditDialog(userList: UserList) {
-        navController.get().navigate(
+        findNavController().navigate(
                 UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         userList.id, userList.title, userList.position
                 )

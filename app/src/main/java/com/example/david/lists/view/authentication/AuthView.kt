@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.david.lists.R
 import com.example.david.lists.view.authentication.buildlogic.DaggerAuthViewComponent
@@ -21,9 +21,6 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
 
     @Inject
     lateinit var logic: IAuthContract.Logic
-
-    @Inject
-    lateinit var navController: NavController
 
     @Inject
     lateinit var authIntent: Provider<Intent>
@@ -51,7 +48,6 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
         DaggerAuthViewComponent.builder()
                 .application(activity!!.application)
                 .view(this)
-                .fragment(this)
                 .build()
                 .inject(this)
     }
@@ -102,7 +98,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
 
 
     override fun openMainView() {
-        navController.navigate(
+        findNavController().navigate(
                 AuthViewDirections.actionAuthViewToUserListListView()
         )
     }
