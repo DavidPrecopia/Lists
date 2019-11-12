@@ -5,9 +5,11 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -34,6 +36,12 @@ class UserRepositoryTest {
 
     private val emailAddress = "emailAddress"
     private val emptyString = ""
+
+
+    @BeforeEach
+    fun init() {
+        clearAllMocks()
+    }
 
 
     @Nested

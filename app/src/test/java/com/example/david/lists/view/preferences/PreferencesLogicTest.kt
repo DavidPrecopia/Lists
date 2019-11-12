@@ -1,8 +1,10 @@
 package com.example.david.lists.view.preferences
 
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
+import io.mockk.clearAllMocks
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class PreferencesLogicTest {
@@ -10,6 +12,12 @@ class PreferencesLogicTest {
     private val view = mockk<IPreferencesViewContract.View>(relaxUnitFun = true)
 
     private val logic = PreferencesLogic(view)
+
+
+    @BeforeEach
+    fun init() {
+        clearAllMocks()
+    }
 
 
     /**
