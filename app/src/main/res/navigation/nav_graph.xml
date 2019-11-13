@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/authView">
 
     <fragment
         android:id="@+id/authView"
         android:name="com.example.david.lists.view.authentication.AuthView"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        tools:layout="@layout/auth_view">
         <action
             android:id="@+id/action_authView_to_userListListView"
             app:destination="@id/userListListView"
             app:launchSingleTop="true"
-            app:popUpTo="@id/authView"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_authView_to_emailReAuthView"
+            app:destination="@id/emailReAuthView"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <argument
             android:name="signOut"
@@ -22,6 +29,28 @@
             android:name="deleteAccount"
             android:defaultValue="false"
             app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emailReAuthView"
+        android:name="com.example.david.lists.view.authentication.emailreauth.EmailReAuthView"
+        android:label="@string/title_delete_account"
+        tools:layout="@layout/email_re_auth_view">
+        <action
+            android:id="@+id/action_emailReAuthView_to_authView"
+            app:destination="@id/authView"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_emailReAuthView_to_userListListView"
+            app:destination="@id/userListListView"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
@@ -137,7 +166,7 @@
         <action
             android:id="@+id/action_confirmSignOutDialog_to_authView"
             app:destination="@id/authView"
-            app:popUpTo="@id/authView"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </dialog>
 
@@ -148,7 +177,7 @@
         <action
             android:id="@+id/action_confirmAccountDeletionDialog_to_authView"
             app:destination="@id/authView"
-            app:popUpTo="@id/authView"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </dialog>
 </navigation>

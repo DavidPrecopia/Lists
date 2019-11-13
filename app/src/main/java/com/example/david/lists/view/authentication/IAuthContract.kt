@@ -13,6 +13,10 @@ interface IAuthContract {
         fun openMainView()
 
         fun finishView()
+
+        fun openEmailReAuth()
+
+        fun openPhoneReAuth()
     }
 
     interface Logic {

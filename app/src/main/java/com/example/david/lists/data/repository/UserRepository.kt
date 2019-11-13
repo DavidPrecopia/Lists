@@ -2,13 +2,16 @@ package com.example.david.lists.data.repository
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GetTokenResult
+import com.google.firebase.auth.*
+
+private const val GOOGLE = "google.com"
+private const val EMAIL = "password"
+private const val PHONE = "phone"
 
 /**
  * I do not have [FirebaseUser] as a constructor parameter because
@@ -55,6 +58,19 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
         get() = user?.isEmailVerified ?: false
 
 
+    /**
+     * I am explicitly getting the provider ID at index 1 because
+     * the provider ID at index 0 will always be "firebase".
+     */
+    override val authProvider: Providers
+        get() = when (user!!.providerData[1].providerId) {
+            GOOGLE -> Providers.GOOGLE
+            EMAIL -> Providers.EMAIL
+            PHONE -> Providers.PHONE
+            else -> Providers.UNKNOWN
+        }
+
+
     override fun sendVerificationEmail(successListener: OnSuccessListener<in Void>,
                                        failureListener: OnFailureListener) {
         user?.sendEmailVerification(actionCodeSettings)
@@ -87,10 +103,46 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
     }
 
 
-    override fun deleteUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
-        authUI.delete(application)
-                .addOnSuccessListener(successListener)
-                .addOnFailureListener(failureListener)
+    override fun deleteGoogleUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+        deleteAccount(
+                GoogleAuthProvider.getCredential(
+                        GoogleSignIn.getLastSignedInAccount(application)!!.idToken,
+                        null),
+                successListener,
+                failureListener
+        )
+    }
+
+    override fun deleteEmailUser(password: String,
+                                 successListener: OnSuccessListener<in Void>,
+                                 failureListener: OnFailureListener) {
+        deleteAccount(
+                EmailAuthProvider.getCredential(email!!, password),
+                successListener,
+                failureListener
+        )
+    }
+
+    override fun deletePhoneUser(verificationId: String,
+                                 smsCode: String,
+                                 successListener: OnSuccessListener<in Void>,
+                                 failureListener: OnFailureListener) {
+        deleteAccount(
+                PhoneAuthProvider.getCredential(verificationId, smsCode),
+                successListener,
+                failureListener
+        )
+    }
+
+    private fun deleteAccount(authCredential: AuthCredential,
+                              successListener: OnSuccessListener<in Void>,
+                              failureListener: OnFailureListener) {
+        user!!.reauthenticate(authCredential)
+                .addOnSuccessListener {
+                    authUI.delete(application)
+                            .addOnSuccessListener(successListener)
+                            .addOnFailureListener(failureListener)
+                }.addOnFailureListener(failureListener)
     }
 
 

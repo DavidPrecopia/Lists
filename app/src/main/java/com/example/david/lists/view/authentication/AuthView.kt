@@ -75,7 +75,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
     private fun evalSignInResult(response: IdpResponse?, resultCode: Int) {
         when {
             resultCode == Activity.RESULT_OK -> logic.signInSuccessful()
-            response == null -> logic.signInCancelled()
+            response === null -> logic.signInCancelled()
             else -> logic.signInFailed(response.error!!.errorCode)
         }
     }
@@ -102,6 +102,17 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
                 AuthViewDirections.actionAuthViewToUserListListView()
         )
     }
+
+    override fun openEmailReAuth() {
+        findNavController().navigate(
+                AuthViewDirections.actionAuthViewToEmailReAuthView()
+        )
+    }
+
+    override fun openPhoneReAuth() {
+        TODO("not implemented")
+    }
+
 
     override fun finishView() {
         activity!!.finish()

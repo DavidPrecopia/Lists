@@ -1,6 +1,7 @@
 package com.example.david.lists.view.authentication
 
 import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.example.david.lists.util.UtilExceptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -63,10 +64,16 @@ class AuthLogic(private val view: IAuthContract.View,
 
 
     private fun deleteAccount() {
-        userRepo.deleteUser(
-                accountDeletionSucceeded(),
-                accountDeletionFailed()
-        )
+        when (userRepo.authProvider) {
+            Providers.GOOGLE -> userRepo.deleteGoogleUser(accountDeletionSucceeded(), accountDeletionFailed())
+            Providers.EMAIL -> view.openEmailReAuth()
+            Providers.PHONE -> view.openPhoneReAuth()
+            Providers.UNKNOWN -> {
+                view.displayMessage(viewModel.msgAccountDeletionFailed)
+                view.openMainView()
+                UtilExceptions.throwException(IllegalStateException("Unknown authentication provider"))
+            }
+        }
     }
 
     private fun accountDeletionSucceeded() = OnSuccessListener<Void> {
@@ -74,7 +81,8 @@ class AuthLogic(private val view: IAuthContract.View,
         view.signIn(viewModel.signInRequestCode)
     }
 
-    private fun accountDeletionFailed() = OnFailureListener {
+    private fun accountDeletionFailed() = OnFailureListener { e ->
+        UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgAccountDeletionFailed)
         view.openMainView()
     }

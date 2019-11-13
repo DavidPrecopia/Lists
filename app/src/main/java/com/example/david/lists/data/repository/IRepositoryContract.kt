@@ -43,14 +43,27 @@ interface IRepositoryContract {
 
         val emailVerified: Boolean
 
+        val authProvider: Providers
+
         fun sendVerificationEmail(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun reloadUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun signOut(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
-        fun deleteUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun deleteGoogleUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+
+        fun deleteEmailUser(password: String, successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+
+        fun deletePhoneUser(verificationId: String, smsCode: String, successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun userSignedOutObservable(): LiveData<Boolean>
+    }
+
+    enum class Providers {
+        GOOGLE,
+        EMAIL,
+        PHONE,
+        UNKNOWN
     }
 }

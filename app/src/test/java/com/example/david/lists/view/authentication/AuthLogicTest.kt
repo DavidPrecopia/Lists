@@ -1,12 +1,10 @@
 package com.example.david.lists.view.authentication
 
 import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import io.mockk.CapturingSlot
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -30,6 +28,7 @@ class AuthLogicTest {
 
     @BeforeEach
     fun init() {
+        clearAllMocks()
         every { viewModel.signInRequestCode } returns requestCode
     }
 
@@ -109,66 +108,6 @@ class AuthLogicTest {
 
             verify { viewModel.emailVerificationSent = false }
             verify { userRepo.signOut(captureArgSuccess.captured, captureArgFailure.captured) }
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
-        }
-
-
-        /**
-         * - Delete user
-         * - Delete the user via the UserRepo.
-         * - Display message.
-         * - Display sign-in.
-         */
-        @Test
-        fun `onStart - Delete Account - succeeded`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-
-            every { viewModel.msgAccountDeletionSucceed } returns message
-            every {
-                userRepo.deleteUser(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
-
-            logic.onStart(signOut = false, deleteAccount = true)
-
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgSuccess.captured.onSuccess(null)
-
-            verify { userRepo.deleteUser(captureArgSuccess.captured, captureArgFailure.captured) }
-            verify { view.displayMessage(message) }
-            verify { view.signIn(requestCode) }
-        }
-
-        /**
-         * - Delete user
-         * - Delete the user via the UserRepo.
-         * - Display message.
-         * - Re-open the main view.
-         */
-        @Test
-        fun `onStart - Delete Account - failed`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-            val exception = Exception()
-
-            every { viewModel.msgAccountDeletionFailed } returns message
-            every {
-                userRepo.deleteUser(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
-
-            logic.onStart(signOut = false, deleteAccount = true)
-
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgFailure.captured.onFailure(exception)
-
-            verify { userRepo.deleteUser(captureArgSuccess.captured, captureArgFailure.captured) }
             verify { view.displayMessage(message) }
             verify { view.openMainView() }
         }
@@ -405,6 +344,126 @@ class AuthLogicTest {
             assertThrows<IllegalStateException> {
                 logic.onStart(signOut = false, deleteAccount = false)
             }
+        }
+    }
+
+
+    @Nested
+    inner class DeleteAccount {
+        /**
+         * - Delete Google user.
+         * - Specify the specific provider via the UserRepo.
+         *   - It will be [Providers.GOOGLE] for this test.
+         * - Successfully delete the user via the UserRepo.
+         * - Display message from ViewModel.
+         * - Display sign-in.
+         */
+        @Test
+        fun `onStart - Delete Account - Google provider - succeeded`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+
+            every { viewModel.msgAccountDeletionSucceed } returns message
+            every { userRepo.authProvider } returns Providers.GOOGLE
+            every {
+                userRepo.deleteGoogleUser(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            captureArgSuccess.captured.onSuccess(null)
+
+            verify { userRepo.deleteGoogleUser(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { view.displayMessage(message) }
+            verify { view.signIn(requestCode) }
+        }
+
+        /**
+         * - Delete Google user
+         * - Specify the specific provider via the UserRepo.
+         *   - It will be [Providers.GOOGLE] for this test.
+         * - Fail to delete the user via the UserRepo.
+         * - Throw an Exception.
+         * - Display failure message from ViewModel.
+         * - Re-open the main view.
+         */
+        @Test
+        fun `onStart - Delete Account - Google - failed`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = mockk<Exception>(relaxed = true)
+
+            every { viewModel.msgAccountDeletionFailed } returns message
+            every { userRepo.authProvider } returns Providers.GOOGLE
+            every {
+                userRepo.deleteGoogleUser(
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { userRepo.deleteGoogleUser(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { exception.printStackTrace() }
+            verify { view.displayMessage(message) }
+            verify { view.openMainView() }
+        }
+
+        /**
+         * - Delete Email user.
+         * - Specify the specific provider via the UserRepo.
+         *   - It will be [Providers.EMAIL] for this test.
+         * - Open email re-authentication.
+         */
+        @Test
+        fun `onStart - Delete Account - Email provider`() {
+            every { userRepo.authProvider } returns Providers.EMAIL
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            verify { view.openEmailReAuth() }
+        }
+
+        /**
+         * - Delete Phone user.
+         * - Specify the specific provider via the UserRepo.
+         *   - It will be [Providers.PHONE] for this test.
+         * - Open phone re-authentication.
+         */
+        @Test
+        fun `onStart - Delete Account - Phone provider`() {
+            every { userRepo.authProvider } returns Providers.PHONE
+
+            logic.onStart(signOut = false, deleteAccount = true)
+
+            verify { view.openPhoneReAuth() }
+        }
+
+        /**
+         * - Delete user.
+         * - Specify the specific provider via the UserRepo.
+         *   - It will be [Providers.UNKNOWN] for this test.
+         * - Throw an Exception.
+         * - Display failure message from ViewModel.
+         * - Re-open the main view.
+         */
+        @Test
+        fun `onStart - Delete Account - Unknown provider`() {
+            every { viewModel.msgAccountDeletionFailed } returns message
+            every { userRepo.authProvider } returns Providers.UNKNOWN
+
+            assertThrows<IllegalStateException> {
+                logic.onStart(signOut = false, deleteAccount = true)
+            }
+
+            verify { view.displayMessage(message) }
+            verify { view.openMainView() }
         }
     }
 

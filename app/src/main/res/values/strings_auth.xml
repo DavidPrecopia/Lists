@@ -4,11 +4,6 @@
     <string name="msg_sign_in_cancelled">Sign-in cancelled</string>
     <string name="msg_sign_in_error">Please try again later</string>
 
-    <string name="msg_signed_out_successful">Successfully signed-out</string>
-
-    <string name="msg_account_deletion_successful">Account deleted</string>
-    <string name="msg_account_deletion_failed">Failed to delete account</string>
-
     <string name="msg_email_not_verified">Please verify your email</string>
     <string name="email_verification_sent_shared_pref_key">email_verification_sent_shared_pref_key</string>
 
@@ -16,4 +11,15 @@
     <string name="email_sent_message">A sign-in email with additionally instructions has been sent to %1$s.
         \n\nCheck your email to complete sign-in</string>
     <string name="email_verified_button">Email Verified</string>
+
+    <string name="msg_signed_out_successful">Successfully signed-out</string>
+
+    <string name="title_delete_account">Delete Account</string>
+    <string name="msg_account_deletion_successful">Account deleted</string>
+    <string name="msg_account_deletion_failed">Failed to delete account</string>
+
+    <string name="msg_invalid_password">Invalid password</string>
+    <string name="msg_email_reauth">Please enter your password to delete your account.</string>
+
+    <string name="hint_password">Password</string>
 </resources>
