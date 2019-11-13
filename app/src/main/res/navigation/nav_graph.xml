@@ -57,7 +57,8 @@
     <fragment
         android:id="@+id/userListListView"
         android:name="com.example.david.lists.view.userlistlist.UserListListView"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        tools:layout="@layout/list_view_base">
         <action
             android:id="@+id/action_userListListView_to_itemListView"
             app:destination="@id/itemListView"
@@ -84,7 +85,8 @@
     <dialog
         android:id="@+id/addEditUserListDialog"
         android:name="com.example.david.lists.view.addedit.userlist.AddEditUserListDialog"
-        android:label="AddEditUserListDialog">
+        android:label="AddEditUserListDialog"
+        tools:layout="@layout/add_edit_dialog">
         <argument
             android:name="user_list_id"
             app:argType="string" />
@@ -104,7 +106,8 @@
     <fragment
         android:id="@+id/itemListView"
         android:name="com.example.david.lists.view.itemlist.ItemListView"
-        android:label="ItemListView">
+        android:label="ItemListView"
+        tools:layout="@layout/list_view_base">
         <argument
             android:name="user_list_id"
             app:argType="string" />
@@ -123,7 +126,8 @@
     <dialog
         android:id="@+id/addEditItemDialog"
         android:name="com.example.david.lists.view.addedit.item.AddEditItemDialog"
-        android:label="AddEditItemDialog">
+        android:label="AddEditItemDialog"
+        tools:layout="@layout/add_edit_dialog">
         <argument
             android:name="item_id"
             app:argType="string" />
@@ -142,7 +146,8 @@
     <fragment
         android:id="@+id/preferencesView"
         android:name="com.example.david.lists.view.preferences.PreferencesView"
-        android:label="PreferencesView">
+        android:label="PreferencesView"
+        tools:layout="@layout/preferences_view">
         <action
             android:id="@+id/action_preferencesView_to_confirmSignOutDialog"
             app:destination="@id/confirmSignOutDialog"
@@ -162,7 +167,8 @@
     <dialog
         android:id="@+id/confirmSignOutDialog"
         android:name="com.example.david.lists.view.preferences.dialogs.ConfirmSignOutDialog"
-        android:label="ConfirmSignOutDialog">
+        android:label="ConfirmSignOutDialog"
+        tools:layout="@layout/add_edit_dialog">
         <action
             android:id="@+id/action_confirmSignOutDialog_to_authView"
             app:destination="@id/authView"
@@ -173,7 +179,8 @@
     <dialog
         android:id="@+id/confirmAccountDeletionDialog"
         android:name="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog"
-        android:label="ConfirmAccountDeletionDialog">
+        android:label="ConfirmAccountDeletionDialog"
+        tools:layout="@layout/add_edit_dialog">
         <action
             android:id="@+id/action_confirmAccountDeletionDialog_to_authView"
             app:destination="@id/authView"
