@@ -85,7 +85,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
 
     override fun openGoogleReAuth() {
-        TODO("not implemented")
+        navigate(PreferencesViewDirections.actionPreferencesViewToGoogleReAuthView())
     }
 
     override fun openEmailReAuth() {

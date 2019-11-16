@@ -22,6 +22,17 @@
             app:argType="boolean" />
     </fragment>
 
+
+    <fragment
+        android:id="@+id/googleReAuthView"
+        android:name="com.example.david.lists.view.authentication.googlereauth.GoogleReAuthView"
+        android:label="google_re_auth_view"
+        tools:layout="@layout/google_re_auth_view">
+        <action
+            android:id="@+id/action_googleReAuthView_to_authView"
+            app:destination="@id/authView" />
+    </fragment>
+
     <fragment
         android:id="@+id/emailReAuthView"
         android:name="com.example.david.lists.view.authentication.emailreauth.EmailReAuthView"
@@ -146,6 +157,13 @@
         <action
             android:id="@+id/action_preferencesView_to_emailReAuthView"
             app:destination="@id/emailReAuthView"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_preferencesView_to_googleReAuthView"
+            app:destination="@id/googleReAuthView"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
