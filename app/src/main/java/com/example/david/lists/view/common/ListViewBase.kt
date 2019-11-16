@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar.Callback.*
 import kotlinx.android.synthetic.main.list_view_base.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.toast
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -135,13 +134,10 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
      * manipulate the UI when the View is in an invalid state to do so.
      */
     private fun validLifecycleState() =
-            lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
+            lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
 
     protected fun displayLoading() {
-        Timber.d("UI STATE: display loading")
         if (validLifecycleState()) {
-            Timber.d("UI STATE: valid state")
-
             tv_error.isGone = true
             recycler_view.isGone = true
             fab.hide()
@@ -151,10 +147,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     }
 
     protected fun displayList() {
-        Timber.d("UI STATE: display list")
         if (validLifecycleState()) {
-            Timber.d("UI STATE: valid state")
-
             progress_bar.isGone = true
             tv_error.isGone = true
 
@@ -164,11 +157,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     }
 
     protected fun displayError(errorMessage: String) {
-        Timber.d("UI STATE: display error")
-
         if (validLifecycleState()) {
-            Timber.d("UI STATE: valid state")
-
             progress_bar?.isGone = true
             recycler_view?.isGone = true
             fab?.show()
