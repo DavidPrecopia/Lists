@@ -86,8 +86,8 @@ dependencies {
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx:21.3.0'
     // Firebase Authentication
-    implementation 'com.google.firebase:firebase-auth:19.0.0'
-    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
+    implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     // Firebase Crashlytics
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
