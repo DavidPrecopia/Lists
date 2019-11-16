@@ -113,11 +113,10 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
                 .show()
     }
 
-    private fun validSnackbarEvent(event: Int): Boolean {
-        return (event == DISMISS_EVENT_TIMEOUT
-                || event == DISMISS_EVENT_SWIPE
-                || event == DISMISS_EVENT_MANUAL)
-    }
+    private fun validSnackbarEvent(event: Int) =
+            event == DISMISS_EVENT_TIMEOUT
+                    || event == DISMISS_EVENT_SWIPE
+                    || event == DISMISS_EVENT_MANUAL
 
 
     override fun dragging(fromPosition: Int, toPosition: Int) {
