@@ -73,7 +73,7 @@ class EmailReAuthLogicTest {
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
          * - Display message from ViewModel.
-         * - Open the main view.
+         * - Finish the view.
          */
         @Test
         fun `onEvent - Delete Account - valid password - failed`() {
@@ -99,7 +99,7 @@ class EmailReAuthLogicTest {
             }
             verify { exception.printStackTrace() }
             verify { view.displayMessage(message) }
-            verify { view.openMainView() }
+            verify { view.finishView() }
         }
 
         /**
@@ -119,17 +119,5 @@ class EmailReAuthLogicTest {
             verify { view.displayError(message) }
             verify { userRepo wasNot Called }
         }
-    }
-
-
-    /**
-     * - [ViewEvent.CancelClicked].
-     * - Open the main view.
-     */
-    @Test
-    fun `onEvent - Cancel`() {
-        logic.onEvent(ViewEvent.CancelClicked)
-
-        verify { view.openMainView() }
     }
 }

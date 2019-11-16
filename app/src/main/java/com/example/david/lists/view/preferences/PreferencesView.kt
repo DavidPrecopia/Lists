@@ -2,15 +2,19 @@ package com.example.david.lists.view.preferences
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcel
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
 import com.example.david.lists.view.preferences.buildlogic.DaggerPreferencesViewComponent
+import com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog
 import kotlinx.android.synthetic.main.preferences_view.*
 import kotlinx.android.synthetic.main.toolbar.*
+import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewContract.View {
@@ -26,6 +30,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
     private fun inject() {
         DaggerPreferencesViewComponent.builder()
+                .application(activity!!.application)
                 .view(this)
                 .build()
                 .inject(this)
@@ -64,7 +69,45 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
     override fun confirmAccountDeletion() {
         findNavController().navigate(
-                PreferencesViewDirections.actionPreferencesViewToConfirmAccountDeletionDialog()
+                PreferencesViewDirections.actionPreferencesViewToConfirmAccountDeletionDialog(
+                        object : ConfirmAccountDeletionDialog.DeleteAccountListener {
+                            override fun deleteAccountConfirmed() {
+                                logic.onEvent(ViewEvent.DeleteAccountConfirmed)
+                            }
+
+                            override fun writeToParcel(dest: Parcel?, flags: Int) {
+                            }
+
+                            override fun describeContents() = 0
+                        })
         )
+    }
+
+
+    override fun openGoogleReAuth() {
+        TODO("not implemented")
+    }
+
+    override fun openEmailReAuth() {
+        navigate(PreferencesViewDirections.actionPreferencesViewToEmailReAuthView())
+    }
+
+    override fun openPhoneReAuth() {
+        TODO("not implemented")
+    }
+
+    /**
+     * Need to pop the backstack to ensure this is the current destination.
+     */
+    private fun navigate(direction: NavDirections) {
+        with(findNavController()) {
+            popBackStack()
+            navigate(direction)
+        }
+    }
+
+
+    override fun displayMessage(message: String) {
+        context!!.toast(message)
     }
 }

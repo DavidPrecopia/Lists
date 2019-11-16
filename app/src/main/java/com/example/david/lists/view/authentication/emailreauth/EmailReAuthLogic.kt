@@ -14,7 +14,6 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
     override fun onEvent(event: ViewEvent) {
         when (event) {
             is ViewEvent.DeleteAcctClicked -> deleteAccount(event.password)
-            ViewEvent.CancelClicked -> view.openMainView()
         }
     }
 
@@ -40,6 +39,6 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
     private fun deletionFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgAccountDeletionFailed)
-        view.openMainView()
+        view.finishView()
     }
 }

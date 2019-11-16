@@ -4,7 +4,7 @@ interface IEmailReAuthContract {
     interface View {
         fun openAuthView()
 
-        fun openMainView()
+        fun finishView()
 
         fun displayMessage(message: String)
 
@@ -25,6 +25,5 @@ interface IEmailReAuthContract {
 
     sealed class ViewEvent {
         data class DeleteAcctClicked(val password: String) : ViewEvent()
-        object CancelClicked : ViewEvent()
     }
 }

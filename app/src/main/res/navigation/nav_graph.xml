@@ -16,17 +16,8 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_authView_to_emailReAuthView"
-            app:destination="@id/emailReAuthView"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
         <argument
             android:name="signOut"
-            android:defaultValue="false"
-            app:argType="boolean" />
-        <argument
-            android:name="deleteAccount"
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>
@@ -39,16 +30,6 @@
         <action
             android:id="@+id/action_emailReAuthView_to_authView"
             app:destination="@id/authView"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_emailReAuthView_to_userListListView"
-            app:destination="@id/userListListView"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:launchSingleTop="true"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -162,6 +143,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_preferencesView_to_emailReAuthView"
+            app:destination="@id/emailReAuthView"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
@@ -181,10 +169,8 @@
         android:name="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog"
         android:label="ConfirmAccountDeletionDialog"
         tools:layout="@layout/add_edit_dialog">
-        <action
-            android:id="@+id/action_confirmAccountDeletionDialog_to_authView"
-            app:destination="@id/authView"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
+        <argument
+            android:name="listener"
+            app:argType="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener" />
     </dialog>
 </navigation>

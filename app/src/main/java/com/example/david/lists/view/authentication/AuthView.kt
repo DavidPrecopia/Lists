@@ -41,7 +41,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClickListener()
-        logic.onStart(args.signOut, args.deleteAccount)
+        logic.onStart(args.signOut)
     }
 
     private fun inject() {
@@ -101,16 +101,6 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
         findNavController().navigate(
                 AuthViewDirections.actionAuthViewToUserListListView()
         )
-    }
-
-    override fun openEmailReAuth() {
-        findNavController().navigate(
-                AuthViewDirections.actionAuthViewToEmailReAuthView()
-        )
-    }
-
-    override fun openPhoneReAuth() {
-        TODO("not implemented")
     }
 
 

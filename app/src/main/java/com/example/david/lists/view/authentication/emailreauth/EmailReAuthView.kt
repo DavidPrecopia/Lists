@@ -40,27 +40,19 @@ class EmailReAuthView : Fragment(R.layout.email_re_auth_view), IEmailReAuthContr
 
     private fun initView() {
         initToolbar()
-        initClickListeners()
+        initClickListener()
     }
 
     private fun initToolbar() {
         with(toolbar) {
             (activity as AppCompatActivity).setSupportActionBar(this)
             title = getString(R.string.title_delete_account)
-//            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-//            setNavigationOnClickListener {
-//                findNavController().navigate(
-//                        EmailReAuthViewDirections.actionEmailReAuthViewToUserListListView()
-//                )
-//            }
+            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            setNavigationOnClickListener { findNavController().navigateUp() }
         }
     }
 
-    private fun initClickListeners() {
-        button_cancel.setOnClickListener {
-            logic.onEvent(ViewEvent.CancelClicked)
-        }
-
+    private fun initClickListener() {
         button_confirm_delete.setOnClickListener {
             logic.onEvent(ViewEvent.DeleteAcctClicked(getEnteredPassword()))
         }
@@ -75,10 +67,8 @@ class EmailReAuthView : Fragment(R.layout.email_re_auth_view), IEmailReAuthContr
         )
     }
 
-    override fun openMainView() {
-        findNavController().navigate(
-                EmailReAuthViewDirections.actionEmailReAuthViewToUserListListView()
-        )
+    override fun finishView() {
+        findNavController().navigateUp()
     }
 
 

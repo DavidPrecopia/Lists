@@ -13,14 +13,10 @@ interface IAuthContract {
         fun openMainView()
 
         fun finishView()
-
-        fun openEmailReAuth()
-
-        fun openPhoneReAuth()
     }
 
     interface Logic {
-        fun onStart(signOut: Boolean = false, deleteAccount: Boolean = false)
+        fun onStart(signOut: Boolean = false)
 
         fun signInSuccessful()
 
@@ -49,9 +45,5 @@ interface IAuthContract {
         val msgSignOutSucceed: String
 
         val msgSignOutFailed: String
-
-        val msgAccountDeletionSucceed: String
-
-        val msgAccountDeletionFailed: String
     }
 }

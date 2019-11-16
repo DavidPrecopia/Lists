@@ -1,7 +1,6 @@
 package com.example.david.lists.view.authentication
 
 import com.example.david.lists.data.repository.IRepositoryContract
-import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.example.david.lists.util.UtilExceptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -10,10 +9,9 @@ class AuthLogic(private val view: IAuthContract.View,
                 private val viewModel: IAuthContract.ViewModel,
                 private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
 
-    override fun onStart(signOut: Boolean, deleteAccount: Boolean) {
+    override fun onStart(signOut: Boolean) {
         when {
             signOut -> signOut()
-            deleteAccount -> deleteAccount()
             userRepo.userVerified -> view.openMainView()
             userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
             userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
@@ -59,31 +57,6 @@ class AuthLogic(private val view: IAuthContract.View,
     private fun signOutFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgSignOutFailed)
-        view.openMainView()
-    }
-
-
-    private fun deleteAccount() {
-        when (userRepo.authProvider) {
-            Providers.GOOGLE -> userRepo.deleteGoogleUser(accountDeletionSucceeded(), accountDeletionFailed())
-            Providers.EMAIL -> view.openEmailReAuth()
-            Providers.PHONE -> view.openPhoneReAuth()
-            Providers.UNKNOWN -> {
-                view.displayMessage(viewModel.msgAccountDeletionFailed)
-                view.openMainView()
-                UtilExceptions.throwException(IllegalStateException("Unknown authentication provider"))
-            }
-        }
-    }
-
-    private fun accountDeletionSucceeded() = OnSuccessListener<Void> {
-        view.displayMessage(viewModel.msgAccountDeletionSucceed)
-        view.signIn(viewModel.signInRequestCode)
-    }
-
-    private fun accountDeletionFailed() = OnFailureListener { e ->
-        UtilExceptions.throwException(e)
-        view.displayMessage(viewModel.msgAccountDeletionFailed)
         view.openMainView()
     }
 

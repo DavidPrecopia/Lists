@@ -47,16 +47,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_normal"
-            android:text="@string/button_text_cancel"
-            app:layout_constraintBottom_toBottomOf="@id/button_confirm_delete"
-            app:layout_constraintEnd_toStartOf="@id/button_confirm_delete"
-            app:layout_constraintTop_toTopOf="@id/button_confirm_delete" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/button_confirm_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
