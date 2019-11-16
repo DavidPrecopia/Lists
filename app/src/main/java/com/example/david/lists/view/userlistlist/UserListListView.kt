@@ -9,6 +9,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
+import com.example.david.lists.common.application
 import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewBase
@@ -35,7 +36,7 @@ class UserListListView : ListViewBase(),
 
     private fun inject() {
         DaggerUserListListViewComponent.builder()
-                .application(activity!!.application)
+                .application(application)
                 .view(this)
                 .movementCallback(this)
                 .build()

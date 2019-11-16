@@ -9,12 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
+import com.example.david.lists.common.application
+import com.example.david.lists.common.toast
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
 import com.example.david.lists.view.preferences.buildlogic.DaggerPreferencesViewComponent
 import com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog
 import kotlinx.android.synthetic.main.preferences_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewContract.View {
@@ -30,7 +31,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
     private fun inject() {
         DaggerPreferencesViewComponent.builder()
-                .application(activity!!.application)
+                .application(application)
                 .view(this)
                 .build()
                 .inject(this)
@@ -108,6 +109,6 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
 
 
     override fun displayMessage(message: String) {
-        context!!.toast(message)
+        toast(message)
     }
 }

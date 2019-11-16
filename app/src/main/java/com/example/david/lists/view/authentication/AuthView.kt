@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.david.lists.R
+import com.example.david.lists.common.application
 import com.example.david.lists.view.authentication.buildlogic.DaggerAuthViewComponent
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
@@ -46,7 +47,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
 
     private fun inject() {
         DaggerAuthViewComponent.builder()
-                .application(activity!!.application)
+                .application(application)
                 .view(this)
                 .build()
                 .inject(this)

@@ -7,11 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
+import com.example.david.lists.common.application
+import com.example.david.lists.common.toast
 import com.example.david.lists.view.authentication.emailreauth.IEmailReAuthContract.ViewEvent
 import com.example.david.lists.view.authentication.emailreauth.buildlogic.DaggerEmailReAuthComponent
 import kotlinx.android.synthetic.main.email_re_auth_view.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class EmailReAuthView : Fragment(R.layout.email_re_auth_view), IEmailReAuthContract.View {
@@ -27,7 +28,7 @@ class EmailReAuthView : Fragment(R.layout.email_re_auth_view), IEmailReAuthContr
 
     private fun inject() {
         DaggerEmailReAuthComponent.builder()
-                .application(activity!!.application)
+                .application(application)
                 .view(this)
                 .build()
                 .inject(this)
@@ -73,7 +74,7 @@ class EmailReAuthView : Fragment(R.layout.email_re_auth_view), IEmailReAuthContr
 
 
     override fun displayMessage(message: String) {
-        context!!.toast(message)
+        toast(message)
     }
 
     override fun displayError(message: String) {

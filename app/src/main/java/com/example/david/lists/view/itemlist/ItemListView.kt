@@ -6,6 +6,7 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.example.david.lists.common.application
 import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.view.common.ListViewBase
 import com.example.david.lists.view.itemlist.buldlogic.DaggerItemListViewComponent
@@ -37,7 +38,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
 
     private fun inject() {
         DaggerItemListViewComponent.builder()
-                .application(activity!!.application)
+                .application(application)
                 .view(this)
                 .movementCallback(this)
                 .userListId(args.userListId)

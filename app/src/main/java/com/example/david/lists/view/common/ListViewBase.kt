@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
+import com.example.david.lists.common.toast
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback.*
 import kotlinx.android.synthetic.main.list_view_base.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.jetbrains.anko.toast
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -169,6 +169,6 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
 
 
     protected fun toastMessage(message: String) {
-        context!!.toast(message)
+        toast(message)
     }
 }
