@@ -5,10 +5,8 @@ import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.example.david.lists.view.authentication.googlereauth.IGoogleReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import io.mockk.CapturingSlot
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class GoogleReAuthLogicTest {
@@ -24,6 +22,12 @@ class GoogleReAuthLogicTest {
 
 
     private val message = "message"
+
+
+    @BeforeEach
+    fun init() {
+        clearAllMocks()
+    }
 
 
     /**
