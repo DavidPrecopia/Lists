@@ -13,7 +13,7 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
 
     override fun onEvent(event: ViewEvent) {
         when (event) {
-            is ViewEvent.DeleteAcctClicked -> deleteAccount(event.password)
+            is ViewEvent.DeleteAcctClicked -> deleteAccount(event.password.trim())
         }
     }
 
