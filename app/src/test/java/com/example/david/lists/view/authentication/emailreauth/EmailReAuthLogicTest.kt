@@ -35,7 +35,7 @@ class EmailReAuthLogicTest {
     inner class DeleteAccount {
         /**
          * - [ViewEvent.DeleteAcctClicked].
-         * - Check if the password is blank.
+         * - Validate the password.
          *   - It will be valid in this test.
          * - Successfully delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Display message from ViewModel.
@@ -68,7 +68,7 @@ class EmailReAuthLogicTest {
 
         /**
          * - [ViewEvent.DeleteAcctClicked].
-         * - Check if the password is blank.
+         * - Validate the password.
          *   - It will be valid in this test.
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
@@ -104,17 +104,17 @@ class EmailReAuthLogicTest {
 
         /**
          * - [ViewEvent.DeleteAcctClicked].
-         * - Check if the password is blank.
+         * - Validate the password.
          *   - It will be invalid for this test.
          * - Display an error from the ViewModel.
          */
         @Test
-        fun `onEvent - Delete Account - invalid password`() {
-            val invalidPassword = ""
+        fun `onEvent - Delete Account - invalid password - blank`() {
+            val blankPassword = ""
 
             every { viewModel.invalidPassword } returns message
 
-            logic.onEvent(ViewEvent.DeleteAcctClicked(invalidPassword))
+            logic.onEvent(ViewEvent.DeleteAcctClicked(blankPassword))
 
             verify { view.displayError(message) }
             verify { userRepo wasNot Called }
