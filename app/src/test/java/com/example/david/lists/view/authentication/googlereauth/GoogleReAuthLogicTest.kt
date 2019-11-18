@@ -1,7 +1,6 @@
 package com.example.david.lists.view.authentication.googlereauth
 
 import com.example.david.lists.data.repository.IRepositoryContract
-import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.example.david.lists.view.authentication.googlereauth.IGoogleReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -32,8 +31,6 @@ class GoogleReAuthLogicTest {
 
     /**
      * - [ViewEvent.OnStart].
-     * - Specify the specific provider via the UserRepo.
-     *   - It will be [Providers.GOOGLE] for this test.
      * - Successfully delete the user via the UserRepo.
      * - Display message from ViewModel.
      * - Open auth view.
@@ -44,7 +41,6 @@ class GoogleReAuthLogicTest {
         val captureArgFailure = CapturingSlot<OnFailureListener>()
 
         every { viewModel.msgAccountDeletionSucceed } returns message
-        every { userRepo.authProvider } returns Providers.GOOGLE
         every {
             userRepo.deleteGoogleUser(
                     successListener = capture(captureArgSuccess),
@@ -63,8 +59,6 @@ class GoogleReAuthLogicTest {
 
     /**
      * - [ViewEvent.OnStart].
-     * - Specify the specific provider via the UserRepo.
-     *   - It will be [Providers.GOOGLE] for this test.
      * - Fail to delete the user via the UserRepo.
      * - Throw an Exception.
      * - Display failure message from ViewModel.
@@ -77,7 +71,6 @@ class GoogleReAuthLogicTest {
         val exception = mockk<Exception>(relaxed = true)
 
         every { viewModel.msgAccountDeletionFailed } returns message
-        every { userRepo.authProvider } returns Providers.GOOGLE
         every {
             userRepo.deleteGoogleUser(
                     successListener = capture(captureArgSuccess),
