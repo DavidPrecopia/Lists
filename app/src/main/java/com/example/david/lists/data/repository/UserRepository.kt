@@ -9,10 +9,6 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.*
 
-private const val GOOGLE = "google.com"
-private const val EMAIL = "password"
-private const val PHONE = "phone"
-
 /**
  * I do not have [FirebaseUser] as a constructor parameter because
  * retrieving the user via [FirebaseAuth.getCurrentUser] ensures that
@@ -64,9 +60,9 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
      */
     override val authProvider: Providers
         get() = when (user!!.providerData[1].providerId) {
-            GOOGLE -> Providers.GOOGLE
-            EMAIL -> Providers.EMAIL
-            PHONE -> Providers.PHONE
+            GoogleAuthProvider.PROVIDER_ID -> Providers.GOOGLE
+            EmailAuthProvider.PROVIDER_ID -> Providers.EMAIL
+            PhoneAuthProvider.PROVIDER_ID -> Providers.PHONE
             else -> Providers.UNKNOWN
         }
 

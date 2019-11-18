@@ -1,10 +1,9 @@
 package com.example.david.lists.data.repository
 
 import android.app.Application
+import com.example.david.lists.data.repository.IRepositoryContract.Providers
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -197,6 +196,56 @@ class UserRepositoryTest {
             every { firebaseAuth.currentUser } returns null
 
             assertThat(userRepo.emailVerified).isEqualTo(false)
+        }
+    }
+
+
+    @Nested
+    inner class AuthProvider {
+        /**
+         * - Provider is [GoogleAuthProvider.PROVIDER_ID].
+         * - Returns [Providers.GOOGLE].
+         */
+        @Test
+        fun `authProvider - Google`() {
+            every { user.providerData[1].providerId } returns GoogleAuthProvider.PROVIDER_ID
+
+            assertThat(userRepo.authProvider).isEqualTo(Providers.GOOGLE)
+        }
+
+        /**
+         * - Provider is [EmailAuthProvider.PROVIDER_ID].
+         * - Returns [Providers.EMAIL].
+         */
+        @Test
+        fun `authProvider - Email`() {
+            every { user.providerData[1].providerId } returns EmailAuthProvider.PROVIDER_ID
+
+            assertThat(userRepo.authProvider).isEqualTo(Providers.EMAIL)
+        }
+
+        /**
+         * - Provider is [PhoneAuthProvider.PROVIDER_ID].
+         * - Returns [Providers.PHONE].
+         */
+        @Test
+        fun `authProvider - Phone`() {
+            every { user.providerData[1].providerId } returns PhoneAuthProvider.PROVIDER_ID
+
+            assertThat(userRepo.authProvider).isEqualTo(Providers.PHONE)
+        }
+
+        /**
+         * - Provider is unknown.
+         * - Returns [Providers.UNKNOWN].
+         */
+        @Test
+        fun `authProvider - Unknown`() {
+            val unknownProvider = "unknown"
+
+            every { user.providerData[1].providerId } returns unknownProvider
+
+            assertThat(userRepo.authProvider).isEqualTo(Providers.UNKNOWN)
         }
     }
 }
