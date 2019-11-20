@@ -18,3 +18,7 @@ fun Fragment.navigate(direction: NavDirections) {
 fun Fragment.navigateUp() {
     findNavController().navigateUp()
 }
+
+
+val String.onlyDigits
+    get() = this.matches(Regex("[0-9]+"))
