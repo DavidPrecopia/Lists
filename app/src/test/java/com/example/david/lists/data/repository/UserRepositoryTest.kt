@@ -208,6 +208,7 @@ class UserRepositoryTest {
          */
         @Test
         fun `authProvider - Google`() {
+            every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns GoogleAuthProvider.PROVIDER_ID
 
             assertThat(userRepo.authProvider).isEqualTo(Providers.GOOGLE)
@@ -219,6 +220,7 @@ class UserRepositoryTest {
          */
         @Test
         fun `authProvider - Email`() {
+            every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns EmailAuthProvider.PROVIDER_ID
 
             assertThat(userRepo.authProvider).isEqualTo(Providers.EMAIL)
@@ -230,6 +232,7 @@ class UserRepositoryTest {
          */
         @Test
         fun `authProvider - Phone`() {
+            every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns PhoneAuthProvider.PROVIDER_ID
 
             assertThat(userRepo.authProvider).isEqualTo(Providers.PHONE)
@@ -243,6 +246,7 @@ class UserRepositoryTest {
         fun `authProvider - Unknown`() {
             val unknownProvider = "unknown"
 
+            every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns unknownProvider
 
             assertThat(userRepo.authProvider).isEqualTo(Providers.UNKNOWN)
