@@ -94,7 +94,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
     }
 
     override fun openPhoneReAuth() {
-        TODO("not implemented")
+        navigate(PreferencesViewDirections.actionPreferencesViewToPhoneReAuthView())
     }
 
     /**

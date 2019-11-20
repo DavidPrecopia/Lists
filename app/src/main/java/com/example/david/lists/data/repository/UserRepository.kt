@@ -8,6 +8,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * I do not have [FirebaseUser] as a constructor parameter because
@@ -96,6 +98,17 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
         authUI.signOut(application)
                 .addOnSuccessListener(successListener)
                 .addOnFailureListener(failureListener)
+    }
+
+
+    override fun validatePhoneNumber(phoneNum: String, callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+        PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
+                phoneNum,
+                SMS_TIME_OUT_SECONDS,
+                TimeUnit.SECONDS,
+                Executors.newSingleThreadExecutor(),
+                callbacks
+        )
     }
 
 
