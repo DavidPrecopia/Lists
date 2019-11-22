@@ -4,9 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
 import com.example.david.lists.common.application
+import com.example.david.lists.common.navigate
+import com.example.david.lists.common.navigateUp
 import com.example.david.lists.common.toast
 import com.example.david.lists.view.reauthentication.google.IGoogleReAuthContract.ViewEvent
 import com.example.david.lists.view.reauthentication.google.buildlogic.DaggerGoogleReAuthComponent
@@ -38,13 +39,11 @@ class GoogleReAuthView : Fragment(R.layout.google_re_auth_view), IGoogleReAuthCo
 
 
     override fun openAuthView() {
-        findNavController().navigate(
-                GoogleReAuthViewDirections.actionGoogleReAuthViewToAuthView()
-        )
+        navigate(GoogleReAuthViewDirections.actionGoogleReAuthViewToAuthView())
     }
 
     override fun finishView() {
-        findNavController().navigateUp()
+        navigateUp()
     }
 
 
