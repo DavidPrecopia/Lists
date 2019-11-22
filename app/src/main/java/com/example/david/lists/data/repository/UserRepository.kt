@@ -7,8 +7,8 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.auth.*
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
@@ -106,7 +106,7 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
                 phoneNum,
                 SMS_TIME_OUT_SECONDS,
                 TimeUnit.SECONDS,
-                Executors.newSingleThreadExecutor(),
+                TaskExecutors.MAIN_THREAD,
                 callbacks
         )
     }
