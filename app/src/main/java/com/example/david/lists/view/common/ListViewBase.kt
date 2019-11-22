@@ -170,4 +170,14 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     protected fun toastMessage(message: String) {
         toast(message)
     }
+
+
+    /**
+     * This prevents a memory leak.
+     */
+    override fun onDestroyView() {
+        itemTouchHelper.attachToRecyclerView(null)
+        recycler_view.adapter = null
+        super.onDestroyView()
+    }
 }
