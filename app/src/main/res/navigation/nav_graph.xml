@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/googleReAuthView"
-        android:name="com.example.david.lists.view.authentication.googlereauth.GoogleReAuthView"
+        android:name="com.example.david.lists.view.reauthentication.google.GoogleReAuthView"
         android:label="google_re_auth_view"
         tools:layout="@layout/google_re_auth_view">
         <action
@@ -35,9 +35,9 @@
 
     <fragment
         android:id="@+id/emailReAuthView"
-        android:name="com.example.david.lists.view.authentication.emailreauth.EmailReAuthView"
+        android:name="com.example.david.lists.view.reauthentication.email.EmailReAuthView"
         android:label="@string/title_delete_account"
-        tools:layout="@layout/email_re_auth_view">
+        tools:layout="@layout/reauth_view">
         <action
             android:id="@+id/action_emailReAuthView_to_authView"
             app:destination="@id/authView"
@@ -47,14 +47,32 @@
 
     <fragment
         android:id="@+id/phoneReAuthView"
-        android:name="com.example.david.lists.view.authentication.phonereauth.PhoneReAuthView"
+        android:name="com.example.david.lists.view.reauthentication.phone.PhoneReAuthView"
         android:label="phone_re_auth_view"
-        tools:layout="@layout/phone_re_auth_view">
+        tools:layout="@layout/reauth_view">
         <action
-            android:id="@+id/action_phoneReAuthView_to_authView"
+            android:id="@+id/action_phoneReAuthView_to_smsCodeView"
+            app:destination="@id/smsReAuthView"
+            app:popUpTo="@id/phoneReAuthView"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/smsReAuthView"
+        android:name="com.example.david.lists.view.reauthentication.phone.SmsReAuthView"
+        android:label="sms_code_view"
+        tools:layout="@layout/reauth_view">
+        <action
+            android:id="@+id/action_smsCodeView_to_authView"
             app:destination="@id/authView"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="phoneNum"
+            app:argType="string" />
+        <argument
+            android:name="verificationId"
+            app:argType="string" />
     </fragment>
 
 
