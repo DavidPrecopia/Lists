@@ -35,7 +35,10 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     private fun evalSmsCode(smsCode: String) {
         when {
             smsCodeIsInvalid(smsCode) -> view.displayError(viewModel.msgInvalidSms)
-            else -> deleteAccount(smsCode)
+            else -> {
+                view.displayLoading()
+                deleteAccount(smsCode)
+            }
         }
     }
 
@@ -44,8 +47,6 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
     private fun deleteAccount(smsCode: String) {
-        view.displayLoading()
-
         userRepo.deletePhoneUser(
                 viewModel.verificationId,
                 smsCode,
