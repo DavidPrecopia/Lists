@@ -26,7 +26,13 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
     private fun evalPhoneNum(phoneNum: String) {
         when {
             numIsInvalid(phoneNum) -> view.displayError(viewModel.msgInvalidNum)
-            else -> verifyPhoneNum(phoneNum)
+            else -> {
+                with(formatPhoneNum(phoneNum)) {
+                    viewModel.phoneNumber = this
+                    view.displayLoading()
+                    verifyPhoneNum(this)
+                }
+            }
         }
     }
 
@@ -34,20 +40,15 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
         isBlank() || length != VALID_PHONE_NUM_LENGTH || onlyDigits.not()
     }
 
+    private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
+
+
     private fun verifyPhoneNum(phoneNum: String) {
-        val formattedNum = formatPhoneNum(phoneNum)
-
-        viewModel.phoneNumber = formattedNum
-
-        view.displayLoading()
-
         userRepo.validatePhoneNumber(
-                formattedNum,
+                phoneNum,
                 verifyPhoneNumCallbacks()
         )
     }
-
-    private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
 
     private fun verifyPhoneNumCallbacks() = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         /**
