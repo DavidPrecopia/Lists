@@ -2,9 +2,9 @@ package com.example.david.lists.view.reauthentication.email
 
 import android.content.Context
 import android.text.InputType
-import androidx.navigation.fragment.findNavController
 import com.example.david.lists.R
 import com.example.david.lists.common.application
+import com.example.david.lists.common.navigate
 import com.example.david.lists.common.navigateUp
 import com.example.david.lists.common.toast
 import com.example.david.lists.view.reauthentication.common.ReAuthBase
@@ -51,9 +51,7 @@ class EmailReAuthView : ReAuthBase(), IEmailReAuthContract.View {
 
 
     override fun openAuthView() {
-        findNavController().navigate(
-                EmailReAuthViewDirections.actionEmailReAuthViewToAuthView()
-        )
+        navigate(EmailReAuthViewDirections.actionEmailReAuthViewToAuthView())
     }
 
     override fun finishView() {
@@ -67,5 +65,10 @@ class EmailReAuthView : ReAuthBase(), IEmailReAuthContract.View {
 
     override fun displayError(message: String) {
         displayErrorEditText(message)
+    }
+
+
+    override fun displayLoading() {
+        displayProgressBar()
     }
 }

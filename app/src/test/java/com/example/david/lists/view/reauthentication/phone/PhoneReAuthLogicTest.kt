@@ -44,6 +44,7 @@ class PhoneReAuthLogicTest {
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
+         * - Display loading.
          * - Verify phone number via UserRepo.
          *   - It will be valid - thus
          *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onCodeSent] will be called.
@@ -69,6 +70,7 @@ class PhoneReAuthLogicTest {
             capturedCallbacks.captured.onCodeSent(verificationId, forceResendingToken)
 
             verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
             verify { view.displayMessage(message) }
             verify { view.openSmsVerification(formattedPhoneNum, verificationId) }
@@ -79,6 +81,7 @@ class PhoneReAuthLogicTest {
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
+         * - Display loading.
          * - Verify phone number via UserRepo.
          *   - This will fail - thus
          *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called.
@@ -104,6 +107,7 @@ class PhoneReAuthLogicTest {
             capturedCallbacks.captured.onVerificationFailed(firebaseException)
 
             verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
@@ -115,6 +119,7 @@ class PhoneReAuthLogicTest {
          * - Validate the number
          *   - It will be valid for this test.
          * - Save phone number to ViewModel.
+         * - Display loading.
          * - Verify phone number via UserRepo.
          *   - User will be instantly verified - thus
          *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationCompleted] will be called.
@@ -140,6 +145,7 @@ class PhoneReAuthLogicTest {
             capturedCallbacks.captured.onVerificationCompleted(phoneAuthCredential)
 
             verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
             verify { view.displayMessage(message) }
             verify { view.finishView() }

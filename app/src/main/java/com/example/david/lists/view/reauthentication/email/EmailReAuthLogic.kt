@@ -24,6 +24,8 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
             return
         }
 
+        view.displayLoading()
+
         userRepo.deleteEmailUser(
                 password,
                 deletionSucceeded(),

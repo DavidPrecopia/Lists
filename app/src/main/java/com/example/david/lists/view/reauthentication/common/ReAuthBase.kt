@@ -59,6 +59,17 @@ abstract class ReAuthBase : Fragment(R.layout.reauth_view) {
     private fun getEnteredText() = text_input_edit_text.text.toString()
 
 
+    protected fun displayProgressBar() {
+        progress_bar.visibility = View.VISIBLE
+        root_layout.visibility = View.GONE
+    }
+
+    protected fun hideProgressBar() {
+        progress_bar.visibility = View.GONE
+        root_layout.visibility = View.VISIBLE
+    }
+
+
     protected fun displayErrorEditText(message: String) {
         text_input_layout.error = message
     }

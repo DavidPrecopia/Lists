@@ -65,6 +65,7 @@ internal class SmsReAuthLogicTest {
          * - [ViewEvent.ConfirmSmsClicked]
          * - Validate the SMS number
          *   - It will be valid.
+         * - Display loading.
          * - Delete the account via the UserRepo with the verification ID from the ViewModel.
          *   - It will be successful.
          * - Cancel the timer.
@@ -91,6 +92,7 @@ internal class SmsReAuthLogicTest {
 
             captureArgSuccess.captured.onSuccess(null)
 
+            verify { view.displayLoading() }
             verify { userRepo.deletePhoneUser(verificationId, validSms, captureArgSuccess.captured, captureArgFailure.captured) }
             verify { view.cancelTimer() }
             verify { view.displayMessage(message) }
@@ -101,9 +103,11 @@ internal class SmsReAuthLogicTest {
          * - [ViewEvent.ConfirmSmsClicked]
          * - Validate the SMS number
          *   - It will be valid.
+         * - Display loading.
          * - Delete the account via the UserRepo with the verification ID from the ViewModel.
          *   - It will fail.
          * - Thrown an Exception.
+         * - Hide loading.
          * - Display a message from the ViewModel.
          * - Display an error message from the ViewModel ask user to re-enter the SMS code.
          */
@@ -129,8 +133,10 @@ internal class SmsReAuthLogicTest {
 
             captureArgFailure.captured.onFailure(exception)
 
+            verify { view.displayLoading() }
             verify { userRepo.deletePhoneUser(verificationId, validSms, captureArgSuccess.captured, captureArgFailure.captured) }
             verify { exception.printStackTrace() }
+            verify { view.hideLoading() }
             verify { view.displayMessage(message) }
             verify { view.displayError(message) }
         }

@@ -37,6 +37,7 @@ class EmailReAuthLogicTest {
          * - [ViewEvent.DeleteAcctClicked].
          * - Validate the password.
          *   - It will be valid in this test.
+         * - Display loading.
          * - Successfully delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Display message from ViewModel.
          * - Open the auth view.
@@ -59,6 +60,7 @@ class EmailReAuthLogicTest {
 
             captureArgSuccess.captured.onSuccess(null)
 
+            verify { view.displayLoading() }
             verify {
                 userRepo.deleteEmailUser(password, captureArgSuccess.captured, captureArgFailure.captured)
             }
@@ -70,6 +72,7 @@ class EmailReAuthLogicTest {
          * - [ViewEvent.DeleteAcctClicked].
          * - Validate the password.
          *   - It will be valid in this test.
+         * - Display loading.
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
          * - Display message from ViewModel.
@@ -94,6 +97,7 @@ class EmailReAuthLogicTest {
 
             captureArgFailure.captured.onFailure(exception)
 
+            verify { view.displayLoading() }
             verify {
                 userRepo.deleteEmailUser(password, captureArgSuccess.captured, captureArgFailure.captured)
             }

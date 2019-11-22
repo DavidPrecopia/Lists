@@ -89,6 +89,15 @@ class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
     }
 
 
+    override fun displayLoading() {
+        displayProgressBar()
+    }
+
+    override fun hideLoading() {
+        hideProgressBar()
+    }
+
+
     override fun openAuthView() {
         navigate(SmsReAuthViewDirections.actionSmsCodeViewToAuthView())
     }

@@ -44,6 +44,8 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
     private fun deleteAccount(smsCode: String) {
+        view.displayLoading()
+
         userRepo.deletePhoneUser(
                 viewModel.verificationId,
                 smsCode,
@@ -60,8 +62,11 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun deletionFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
-        view.displayMessage(viewModel.msgAccountDeletionFailed)
-        view.displayError(viewModel.msgReEnterSms)
+        with(view) {
+            hideLoading()
+            displayMessage(viewModel.msgAccountDeletionFailed)
+            displayError(viewModel.msgReEnterSms)
+        }
     }
 
 

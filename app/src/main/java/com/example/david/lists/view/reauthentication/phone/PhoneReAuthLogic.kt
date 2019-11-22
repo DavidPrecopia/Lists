@@ -39,6 +39,8 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
 
         viewModel.phoneNumber = formattedNum
 
+        view.displayLoading()
+
         userRepo.validatePhoneNumber(
                 formattedNum,
                 verifyPhoneNumCallbacks()

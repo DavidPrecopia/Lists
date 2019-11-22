@@ -6,6 +6,8 @@ interface IPhoneReAuthContract {
 
         fun displayError(message: String)
 
+        fun displayLoading()
+
         fun openSmsVerification(phoneNum: String, verificationId: String)
 
         fun finishView()

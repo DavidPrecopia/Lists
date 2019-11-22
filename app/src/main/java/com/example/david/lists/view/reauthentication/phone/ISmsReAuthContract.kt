@@ -10,6 +10,10 @@ interface ISmsReAuthContract {
 
         fun displayError(message: String)
 
+        fun displayLoading()
+
+        fun hideLoading()
+
         fun openAuthView()
 
         fun finishView()

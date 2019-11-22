@@ -9,6 +9,8 @@ interface IEmailReAuthContract {
         fun displayMessage(message: String)
 
         fun displayError(message: String)
+
+        fun displayLoading()
     }
 
     interface Logic {
