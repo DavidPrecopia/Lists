@@ -4,6 +4,8 @@ import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.email.IEmailReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -75,11 +77,90 @@ class EmailReAuthLogicTest {
          * - Display loading.
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
-         * - Display message from ViewModel.
-         * - Finish the view.
+         *   - Specifically, [FirebaseAuthInvalidCredentialsException]
+         * - Hide loading.
+         * - Display error message from ViewModel.
          */
         @Test
-        fun `onEvent - Delete Account - valid password - failed`() {
+        fun `onEvent - Delete Account - valid password - failed - invalid credentials`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
+
+            every { viewModel.msgInvalidPassword } returns message
+            every {
+                userRepo.deleteEmailUser(
+                        password,
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.DeleteAcctClicked(password))
+
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { view.displayLoading() }
+            verify {
+                userRepo.deleteEmailUser(password, captureArgSuccess.captured, captureArgFailure.captured)
+            }
+            verify { exception.printStackTrace() }
+            verify { view.hideLoading() }
+            verify { view.displayError(message) }
+        }
+
+        /**
+         * - [ViewEvent.DeleteAcctClicked].
+         * - Validate the password.
+         *   - It will be valid in this test.
+         * - Display loading.
+         * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
+         * - Thrown an Exception.
+         *   - Specifically, [FirebaseTooManyRequestsException]
+         * - Display error message from ViewModel.
+         * - Finish the View.
+         */
+        @Test
+        fun `onEvent - Delete Account - valid password - failed - too many requests`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+
+            every { viewModel.msgTooManyRequest } returns message
+            every {
+                userRepo.deleteEmailUser(
+                        password,
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.DeleteAcctClicked(password))
+
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { view.displayLoading() }
+            verify {
+                userRepo.deleteEmailUser(password, captureArgSuccess.captured, captureArgFailure.captured)
+            }
+            verify { exception.printStackTrace() }
+            verify { view.displayMessage(message) }
+            verify { view.finishView() }
+        }
+
+        /**
+         * - [ViewEvent.DeleteAcctClicked].
+         * - Validate the password.
+         *   - It will be valid in this test.
+         * - Display loading.
+         * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
+         * - Thrown an Exception.
+         *   - Specifically, [Exception]
+         * - Display error message from ViewModel.
+         * - Finish the View.
+         */
+        @Test
+        fun `onEvent - Delete Account - valid password - failed - general exception`() {
             val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
             val captureArgFailure = CapturingSlot<OnFailureListener>()
             val exception = mockk<Exception>(relaxed = true)
@@ -116,7 +197,7 @@ class EmailReAuthLogicTest {
         fun `onEvent - Delete Account - invalid password - blank`() {
             val blankPassword = ""
 
-            every { viewModel.invalidPassword } returns message
+            every { viewModel.msgInvalidPassword } returns message
 
             logic.onEvent(ViewEvent.DeleteAcctClicked(blankPassword))
 

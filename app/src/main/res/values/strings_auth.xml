@@ -34,4 +34,6 @@
     <string name="hint_password">Password</string>
     <string name="hint_phone_num">Phone Number</string>
     <string name="hint_sms_code">SMS Code</string>
+
+    <string name="msg_too_many_request">Too many requests</string>
 </resources>

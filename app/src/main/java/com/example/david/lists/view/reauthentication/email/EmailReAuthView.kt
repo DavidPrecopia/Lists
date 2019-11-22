@@ -71,4 +71,8 @@ class EmailReAuthView : ReAuthBase(), IEmailReAuthContract.View {
     override fun displayLoading() {
         displayProgressBar()
     }
+
+    override fun hideLoading() {
+        hideProgressBar()
+    }
 }

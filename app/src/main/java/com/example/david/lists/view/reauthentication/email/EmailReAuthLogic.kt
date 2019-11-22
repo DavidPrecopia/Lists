@@ -5,6 +5,8 @@ import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.email.IEmailReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
 class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
                        private val viewModel: IEmailReAuthContract.ViewModel,
@@ -20,7 +22,7 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
 
     private fun evalPassword(password: String) {
         when {
-            password.isBlank() -> view.displayError(viewModel.invalidPassword)
+            password.isBlank() -> view.displayError(viewModel.msgInvalidPassword)
             else -> {
                 view.displayLoading()
                 deleteAccount(password)
@@ -43,7 +45,23 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
 
     private fun deletionFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
-        view.displayMessage(viewModel.msgAccountDeletionFailed)
-        view.finishView()
+        evalFailureException(e)
+    }
+
+    private fun evalFailureException(e: Exception) {
+        when (e) {
+            is FirebaseAuthInvalidCredentialsException -> {
+                view.hideLoading()
+                view.displayError(viewModel.msgInvalidPassword)
+            }
+            is FirebaseTooManyRequestsException -> {
+                view.displayMessage(viewModel.msgTooManyRequest)
+                view.finishView()
+            }
+            else -> {
+                view.displayMessage(viewModel.msgAccountDeletionFailed)
+                view.finishView()
+            }
+        }
     }
 }

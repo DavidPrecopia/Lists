@@ -11,6 +11,8 @@ interface IEmailReAuthContract {
         fun displayError(message: String)
 
         fun displayLoading()
+
+        fun hideLoading()
     }
 
     interface Logic {
@@ -18,7 +20,9 @@ interface IEmailReAuthContract {
     }
 
     interface ViewModel {
-        val invalidPassword: String
+        val msgInvalidPassword: String
+
+        val msgTooManyRequest: String
 
         val msgAccountDeletionSucceed: String
 

@@ -8,8 +8,11 @@ class EmailReAuthViewModel(application: Application) :
         ViewModelBase(application),
         IEmailReAuthContract.ViewModel {
 
-    override val invalidPassword: String
+    override val msgInvalidPassword: String
         get() = getStringRes(R.string.msg_invalid_password)
+
+    override val msgTooManyRequest: String
+        get() = getStringRes(R.string.msg_too_many_request)
 
 
     override val msgAccountDeletionSucceed: String
