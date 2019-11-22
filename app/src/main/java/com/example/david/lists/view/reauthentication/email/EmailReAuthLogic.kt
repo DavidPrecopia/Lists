@@ -13,19 +13,22 @@ class EmailReAuthLogic(private val view: IEmailReAuthContract.View,
 
     override fun onEvent(event: ViewEvent) {
         when (event) {
-            is ViewEvent.DeleteAcctClicked -> deleteAccount(event.password.trim())
+            is ViewEvent.DeleteAcctClicked -> evalPassword(event.password.trim())
         }
     }
 
 
-    private fun deleteAccount(password: String) {
-        if (password.isBlank()) {
-            view.displayError(viewModel.invalidPassword)
-            return
+    private fun evalPassword(password: String) {
+        when {
+            password.isBlank() -> view.displayError(viewModel.invalidPassword)
+            else -> {
+                view.displayLoading()
+                deleteAccount(password)
+            }
         }
+    }
 
-        view.displayLoading()
-
+    private fun deleteAccount(password: String) {
         userRepo.deleteEmailUser(
                 password,
                 deletionSucceeded(),
