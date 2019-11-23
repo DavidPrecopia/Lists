@@ -63,6 +63,10 @@ class PhoneReAuthView : ReAuthBase(), IPhoneReAuthContract.View {
         displayProgressBar()
     }
 
+    override fun hideLoading() {
+        hideProgressBar()
+    }
+
 
     override fun openSmsVerification(phoneNum: String, verificationId: String) {
         navigate(PhoneReAuthViewDirections.actionPhoneReAuthViewToSmsCodeView(

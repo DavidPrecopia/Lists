@@ -3,6 +3,8 @@ package com.example.david.lists.view.reauthentication.phone
 import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.mockk.*
@@ -84,13 +86,92 @@ class PhoneReAuthLogicTest {
          * - Display loading.
          * - Verify phone number via UserRepo.
          *   - This will fail - thus
-         *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called.
+         *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called
+         *   with [FirebaseAuthInvalidCredentialsException].
+         * - Throw an Exception.
+         * - Hide loading.
+         * - Display an error with a message from the ViewModel.
+         */
+        @Test
+        fun `onEvent - confirm phone num - valid number - failed - invalid credentials`() {
+            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
+            val firebaseException = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
+
+            every { viewModel.msgInvalidNum } returns message
+            every {
+                userRepo.validatePhoneNumber(
+                        callbacks = capture(capturedCallbacks),
+                        phoneNum = formattedPhoneNum
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+
+            capturedCallbacks.captured.onVerificationFailed(firebaseException)
+
+            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { view.displayLoading() }
+            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { firebaseException.printStackTrace() }
+            verify { view.hideLoading() }
+            verify { view.displayError(message) }
+        }
+
+        /**
+         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - Validate the number
+         *   - It will be valid.
+         * - Save phone number to ViewModel.
+         * - Display loading.
+         * - Verify phone number via UserRepo.
+         *   - This will fail - thus
+         *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called
+         *   with [FirebaseTooManyRequestsException].
+         * - Throw an Exception.
+         * - Display a message from the ViewModel.
+         * - Finish the View.
+         */
+        @Test
+        fun `onEvent - confirm phone num - valid number - failed - too many requests`() {
+            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
+            val firebaseException = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+
+            every { viewModel.msgTooManyRequest } returns message
+            every {
+                userRepo.validatePhoneNumber(
+                        callbacks = capture(capturedCallbacks),
+                        phoneNum = formattedPhoneNum
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+
+            capturedCallbacks.captured.onVerificationFailed(firebaseException)
+
+            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { view.displayLoading() }
+            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { firebaseException.printStackTrace() }
+            verify { view.displayMessage(message) }
+            verify { view.finishView() }
+        }
+
+        /**
+         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - Validate the number
+         *   - It will be valid.
+         * - Save phone number to ViewModel.
+         * - Display loading.
+         * - Verify phone number via UserRepo.
+         *   - This will fail - thus
+         *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called
+         *   with a general Exception.
          * - Throw an Exception.
          * - Display an error with a message from the ViewModel.
          * - Finish the View.
          */
         @Test
-        fun `onEvent - confirm phone num - valid number - failed`() {
+        fun `onEvent - confirm phone num - valid number - failed - general exception`() {
             val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val firebaseException = mockk<FirebaseException>(relaxed = true)
 

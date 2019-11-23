@@ -22,9 +22,6 @@ class SmsReAuthViewModel(application: Application) :
     override val msgInvalidSms: String
         get() = getStringRes(R.string.msg_invalid_sms_code)
 
-    override val msgReEnterSms: String
-        get() = getStringRes(R.string.msg_reenter_sms_code)
-
     override val msgSmsSent: String
         get() = getStringRes(R.string.msg_sms_sent)
 
@@ -34,4 +31,7 @@ class SmsReAuthViewModel(application: Application) :
 
     override val msgAccountDeletionFailed: String
         get() = getStringRes(R.string.msg_account_deletion_failed)
+
+    override val msgTooManyRequest: String
+        get() = getStringRes(R.string.msg_too_many_request)
 }

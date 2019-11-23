@@ -6,6 +6,8 @@ import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.Vi
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.mockk.*
@@ -105,21 +107,19 @@ internal class SmsReAuthLogicTest {
          *   - It will be valid.
          * - Display loading.
          * - Delete the account via the UserRepo with the verification ID from the ViewModel.
-         *   - It will fail.
+         *   - It will fail with [FirebaseAuthInvalidCredentialsException].
          * - Thrown an Exception.
          * - Hide loading.
-         * - Display a message from the ViewModel.
-         * - Display an error message from the ViewModel ask user to re-enter the SMS code.
+         * - Display a error message from the ViewModel.
          */
         @Test
-        fun `onEvent - confirm sms - valid sms - failure`() {
+        fun `onEvent - confirm sms - valid sms - failure - invalid credentials`() {
             val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
             val captureArgFailure = CapturingSlot<OnFailureListener>()
-            val exception = mockk<Exception>(relaxed = true)
+            val exception = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.verificationId } returns verificationId
-            every { viewModel.msgAccountDeletionFailed } returns message
-            every { viewModel.msgReEnterSms } returns message
+            every { viewModel.msgInvalidSms } returns message
             every {
                 userRepo.deletePhoneUser(
                         verificationId = verificationId,
@@ -137,8 +137,85 @@ internal class SmsReAuthLogicTest {
             verify { userRepo.deletePhoneUser(verificationId, validSms, captureArgSuccess.captured, captureArgFailure.captured) }
             verify { exception.printStackTrace() }
             verify { view.hideLoading() }
-            verify { view.displayMessage(message) }
             verify { view.displayError(message) }
+        }
+
+        /**
+         * - [ViewEvent.ConfirmSmsClicked]
+         * - Validate the SMS number
+         *   - It will be valid.
+         * - Display loading.
+         * - Delete the account via the UserRepo with the verification ID from the ViewModel.
+         *   - It will fail with [FirebaseTooManyRequestsException].
+         * - Thrown an Exception.
+         * - Display a message from the ViewModel.
+         * - Finish the View.
+         */
+        @Test
+        fun `onEvent - confirm sms - valid sms - failure - too many requests`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+
+            every { viewModel.verificationId } returns verificationId
+            every { viewModel.msgTooManyRequest } returns message
+            every {
+                userRepo.deletePhoneUser(
+                        verificationId = verificationId,
+                        smsCode = validSms,
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.ConfirmSmsClicked(validSms))
+
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { view.displayLoading() }
+            verify { userRepo.deletePhoneUser(verificationId, validSms, captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { exception.printStackTrace() }
+            verify { view.displayMessage(message) }
+            verify { view.finishView() }
+        }
+
+        /**
+         * - [ViewEvent.ConfirmSmsClicked]
+         * - Validate the SMS number
+         *   - It will be valid.
+         * - Display loading.
+         * - Delete the account via the UserRepo with the verification ID from the ViewModel.
+         *   - It will fail with an general Exception.
+         * - Thrown an Exception.
+         * - Display a message from the ViewModel.
+         * - Finish the View.
+         */
+        @Test
+        fun `onEvent - confirm sms - valid sms - failure - general exceptions`() {
+            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
+            val captureArgFailure = CapturingSlot<OnFailureListener>()
+            val exception = mockk<Exception>(relaxed = true)
+
+            every { viewModel.verificationId } returns verificationId
+            every { viewModel.msgAccountDeletionFailed } returns message
+            every {
+                userRepo.deletePhoneUser(
+                        verificationId = verificationId,
+                        smsCode = validSms,
+                        successListener = capture(captureArgSuccess),
+                        failureListener = capture(captureArgFailure)
+                )
+            } answers { Unit }
+
+            logic.onEvent(ViewEvent.ConfirmSmsClicked(validSms))
+
+            captureArgFailure.captured.onFailure(exception)
+
+            verify { view.displayLoading() }
+            verify { userRepo.deletePhoneUser(verificationId, validSms, captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { exception.printStackTrace() }
+            verify { view.displayMessage(message) }
+            verify { view.finishView() }
         }
 
         /**

@@ -8,6 +8,8 @@ import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.Vi
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
@@ -63,10 +65,23 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun deletionFailed() = OnFailureListener { e ->
         UtilExceptions.throwException(e)
-        with(view) {
-            hideLoading()
-            displayMessage(viewModel.msgAccountDeletionFailed)
-            displayError(viewModel.msgReEnterSms)
+        evalDeletionFailureException(e)
+    }
+
+    private fun evalDeletionFailureException(e: Exception) {
+        when (e) {
+            is FirebaseAuthInvalidCredentialsException -> {
+                view.hideLoading()
+                view.displayError(viewModel.msgInvalidSms)
+            }
+            is FirebaseTooManyRequestsException -> {
+                view.displayMessage(viewModel.msgTooManyRequest)
+                view.finishView()
+            }
+            else -> {
+                view.displayMessage(viewModel.msgAccountDeletionFailed)
+                view.finishView()
+            }
         }
     }
 
@@ -84,15 +99,23 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
          * In this case, I cannot continue because, unlike [onCodeSent], this method does not give me the Verification ID.
          */
         override fun onVerificationCompleted(authCredential: PhoneAuthCredential) {
-            UtilExceptions.throwException(Exception("Phone user was instantly verified during deletion."))
-            view.displayMessage(viewModel.msgTryAgainLater)
-            view.cancelTimer()
-            view.finishView()
+            finish(
+                    Exception("Phone user was instantly verified during deletion."),
+                    viewModel.msgTryAgainLater
+            )
         }
 
+        /**
+         * This cannot fail because of an invalid phone number (num has already been verified),
+         * thus I can assume that it is due to an error out of the user's control.
+         */
         override fun onVerificationFailed(e: FirebaseException) {
+            finish(e, viewModel.msgGenericError)
+        }
+
+        private fun finish(e: Exception, message: String) {
             UtilExceptions.throwException(e)
-            view.displayMessage(viewModel.msgGenericError)
+            view.displayMessage(message)
             view.cancelTimer()
             view.finishView()
         }

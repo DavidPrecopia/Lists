@@ -34,9 +34,9 @@ interface ISmsReAuthContract {
 
         val msgInvalidSms: String
 
-        val msgReEnterSms: String
-
         val msgSmsSent: String
+
+        val msgTooManyRequest: String
 
         val msgAccountDeletionSucceed: String
 

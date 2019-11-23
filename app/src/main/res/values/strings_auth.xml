@@ -24,7 +24,6 @@
 
     <string name="msg_invalid_sms_code">Invalid SMS code</string>
     <string name="msg_sms_sent">SMS has been sent</string>
-    <string name="msg_reenter_sms_code">Please try re-entering the SMS code</string>
     <string name="msg_phone_reauth">Please enter your phone number to delete your account.
         \n\nYou will receive an SMS message for verification.
         \nMessage and data rates may apply.</string>

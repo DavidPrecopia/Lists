@@ -5,6 +5,8 @@ import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
@@ -63,8 +65,25 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
 
         override fun onVerificationFailed(e: FirebaseException) {
             UtilExceptions.throwException(e)
-            view.displayMessage(viewModel.msgGenericError)
-            view.finishView()
+            evalFailureException(e)
+
+        }
+
+        private fun evalFailureException(e: FirebaseException) {
+            when (e) {
+                is FirebaseAuthInvalidCredentialsException -> {
+                    view.hideLoading()
+                    view.displayError(viewModel.msgInvalidNum)
+                }
+                is FirebaseTooManyRequestsException -> {
+                    view.displayMessage(viewModel.msgTooManyRequest)
+                    view.finishView()
+                }
+                else -> {
+                    view.displayMessage(viewModel.msgGenericError)
+                    view.finishView()
+                }
+            }
         }
 
         override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {

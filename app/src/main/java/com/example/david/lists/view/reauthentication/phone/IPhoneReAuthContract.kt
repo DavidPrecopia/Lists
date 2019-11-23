@@ -8,6 +8,8 @@ interface IPhoneReAuthContract {
 
         fun displayLoading()
 
+        fun hideLoading()
+
         fun openSmsVerification(phoneNum: String, verificationId: String)
 
         fun finishView()
@@ -27,6 +29,8 @@ interface IPhoneReAuthContract {
         val msgTryAgainLater: String
 
         val msgGenericError: String
+
+        val msgTooManyRequest: String
     }
 
     sealed class ViewEvent {

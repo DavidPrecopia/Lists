@@ -23,4 +23,8 @@ class PhoneReAuthViewModel(application: Application) :
 
     override val msgTryAgainLater: String
         get() = getStringRes(R.string.msg_try_again)
+
+
+    override val msgTooManyRequest: String
+        get() = getStringRes(R.string.msg_too_many_request)
 }
