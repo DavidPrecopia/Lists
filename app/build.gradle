@@ -72,7 +72,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.2.0-rc01"
 
     implementation "com.google.android.material:material:$android_libraries_version"
-    implementation "androidx.recyclerview:recyclerview:$android_libraries_version"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     // Navigation
