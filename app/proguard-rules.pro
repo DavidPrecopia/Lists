@@ -28,6 +28,7 @@
 -keep public class com.example.david.lists.ui.MainActivity
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigView
 -keep public class com.example.david.lists.widget.view.MyAppWidgetProvider
+-keep interface com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener
 -keepclassmembers class com.example.david.lists.data.datamodel.** { *; }
 -keep public class com.crashlytics.android.CrashlyticsInitProvider
 
