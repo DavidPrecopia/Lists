@@ -6,7 +6,7 @@ Keeps lists synchronized across different devices.
 
 - Firebase's [Cloud Firestore](https://firebase.google.com/docs/firestore) to synchronize between Android devices.
   - Offline on-device storage.
-  - [Cloud Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started) written from-strach to provide user and data validation.
+  - [Cloud Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started) written from-scratch to provide user and data validation.
   - [Cloud Functions](https://firebase.google.com/docs/functions), written in JavaScript, to automatically and remotely delete the contents of a list when a list is deleted by the user.
 - Firebase Authentication to authenticate users.
   - User can delete their account from within the app. A user's data will be automatically deleted when they do so.
@@ -14,7 +14,7 @@ Keeps lists synchronized across different devices.
 - MVP-like architecture with dependency injection via Dagger2.
   - View: Fragments set-up as Passive Views. I use a single Activity architecture with Jetpack's [Navigation library](https://developer.android.com/guide/navigation).
   - Logic: Similar to a presenter.
-  - ViewModel: Stores and retrives user-facing messages for the the Logic class. That is kept seperate so I can keep the Logic class free of refeneces to the Android framework, thus I can test it with JUnit on the JVM.
+  - ViewModel: A cache for the View. Additionally, it retrieves user-facing messages, which requires holding a reference to the Android framework.
   - Repository: It validates data before forwarding it to the RemoteRepository classes that directly communicate with Cloud Firestore.
 - Multithreading with RxJava 2.
 - [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics/) for crash reporting.
