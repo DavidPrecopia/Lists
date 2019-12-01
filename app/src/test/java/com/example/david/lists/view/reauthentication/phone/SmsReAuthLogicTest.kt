@@ -27,9 +27,7 @@ internal class SmsReAuthLogicTest {
     private val logic = SmsReAuthLogic(view, viewModel, userRepo)
 
 
-    private val countryCode = "+1"
     private val validPhoneNum = "1235550100"
-    private val formattedPhoneNum = "$countryCode$validPhoneNum"
 
     private val verificationId = "verificationId"
 
@@ -50,9 +48,9 @@ internal class SmsReAuthLogicTest {
          */
         @Test
         fun onStart() {
-            logic.onEvent(ViewEvent.OnStart(formattedPhoneNum, verificationId))
+            logic.onEvent(ViewEvent.OnStart(validPhoneNum, verificationId))
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { viewModel.verificationId = verificationId }
         }
     }
@@ -272,12 +270,12 @@ internal class SmsReAuthLogicTest {
             val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val forceResendingToken = mockk<PhoneAuthProvider.ForceResendingToken>(relaxed = true)
 
-            every { viewModel.phoneNumber } returns formattedPhoneNum
+            every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgSmsSent } returns message
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -285,7 +283,7 @@ internal class SmsReAuthLogicTest {
 
             capturedCallbacks.captured.onCodeSent(verificationId, forceResendingToken)
 
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { viewModel.verificationId = verificationId }
             verify { view.displayMessage(message) }
             verify { view.startTimer(SMS_TIME_OUT_SECONDS) }
@@ -306,12 +304,12 @@ internal class SmsReAuthLogicTest {
             val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val firebaseException = mockk<FirebaseException>(relaxed = true)
 
-            every { viewModel.phoneNumber } returns formattedPhoneNum
+            every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgGenericError } returns message
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -319,7 +317,7 @@ internal class SmsReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationFailed(firebaseException)
 
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.cancelTimer() }
@@ -341,12 +339,12 @@ internal class SmsReAuthLogicTest {
             val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val phoneAuthCredential = mockk<PhoneAuthCredential>(relaxed = true)
 
-            every { viewModel.phoneNumber } returns formattedPhoneNum
+            every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgTryAgainLater } returns message
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -354,7 +352,7 @@ internal class SmsReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationCompleted(phoneAuthCredential)
 
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { view.displayMessage(message) }
             verify { view.cancelTimer() }
             verify { view.finishView() }

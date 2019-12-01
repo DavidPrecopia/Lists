@@ -24,9 +24,7 @@ class PhoneReAuthLogicTest {
     private val logic = PhoneReAuthLogic(view, viewModel, userRepo)
 
 
-    private val countryCode = "+1"
     private val validPhoneNum = "1235550100"
-    private val formattedPhoneNum = "$countryCode$validPhoneNum"
 
     private val verificationId = "verificationId"
 
@@ -58,12 +56,12 @@ class PhoneReAuthLogicTest {
             val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val forceResendingToken = mockk<PhoneAuthProvider.ForceResendingToken>(relaxed = true)
 
-            every { viewModel.phoneNumber } returns formattedPhoneNum
+            every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgSmsSent } returns message
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -71,11 +69,11 @@ class PhoneReAuthLogicTest {
 
             capturedCallbacks.captured.onCodeSent(verificationId, forceResendingToken)
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { view.displayMessage(message) }
-            verify { view.openSmsVerification(formattedPhoneNum, verificationId) }
+            verify { view.openSmsVerification(validPhoneNum, verificationId) }
         }
 
         /**
@@ -101,7 +99,7 @@ class PhoneReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -109,9 +107,9 @@ class PhoneReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationFailed(firebaseException)
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { firebaseException.printStackTrace() }
             verify { view.hideLoading() }
             verify { view.displayError(message) }
@@ -140,7 +138,7 @@ class PhoneReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -148,9 +146,9 @@ class PhoneReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationFailed(firebaseException)
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
@@ -179,7 +177,7 @@ class PhoneReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -187,9 +185,9 @@ class PhoneReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationFailed(firebaseException)
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
@@ -217,7 +215,7 @@ class PhoneReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(
                         callbacks = capture(capturedCallbacks),
-                        phoneNum = formattedPhoneNum
+                        phoneNum = validPhoneNum
                 )
             } answers { Unit }
 
@@ -225,9 +223,9 @@ class PhoneReAuthLogicTest {
 
             capturedCallbacks.captured.onVerificationCompleted(phoneAuthCredential)
 
-            verify { viewModel.phoneNumber = formattedPhoneNum }
+            verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(formattedPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
         }

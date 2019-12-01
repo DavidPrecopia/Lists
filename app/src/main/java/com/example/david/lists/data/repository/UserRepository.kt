@@ -103,13 +103,15 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
 
     override fun validatePhoneNumber(phoneNum: String, callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
         PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
-                phoneNum,
+                formatPhoneNum(phoneNum),
                 SMS_TIME_OUT_SECONDS,
                 TimeUnit.SECONDS,
                 TaskExecutors.MAIN_THREAD,
                 callbacks
         )
     }
+
+    private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
 
 
     override fun deleteGoogleUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {

@@ -11,7 +11,6 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
 private const val VALID_PHONE_NUM_LENGTH = 10
-private const val PHONE_NUM_COUNTRY_CODE_USA = "+1"
 
 class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
                        private val viewModel: IPhoneReAuthContract.ViewModel,
@@ -29,11 +28,9 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
         when {
             numIsInvalid(phoneNum) -> view.displayError(viewModel.msgInvalidNum)
             else -> {
-                with(formatPhoneNum(phoneNum)) {
-                    viewModel.phoneNumber = this
-                    view.displayLoading()
-                    verifyPhoneNum(this)
-                }
+                viewModel.phoneNumber = phoneNum
+                view.displayLoading()
+                verifyPhoneNum(phoneNum)
             }
         }
     }
@@ -41,8 +38,6 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
     private fun numIsInvalid(phoneNum: String) = with(phoneNum) {
         isBlank() || length != VALID_PHONE_NUM_LENGTH || onlyDigits.not()
     }
-
-    private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
 
 
     private fun verifyPhoneNum(phoneNum: String) {
