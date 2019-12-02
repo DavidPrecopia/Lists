@@ -2,7 +2,9 @@ package com.example.androiddata.repository
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.example.androiddata.repository.IRepositoryContract.Providers
+import com.example.domain.constants.AuthProviders
+import com.example.domain.constants.PHONE_NUM_COUNTRY_CODE_USA
+import com.example.domain.constants.SMS_TIME_OUT_SECONDS
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.OnFailureListener
@@ -60,12 +62,12 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
      * I am explicitly getting the provider ID at index 1 because
      * the provider ID at index 0 will always be "firebase".
      */
-    override val authProvider: Providers
+    override val authProvider: AuthProviders
         get() = when (user!!.providerData[1].providerId) {
-            GoogleAuthProvider.PROVIDER_ID -> Providers.GOOGLE
-            EmailAuthProvider.PROVIDER_ID -> Providers.EMAIL
-            PhoneAuthProvider.PROVIDER_ID -> Providers.PHONE
-            else -> Providers.UNKNOWN
+            GoogleAuthProvider.PROVIDER_ID -> AuthProviders.GOOGLE
+            EmailAuthProvider.PROVIDER_ID -> AuthProviders.EMAIL
+            PhoneAuthProvider.PROVIDER_ID -> AuthProviders.PHONE
+            else -> AuthProviders.UNKNOWN
         }
 
 

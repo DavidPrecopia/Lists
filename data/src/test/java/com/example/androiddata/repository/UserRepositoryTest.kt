@@ -1,7 +1,7 @@
 package com.example.androiddata.repository
 
 import android.app.Application
-import com.example.androiddata.repository.IRepositoryContract.Providers
+import com.example.domain.constants.AuthProviders
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.*
 import io.mockk.clearAllMocks
@@ -204,43 +204,43 @@ class UserRepositoryTest {
     inner class AuthProvider {
         /**
          * - Provider is [GoogleAuthProvider.PROVIDER_ID].
-         * - Returns [Providers.GOOGLE].
+         * - Returns [AuthProviders.GOOGLE].
          */
         @Test
         fun `authProvider - Google`() {
             every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns GoogleAuthProvider.PROVIDER_ID
 
-            assertThat(userRepo.authProvider).isEqualTo(Providers.GOOGLE)
+            assertThat(userRepo.authProvider).isEqualTo(AuthProviders.GOOGLE)
         }
 
         /**
          * - Provider is [EmailAuthProvider.PROVIDER_ID].
-         * - Returns [Providers.EMAIL].
+         * - Returns [AuthProviders.EMAIL].
          */
         @Test
         fun `authProvider - Email`() {
             every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns EmailAuthProvider.PROVIDER_ID
 
-            assertThat(userRepo.authProvider).isEqualTo(Providers.EMAIL)
+            assertThat(userRepo.authProvider).isEqualTo(AuthProviders.EMAIL)
         }
 
         /**
          * - Provider is [PhoneAuthProvider.PROVIDER_ID].
-         * - Returns [Providers.PHONE].
+         * - Returns [AuthProviders.PHONE].
          */
         @Test
         fun `authProvider - Phone`() {
             every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns PhoneAuthProvider.PROVIDER_ID
 
-            assertThat(userRepo.authProvider).isEqualTo(Providers.PHONE)
+            assertThat(userRepo.authProvider).isEqualTo(AuthProviders.PHONE)
         }
 
         /**
          * - Provider is unknown.
-         * - Returns [Providers.UNKNOWN].
+         * - Returns [AuthProviders.UNKNOWN].
          */
         @Test
         fun `authProvider - Unknown`() {
@@ -249,7 +249,7 @@ class UserRepositoryTest {
             every { firebaseAuth.currentUser } returns user
             every { user.providerData[1].providerId } returns unknownProvider
 
-            assertThat(userRepo.authProvider).isEqualTo(Providers.UNKNOWN)
+            assertThat(userRepo.authProvider).isEqualTo(AuthProviders.UNKNOWN)
         }
     }
 }

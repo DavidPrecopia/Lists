@@ -1,16 +1,13 @@
 package com.example.androiddata.repository
 
 import androidx.lifecycle.LiveData
+import com.example.domain.constants.AuthProviders
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.PhoneAuthProvider
 import io.reactivex.Flowable
-
-const val SMS_TIME_OUT_SECONDS = 15L
-
-const val PHONE_NUM_COUNTRY_CODE_USA = "+1"
 
 interface IRepositoryContract {
     interface Repository {
@@ -48,7 +45,7 @@ interface IRepositoryContract {
 
         val emailVerified: Boolean
 
-        val authProvider: Providers
+        val authProvider: AuthProviders
 
         fun sendVerificationEmail(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
@@ -65,12 +62,5 @@ interface IRepositoryContract {
         fun deletePhoneUser(verificationId: String, smsCode: String, successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
 
         fun userSignedOutObservable(): LiveData<Boolean>
-    }
-
-    enum class Providers {
-        GOOGLE,
-        EMAIL,
-        PHONE,
-        UNKNOWN
     }
 }

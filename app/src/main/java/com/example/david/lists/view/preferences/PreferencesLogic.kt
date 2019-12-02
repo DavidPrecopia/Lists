@@ -1,9 +1,9 @@
 package com.example.david.lists.view.preferences
 
 import com.example.androiddata.repository.IRepositoryContract
-import com.example.androiddata.repository.IRepositoryContract.Providers
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
+import com.example.domain.constants.AuthProviders
 
 class PreferencesLogic(private val view: IPreferencesViewContract.View,
                        private val viewModel: IPreferencesViewContract.ViewModel,
@@ -19,10 +19,10 @@ class PreferencesLogic(private val view: IPreferencesViewContract.View,
 
     private fun deleteAccount() {
         when (userRepo.authProvider) {
-            Providers.GOOGLE -> view.openGoogleReAuth()
-            Providers.EMAIL -> view.openEmailReAuth()
-            Providers.PHONE -> view.openPhoneReAuth()
-            Providers.UNKNOWN -> {
+            AuthProviders.GOOGLE -> view.openGoogleReAuth()
+            AuthProviders.EMAIL -> view.openEmailReAuth()
+            AuthProviders.PHONE -> view.openPhoneReAuth()
+            AuthProviders.UNKNOWN -> {
                 view.displayMessage(viewModel.msgDeletionFailed)
                 UtilExceptions.throwException(IllegalStateException("Unknown authentication provider"))
             }

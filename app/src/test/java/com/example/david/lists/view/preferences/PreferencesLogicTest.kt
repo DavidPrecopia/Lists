@@ -1,8 +1,8 @@
 package com.example.david.lists.view.preferences
 
 import com.example.androiddata.repository.IRepositoryContract
-import com.example.androiddata.repository.IRepositoryContract.Providers
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
+import com.example.domain.constants.AuthProviders
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -59,12 +59,12 @@ class PreferencesLogicTest {
         /**
          * - Delete Google user.
          * - Specify the specific provider via the UserRepo.
-         *   - It will be [Providers.GOOGLE] for this test.
+         *   - It will be [AuthProviders.GOOGLE] for this test.
          * - Open Google re-authentication.
          */
         @Test
         fun `deleteAccountConfirmed - Google provider`() {
-            every { userRepo.authProvider } returns Providers.GOOGLE
+            every { userRepo.authProvider } returns AuthProviders.GOOGLE
 
             logic.onEvent(ViewEvent.DeleteAccountConfirmed)
 
@@ -75,12 +75,12 @@ class PreferencesLogicTest {
         /**
          * - Delete Email user.
          * - Specify the specific provider via the UserRepo.
-         *   - It will be [Providers.EMAIL] for this test.
+         *   - It will be [AuthProviders.EMAIL] for this test.
          * - Open email re-authentication.
          */
         @Test
         fun `deleteAccountConfirmed - Email provider`() {
-            every { userRepo.authProvider } returns Providers.EMAIL
+            every { userRepo.authProvider } returns AuthProviders.EMAIL
 
             logic.onEvent(ViewEvent.DeleteAccountConfirmed)
 
@@ -90,12 +90,12 @@ class PreferencesLogicTest {
         /**
          * - Delete Phone user.
          * - Specify the specific provider via the UserRepo.
-         *   - It will be [Providers.PHONE] for this test.
+         *   - It will be [AuthProviders.PHONE] for this test.
          * - Open phone re-authentication.
          */
         @Test
         fun `deleteAccountConfirmed - Phone provider`() {
-            every { userRepo.authProvider } returns Providers.PHONE
+            every { userRepo.authProvider } returns AuthProviders.PHONE
 
             logic.onEvent(ViewEvent.DeleteAccountConfirmed)
 
@@ -105,13 +105,13 @@ class PreferencesLogicTest {
         /**
          * - Delete user.
          * - Specify the specific provider via the UserRepo.
-         *   - It will be [Providers.UNKNOWN] for this test.
+         *   - It will be [AuthProviders.UNKNOWN] for this test.
          * - Throw an Exception.
          * - Display failure message from ViewModel.
          */
         @Test
         fun `deleteAccountConfirmed - Unknown provider`() {
-            every { userRepo.authProvider } returns Providers.UNKNOWN
+            every { userRepo.authProvider } returns AuthProviders.UNKNOWN
             every { viewModel.msgDeletionFailed } returns message
 
             assertThrows<IllegalStateException> {
