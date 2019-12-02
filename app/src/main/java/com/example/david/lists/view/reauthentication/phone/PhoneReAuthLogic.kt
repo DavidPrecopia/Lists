@@ -1,7 +1,7 @@
 package com.example.david.lists.view.reauthentication.phone
 
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.onlyDigits
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
 import com.google.firebase.FirebaseException

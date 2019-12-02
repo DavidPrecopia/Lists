@@ -20,20 +20,22 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-
+# TODO REMOVE POST REPO REFACTOR
+-keepclassmembers class com.example.david.lists.data.datamodel.** { *; }
 -keep public class com.google.firebase.provider.FirebaseInitProvider
 -keep public class com.firebase.ui.authResult.data.client.AuthUiInitProvider
 -keep public class com.google.firebase.iid.FirebaseInstanceIdService
+# Per Firebase Authentication
+-keepattributes Signature
+-keepattributes *Annotation*
+
+
 -keep public class androidx.lifecycle.ProcessLifecycleOwnerInitializer
 -keep public class com.example.david.lists.ui.MainActivity
 -keep public class com.example.david.lists.widget.configactivity.WidgetConfigView
 -keep public class com.example.david.lists.widget.view.MyAppWidgetProvider
 -keep interface com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener
--keepclassmembers class com.example.david.lists.data.datamodel.** { *; }
 -keep public class com.crashlytics.android.CrashlyticsInitProvider
 
-# Per Firebase Authentication
--keepattributes Signature
--keepattributes *Annotation*
 # Perserve file paths and lines numbers for crash reports - per Fabric Crashlytics.
 -keepattributes SourceFile,LineNumberTable

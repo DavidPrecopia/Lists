@@ -1,6 +1,6 @@
 package com.example.david.lists.widget.configview
 
-import com.example.david.lists.data.datamodel.UserList
+import com.example.domain.datamodel.UserList
 
 interface IWidgetConfigContract {
     interface View {

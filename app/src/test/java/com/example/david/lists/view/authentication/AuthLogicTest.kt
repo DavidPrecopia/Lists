@@ -1,6 +1,6 @@
 package com.example.david.lists.view.authentication
 
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import io.mockk.*

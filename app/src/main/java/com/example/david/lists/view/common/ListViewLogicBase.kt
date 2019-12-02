@@ -1,6 +1,6 @@
 package com.example.david.lists.view.common
 
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
 
 import io.reactivex.disposables.CompositeDisposable

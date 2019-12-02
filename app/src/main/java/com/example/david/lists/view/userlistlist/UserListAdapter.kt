@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.view.common.ListItemViewHolderBase
+import com.example.domain.datamodel.UserList
 import kotlinx.android.synthetic.main.list_item.*
 
 class UserListAdapter(private val logic: IUserListViewContract.Logic,

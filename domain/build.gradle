@@ -1,0 +1,32 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+repositories {
+    maven { url 'https://dl.bintray.com/firebaseui/firebase-ui' }
+}
+
+dependencies {
+    // The "Plugin version and library versions are not the same" warning message is a false positive.
+    // https://stackoverflow.com/a/49956210
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+
+    // Local testing
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$rootProject.junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$rootProject.junitVersion"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "org.assertj:assertj-core:$rootProject.assertjVersion"
+}

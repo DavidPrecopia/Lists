@@ -1,7 +1,7 @@
 package com.example.david.lists.view.preferences
 
-import com.example.david.lists.data.repository.IRepositoryContract
-import com.example.david.lists.data.repository.IRepositoryContract.Providers
+import com.example.androiddata.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract.Providers
 import com.example.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
 import io.mockk.clearAllMocks
 import io.mockk.every

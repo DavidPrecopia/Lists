@@ -11,10 +11,10 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.widget.buildlogic.SHARED_PREFS
 import com.example.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent
 import com.example.david.lists.widget.view.WidgetRemoteView
+import com.example.domain.datamodel.UserList
 import kotlinx.android.synthetic.main.widget_config_view.*
 import javax.inject.Inject
 import javax.inject.Named

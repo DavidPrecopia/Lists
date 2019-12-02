@@ -1,11 +1,11 @@
 package com.example.david.lists.view.addedit.userlist
 
-import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
+import com.example.domain.datamodel.UserList
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

@@ -1,0 +1,67 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
+        consumerProguardFiles 'consumer-rules.pro'
+        resConfig rootProject.resConfigs
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation project(":domain")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
+//    implementation 'androidx.appcompat:appcompat:1.1.0'
+//    implementation 'androidx.core:core-ktx:1.1.0'
+
+    // Cloud Firestore
+    implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
+    // Firebase Authentication
+    implementation "com.google.firebase:firebase-auth:$rootProject.firebaseAuthVersion"
+    implementation "com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion"
+    implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+
+    // Dagger
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+
+    // Timber
+    debugImplementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+
+    // Local testing
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$rootProject.junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$rootProject.junitVersion"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "org.assertj:assertj-core:$rootProject.assertjVersion"
+}

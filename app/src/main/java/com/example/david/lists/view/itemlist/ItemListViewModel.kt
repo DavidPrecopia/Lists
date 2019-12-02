@@ -2,8 +2,8 @@ package com.example.david.lists.view.itemlist
 
 import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.view.common.ViewModelBase
+import com.example.domain.datamodel.Item
 import java.util.*
 
 class ItemListViewModel(application: Application, override val userListId: String) :

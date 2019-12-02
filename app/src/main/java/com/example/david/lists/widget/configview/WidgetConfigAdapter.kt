@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.view.userlistlist.UserListDiffCallback
+import com.example.domain.datamodel.UserList
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.widget_config_list_item.*
 

@@ -1,8 +1,8 @@
 package com.example.david.lists.view.reauthentication.phone
 
+import com.example.androiddata.repository.IRepositoryContract
+import com.example.androiddata.repository.SMS_TIME_OUT_SECONDS
 import com.example.david.lists.common.onlyDigits
-import com.example.david.lists.data.repository.IRepositoryContract
-import com.example.david.lists.data.repository.SMS_TIME_OUT_SECONDS
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener

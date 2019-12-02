@@ -1,6 +1,6 @@
 package com.example.david.lists.view.reauthentication.google
 
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.google.IGoogleReAuthContract.ViewEvent
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener

@@ -1,8 +1,8 @@
 package com.example.david.lists.view.reauthentication.phone.buildlogic
 
 import android.app.Application
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract
 import com.example.david.lists.view.reauthentication.phone.SmsReAuthLogic
 import com.example.david.lists.view.reauthentication.phone.SmsReAuthViewModel

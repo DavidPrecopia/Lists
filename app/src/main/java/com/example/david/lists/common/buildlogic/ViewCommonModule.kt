@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.ViewBinderHelper
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.ListsApplication
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.IUtilNightModeContract
 import com.example.david.lists.util.SchedulerProvider

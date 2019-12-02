@@ -2,8 +2,8 @@ package com.example.david.lists.view.userlistlist
 
 import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.view.common.ViewModelBase
+import com.example.domain.datamodel.UserList
 import java.util.*
 
 class UserListListViewModel(application: Application) : ViewModelBase(application),

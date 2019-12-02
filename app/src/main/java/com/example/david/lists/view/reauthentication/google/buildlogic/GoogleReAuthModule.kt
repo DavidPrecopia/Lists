@@ -1,8 +1,8 @@
 package com.example.david.lists.view.reauthentication.google.buildlogic
 
 import android.app.Application
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.data.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.google.GoogleReAuthLogic
 import com.example.david.lists.view.reauthentication.google.GoogleReAuthViewModel
 import com.example.david.lists.view.reauthentication.google.IGoogleReAuthContract

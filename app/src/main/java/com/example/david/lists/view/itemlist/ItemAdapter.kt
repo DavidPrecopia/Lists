@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.Item
 import com.example.david.lists.view.common.ListItemViewHolderBase
+import com.example.domain.datamodel.Item
 
 class ItemAdapter(private val logic: IItemViewContract.Logic,
                   private val viewBinderHelper: ViewBinderHelper,

@@ -1,11 +1,11 @@
 package com.example.david.lists.view.addedit.userlist
 
-import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.view.addedit.common.AddEditLogicBase
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
+import com.example.domain.datamodel.UserList
 
 class AddEditUserListLogic(view: IAddEditContract.View,
                            viewModel: IAddEditContract.ViewModel,

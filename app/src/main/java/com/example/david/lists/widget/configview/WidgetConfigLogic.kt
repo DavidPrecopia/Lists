@@ -1,10 +1,10 @@
 package com.example.david.lists.widget.configview
 
-import com.example.david.lists.data.datamodel.UserList
-import com.example.david.lists.data.repository.IRepositoryContract
+import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewLogicBase
+import com.example.domain.datamodel.UserList
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.DisposableSubscriber

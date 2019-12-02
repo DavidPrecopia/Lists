@@ -10,10 +10,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.R
 import com.example.david.lists.common.application
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewBase
 import com.example.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent
+import com.example.domain.datamodel.UserList
 import javax.inject.Inject
 
 class UserListListView : ListViewBase(),

@@ -2,7 +2,7 @@ package com.example.david.lists.view.userlistlist
 
 import androidx.recyclerview.widget.DiffUtil
 
-import com.example.david.lists.data.datamodel.UserList
+import com.example.domain.datamodel.UserList
 
 class UserListDiffCallback : DiffUtil.ItemCallback<UserList>() {
     override fun areItemsTheSame(oldItem: UserList, newItem: UserList) =

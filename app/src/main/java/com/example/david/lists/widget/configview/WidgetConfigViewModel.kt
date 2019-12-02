@@ -4,9 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.appwidget.AppWidgetManager
 import com.example.david.lists.R
-import com.example.david.lists.data.datamodel.UserList
 import com.example.david.lists.view.common.ViewModelBase
 import com.example.david.lists.widget.UtilWidgetKeys
+import com.example.domain.datamodel.UserList
 import java.util.*
 
 class WidgetConfigViewModel(application: Application) :

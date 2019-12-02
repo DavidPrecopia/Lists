@@ -15,17 +15,17 @@ androidExtensions {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
     defaultConfig {
         applicationId "com.example.david.lists"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 14
-        versionName "2.1"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
         // This ensures that ProGuard removes un-supported language resources.
         // https://developer.android.com/studio/build/shrink-code#unused-alt-resources
-        resConfig "en"
+        resConfig rootProject.resConfigs
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -62,14 +62,10 @@ android {
     }
 }
 
-repositories {
-    maven { url 'https://dl.bintray.com/jetbrains/anko/' }
-    maven { url 'https://dl.bintray.com/firebaseui/firebase-ui' }
-    maven { url 'https://dl.bintray.com/chthai64/maven' }
-    maven { url 'https://maven.fabric.io/public' }
-}
-
 dependencies {
+    implementation project(':domain')
+    implementation project(':data')
+
     implementation "androidx.core:core-ktx:$rootProject.rootProject.coreKtxVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
 
