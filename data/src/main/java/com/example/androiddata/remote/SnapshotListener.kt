@@ -1,5 +1,6 @@
 package com.example.androiddata.remote
 
+import android.annotation.SuppressLint
 import com.example.androiddata.common.UtilExceptions
 import com.example.androiddata.repository.IRepositoryContract
 import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
@@ -53,8 +54,10 @@ class SnapshotListener(private val userListCollection: CollectionReference,
                     BackpressureStrategy.BUFFER
             )
 
+
+    @SuppressLint("CheckResult")
     private fun initFirebaseAuth(userRepo: IRepositoryContract.UserRepository, firestore: FirebaseFirestore) {
-        userRepo.userSignedOutObservable().observeForever { signedOut ->
+        userRepo.userSignedOutObservable().subscribe { signedOut ->
             if (signedOut) {
                 userListsSnapshotListener?.remove()
                 itemsSnapshotListener?.remove()

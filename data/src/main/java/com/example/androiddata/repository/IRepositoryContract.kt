@@ -1,13 +1,12 @@
 package com.example.androiddata.repository
 
-import androidx.lifecycle.LiveData
 import com.example.domain.constants.AuthProviders
+import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.auth.PhoneAuthProvider
+import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 interface IRepositoryContract {
     interface Repository {
@@ -47,20 +46,20 @@ interface IRepositoryContract {
 
         val authProvider: AuthProviders
 
-        fun sendVerificationEmail(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun sendVerificationEmail(): Completable
 
-        fun reloadUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun reloadUser(): Completable
 
-        fun signOut(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun signOut(): Completable
 
-        fun validatePhoneNumber(phoneNum: String, callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks)
+        fun validatePhoneNumber(phoneNum: String): Single<PhoneNumValidationResults>
 
-        fun deleteGoogleUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun deleteGoogleUser(): Completable
 
-        fun deleteEmailUser(password: String, successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun deleteEmailUser(password: String): Completable
 
-        fun deletePhoneUser(verificationId: String, smsCode: String, successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener)
+        fun deletePhoneUser(verificationId: String, smsCode: String): Completable
 
-        fun userSignedOutObservable(): LiveData<Boolean>
+        fun userSignedOutObservable(): Flowable<Boolean>
     }
 }

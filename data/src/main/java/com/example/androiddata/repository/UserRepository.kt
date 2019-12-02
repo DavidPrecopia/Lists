@@ -1,16 +1,17 @@
 package com.example.androiddata.repository
 
 import android.app.Application
-import androidx.lifecycle.MutableLiveData
+import com.example.androiddata.common.createCompletable
 import com.example.domain.constants.AuthProviders
 import com.example.domain.constants.PHONE_NUM_COUNTRY_CODE_USA
+import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.TaskExecutors
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import io.reactivex.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,16 +28,21 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
     private val user: FirebaseUser?
         get() = firebaseAuth.currentUser
 
-    private val userSignedOutObservable = MutableLiveData<Boolean>()
+    private val userSignedOutObservable: Flowable<Boolean>
 
     private val userNullException = NullPointerException("User is null")
 
     init {
-        firebaseAuth.addAuthStateListener {
-            if (this.signedOut) {
-                userSignedOutObservable.value = true
-            }
-        }
+        userSignedOutObservable = Flowable.create<Boolean>(
+                { emitter ->
+                    firebaseAuth.addAuthStateListener {
+                        if (this.signedOut) {
+                            emitter.onNext(true)
+                        }
+                    }
+                },
+                BackpressureStrategy.BUFFER
+        )
     }
 
 
@@ -70,92 +76,94 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
             else -> AuthProviders.UNKNOWN
         }
 
-
-    override fun sendVerificationEmail(successListener: OnSuccessListener<in Void>,
-                                       failureListener: OnFailureListener) {
+    override fun sendVerificationEmail() = createCompletable { emitter ->
         user?.sendEmailVerification(actionCodeSettings)
-                ?.addOnSuccessListener(successListener)
-                ?.addOnFailureListener(failureListener)
-                ?: failureListener.onFailure(userNullException)
+                ?.addOnSuccessListener { emitter.onComplete() }
+                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?: emitter.onError(userNullException)
     }
 
-    override fun reloadUser(successListener: OnSuccessListener<in Void>,
-                            failureListener: OnFailureListener) {
+    override fun reloadUser() = createCompletable { emitter ->
         user?.getIdToken(true)
-                ?.addOnSuccessListener(reload(successListener, failureListener))
-                ?.addOnFailureListener(failureListener)
-                ?: failureListener.onFailure(userNullException)
+                ?.addOnSuccessListener { reload(emitter) }
+                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?: emitter.onError(userNullException)
     }
 
-    private fun reload(successListener: OnSuccessListener<in Void>,
-                       failureListener: OnFailureListener) = OnSuccessListener<GetTokenResult> {
+    private fun reload(emitter: CompletableEmitter) {
         user?.reload()
-                ?.addOnSuccessListener(successListener)
-                ?.addOnFailureListener(failureListener)
-                ?: failureListener.onFailure(userNullException)
+                ?.addOnSuccessListener { emitter.onComplete() }
+                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?: emitter.onError(userNullException)
     }
 
 
-    override fun signOut(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+    override fun signOut() = createCompletable { emitter ->
         authUI.signOut(application)
-                .addOnSuccessListener(successListener)
-                .addOnFailureListener(failureListener)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { e -> emitter.onError(e) }
     }
 
 
-    override fun validatePhoneNumber(phoneNum: String, callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks) {
+    override fun validatePhoneNumber(phoneNum: String) = Single.create<PhoneNumValidationResults> { emitter ->
         PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
                 formatPhoneNum(phoneNum),
                 SMS_TIME_OUT_SECONDS,
                 TimeUnit.SECONDS,
                 TaskExecutors.MAIN_THREAD,
-                callbacks
+                validateNumberCallbacks(emitter)
         )
     }
 
     private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
 
+    private fun validateNumberCallbacks(emitter: SingleEmitter<PhoneNumValidationResults>) = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        override fun onVerificationCompleted(p0: PhoneAuthCredential) {
+            emitter.onSuccess(PhoneNumValidationResults.Validated)
+        }
 
-    override fun deleteGoogleUser(successListener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+        override fun onVerificationFailed(e: FirebaseException) {
+            emitter.onError(e)
+        }
+
+        override fun onCodeSent(validationCode: String, token: PhoneAuthProvider.ForceResendingToken) {
+            emitter.onSuccess(PhoneNumValidationResults.SmsSent(validationCode))
+        }
+    }
+
+
+    override fun deleteGoogleUser() = createCompletable { emitter ->
         deleteAccount(
                 GoogleAuthProvider.getCredential(
                         GoogleSignIn.getLastSignedInAccount(application)!!.idToken,
                         null),
-                successListener,
-                failureListener
+                emitter
         )
     }
 
-    override fun deleteEmailUser(password: String,
-                                 successListener: OnSuccessListener<in Void>,
-                                 failureListener: OnFailureListener) {
+    override fun deleteEmailUser(password: String) = createCompletable { emitter ->
         deleteAccount(
                 EmailAuthProvider.getCredential(email!!, password),
-                successListener,
-                failureListener
+                emitter
         )
     }
 
     override fun deletePhoneUser(verificationId: String,
-                                 smsCode: String,
-                                 successListener: OnSuccessListener<in Void>,
-                                 failureListener: OnFailureListener) {
+                                 smsCode: String) = createCompletable { emitter ->
         deleteAccount(
                 PhoneAuthProvider.getCredential(verificationId, smsCode),
-                successListener,
-                failureListener
+                emitter
         )
     }
 
     private fun deleteAccount(authCredential: AuthCredential,
-                              successListener: OnSuccessListener<in Void>,
-                              failureListener: OnFailureListener) {
+                              emitter: CompletableEmitter) {
         user!!.reauthenticate(authCredential)
                 .addOnSuccessListener {
                     authUI.delete(application)
-                            .addOnSuccessListener(successListener)
-                            .addOnFailureListener(failureListener)
-                }.addOnFailureListener(failureListener)
+                            .addOnSuccessListener { emitter.onComplete() }
+                            .addOnFailureListener { e -> emitter.onError(e) }
+                }.addOnFailureListener { e -> emitter.onError(e) }
     }
 
 

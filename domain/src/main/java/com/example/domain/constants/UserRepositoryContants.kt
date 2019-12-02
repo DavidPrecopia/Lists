@@ -10,3 +10,10 @@ enum class AuthProviders {
     PHONE,
     UNKNOWN
 }
+
+sealed class PhoneNumValidationResults {
+    // The number was validated, but the SMS was not sent.
+    object Validated : PhoneNumValidationResults()
+
+    data class SmsSent(val validationCode: String) : PhoneNumValidationResults()
+}
