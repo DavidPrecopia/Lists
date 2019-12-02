@@ -79,21 +79,21 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
     override fun sendVerificationEmail() = createCompletable { emitter ->
         user?.sendEmailVerification(actionCodeSettings)
                 ?.addOnSuccessListener { emitter.onComplete() }
-                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?.addOnFailureListener { emitter.onError(it) }
                 ?: emitter.onError(userNullException)
     }
 
     override fun reloadUser() = createCompletable { emitter ->
         user?.getIdToken(true)
                 ?.addOnSuccessListener { reload(emitter) }
-                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?.addOnFailureListener { emitter.onError(it) }
                 ?: emitter.onError(userNullException)
     }
 
     private fun reload(emitter: CompletableEmitter) {
         user?.reload()
                 ?.addOnSuccessListener { emitter.onComplete() }
-                ?.addOnFailureListener { e -> emitter.onError(e) }
+                ?.addOnFailureListener { emitter.onError(it) }
                 ?: emitter.onError(userNullException)
     }
 
@@ -101,7 +101,7 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
     override fun signOut() = createCompletable { emitter ->
         authUI.signOut(application)
                 .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { e -> emitter.onError(e) }
+                .addOnFailureListener { emitter.onError(it) }
     }
 
 
@@ -162,8 +162,8 @@ class UserRepository(private val firebaseAuth: FirebaseAuth,
                 .addOnSuccessListener {
                     authUI.delete(application)
                             .addOnSuccessListener { emitter.onComplete() }
-                            .addOnFailureListener { e -> emitter.onError(e) }
-                }.addOnFailureListener { e -> emitter.onError(e) }
+                            .addOnFailureListener { emitter.onError(it) }
+                }.addOnFailureListener { emitter.onError(it) }
     }
 
 
