@@ -1,7 +1,7 @@
 package com.example.androiddata.remote
 
 import android.annotation.SuppressLint
-import com.example.androiddata.common.UtilExceptions
+import com.example.androiddata.common.createFlowable
 import com.example.androiddata.repository.IRepositoryContract
 import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
 import com.example.domain.constants.RepositoryConstants.FIELD_POSITION
@@ -11,7 +11,6 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.DocumentChange.Type.REMOVED
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ktx.toObjects
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import java.util.*
@@ -20,8 +19,6 @@ class SnapshotListener(private val userListCollection: CollectionReference,
                        private val itemCollection: CollectionReference,
                        userRepo: IRepositoryContract.UserRepository,
                        firestore: FirebaseFirestore) : IRemoteRepositoryContract.SnapshotListener {
-
-    override val userListFlowable: Flowable<List<UserList>>
 
     private var userListsSnapshotListener: ListenerRegistration? = null
     private var itemsSnapshotListener: ListenerRegistration? = null
@@ -35,30 +32,19 @@ class SnapshotListener(private val userListCollection: CollectionReference,
      */
     private var recentLocalChanges = false
 
+
     init {
         deletedUserListsFlowable = initDeletedUserListsFlowable()
-        userListFlowable = initUserListFlowable()
-
         initFirebaseAuth(userRepo, firestore)
     }
 
     private fun initDeletedUserListsFlowable() =
-            Flowable.create<List<UserList>>(
-                    { deletedUserListsEmitter = it },
-                    BackpressureStrategy.BUFFER
-            )
-
-    private fun initUserListFlowable() =
-            Flowable.create<List<UserList>>(
-                    { getUserListQuerySnapshot(it) },
-                    BackpressureStrategy.BUFFER
-            )
-
+            createFlowable<List<UserList>> { deletedUserListsEmitter = it }
 
     @SuppressLint("CheckResult")
     private fun initFirebaseAuth(userRepo: IRepositoryContract.UserRepository, firestore: FirebaseFirestore) {
-        userRepo.userSignedOutObservable().subscribe { signedOut ->
-            if (signedOut) {
+        userRepo.userSignedOutObservable().subscribe {
+            if (it) {
                 userListsSnapshotListener?.remove()
                 itemsSnapshotListener?.remove()
                 firestore.clearPersistence()
@@ -66,6 +52,12 @@ class SnapshotListener(private val userListCollection: CollectionReference,
         }
     }
 
+
+    /**
+     * USER LIST
+     */
+    override fun getUserListFlowable() =
+            createFlowable<List<UserList>> { getUserListQuerySnapshot(it) }
 
     private fun getUserListQuerySnapshot(emitter: FlowableEmitter<List<UserList>>) {
         this.userListsSnapshotListener = userListCollection
@@ -82,16 +74,14 @@ class SnapshotListener(private val userListCollection: CollectionReference,
                 if (validQuery(querySnapshot, e, emitter)) {
                     emitter.onNext(querySnapshot!!.toObjects())
                 }
-
-                if (deletedUserListsHasSubscribers()) {
-                    checkIfUserListDeleted(querySnapshot!!)
-                }
+                evalDeletedUserList(querySnapshot!!)
             }
 
-    private fun deletedUserListsHasSubscribers() =
-            deletedUserListsEmitter?.isCancelled?.not() ?: false
+    private fun evalDeletedUserList(querySnapshot: QuerySnapshot) {
+        if (deletedUserListsEmitterIsCancelled()) {
+            return
+        }
 
-    private fun checkIfUserListDeleted(querySnapshot: QuerySnapshot) {
         val deletedUserLists = ArrayList<UserList>()
         for (change in querySnapshot.documentChanges) {
             if (change.type == REMOVED) {
@@ -99,19 +89,21 @@ class SnapshotListener(private val userListCollection: CollectionReference,
             }
         }
 
-        if (deletedUserLists.isEmpty()) {
-            return
+        when {
+            deletedUserLists.isEmpty() -> return
+            else -> deletedUserListsEmitter!!.onNext(deletedUserLists)
         }
-
-        deletedUserListsEmitter!!.onNext(deletedUserLists)
     }
 
+    private fun deletedUserListsEmitterIsCancelled() =
+            deletedUserListsEmitter?.isCancelled ?: true
 
+
+    /**
+     * ITEM
+     */
     override fun getItemFlowable(userListId: String) =
-            Flowable.create<List<Item>>(
-                    { getItemQuerySnapshot(it, userListId) },
-                    BackpressureStrategy.BUFFER
-            )
+            createFlowable<List<Item>> { getItemQuerySnapshot(it, userListId) }
 
     private fun getItemQuerySnapshot(emitter: FlowableEmitter<List<Item>>, userListId: String) {
         itemsSnapshotListener = itemCollection
@@ -132,13 +124,15 @@ class SnapshotListener(private val userListCollection: CollectionReference,
             }
 
 
+    /**
+     * HELPERS
+     */
     private fun validQuery(querySnapshot: QuerySnapshot?,
                            e: FirebaseFirestoreException?,
                            emitter: FlowableEmitter<*>) = when {
         querySnapshot === null -> false
         queryError(querySnapshot, e) -> {
-            UtilExceptions.throwException(e!!)
-            emitter.onError(e)
+            emitter.onError(e!!)
             false
         }
         shouldReturn(emitter, querySnapshot) -> false

@@ -10,27 +10,27 @@ import io.reactivex.Single
 
 interface IRepositoryContract {
     interface Repository {
-        val getUserLists: Flowable<List<UserList>>
-
         val userListDeletedObservable: Flowable<List<UserList>>
+
+        fun getUserLists(): Flowable<List<UserList>>
 
         fun getItems(userListId: String): Flowable<List<Item>>
 
-        fun addUserList(userList: UserList)
+        fun addUserList(userList: UserList): Completable
 
-        fun addItem(item: Item)
+        fun addItem(item: Item): Completable
 
-        fun deleteUserLists(userListList: List<UserList>)
+        fun deleteUserLists(userListList: List<UserList>): Completable
 
-        fun deleteItems(itemList: List<Item>)
+        fun deleteItems(itemList: List<Item>): Completable
 
-        fun renameUserList(id: String, newTitle: String)
+        fun renameUserList(id: String, newTitle: String): Completable
 
-        fun renameItem(id: String, newTitle: String)
+        fun renameItem(id: String, newTitle: String): Completable
 
-        fun updateUserListPosition(userList: UserList, oldPosition: Int, newPosition: Int)
+        fun updateUserListPosition(userList: UserList, oldPosition: Int, newPosition: Int): Completable
 
-        fun updateItemPosition(item: Item, oldPosition: Int, newPosition: Int)
+        fun updateItemPosition(item: Item, oldPosition: Int, newPosition: Int): Completable
     }
 
     interface UserRepository {
