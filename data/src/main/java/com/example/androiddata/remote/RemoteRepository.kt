@@ -1,9 +1,9 @@
 package com.example.androiddata.remote
 
 import com.example.androiddata.common.UtilExceptions
-import com.example.domain.constants.RemoteRepositoryConstants.FIELD_ITEM_USER_LIST_ID
-import com.example.domain.constants.RemoteRepositoryConstants.FIELD_POSITION
-import com.example.domain.constants.RemoteRepositoryConstants.FIELD_TITLE
+import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
+import com.example.domain.constants.RepositoryConstants.FIELD_POSITION
+import com.example.domain.constants.RepositoryConstants.FIELD_TITLE
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
 import com.google.android.gms.tasks.OnSuccessListener

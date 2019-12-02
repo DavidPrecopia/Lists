@@ -1,12 +1,7 @@
 package com.example.androiddata.remote.buildlogic
 
-import com.example.androiddata.remote.IRemoteRepositoryContract
-import com.example.androiddata.remote.RemoteRepository
-import com.example.androiddata.remote.SnapshotListener
+import com.example.androiddata.remote.*
 import com.example.androiddata.repository.IRepositoryContract
-import com.example.domain.constants.RemoteRepositoryConstants.COLLECTION_ITEMS
-import com.example.domain.constants.RemoteRepositoryConstants.COLLECTION_USER
-import com.example.domain.constants.RemoteRepositoryConstants.COLLECTION_USER_LISTS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
