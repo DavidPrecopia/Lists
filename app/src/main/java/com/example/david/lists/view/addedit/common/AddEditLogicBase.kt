@@ -1,8 +1,8 @@
 package com.example.david.lists.view.addedit.common
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
+import com.example.domain.repository.IRepositoryContract
 
 abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
                                 protected val viewModel: IAddEditContract.ViewModel,

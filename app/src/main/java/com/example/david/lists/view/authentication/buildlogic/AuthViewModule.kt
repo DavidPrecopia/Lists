@@ -3,12 +3,12 @@ package com.example.david.lists.view.authentication.buildlogic
 import android.app.Application
 import android.content.Intent
 import android.content.SharedPreferences
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.view.authentication.AuthLogic
 import com.example.david.lists.view.authentication.AuthViewModel
 import com.example.david.lists.view.authentication.IAuthContract
+import com.example.domain.repository.IRepositoryContract
 import com.firebase.ui.auth.AuthUI
 import dagger.Module
 import dagger.Provides

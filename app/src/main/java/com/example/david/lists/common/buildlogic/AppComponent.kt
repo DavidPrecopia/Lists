@@ -2,11 +2,10 @@ package com.example.david.lists.common.buildlogic
 
 import android.app.Application
 import android.content.SharedPreferences
-import com.example.androiddata.remote.buildlogic.RemoteRepositoryModule
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.androiddata.repository.buildlogic.RepositoryModule
 import com.example.androiddata.repository.buildlogic.UserRepositoryModule
 import com.example.david.lists.util.IUtilNightModeContract
+import com.example.domain.repository.IRepositoryContract
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -15,7 +14,6 @@ import javax.inject.Singleton
 @Component(modules = [
     RepositoryModule::class,
     UserRepositoryModule::class,
-    RemoteRepositoryModule::class,
     SharedPrefsModule::class,
     UtilNightModeModule::class,
     FirebaseAuthModule::class

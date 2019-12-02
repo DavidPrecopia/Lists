@@ -1,6 +1,5 @@
 package com.example.david.lists.view.addedit.item.buildlogic
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.ID
@@ -8,6 +7,7 @@ import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamed
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.TITLE
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.USER_LIST_ID
 import com.example.david.lists.view.addedit.item.AddEditItemLogic
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

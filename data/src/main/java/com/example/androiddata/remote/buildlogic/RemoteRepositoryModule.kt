@@ -1,7 +1,7 @@
 package com.example.androiddata.remote.buildlogic
 
 import com.example.androiddata.remote.*
-import com.example.androiddata.repository.IRepositoryContract
+import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
@@ -15,7 +15,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class RemoteRepositoryModule {
+internal class RemoteRepositoryModule {
     @Singleton
     @Provides
     fun remoteDatabase(firestore: FirebaseFirestore,

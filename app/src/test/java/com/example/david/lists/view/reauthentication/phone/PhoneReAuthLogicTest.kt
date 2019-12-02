@@ -1,7 +1,7 @@
 package com.example.david.lists.view.reauthentication.phone
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
+import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException

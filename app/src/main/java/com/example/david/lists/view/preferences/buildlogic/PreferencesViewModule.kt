@@ -1,11 +1,11 @@
 package com.example.david.lists.view.preferences.buildlogic
 
 import android.app.Application
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.view.preferences.IPreferencesViewContract
 import com.example.david.lists.view.preferences.PreferencesLogic
 import com.example.david.lists.view.preferences.PreferencesViewModel
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 

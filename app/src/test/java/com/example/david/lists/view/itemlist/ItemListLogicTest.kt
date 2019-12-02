@@ -1,10 +1,10 @@
 package com.example.david.lists.view.itemlist
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.SchedulerProviderMockInit
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
+import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable

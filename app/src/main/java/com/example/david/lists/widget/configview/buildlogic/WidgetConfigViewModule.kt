@@ -1,13 +1,13 @@
 package com.example.david.lists.widget.configview.buildlogic
 
 import android.app.Application
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.widget.configview.IWidgetConfigContract
 import com.example.david.lists.widget.configview.WidgetConfigAdapter
 import com.example.david.lists.widget.configview.WidgetConfigLogic
 import com.example.david.lists.widget.configview.WidgetConfigViewModel
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable

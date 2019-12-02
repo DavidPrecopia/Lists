@@ -4,10 +4,10 @@ import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.widget.RemoteViewsService
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.widget.view.MyRemoteViewsFactory
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable

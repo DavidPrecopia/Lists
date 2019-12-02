@@ -1,10 +1,10 @@
 package com.example.david.lists.view.reauthentication.phone
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.onlyDigits
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
+import com.example.domain.repository.IRepositoryContract
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.FirebaseException

@@ -1,4 +1,4 @@
-package com.example.androiddata.repository
+package com.example.domain.repository
 
 import com.example.domain.constants.AuthProviders
 import com.example.domain.constants.PhoneNumValidationResults

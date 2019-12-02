@@ -1,11 +1,11 @@
 package com.example.david.lists.view.itemlist
 
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewLogicBase
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
+import com.example.domain.repository.IRepositoryContract
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.DisposableSubscriber
 import java.util.*

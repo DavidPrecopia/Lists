@@ -2,11 +2,11 @@ package com.example.androiddata.remote
 
 import android.annotation.SuppressLint
 import com.example.androiddata.common.createFlowable
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
 import com.example.domain.constants.RepositoryConstants.FIELD_POSITION
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
+import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.DocumentChange.Type.REMOVED
 import com.google.firebase.firestore.EventListener
@@ -15,7 +15,7 @@ import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
 import java.util.*
 
-class SnapshotListener(private val userListCollection: CollectionReference,
+internal class SnapshotListener(private val userListCollection: CollectionReference,
                        private val itemCollection: CollectionReference,
                        userRepo: IRepositoryContract.UserRepository,
                        firestore: FirebaseFirestore) : IRemoteRepositoryContract.SnapshotListener {

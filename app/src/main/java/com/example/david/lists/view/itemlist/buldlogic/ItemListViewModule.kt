@@ -3,13 +3,13 @@ package com.example.david.lists.view.itemlist.buldlogic
 import android.app.Application
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.chauthai.swipereveallayout.ViewBinderHelper
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.itemlist.IItemViewContract
 import com.example.david.lists.view.itemlist.ItemAdapter
 import com.example.david.lists.view.itemlist.ItemListLogic
 import com.example.david.lists.view.itemlist.ItemListViewModel
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable

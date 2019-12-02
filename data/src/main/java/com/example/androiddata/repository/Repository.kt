@@ -3,6 +3,7 @@ package com.example.androiddata.repository
 import com.example.androiddata.remote.IRemoteRepositoryContract
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
+import com.example.domain.repository.IRepositoryContract
 import io.reactivex.Flowable
 
 class Repository(private val remote: IRemoteRepositoryContract.Repository) :

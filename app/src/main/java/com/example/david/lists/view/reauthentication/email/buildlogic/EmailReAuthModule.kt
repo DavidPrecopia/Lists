@@ -1,11 +1,11 @@
 package com.example.david.lists.view.reauthentication.email.buildlogic
 
 import android.app.Application
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.view.reauthentication.email.EmailReAuthLogic
 import com.example.david.lists.view.reauthentication.email.EmailReAuthViewModel
 import com.example.david.lists.view.reauthentication.email.IEmailReAuthContract
+import com.example.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
 

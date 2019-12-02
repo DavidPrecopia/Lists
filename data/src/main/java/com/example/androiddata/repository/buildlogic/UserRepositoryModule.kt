@@ -1,8 +1,8 @@
 package com.example.androiddata.repository.buildlogic
 
 import android.app.Application
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.androiddata.repository.UserRepository
+import com.example.domain.repository.IRepositoryContract
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth

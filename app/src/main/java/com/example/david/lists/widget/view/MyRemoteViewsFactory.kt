@@ -3,10 +3,10 @@ package com.example.david.lists.widget.view
 import android.appwidget.AppWidgetManager
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import com.example.androiddata.repository.IRepositoryContract
 import com.example.david.lists.R
 import com.example.david.lists.util.UtilExceptions
 import com.example.domain.datamodel.Item
+import com.example.domain.repository.IRepositoryContract
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

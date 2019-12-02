@@ -11,7 +11,7 @@ import com.google.firebase.firestore.*
 import io.reactivex.CompletableEmitter
 import io.reactivex.Flowable
 
-class RemoteRepository(private val firestore: FirebaseFirestore,
+internal class RemoteRepository(private val firestore: FirebaseFirestore,
                        private val userListsCollection: CollectionReference,
                        private val itemsCollection: CollectionReference,
                        private val snapshotListener: IRemoteRepositoryContract.SnapshotListener) :
