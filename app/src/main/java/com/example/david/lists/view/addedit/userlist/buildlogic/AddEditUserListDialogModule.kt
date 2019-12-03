@@ -1,6 +1,7 @@
 package com.example.david.lists.view.addedit.userlist.buildlogic
 
 import com.example.david.lists.common.buildlogic.ViewScope
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.ID
 import com.example.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.POSITION
@@ -18,9 +19,10 @@ internal class AddEditUserListDialogModule {
     fun logic(view: IAddEditContract.View,
               viewModel: IAddEditContract.ViewModel,
               repository: IRepositoryContract.Repository,
+              schedulerProvider: ISchedulerProviderContract,
               @Named(ID) id: String,
               @Named(TITLE) title: String,
               @Named(POSITION) position: Int): IAddEditContract.Logic {
-        return AddEditUserListLogic(view, viewModel, repository, id, title, position)
+        return AddEditUserListLogic(view, viewModel, repository, schedulerProvider, id, title, position)
     }
 }

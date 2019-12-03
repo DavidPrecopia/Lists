@@ -1,12 +1,17 @@
 package com.example.david.lists.view.addedit.common
 
+import com.example.david.lists.common.subscribeCompletable
+import com.example.david.lists.util.ISchedulerProviderContract
+import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
 import com.example.domain.repository.IRepositoryContract
+import io.reactivex.Completable
 
 abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
                                 protected val viewModel: IAddEditContract.ViewModel,
                                 protected val repo: IRepositoryContract.Repository,
+                                private val schedulerProvider: ISchedulerProviderContract,
                                 id: String,
                                 title: String,
                                 userListId: String?,
@@ -21,7 +26,9 @@ abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
         viewModel.taskType = if (title.isEmpty()) ADD else EDIT
     }
 
+
     protected abstract fun save(newTitle: String)
+
 
     override val currentTitle: String
         get() = viewModel.currentTitle
@@ -35,6 +42,15 @@ abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
                 view.finishView()
             }
         }
+    }
+
+    protected fun saveWithCompletable(completable: Completable) {
+        subscribeCompletable(
+                completable,
+                {},
+                { UtilExceptions.throwException(it) },
+                schedulerProvider
+        )
     }
 
     private fun titleUnchanged(input: String) = input == viewModel.currentTitle

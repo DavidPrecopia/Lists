@@ -1,5 +1,6 @@
 package com.example.david.lists.view.addedit.item
 
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.addedit.common.AddEditLogicBase
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
@@ -10,16 +11,17 @@ import com.example.domain.repository.IRepositoryContract
 class AddEditItemLogic(view: IAddEditContract.View,
                        viewModel: IAddEditContract.ViewModel,
                        repo: IRepositoryContract.Repository,
+                       schedulerProvider: ISchedulerProviderContract,
                        id: String,
                        title: String,
                        userListId: String,
                        position: Int) :
-        AddEditLogicBase(view, viewModel, repo, id, title, userListId, position) {
+        AddEditLogicBase(view, viewModel, repo, schedulerProvider, id, title, userListId, position) {
 
     public override fun save(newTitle: String) {
         when (viewModel.taskType) {
-            ADD -> repo.addItem(Item(newTitle, viewModel.position, viewModel.userListId!!))
-            EDIT -> repo.renameItem(viewModel.id, newTitle)
+            ADD -> saveWithCompletable(repo.addItem(Item(newTitle, viewModel.position, viewModel.userListId!!)))
+            EDIT -> saveWithCompletable(repo.renameItem(viewModel.id, newTitle))
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.david.lists.view.addedit.item
 
+import com.example.david.lists.SchedulerProviderMockInit
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
@@ -7,6 +9,7 @@ import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDI
 import com.example.domain.datamodel.Item
 import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
+import io.reactivex.Completable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -20,116 +23,76 @@ class AddEditItemLogicTest {
 
     private val repo = mockk<IRepositoryContract.Repository>(relaxUnitFun = true)
 
+    private val schedulerProvider = mockk<ISchedulerProviderContract>()
+
     private val id = "id"
     private val title = "title"
     private val userListId = "id_user_list"
     private val position = 0
 
-    private val logic = AddEditItemLogic(view, viewModel, repo, id, title, userListId, position)
+    private val logic = AddEditItemLogic(view, viewModel, repo, schedulerProvider, id, title, userListId, position)
 
 
     private val errorMessage = "error"
-    private val input = "input"
+    private val validInput = "input"
 
 
     @BeforeEach
     fun setUp() {
         clearAllMocks()
-    }
-
-
-    @Nested
-    inner class Save {
-        /**
-         * - Get the current task type from the ViewModel.
-         *   - In this test it will be [TaskType.ADD]
-         * - Get the position && userListId from the ViewModel.
-         * - Add the Item to the repo.
-         */
-        @Test
-        fun `save - Add`() {
-            val capturedArg = CapturingSlot<Item>()
-
-            every { viewModel.taskType } returns ADD
-            every { viewModel.position } returns position
-            every { viewModel.userListId } returns userListId
-            every { repo.addItem(item = capture(capturedArg)) } answers { Unit }
-
-            logic.save(input)
-
-            assertThat(capturedArg.captured.title).isEqualTo(input)
-            assertThat(capturedArg.captured.position).isEqualTo(position)
-            assertThat(capturedArg.captured.userListId).isEqualTo(userListId)
-        }
-
-        /**
-         * - Get the current task type from the ViewModel.
-         *   - In this test it will be [TaskType.EDIT]
-         * - Rename the Item via the repo.
-         */
-        @Test
-        fun `save - Edit`() {
-            every { viewModel.taskType } returns EDIT
-            every { viewModel.id } returns id
-
-            logic.save(input)
-
-            verify { repo.renameItem(id, input) }
-            verify(exactly = 0) { viewModel.position }
-        }
+        SchedulerProviderMockInit.init(schedulerProvider)
     }
 
 
     @Nested
     inner class ValidateInput {
         /**
+         * - Validate the input.
+         *   - It will be valid.
          * - Get the current task type from the ViewModel.
          *   - In this test it will be [TaskType.ADD]
-         * - Get the position && userListId from the ViewModel.
+         * - Get the position and userListId from the ViewModel.
          * - Add the new Item to the repo.
          * - Finish the View.
          */
         @Test
-        fun `validateInput - Add`() {
-            val capturedArg = CapturingSlot<Item>()
-
+        fun `validateInput - Add - successful`() {
             every { viewModel.taskType } returns ADD
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
             every { viewModel.userListId } returns userListId
+            every { repo.addItem(Item(validInput, position, userListId)) } answers { Completable.complete() }
 
-            every { repo.addItem(item = capture(capturedArg)) } answers { Unit }
+            logic.validateInput(validInput)
 
-            logic.validateInput(input)
-
-            assertThat(capturedArg.captured.title).isEqualTo(input)
-            assertThat(capturedArg.captured.position).isEqualTo(position)
-            assertThat(capturedArg.captured.userListId).isEqualTo(userListId)
             verify { view.finishView() }
         }
 
         /**
+         * - Validate the input.
+         *   - It will be valid.
          * - Get the current task type from the ViewModel.
          *   - In this test it will be [TaskType.EDIT]
-         *   Get the ID from the ViewModel.
+         * - Get the ID from the ViewModel.
          * - Rename the Item via the repo.
          * - Finish the View.
          */
         @Test
-        fun `validateInput - Edit`() {
+        fun `validateInput - Edit - successful`() {
             every { viewModel.taskType } returns EDIT
             every { viewModel.id } returns id
             every { viewModel.currentTitle } returns title
+            every { repo.renameItem(id, validInput) } answers { Completable.complete() }
 
-            logic.validateInput(input)
+            logic.validateInput(validInput)
 
-            verify { repo.renameItem(id, input) }
+            verify { repo.renameItem(id, validInput) }
             verify { view.finishView() }
             verify(exactly = 0) { viewModel.position }
         }
 
         /**
-         * - Check if the input is empty or is different from the current title.
+         * - Validate the input.
          *   - In this test it will be empty.
          * - Set View's state error with a message from the ViewModel.
          */
@@ -146,16 +109,16 @@ class AddEditItemLogicTest {
         }
 
         /**
-         * - Check if the input
-         *   - In this test it will not be different.
+         * - Validate the input.
+         *   - In this test the input will not be different from the current title.
          * - Set View's state error with a message from the ViewModel.
          */
         @Test
         fun `validateInput - Unchanged Input`() {
-            every { viewModel.currentTitle } returns input
+            every { viewModel.currentTitle } returns validInput
             every { viewModel.msgTitleUnchanged } returns errorMessage
 
-            logic.validateInput(input)
+            logic.validateInput(validInput)
 
             verify { view.setStateError(errorMessage) }
             verify { repo wasNot Called }
