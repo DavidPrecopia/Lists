@@ -1,5 +1,6 @@
 package com.example.david.lists.common
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Looper
 import com.example.david.lists.common.buildlogic.AppComponent
@@ -30,8 +31,9 @@ internal abstract class ListsApplicationBase : Application() {
      * otherwise the dependencies it creates will will still be tied
      * to the account the user just signed-out of.
      */
+    @SuppressLint("CheckResult")
     private fun firebaseAuthListener() {
-        appComponent.userRepo().userSignedOutObservable().observeForever { signedOut ->
+        appComponent.userRepo().userSignedOutObservable().subscribe { signedOut ->
             if (signedOut!!) {
                 initAppComponent()
             }
