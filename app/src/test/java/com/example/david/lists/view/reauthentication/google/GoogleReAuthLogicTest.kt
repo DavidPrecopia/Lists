@@ -1,10 +1,14 @@
 package com.example.david.lists.view.reauthentication.google
 
+import com.example.david.lists.SchedulerProviderMockInit
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.google.IGoogleReAuthContract.ViewEvent
 import com.example.domain.repository.IRepositoryContract
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import io.mockk.*
+import io.mockk.clearAllMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import io.reactivex.Completable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -16,8 +20,10 @@ class GoogleReAuthLogicTest {
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>()
 
+    private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
-    private val logic = GoogleReAuthLogic(view, viewModel, userRepo)
+
+    private val logic = GoogleReAuthLogic(view, viewModel, userRepo, schedulerProvider)
 
 
     private val message = "message"
@@ -26,6 +32,7 @@ class GoogleReAuthLogicTest {
     @BeforeEach
     fun init() {
         clearAllMocks()
+        SchedulerProviderMockInit.init(schedulerProvider)
     }
 
 
@@ -37,22 +44,12 @@ class GoogleReAuthLogicTest {
      */
     @Test
     fun `onEvent - OnStart - succeeded`() {
-        val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-        val captureArgFailure = CapturingSlot<OnFailureListener>()
-
         every { viewModel.msgAccountDeletionSucceed } returns message
-        every {
-            userRepo.deleteGoogleUser(
-                    successListener = capture(captureArgSuccess),
-                    failureListener = capture(captureArgFailure)
-            )
-        } answers { Unit }
+        every { userRepo.deleteGoogleUser() } answers { Completable.complete() }
 
         logic.onEvent(ViewEvent.OnStart)
 
-        captureArgSuccess.captured.onSuccess(null)
-
-        verify { userRepo.deleteGoogleUser(captureArgSuccess.captured, captureArgFailure.captured) }
+        verify { userRepo.deleteGoogleUser() }
         verify { view.displayMessage(message) }
         verify { view.openAuthView() }
     }
@@ -66,23 +63,14 @@ class GoogleReAuthLogicTest {
      */
     @Test
     fun `deleteAccountConfirmed - Google - failed`() {
-        val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-        val captureArgFailure = CapturingSlot<OnFailureListener>()
         val exception = mockk<Exception>(relaxed = true)
 
         every { viewModel.msgAccountDeletionFailed } returns message
-        every {
-            userRepo.deleteGoogleUser(
-                    successListener = capture(captureArgSuccess),
-                    failureListener = capture(captureArgFailure)
-            )
-        } answers { Unit }
+        every { userRepo.deleteGoogleUser() } answers { Completable.error(exception) }
 
         logic.onEvent(ViewEvent.OnStart)
 
-        captureArgFailure.captured.onFailure(exception)
-
-        verify { userRepo.deleteGoogleUser(captureArgSuccess.captured, captureArgFailure.captured) }
+        verify { userRepo.deleteGoogleUser() }
         verify { exception.printStackTrace() }
         verify { view.displayMessage(message) }
         verify { view.finishView() }

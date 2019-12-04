@@ -1,13 +1,17 @@
 package com.example.david.lists.view.reauthentication.phone
 
+import com.example.david.lists.SchedulerProviderMockInit
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
+import com.example.domain.constants.PhoneNumValidationResults.SmsSent
+import com.example.domain.constants.PhoneNumValidationResults.Validated
 import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.mockk.*
+import io.reactivex.Single
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -20,8 +24,10 @@ class PhoneReAuthLogicTest {
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>(relaxUnitFun = true)
 
+    private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
-    private val logic = PhoneReAuthLogic(view, viewModel, userRepo)
+
+    private val logic = PhoneReAuthLogic(view, viewModel, userRepo, schedulerProvider)
 
 
     private val validPhoneNum = "1235550100"
@@ -34,6 +40,7 @@ class PhoneReAuthLogicTest {
     @BeforeEach
     fun init() {
         clearAllMocks()
+        SchedulerProviderMockInit.init(schedulerProvider)
     }
 
 
@@ -53,25 +60,15 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - sent sms`() {
-            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
-            val forceResendingToken = mockk<PhoneAuthProvider.ForceResendingToken>(relaxed = true)
-
             every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgSmsSent } returns message
-            every {
-                userRepo.validatePhoneNumber(
-                        callbacks = capture(capturedCallbacks),
-                        phoneNum = validPhoneNum
-                )
-            } answers { Unit }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.just(SmsSent(verificationId)) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
-            capturedCallbacks.captured.onCodeSent(verificationId, forceResendingToken)
-
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { view.displayMessage(message) }
             verify { view.openSmsVerification(validPhoneNum, verificationId) }
         }
@@ -92,24 +89,16 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - invalid credentials`() {
-            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val firebaseException = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.msgInvalidNum } returns message
-            every {
-                userRepo.validatePhoneNumber(
-                        callbacks = capture(capturedCallbacks),
-                        phoneNum = validPhoneNum
-                )
-            } answers { Unit }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
-            capturedCallbacks.captured.onVerificationFailed(firebaseException)
-
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { firebaseException.printStackTrace() }
             verify { view.hideLoading() }
             verify { view.displayError(message) }
@@ -131,24 +120,16 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - too many requests`() {
-            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val firebaseException = mockk<FirebaseTooManyRequestsException>(relaxed = true)
 
             every { viewModel.msgTooManyRequest } returns message
-            every {
-                userRepo.validatePhoneNumber(
-                        callbacks = capture(capturedCallbacks),
-                        phoneNum = validPhoneNum
-                )
-            } answers { Unit }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
-            capturedCallbacks.captured.onVerificationFailed(firebaseException)
-
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
@@ -170,24 +151,16 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - general exception`() {
-            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
             val firebaseException = mockk<FirebaseException>(relaxed = true)
 
             every { viewModel.msgGenericError } returns message
-            every {
-                userRepo.validatePhoneNumber(
-                        callbacks = capture(capturedCallbacks),
-                        phoneNum = validPhoneNum
-                )
-            } answers { Unit }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
-            capturedCallbacks.captured.onVerificationFailed(firebaseException)
-
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { firebaseException.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
@@ -208,24 +181,14 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - verification completed`() {
-            val capturedCallbacks = CapturingSlot<PhoneAuthProvider.OnVerificationStateChangedCallbacks>()
-            val phoneAuthCredential = mockk<PhoneAuthCredential>(relaxed = true)
-
             every { viewModel.msgTryAgainLater } returns message
-            every {
-                userRepo.validatePhoneNumber(
-                        callbacks = capture(capturedCallbacks),
-                        phoneNum = validPhoneNum
-                )
-            } answers { Unit }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.just(Validated) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
-            capturedCallbacks.captured.onVerificationCompleted(phoneAuthCredential)
-
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
-            verify { userRepo.validatePhoneNumber(validPhoneNum, capturedCallbacks.captured) }
+            verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
         }
