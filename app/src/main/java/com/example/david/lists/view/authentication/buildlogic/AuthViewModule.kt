@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.authentication.AuthLogic
 import com.example.david.lists.view.authentication.AuthViewModel
 import com.example.david.lists.view.authentication.IAuthContract
@@ -19,8 +20,9 @@ internal class AuthViewModule {
     @Provides
     fun logic(view: IAuthContract.View,
               viewModel: IAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository): IAuthContract.Logic {
-        return AuthLogic(view, viewModel, userRepo)
+              userRepo: IRepositoryContract.UserRepository,
+              schedulerProvider: ISchedulerProviderContract): IAuthContract.Logic {
+        return AuthLogic(view, viewModel, userRepo, schedulerProvider)
     }
 
     @ViewScope

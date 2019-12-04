@@ -1,13 +1,14 @@
 package com.example.david.lists.view.authentication
 
+import com.example.david.lists.common.subscribeCompletable
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.domain.repository.IRepositoryContract
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 
 class AuthLogic(private val view: IAuthContract.View,
                 private val viewModel: IAuthContract.ViewModel,
-                private val userRepo: IRepositoryContract.UserRepository) : IAuthContract.Logic {
+                private val userRepo: IRepositoryContract.UserRepository,
+                private val schedulerProvider: ISchedulerProviderContract) : IAuthContract.Logic {
 
     override fun onStart(signOut: Boolean) {
         when {
@@ -43,18 +44,20 @@ class AuthLogic(private val view: IAuthContract.View,
         // Need to re-set state in case the user
         // signs-in with an unverified email.
         viewModel.emailVerificationSent = false
-        userRepo.signOut(
-                signOutSucceeded(),
-                signOutFailed()
+        subscribeCompletable(
+                userRepo.signOut(),
+                { signOutSucceeded() },
+                { signOutFailed(it) },
+                schedulerProvider
         )
     }
 
-    private fun signOutSucceeded() = OnSuccessListener<Void> {
+    private fun signOutSucceeded() {
         view.displayMessage(viewModel.msgSignOutSucceed)
         view.signIn(viewModel.signInRequestCode)
     }
 
-    private fun signOutFailed() = OnFailureListener { e ->
+    private fun signOutFailed(e: Throwable) {
         UtilExceptions.throwException(e)
         view.displayMessage(viewModel.msgSignOutFailed)
         view.openMainView()
@@ -69,18 +72,22 @@ class AuthLogic(private val view: IAuthContract.View,
 
     private fun verifyEmail() {
         when (viewModel.emailVerificationSent) {
-            true -> userRepo.reloadUser(
-                    successfullyReloadedUser(),
-                    failedToReloadUser()
+            true -> subscribeCompletable(
+                    userRepo.reloadUser(),
+                    { successfullyReloadedUser() },
+                    { failedToReloadUser(it) },
+                    schedulerProvider
             )
-            false -> userRepo.sendVerificationEmail(
-                    successfullySentEmail(),
-                    failedToSendEmail()
+            false -> subscribeCompletable(
+                    userRepo.sendVerificationEmail(),
+                    { successfullySentEmail() },
+                    { failedToSendEmail(it) },
+                    schedulerProvider
             )
         }
     }
 
-    private fun successfullyReloadedUser() = OnSuccessListener<Void> {
+    private fun successfullyReloadedUser() {
         when (userRepo.emailVerified) {
             true -> {
                 view.hideEmailSentMessage()
@@ -91,17 +98,17 @@ class AuthLogic(private val view: IAuthContract.View,
         }
     }
 
-    private fun failedToReloadUser() = OnFailureListener { e ->
+    private fun failedToReloadUser(e: Throwable) {
         UtilExceptions.throwException(e)
         view.signIn(viewModel.signInRequestCode)
     }
 
-    private fun successfullySentEmail() = OnSuccessListener<Void> {
+    private fun successfullySentEmail() {
         viewModel.emailVerificationSent = true
         view.displayEmailSentMessage(userRepo.email!!)
     }
 
-    private fun failedToSendEmail() = OnFailureListener { e ->
+    private fun failedToSendEmail(e: Throwable) {
         UtilExceptions.throwException(e)
         finish(viewModel.msgSignInError)
     }

@@ -90,10 +90,8 @@ dependencies {
 
     // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
-    // Firebase Authentication
-    implementation "com.google.firebase:firebase-auth:$rootProject.firebaseAuthVersion"
+    // Firebase Auth UI
     implementation "com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion"
-    implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
     // Firebase Crashlytics
     releaseImplementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion"
 
