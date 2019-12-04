@@ -1,9 +1,10 @@
 package com.example.david.lists.view.authentication
 
+import com.example.david.lists.SchedulerProviderMockInit
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.domain.repository.IRepositoryContract
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import io.mockk.*
+import io.reactivex.Completable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -17,8 +18,10 @@ class AuthLogicTest {
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>(relaxUnitFun = true)
 
+    private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
-    private val logic = AuthLogic(view, viewModel, userRepo)
+
+    private val logic = AuthLogic(view, viewModel, userRepo, schedulerProvider)
 
     private val email = "email"
     private val message = "message"
@@ -29,6 +32,7 @@ class AuthLogicTest {
     fun init() {
         clearAllMocks()
         every { viewModel.signInRequestCode } returns requestCode
+        SchedulerProviderMockInit.init(schedulerProvider)
     }
 
 
@@ -56,24 +60,13 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Sign Out - succeeded`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-
             every { viewModel.msgSignOutSucceed } returns message
-            every {
-                userRepo.signOut(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            every { userRepo.signOut() } answers { Completable.complete() }
 
             logic.onStart(signOut = true)
 
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgSuccess.captured.onSuccess(null)
-
             verify { viewModel.emailVerificationSent = false }
-            verify { userRepo.signOut(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { userRepo.signOut() }
             verify { view.displayMessage(message) }
             verify { view.signIn(requestCode) }
         }
@@ -88,25 +81,17 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Sign Out - failed`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
             val exception = Exception()
 
             every { viewModel.msgSignOutFailed } returns message
             every {
-                userRepo.signOut(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+                userRepo.signOut()
+            } answers { Completable.error(exception) }
 
             logic.onStart(signOut = true)
 
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgFailure.captured.onFailure(exception)
-
             verify { viewModel.emailVerificationSent = false }
-            verify { userRepo.signOut(captureArgSuccess.captured, captureArgFailure.captured) }
+            verify { userRepo.signOut() }
             verify { view.displayMessage(message) }
             verify { view.openMainView() }
         }
@@ -136,28 +121,17 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification not sent, successfully sent email`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-
             every { userRepo.userVerified } returns false
             every { userRepo.signedOut } returns false
             every { userRepo.hasEmail } returns true
             every { userRepo.emailVerified } returns false
             every { userRepo.email } returns email
             every { viewModel.emailVerificationSent } returns false
-            every {
-                userRepo.sendVerificationEmail(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
             logic.onStart(signOut = false)
 
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgSuccess.captured.onSuccess(null)
-
-            verify { userRepo.sendVerificationEmail(any(), any()) }
+            verify { userRepo.sendVerificationEmail() }
             verify { viewModel.emailVerificationSent = true }
             verify { view.displayEmailSentMessage(email) }
         }
@@ -175,8 +149,6 @@ class AuthLogicTest {
         @Test
         fun `onStart - Email not verified, verification not sent, failed sent email`() {
             val email = "email"
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
             val exception = Exception()
 
             every { userRepo.userVerified } returns false
@@ -186,19 +158,11 @@ class AuthLogicTest {
             every { userRepo.email } returns email
             every { viewModel.emailVerificationSent } returns false
             every { viewModel.msgSignInError } returns message
-            every {
-                userRepo.sendVerificationEmail(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            every { userRepo.sendVerificationEmail() } answers { Completable.error(exception) }
 
             logic.onStart(signOut = false)
 
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgFailure.captured.onFailure(exception)
-
-            verify { userRepo.sendVerificationEmail(any(), any()) }
+            verify { userRepo.sendVerificationEmail() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
         }
@@ -215,29 +179,16 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification sent, successfully reload user, email verified`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-
+            every { viewModel.emailVerificationSent } returns true
+            every { viewModel.msgSignInSucceed } returns message
             every { userRepo.userVerified } returns false
             every { userRepo.signedOut } returns false
             every { userRepo.hasEmail } returns true
-            every { userRepo.emailVerified } returns false
-            every { viewModel.emailVerificationSent } returns true
-            every { viewModel.msgSignInSucceed } returns message
-            every {
-                userRepo.reloadUser(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            // Need to change the mock's response to simulate the user being reloaded.
+            every { userRepo.emailVerified } returns false andThen true
+            every { userRepo.reloadUser() } answers { Completable.complete() }
 
             logic.onStart(signOut = false)
-
-            // Need to change the mock's response to simulate the user being reloaded.
-            every { userRepo.emailVerified } returns true
-
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgSuccess.captured.onSuccess(null)
 
             verify { view.hideEmailSentMessage() }
             verify { view.displayMessage(message) }
@@ -254,9 +205,6 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification sent, successfully reload user, email still not verified`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
-
             every { userRepo.userVerified } returns false
             every { userRepo.signedOut } returns false
             every { userRepo.hasEmail } returns true
@@ -264,17 +212,9 @@ class AuthLogicTest {
             every { viewModel.emailVerificationSent } returns true
             every { userRepo.email } returns email
             every { viewModel.msgSignInSucceed } returns message
-            every {
-                userRepo.reloadUser(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            every { userRepo.reloadUser() } answers { Completable.complete() }
 
             logic.onStart(signOut = false)
-
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgSuccess.captured.onSuccess(null)
 
             verify { view.displayEmailSentMessage(email) }
         }
@@ -289,8 +229,6 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification sent, failed to reload user`() {
-            val captureArgSuccess = CapturingSlot<OnSuccessListener<in Void>>()
-            val captureArgFailure = CapturingSlot<OnFailureListener>()
             val exception = Exception()
 
             every { userRepo.userVerified } returns false
@@ -299,17 +237,9 @@ class AuthLogicTest {
             every { userRepo.emailVerified } returns false
             every { viewModel.emailVerificationSent } returns true
             every { viewModel.msgSignInSucceed } returns message
-            every {
-                userRepo.reloadUser(
-                        successListener = capture(captureArgSuccess),
-                        failureListener = capture(captureArgFailure)
-                )
-            } answers { Unit }
+            every { userRepo.reloadUser() } answers { Completable.error(exception) }
 
             logic.onStart(signOut = false)
-
-            // Need to manually call the listener because the UserRepo is mocked.
-            captureArgFailure.captured.onFailure(exception)
 
             verify { view.signIn(requestCode) }
         }
@@ -363,10 +293,11 @@ class AuthLogicTest {
             every { userRepo.hasEmail } returns true
             every { userRepo.emailVerified } returns false
             every { viewModel.emailVerificationSent } returns false
+            every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
             logic.signInSuccessful()
 
-            verify { userRepo.sendVerificationEmail(any(), any()) }
+            verify { userRepo.sendVerificationEmail() }
         }
 
         /**
@@ -447,10 +378,11 @@ class AuthLogicTest {
     @Test
     fun verifyEmailButtonClicked() {
         every { viewModel.emailVerificationSent } returns false
+        every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
         logic.verifyEmailButtonClicked()
 
         verify { view.hideEmailSentMessage() }
-        verify { userRepo.sendVerificationEmail(any(), any()) }
+        verify { userRepo.sendVerificationEmail() }
     }
 }
