@@ -1,21 +1,21 @@
 package com.example.david.lists.view.reauthentication.phone
 
 import com.example.david.lists.common.onlyDigits
+import com.example.david.lists.common.subscribeCompletable
+import com.example.david.lists.common.subscribeSingleValidatePhoneNum
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
+import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
 import com.example.domain.repository.IRepositoryContract
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
 
 class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
                      private val viewModel: ISmsReAuthContract.ViewModel,
-                     private val userRepo: IRepositoryContract.UserRepository) :
+                     private val userRepo: IRepositoryContract.UserRepository,
+                     private val schedulerProvider: ISchedulerProviderContract) :
         ISmsReAuthContract.Logic {
 
 
@@ -49,26 +49,26 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
     private fun deleteAccount(smsCode: String) {
-        userRepo.deletePhoneUser(
-                viewModel.verificationId,
-                smsCode,
-                deletionSucceeded(),
-                deletionFailed()
+        subscribeCompletable(
+                userRepo.deletePhoneUser(viewModel.verificationId, smsCode),
+                { deletionSucceeded() },
+                { deletionFailed(it) },
+                schedulerProvider
         )
     }
 
-    private fun deletionSucceeded() = OnSuccessListener<Void> {
+    private fun deletionSucceeded() {
         view.cancelTimer()
         view.displayMessage(viewModel.msgAccountDeletionSucceed)
         view.openAuthView()
     }
 
-    private fun deletionFailed() = OnFailureListener { e ->
+    private fun deletionFailed(e: Throwable) {
         UtilExceptions.throwException(e)
         evalDeletionFailureException(e)
     }
 
-    private fun evalDeletionFailureException(e: Exception) {
+    private fun evalDeletionFailureException(e: Throwable) {
         when (e) {
             is FirebaseAuthInvalidCredentialsException -> {
                 view.hideLoading()
@@ -87,43 +87,49 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
 
     private fun reSentSms() {
-        userRepo.validatePhoneNumber(
-                viewModel.phoneNumber,
-                verificationCallbacks()
+        subscribeSingleValidatePhoneNum(
+                userRepo.validatePhoneNumber(viewModel.phoneNumber),
+                { evalVerification(it) },
+                { verificationFailed(it) },
+                schedulerProvider
         )
     }
 
-    private fun verificationCallbacks() = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        /**
-         * This is called when the user is instantly verified, thus an SMS code is not sent.
-         * In this case, I cannot continue because, unlike [onCodeSent], this method does not give me the Verification ID.
-         */
-        override fun onVerificationCompleted(authCredential: PhoneAuthCredential) {
-            finish(
-                    Exception("Phone user was instantly verified during deletion."),
-                    viewModel.msgTryAgainLater
-            )
+    private fun evalVerification(results: PhoneNumValidationResults) {
+        when (results) {
+            is PhoneNumValidationResults.SmsSent -> smsCodeSent(results.validationCode)
+            PhoneNumValidationResults.Validated -> verificationCompleted()
         }
+    }
 
-        /**
-         * This cannot fail because of an invalid phone number (num has already been verified),
-         * thus I can assume that it is due to an error out of the user's control.
-         */
-        override fun onVerificationFailed(e: FirebaseException) {
-            finish(e, viewModel.msgGenericError)
-        }
+    private fun smsCodeSent(verificationId: String) {
+        viewModel.verificationId = verificationId
+        view.displayMessage(viewModel.msgSmsSent)
+        view.startTimer(SMS_TIME_OUT_SECONDS)
+    }
 
-        private fun finish(e: Exception, message: String) {
-            UtilExceptions.throwException(e)
-            view.displayMessage(message)
-            view.cancelTimer()
-            view.finishView()
-        }
 
-        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            viewModel.verificationId = verificationId
-            view.displayMessage(viewModel.msgSmsSent)
-            view.startTimer(SMS_TIME_OUT_SECONDS)
-        }
+    private fun verificationCompleted() {
+        finish(
+                Exception("Phone user was instantly verified during deletion."),
+                viewModel.msgTryAgainLater
+        )
+    }
+
+    private fun verificationFailed(e: Throwable) {
+        finish(e, evalFailureException(e))
+    }
+
+    private fun evalFailureException(e: Throwable) = when (e) {
+        is FirebaseTooManyRequestsException -> viewModel.msgTooManyRequest
+        else -> viewModel.msgGenericError
+    }
+
+
+    private fun finish(e: Throwable, message: String) {
+        UtilExceptions.throwException(e)
+        view.displayMessage(message)
+        view.cancelTimer()
+        view.finishView()
     }
 }

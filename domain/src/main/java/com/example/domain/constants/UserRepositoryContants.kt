@@ -12,7 +12,10 @@ enum class AuthProviders {
 }
 
 sealed class PhoneNumValidationResults {
-    // The number was validated, but the SMS was not sent.
+    /**
+     * This is when the user is instantly verified, thus an SMS code is not sent.
+     * In this case, I cannot continue because, unlike [SmsSent], this method does not give me the Verification ID.
+     */
     object Validated : PhoneNumValidationResults()
 
     data class SmsSent(val validationCode: String) : PhoneNumValidationResults()

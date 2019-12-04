@@ -1,20 +1,23 @@
 package com.example.david.lists.view.reauthentication.phone
 
 import com.example.david.lists.common.onlyDigits
+import com.example.david.lists.common.subscribeSingleValidatePhoneNum
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
+import com.example.domain.constants.PhoneNumValidationResults
+import com.example.domain.constants.PhoneNumValidationResults.SmsSent
+import com.example.domain.constants.PhoneNumValidationResults.Validated
 import com.example.domain.repository.IRepositoryContract
-import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
 
 private const val VALID_PHONE_NUM_LENGTH = 10
 
 class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
                        private val viewModel: IPhoneReAuthContract.ViewModel,
-                       private val userRepo: IRepositoryContract.UserRepository) :
+                       private val userRepo: IRepositoryContract.UserRepository,
+                       private val schedulerProvider: ISchedulerProviderContract) :
         IPhoneReAuthContract.Logic {
 
     override fun onEvent(event: ViewEvent) {
@@ -41,49 +44,51 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
 
 
     private fun verifyPhoneNum(phoneNum: String) {
-        userRepo.validatePhoneNumber(
-                phoneNum,
-                verifyPhoneNumCallbacks()
+        subscribeSingleValidatePhoneNum(
+                userRepo.validatePhoneNumber(phoneNum),
+                { evalVerification(it) },
+                { verificationFailed(it) },
+                schedulerProvider
         )
     }
 
-    private fun verifyPhoneNumCallbacks() = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        /**
-         * This is called when the user is instantly verified, thus an SMS code is not sent.
-         * In this case, I cannot continue because, unlike [onCodeSent], this method does not give me the Verification ID.
-         */
-        override fun onVerificationCompleted(authCredential: PhoneAuthCredential) {
-            UtilExceptions.throwException(Exception("Phone user was instantly verified during deletion."))
-            view.displayMessage(viewModel.msgTryAgainLater)
-            view.finishView()
+    private fun evalVerification(results: PhoneNumValidationResults) {
+        when (results) {
+            is SmsSent -> smsCodeSent(results.validationCode)
+            Validated -> onVerificationCompleted()
         }
+    }
 
-        override fun onVerificationFailed(e: FirebaseException) {
-            UtilExceptions.throwException(e)
-            evalFailureException(e)
+    private fun smsCodeSent(verificationId: String) {
+        view.displayMessage(viewModel.msgSmsSent)
+        view.openSmsVerification(viewModel.phoneNumber, verificationId)
+    }
 
-        }
+    private fun onVerificationCompleted() {
+        UtilExceptions.throwException(Exception("Phone user was instantly verified during deletion."))
+        view.displayMessage(viewModel.msgTryAgainLater)
+        view.finishView()
+    }
 
-        private fun evalFailureException(e: FirebaseException) {
-            when (e) {
-                is FirebaseAuthInvalidCredentialsException -> {
-                    view.hideLoading()
-                    view.displayError(viewModel.msgInvalidNum)
-                }
-                is FirebaseTooManyRequestsException -> {
-                    view.displayMessage(viewModel.msgTooManyRequest)
-                    view.finishView()
-                }
-                else -> {
-                    view.displayMessage(viewModel.msgGenericError)
-                    view.finishView()
-                }
+    private fun verificationFailed(e: Throwable) {
+        UtilExceptions.throwException(e)
+        evalFailureException(e)
+    }
+
+    private fun evalFailureException(e: Throwable) {
+        when (e) {
+            is FirebaseAuthInvalidCredentialsException -> {
+                view.hideLoading()
+                view.displayError(viewModel.msgInvalidNum)
             }
-        }
-
-        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            view.displayMessage(viewModel.msgSmsSent)
-            view.openSmsVerification(viewModel.phoneNumber, verificationId)
+            is FirebaseTooManyRequestsException -> {
+                view.displayMessage(viewModel.msgTooManyRequest)
+                view.finishView()
+            }
+            else -> {
+                view.displayMessage(viewModel.msgGenericError)
+                view.finishView()
+            }
         }
     }
 }

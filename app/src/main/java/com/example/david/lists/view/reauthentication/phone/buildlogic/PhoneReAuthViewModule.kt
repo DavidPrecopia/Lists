@@ -2,6 +2,7 @@ package com.example.david.lists.view.reauthentication.phone.buildlogic
 
 import android.app.Application
 import com.example.david.lists.common.buildlogic.ViewScope
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract
 import com.example.david.lists.view.reauthentication.phone.PhoneReAuthLogic
 import com.example.david.lists.view.reauthentication.phone.PhoneReAuthViewModel
@@ -15,8 +16,9 @@ class PhoneReAuthViewModule {
     @Provides
     fun logic(view: IPhoneReAuthContract.View,
               viewModel: IPhoneReAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository): IPhoneReAuthContract.Logic {
-        return PhoneReAuthLogic(view, viewModel, userRepo)
+              userRepo: IRepositoryContract.UserRepository,
+              schedulerProvider: ISchedulerProviderContract): IPhoneReAuthContract.Logic {
+        return PhoneReAuthLogic(view, viewModel, userRepo, schedulerProvider)
     }
 
     @ViewScope
