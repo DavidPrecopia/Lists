@@ -63,14 +63,14 @@ class WidgetConfigLogicTest {
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
             every { viewModel.viewData } returns userListList
-            every { repo.getUserLists } returns Flowable.just(userListList)
+            every { repo.getUserLists() } returns Flowable.just(userListList)
 
             logic.onStart(widgetIdValid)
 
             verify { view.setStateLoading() }
             verify { viewModel.widgetId = widgetIdValid }
             verify { view.setResults(widgetIdValid, resultCanceled) }
-            verify { repo.getUserLists }
+            verify { repo.getUserLists() }
             verify { viewModel.viewData = userListList }
             verify { view.setViewData(userListList) }
             verify { view.setStateDisplayList() }
@@ -115,7 +115,7 @@ class WidgetConfigLogicTest {
             every { viewModel.resultCancelled } returns resultCanceled
             every { viewModel.viewData } returns emptyList
             every { viewModel.errorMsgEmptyList } returns emptyListError
-            every { repo.getUserLists } returns Flowable.just(emptyList)
+            every { repo.getUserLists() } returns Flowable.just(emptyList)
 
             logic.onStart(widgetIdValid)
 
@@ -144,7 +144,7 @@ class WidgetConfigLogicTest {
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
             every { viewModel.errorMsg } returns errorMsg
-            every { repo.getUserLists } returns Flowable.error(throwable)
+            every { repo.getUserLists() } returns Flowable.error(throwable)
 
             logic.onStart(widgetIdValid)
 

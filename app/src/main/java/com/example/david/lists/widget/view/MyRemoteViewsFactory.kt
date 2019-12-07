@@ -4,13 +4,12 @@ import android.appwidget.AppWidgetManager
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.example.david.lists.R
+import com.example.david.lists.common.subscribeFlowableItem
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.domain.datamodel.Item
 import com.example.domain.repository.IRepositoryContract
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.DisposableSubscriber
 import java.util.*
 
 class MyRemoteViewsFactory(private val packageName: String,
@@ -18,35 +17,28 @@ class MyRemoteViewsFactory(private val packageName: String,
                            private val repo: IRepositoryContract.Repository,
                            private val disposable: CompositeDisposable,
                            private val appWidgetManager: AppWidgetManager,
-                           private val widgetId: Int) : RemoteViewsService.RemoteViewsFactory {
+                           private val widgetId: Int,
+                           val schedulerProvider: ISchedulerProviderContract) : RemoteViewsService.RemoteViewsFactory {
 
     private val itemList: MutableList<Item> = ArrayList()
 
     override fun onCreate() {
-        disposable.add(repo.getItems(userListId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(itemListObserver())
-        )
+        disposable.add(subscribeFlowableItem(
+                repo.getItems(userListId),
+                { onNextList(it) },
+                { UtilExceptions.throwException(it) },
+                schedulerProvider
+        ))
     }
 
-    private fun itemListObserver() = object : DisposableSubscriber<List<Item>>() {
-        override fun onNext(newItemList: List<Item>) {
-            itemList.apply {
-                clear()
-                addAll(newItemList)
-            }
-            appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list_view)
+    private fun onNextList(list: List<Item>) {
+        itemList.apply {
+            clear()
+            addAll(list)
         }
-
-        override fun onError(t: Throwable) {
-            UtilExceptions.throwException(t)
-        }
-
-        override fun onComplete() {
-
-        }
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_list_view)
     }
+
 
     override fun getViewAt(position: Int) =
             RemoteViews(

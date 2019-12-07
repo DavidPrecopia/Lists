@@ -1,12 +1,12 @@
 package com.example.david.lists.widget.configview
 
+import com.example.david.lists.common.subscribeFlowableUserList
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewLogicBase
 import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subscribers.DisposableSubscriber
 
 class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
                         private val viewModel: IWidgetConfigContract.ViewModel,
@@ -30,29 +30,24 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
 
 
     private fun getUserLists() {
-        disposable.add(repo.getUserLists
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .onTerminateDetach()
-                .subscribeWith(userListSubscriber())
-        )
+        disposable.add(subscribeFlowableUserList(
+                repo.getUserLists(),
+                { onNextList(it) },
+                { onObservableError(it) },
+                schedulerProvider
+        ))
     }
 
-    private fun userListSubscriber() = object : DisposableSubscriber<List<UserList>>() {
-        override fun onNext(userLists: List<UserList>) {
-            viewModel.viewData = userLists
-            evalNewData()
-        }
-
-        override fun onError(t: Throwable) {
-            view.setStateError(viewModel.errorMsg)
-            UtilExceptions.throwException(t)
-        }
-
-        override fun onComplete() {
-
-        }
+    private fun onNextList(list: List<UserList>) {
+        viewModel.viewData = list
+        evalNewData()
     }
+
+    private fun onObservableError(t: Throwable) {
+        view.setStateError(viewModel.errorMsg)
+        UtilExceptions.throwException(t)
+    }
+
 
     private fun evalNewData() {
         view.setViewData(viewModel.viewData)

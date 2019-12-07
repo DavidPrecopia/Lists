@@ -6,6 +6,7 @@ import android.content.Intent
 import android.widget.RemoteViewsService
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
+import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.widget.view.MyRemoteViewsFactory
 import com.example.domain.repository.IRepositoryContract
 import dagger.Module
@@ -26,8 +27,9 @@ class MyRemoteViewsServiceModule {
                            repo: IRepositoryContract.Repository,
                            disposable: CompositeDisposable,
                            appWidgetManager: AppWidgetManager,
-                           @Named(APP_WIDGET_ID) appWidgetId: Int): RemoteViewsService.RemoteViewsFactory {
-        return MyRemoteViewsFactory(packageName, userListId, repo, disposable, appWidgetManager, appWidgetId)
+                           @Named(APP_WIDGET_ID) appWidgetId: Int,
+                           schedulerProvider: ISchedulerProviderContract): RemoteViewsService.RemoteViewsFactory {
+        return MyRemoteViewsFactory(packageName, userListId, repo, disposable, appWidgetManager, appWidgetId, schedulerProvider)
     }
 
     @ViewScope
