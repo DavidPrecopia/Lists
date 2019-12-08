@@ -28,6 +28,12 @@ class UserRepositoryModule {
 
     @Singleton
     @Provides
+    fun firebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Singleton
+    @Provides
     fun actionCodeSettings(application: Application): ActionCodeSettings {
         return ActionCodeSettings.newBuilder()
                 .setUrl(CONTINUE_URL)

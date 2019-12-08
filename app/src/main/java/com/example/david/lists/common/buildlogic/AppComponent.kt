@@ -15,8 +15,7 @@ import javax.inject.Singleton
     RepositoryModule::class,
     UserRepositoryModule::class,
     SharedPrefsModule::class,
-    UtilNightModeModule::class,
-    FirebaseAuthModule::class
+    UtilNightModeModule::class
 ])
 interface AppComponent {
     fun repo(): IRepositoryContract.Repository
