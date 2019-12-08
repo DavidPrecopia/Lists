@@ -10,10 +10,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-repositories {
-    maven { url 'https://dl.bintray.com/firebaseui/firebase-ui' }
-}
-
 dependencies {
     // The "Plugin version and library versions are not the same" warning message is a false positive.
     // https://stackoverflow.com/a/49956210
