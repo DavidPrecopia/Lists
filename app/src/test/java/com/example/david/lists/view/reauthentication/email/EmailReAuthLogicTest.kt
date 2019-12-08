@@ -3,9 +3,9 @@ package com.example.david.lists.view.reauthentication.email
 import com.example.david.lists.SchedulerProviderMockInit
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.email.IEmailReAuthContract.ViewEvent
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import io.mockk.*
 import io.reactivex.Completable
 import org.junit.jupiter.api.BeforeEach
@@ -68,13 +68,13 @@ class EmailReAuthLogicTest {
          * - Display loading.
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
-         *   - Specifically, [FirebaseAuthInvalidCredentialsException]
+         *   - Specifically, [AuthInvalidCredentialsException]
          * - Hide loading.
          * - Display error message from ViewModel.
          */
         @Test
         fun `onEvent - Delete Account - valid password - failed - invalid credentials`() {
-            val exception = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
+            val exception = mockk<AuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.msgInvalidPassword } returns message
             every { userRepo.deleteEmailUser(password) } answers { Completable.error(exception) }
@@ -95,13 +95,13 @@ class EmailReAuthLogicTest {
          * - Display loading.
          * - Fail to delete the account via UserRepo, passing the password from the [ViewEvent].
          * - Thrown an Exception.
-         *   - Specifically, [FirebaseTooManyRequestsException]
+         *   - Specifically, [AuthTooManyRequestsException]
          * - Display error message from ViewModel.
          * - Finish the View.
          */
         @Test
         fun `onEvent - Delete Account - valid password - failed - too many requests`() {
-            val exception = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+            val exception = mockk<AuthTooManyRequestsException>(relaxed = true)
 
             every { viewModel.msgTooManyRequest } returns message
             every { userRepo.deleteEmailUser(password) } answers { Completable.error(exception) }

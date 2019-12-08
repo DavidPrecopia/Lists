@@ -6,13 +6,9 @@ import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.Vi
 import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.PhoneNumValidationResults.Validated
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.mockk.*
 import io.reactivex.Completable
@@ -107,14 +103,14 @@ internal class SmsReAuthLogicTest {
          *   - It will be valid.
          * - Display loading.
          * - Delete the account via the UserRepo with the verification ID from the ViewModel.
-         *   - It will fail with [FirebaseAuthInvalidCredentialsException].
+         *   - It will fail with [AuthInvalidCredentialsException].
          * - Thrown an Exception.
          * - Hide loading.
          * - Display a error message from the ViewModel.
          */
         @Test
         fun `onEvent - confirm sms - valid sms - failure - invalid credentials`() {
-            val exception = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
+            val exception = mockk<AuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.verificationId } returns verificationId
             every { viewModel.msgInvalidSms } returns message
@@ -140,14 +136,14 @@ internal class SmsReAuthLogicTest {
          *   - It will be valid.
          * - Display loading.
          * - Delete the account via the UserRepo with the verification ID from the ViewModel.
-         *   - It will fail with [FirebaseTooManyRequestsException].
+         *   - It will fail with [AuthTooManyRequestsException].
          * - Thrown an Exception.
          * - Display a message from the ViewModel.
          * - Finish the View.
          */
         @Test
         fun `onEvent - confirm sms - valid sms - failure - too many requests`() {
-            val exception = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+            val exception = mockk<AuthTooManyRequestsException>(relaxed = true)
 
             every { viewModel.verificationId } returns verificationId
             every { viewModel.msgTooManyRequest } returns message
@@ -278,20 +274,20 @@ internal class SmsReAuthLogicTest {
          */
         @Test
         fun `onEvent - timer finished - failed`() {
-            val firebaseException = mockk<FirebaseException>(relaxed = true)
+            val exception = mockk<Exception>(relaxed = true)
 
             every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgGenericError } returns message
             every {
                 userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
             } answers {
-                Single.error<PhoneNumValidationResults>(firebaseException)
+                Single.error<PhoneNumValidationResults>(exception)
             }
 
             logic.onEvent(ViewEvent.TimerFinished)
 
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
-            verify { firebaseException.printStackTrace() }
+            verify { exception.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.cancelTimer() }
             verify { view.finishView() }
@@ -308,20 +304,20 @@ internal class SmsReAuthLogicTest {
          */
         @Test
         fun `onEvent - timer finished - failed - too many requests`() {
-            val firebaseException = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+            val exception = mockk<AuthTooManyRequestsException>(relaxed = true)
 
             every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgTooManyRequest } returns message
             every {
                 userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
             } answers {
-                Single.error<PhoneNumValidationResults>(firebaseException)
+                Single.error<PhoneNumValidationResults>(exception)
             }
 
             logic.onEvent(ViewEvent.TimerFinished)
 
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
-            verify { firebaseException.printStackTrace() }
+            verify { exception.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.cancelTimer() }
             verify { view.finishView() }

@@ -8,9 +8,9 @@ import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.
 import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.PhoneNumValidationResults.SmsSent
 import com.example.domain.constants.PhoneNumValidationResults.Validated
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
 private const val VALID_PHONE_NUM_LENGTH = 10
 
@@ -77,11 +77,11 @@ class PhoneReAuthLogic(private val view: IPhoneReAuthContract.View,
 
     private fun evalFailureException(e: Throwable) {
         when (e) {
-            is FirebaseAuthInvalidCredentialsException -> {
+            is AuthInvalidCredentialsException -> {
                 view.hideLoading()
                 view.displayError(viewModel.msgInvalidNum)
             }
-            is FirebaseTooManyRequestsException -> {
+            is AuthTooManyRequestsException -> {
                 view.displayMessage(viewModel.msgTooManyRequest)
                 view.finishView()
             }

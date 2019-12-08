@@ -8,9 +8,9 @@ import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
 import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 
 class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
                      private val viewModel: ISmsReAuthContract.ViewModel,
@@ -70,11 +70,11 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun evalDeletionFailureException(e: Throwable) {
         when (e) {
-            is FirebaseAuthInvalidCredentialsException -> {
+            is AuthInvalidCredentialsException -> {
                 view.hideLoading()
                 view.displayError(viewModel.msgInvalidSms)
             }
-            is FirebaseTooManyRequestsException -> {
+            is AuthTooManyRequestsException -> {
                 view.displayMessage(viewModel.msgTooManyRequest)
                 view.finishView()
             }
@@ -121,7 +121,7 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
     private fun evalFailureException(e: Throwable) = when (e) {
-        is FirebaseTooManyRequestsException -> viewModel.msgTooManyRequest
+        is AuthTooManyRequestsException -> viewModel.msgTooManyRequest
         else -> viewModel.msgGenericError
     }
 

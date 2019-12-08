@@ -5,10 +5,9 @@ import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
 import com.example.domain.constants.PhoneNumValidationResults.SmsSent
 import com.example.domain.constants.PhoneNumValidationResults.Validated
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthProvider
 import io.mockk.*
 import io.reactivex.Single
@@ -82,14 +81,14 @@ class PhoneReAuthLogicTest {
          * - Verify phone number via UserRepo.
          *   - This will fail - thus
          *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called
-         *   with [FirebaseAuthInvalidCredentialsException].
+         *   with [AuthInvalidCredentialsException].
          * - Throw an Exception.
          * - Hide loading.
          * - Display an error with a message from the ViewModel.
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - invalid credentials`() {
-            val firebaseException = mockk<FirebaseAuthInvalidCredentialsException>(relaxed = true)
+            val firebaseException = mockk<AuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.msgInvalidNum } returns message
             every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
@@ -113,14 +112,14 @@ class PhoneReAuthLogicTest {
          * - Verify phone number via UserRepo.
          *   - This will fail - thus
          *   [PhoneAuthProvider.OnVerificationStateChangedCallbacks.onVerificationFailed] will be called
-         *   with [FirebaseTooManyRequestsException].
+         *   with [AuthInvalidCredentialsException].
          * - Throw an Exception.
          * - Display a message from the ViewModel.
          * - Finish the View.
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - too many requests`() {
-            val firebaseException = mockk<FirebaseTooManyRequestsException>(relaxed = true)
+            val firebaseException = mockk<AuthTooManyRequestsException>(relaxed = true)
 
             every { viewModel.msgTooManyRequest } returns message
             every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
@@ -151,17 +150,17 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - general exception`() {
-            val firebaseException = mockk<FirebaseException>(relaxed = true)
+            val exception = mockk<Exception>(relaxed = true)
 
             every { viewModel.msgGenericError } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
+            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(exception) }
 
             logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
-            verify { firebaseException.printStackTrace() }
+            verify { exception.printStackTrace() }
             verify { view.displayMessage(message) }
             verify { view.finishView() }
         }

@@ -6,11 +6,14 @@ import com.example.domain.constants.AuthProviders
 import com.example.domain.constants.PHONE_NUM_COUNTRY_CODE_USA
 import com.example.domain.constants.PhoneNumValidationResults
 import com.example.domain.constants.SMS_TIME_OUT_SECONDS
+import com.example.domain.exception.AuthInvalidCredentialsException
+import com.example.domain.exception.AuthTooManyRequestsException
 import com.example.domain.repository.IRepositoryContract
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import io.reactivex.*
 import java.util.concurrent.TimeUnit
@@ -21,9 +24,9 @@ import java.util.concurrent.TimeUnit
  * I am getting fresh information.
  */
 internal class UserRepository(private val firebaseAuth: FirebaseAuth,
-                     private val actionCodeSettings: ActionCodeSettings,
-                     private val authUI: AuthUI,
-                     private val application: Application) :
+                              private val actionCodeSettings: ActionCodeSettings,
+                              private val authUI: AuthUI,
+                              private val application: Application) :
         IRepositoryContract.UserRepository {
 
     private val user: FirebaseUser?
@@ -80,21 +83,21 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
     override fun sendVerificationEmail() = createCompletable { emitter ->
         user?.sendEmailVerification(actionCodeSettings)
                 ?.addOnSuccessListener { emitter.onComplete() }
-                ?.addOnFailureListener { emitter.onError(it) }
+                ?.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
                 ?: emitter.onError(userNullException)
     }
 
     override fun reloadUser() = createCompletable { emitter ->
         user?.getIdToken(true)
                 ?.addOnSuccessListener { reload(emitter) }
-                ?.addOnFailureListener { emitter.onError(it) }
+                ?.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
                 ?: emitter.onError(userNullException)
     }
 
     private fun reload(emitter: CompletableEmitter) {
         user?.reload()
                 ?.addOnSuccessListener { emitter.onComplete() }
-                ?.addOnFailureListener { emitter.onError(it) }
+                ?.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
                 ?: emitter.onError(userNullException)
     }
 
@@ -102,7 +105,7 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
     override fun signOut() = createCompletable { emitter ->
         authUI.signOut(application)
                 .addOnSuccessListener { emitter.onComplete() }
-                .addOnFailureListener { emitter.onError(it) }
+                .addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
     }
 
 
@@ -124,7 +127,7 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            emitter.onError(e)
+            emitter.onError(evalFirebaseException(e))
         }
 
         override fun onCodeSent(validationCode: String, token: PhoneAuthProvider.ForceResendingToken) {
@@ -163,8 +166,15 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
                 .addOnSuccessListener {
                     authUI.delete(application)
                             .addOnSuccessListener { emitter.onComplete() }
-                            .addOnFailureListener { emitter.onError(it) }
-                }.addOnFailureListener { emitter.onError(it) }
+                            .addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
+                }.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
+    }
+
+
+    private fun evalFirebaseException(e: Exception) = when (e) {
+        is FirebaseAuthInvalidCredentialsException -> AuthInvalidCredentialsException(e.message, e.cause)
+        is FirebaseTooManyRequestsException -> AuthTooManyRequestsException(e.message, e.cause)
+        else -> e
     }
 
 
