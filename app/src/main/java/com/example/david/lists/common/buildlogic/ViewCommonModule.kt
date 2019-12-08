@@ -21,12 +21,12 @@ import io.reactivex.disposables.CompositeDisposable
 class ViewCommonModule {
     @Provides
     fun repository(appComponent: AppComponent): IRepositoryContract.Repository {
-        return appComponent.repo()
+        return appComponent.repositories().repo()
     }
 
     @Provides
     fun userRepository(appComponent: AppComponent): IRepositoryContract.UserRepository {
-        return appComponent.userRepo()
+        return appComponent.repositories().userRepo()
     }
 
     @Provides

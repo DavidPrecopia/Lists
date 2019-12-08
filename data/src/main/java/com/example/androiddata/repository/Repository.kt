@@ -6,7 +6,7 @@ import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.reactivex.Flowable
 
-class Repository(private val remote: IRemoteRepositoryContract.Repository) :
+internal class Repository(private val remote: IRemoteRepositoryContract.Repository) :
         IRepositoryContract.Repository {
 
     override val userListDeletedObservable: Flowable<List<UserList>>

@@ -1,5 +1,6 @@
 package com.example.androiddata.remote.buildlogic
 
+import com.example.androiddata.common.DataScope
 import com.example.androiddata.remote.*
 import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.auth.FirebaseAuth
@@ -12,11 +13,10 @@ import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 internal class RemoteRepositoryModule {
-    @Singleton
+    @DataScope
     @Provides
     fun remoteDatabase(firestore: FirebaseFirestore,
                        @Named(COLLECTION_USER_LISTS) userListCollection: CollectionReference,
@@ -25,7 +25,7 @@ internal class RemoteRepositoryModule {
         return RemoteRepository(firestore, userListCollection, itemCollection, snapshotListener)
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun firebaseFirestore(settings: FirebaseFirestoreSettings): FirebaseFirestore {
         return Firebase.firestore.apply {
@@ -33,7 +33,7 @@ internal class RemoteRepositoryModule {
         }
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun firebaseFirestoreSettings(): FirebaseFirestoreSettings {
         val cacheSize = (5 * 1024 * 1024).toLong() // 5mb
@@ -43,7 +43,7 @@ internal class RemoteRepositoryModule {
                 .build()
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun snapshotListener(@Named(COLLECTION_USER_LISTS) userListCollection: CollectionReference,
                          @Named(COLLECTION_ITEMS) itemCollection: CollectionReference,
@@ -52,21 +52,21 @@ internal class RemoteRepositoryModule {
         return SnapshotListener(userListCollection, itemCollection, userRepo, firestore)
     }
 
-    @Singleton
+    @DataScope
     @Provides
     @Named(COLLECTION_USER_LISTS)
     fun userListCollectionReference(@Named(COLLECTION_USER) userDocument: DocumentReference): CollectionReference {
         return userDocument.collection(COLLECTION_USER_LISTS)
     }
 
-    @Singleton
+    @DataScope
     @Provides
     @Named(COLLECTION_ITEMS)
     fun itemCollectionReference(@Named(COLLECTION_USER) userDocument: DocumentReference): CollectionReference {
         return userDocument.collection(COLLECTION_ITEMS)
     }
 
-    @Singleton
+    @DataScope
     @Provides
     @Named(COLLECTION_USER)
     fun userIdDocument(firestore: FirebaseFirestore, auth: FirebaseAuth): DocumentReference {

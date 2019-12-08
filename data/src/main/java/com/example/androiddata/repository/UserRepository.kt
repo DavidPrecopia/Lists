@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * retrieving the user via [FirebaseAuth.getCurrentUser] ensures that
  * I am getting fresh information.
  */
-class UserRepository(private val firebaseAuth: FirebaseAuth,
+internal class UserRepository(private val firebaseAuth: FirebaseAuth,
                      private val actionCodeSettings: ActionCodeSettings,
                      private val authUI: AuthUI,
                      private val application: Application) :

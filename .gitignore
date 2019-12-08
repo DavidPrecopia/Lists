@@ -6,9 +6,5 @@
 /build
 /captures
 .externalNativeBuild
-/app/src/release/google-services.json
-/app/src/debug/google-services.json
-/app/fabric.properties
 lists_keystore.jks
 keystore.properties
-/app/src/main/gen/

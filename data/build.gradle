@@ -38,7 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
 
     // Cloud Firestore
-    implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
+    api "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
     // Firebase Authentication
     implementation "com.google.firebase:firebase-auth:$rootProject.firebaseAuthVersion"
     implementation "com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion"

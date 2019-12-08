@@ -85,8 +85,6 @@ dependencies {
     //Anko
     implementation "org.jetbrains.anko:anko-commons:$rootProject.ankoVersion"
 
-    // Cloud Firestore
-    implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
     // Firebase Auth UI
     implementation "com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion"
     // Firebase Crashlytics
@@ -120,4 +118,7 @@ dependencies {
     androidTestImplementation "org.assertj:assertj-core:$rootProject.assertjVersion"
 }
 
-apply plugin: 'com.google.gms.google-services'
+// I am not deleting this line in-case I need to add
+// a new google-services.json file.
+// https://medium.com/@samstern_58566/how-to-use-firebase-on-android-without-the-google-services-plugin-93ecc7dc6c4
+//apply plugin: 'com.google.gms.google-services'

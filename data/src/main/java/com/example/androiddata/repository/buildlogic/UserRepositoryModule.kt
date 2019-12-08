@@ -1,6 +1,7 @@
 package com.example.androiddata.repository.buildlogic
 
 import android.app.Application
+import com.example.androiddata.common.DataScope
 import com.example.androiddata.repository.UserRepository
 import com.example.domain.repository.IRepositoryContract
 import com.firebase.ui.auth.AuthUI
@@ -8,7 +9,6 @@ import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 // This URL is irrelevant - using Google because it safe.
 private const val CONTINUE_URL = "https://www.google.com/"
@@ -16,8 +16,8 @@ private const val CONTINUE_URL = "https://www.google.com/"
 private const val MINIMUM_VERSION_CODE = "14"
 
 @Module
-class UserRepositoryModule {
-    @Singleton
+internal class UserRepositoryModule {
+    @DataScope
     @Provides
     fun userRepository(firebaseAuth: FirebaseAuth,
                        actionCodeSettings: ActionCodeSettings,
@@ -26,13 +26,13 @@ class UserRepositoryModule {
         return UserRepository(firebaseAuth, actionCodeSettings, authUI, application)
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun firebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun actionCodeSettings(application: Application): ActionCodeSettings {
         return ActionCodeSettings.newBuilder()
@@ -45,7 +45,7 @@ class UserRepositoryModule {
                 .build()
     }
 
-    @Singleton
+    @DataScope
     @Provides
     fun authUi(): AuthUI {
         return AuthUI.getInstance()
