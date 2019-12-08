@@ -136,6 +136,11 @@ class UserListListView : ListViewBase(),
     }
 
 
+    override fun showMessage(message: String) {
+        super.toastMessage(message)
+    }
+
+
     override fun addButtonClicked() {
         logic.add()
     }

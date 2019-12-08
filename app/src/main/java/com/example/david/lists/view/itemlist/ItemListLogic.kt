@@ -1,13 +1,14 @@
 package com.example.david.lists.view.itemlist
 
+import com.example.david.lists.common.subscribeCompletable
+import com.example.david.lists.common.subscribeFlowableItem
+import com.example.david.lists.common.subscribeFlowableUserList
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.UtilExceptions
 import com.example.david.lists.view.common.ListViewLogicBase
 import com.example.domain.datamodel.Item
-import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subscribers.DisposableSubscriber
 import java.util.*
 
 class ItemListLogic(private val view: IItemViewContract.View,
@@ -29,52 +30,33 @@ class ItemListLogic(private val view: IItemViewContract.View,
 
 
     private fun observeDeletedUserLists() {
-        disposable.add(repo.userListDeletedObservable
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .onTerminateDetach()
-                .subscribeWith(deletedSubscriber()))
+        disposable.add(subscribeFlowableUserList(
+                repo.userListDeletedObservable,
+                {
+                    for ((title, _, id) in it) {
+                        if (id == viewModel.userListId) {
+                            view.showMessage(viewModel.getMsgListDeleted(title))
+                            view.finishView()
+                        }
+                    }
+                },
+                { UtilExceptions.throwException(it) },
+                schedulerProvider
+        ))
     }
-
-    private fun deletedSubscriber() = object : DisposableSubscriber<List<UserList>>() {
-        override fun onNext(userLists: List<UserList>) {
-            for ((title, _, id) in userLists) {
-                if (id == viewModel.userListId) {
-                    view.showMessage(viewModel.getMsgListDeleted(title))
-                    view.finishView()
-                }
-            }
-        }
-
-        override fun onError(t: Throwable) {
-            UtilExceptions.throwException(t)
-        }
-
-        override fun onComplete() {
-        }
-    }
-
 
     private fun getItems() {
-        disposable.add(repo.getItems(viewModel.userListId)
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .onTerminateDetach()
-                .subscribeWith(itemSubscriber())
-        )
+        disposable.add(subscribeFlowableItem(
+                repo.getItems(viewModel.userListId),
+                { onNextList(it) },
+                { onObservableError(it) },
+                schedulerProvider
+        ))
     }
 
-    private fun itemSubscriber() = object : DisposableSubscriber<List<Item>>() {
-        override fun onNext(itemList: List<Item>) {
-            viewModel.viewData = itemList.toMutableList()
-            evalNewData()
-        }
-
-        override fun onError(t: Throwable) {
-            view.setStateError(viewModel.errorMsg)
-        }
-
-        override fun onComplete() {}
+    private fun onNextList(list: List<Item>) {
+        viewModel.viewData = list.toMutableList()
+        evalNewData()
     }
 
     private fun evalNewData() {
@@ -83,6 +65,11 @@ class ItemListLogic(private val view: IItemViewContract.View,
             viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
             else -> view.setStateDisplayList()
         }
+    }
+
+    private fun onObservableError(t: Throwable) {
+        UtilExceptions.throwException(t)
+        view.setStateError(viewModel.errorMsg)
     }
 
 
@@ -102,11 +89,15 @@ class ItemListLogic(private val view: IItemViewContract.View,
 
     override fun movedPermanently(newPosition: Int) {
         val item = viewModel.viewData[newPosition]
-        repo.updateItemPosition(
-                item,
-                item.position,
-                newPosition
-        )
+        disposable.add(subscribeCompletable(
+                repo.updateItemPosition(item, item.position, newPosition),
+                {},
+                {
+                    view.showMessage(viewModel.errorMsg)
+                    UtilExceptions.throwException(it)
+                },
+                schedulerProvider
+        ))
     }
 
 
@@ -158,8 +149,18 @@ class ItemListLogic(private val view: IItemViewContract.View,
         if (viewModel.tempList.isEmpty()) {
             return
         }
-        repo.deleteItems(viewModel.tempList)
+        disposable.add(subscribeCompletable(
+                repo.deleteItems(viewModel.tempList),
+                { viewModel.tempList.clear() },
+                { deletionError(it) },
+                schedulerProvider
+        ))
+    }
+
+    private fun deletionError(t: Throwable) {
+        UtilExceptions.throwException(t)
         viewModel.tempList.clear()
+        view.showMessage(viewModel.errorMsg)
     }
 
 

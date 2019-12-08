@@ -6,6 +6,7 @@ import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import org.assertj.core.api.Assertions.assertThat
@@ -112,7 +113,7 @@ class ItemListLogicTest {
          */
         @Test
         fun `onStart - Repo throws an error`() {
-            val throwable = Throwable()
+            val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.viewData } returns emptyList
             every { repo.getItems(userListId) } returns Flowable.error(throwable)
@@ -121,6 +122,7 @@ class ItemListLogicTest {
             logic.onStart()
 
             verify { view.setStateLoading() }
+            verify { throwable.printStackTrace() }
             verify { view.setStateError(message) }
         }
     }
@@ -173,20 +175,23 @@ class ItemListLogicTest {
     }
 
 
-    /**
-     * - [IItemViewContract.View.openAddDialog] is invoked with the current size.
-     * of List containing the view data.
-     */
-    @Test
-    fun add() {
-        val itemList = mutableListOf(itemOne)
-        val size = itemList.size
+    @Nested
+    inner class Add {
+        /**
+         * - [IItemViewContract.View.openAddDialog] is invoked with the current size.
+         * of List containing the view data.
+         */
+        @Test
+        fun add() {
+            val itemList = mutableListOf(itemOne)
+            val size = itemList.size
 
-        every { viewModel.viewData } returns itemList
+            every { viewModel.viewData } returns itemList
 
-        logic.add()
+            logic.add()
 
-        verify { view.openAddDialog(userListId, size) }
+            verify { view.openAddDialog(userListId, size) }
+        }
     }
 
 
@@ -270,17 +275,51 @@ class ItemListLogicTest {
         /**
          * - Get the moved Item from the ViewModel.
          * - Invoke [IRepositoryContract.Repository.updateItemPosition].
+         *   - This will succeed.
          */
         @Test
-        fun movedPermanently() {
+        fun `movedPermanently - success`() {
             val newPosition = 0
             val itemList = mutableListOf(itemOne)
 
             every { viewModel.viewData } returns itemList
+            every {
+                repo.updateItemPosition(itemOne, itemOne.position, newPosition)
+            } answers {
+                Completable.complete()
+            }
 
             logic.movedPermanently(newPosition)
 
             verify { repo.updateItemPosition(itemOne, itemOne.position, newPosition) }
+        }
+
+        /**
+         * - Get the moved Item from the ViewModel.
+         * - Invoke [IRepositoryContract.Repository.updateItemPosition].
+         *   - This will fail.
+         * - Exception is thrown.
+         * - Display a message.
+         */
+        @Test
+        fun `movedPermanently - failure`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val newPosition = 0
+            val itemList = mutableListOf(itemOne)
+
+            every { viewModel.errorMsg } returns message
+            every { viewModel.viewData } returns itemList
+            every {
+                repo.updateItemPosition(itemOne, itemOne.position, newPosition)
+            } answers {
+                Completable.error(throwable)
+            }
+
+            logic.movedPermanently(newPosition)
+
+            verify { repo.updateItemPosition(itemOne, itemOne.position, newPosition) }
+            verify { throwable.printStackTrace() }
+            verify { view.showMessage(message) }
         }
 
         /**
@@ -358,10 +397,11 @@ class ItemListLogicTest {
          * - Re-add to the ViewData List.
          * - Remove the last Item from the temp List.
          * - Because the temp List is not empty, pass the temp List to the repo for deletion.
+         *    - This will succeed.
          * - Clear the temp List.
          */
         @Test
-        fun undoRecentDeletion() {
+        fun `undoRecentDeletion - success`() {
             val itemList = mutableListOf<Item>()
             val tempItemList = mutableListOf(itemOne, itemTwo)
             val tempPosition = 0
@@ -369,12 +409,47 @@ class ItemListLogicTest {
             every { viewModel.viewData } returns itemList
             every { viewModel.tempList } returns tempItemList
             every { viewModel.tempPosition } returns tempPosition
+            every { repo.deleteItems(tempItemList) } answers { Completable.complete() }
 
             logic.undoRecentDeletion(adapter)
 
             verify { adapter.reAdd(tempPosition, itemTwo) }
             assertThat(itemList).containsExactly(itemTwo)
             verify { repo.deleteItems(tempItemList) }
+            assertThat(tempItemList.isEmpty()).isTrue()
+        }
+
+        /**
+         * - Get the last added Item from the ViewModel's temp list.
+         * - Re-add to the adapter using the temp position from the ViewModel.
+         * - Re-add to the ViewData List.
+         * - Remove the last Item from the temp List.
+         * - Because the temp List is not empty, pass the temp List to the repo for deletion.
+         *   - This will fail.
+         * - Exception is thrown.
+         * - Display a message.
+         * - Clear the temp List.
+         */
+        @Test
+        fun `undoRecentDeletion - failure`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val itemList = mutableListOf<Item>()
+            val tempItemList = mutableListOf(itemOne, itemTwo)
+            val tempPosition = 0
+
+            every { viewModel.errorMsg } returns message
+            every { viewModel.viewData } returns itemList
+            every { viewModel.tempList } returns tempItemList
+            every { viewModel.tempPosition } returns tempPosition
+            every { repo.deleteItems(tempItemList) } answers { Completable.error(throwable) }
+
+            logic.undoRecentDeletion(adapter)
+
+            verify { adapter.reAdd(tempPosition, itemTwo) }
+            assertThat(itemList).containsExactly(itemTwo)
+            verify { repo.deleteItems(tempItemList) }
+            verify { throwable.printStackTrace() }
+            verify { view.showMessage(message) }
             assertThat(tempItemList.isEmpty()).isTrue()
         }
 
@@ -418,17 +493,45 @@ class ItemListLogicTest {
          * - Check if the temp List is empty.
          *   - Will not be in this test.
          * - Pass the temp List [IRepositoryContract.Repository.deleteItems].
+         *   - This will succeed.
          * - Clear the temp List.
          */
         @Test
-        fun deletionNotificationTimedOut() {
+        fun `deletionNotificationTimedOut - success`() {
             val itemList = mutableListOf(itemOne)
 
             every { viewModel.tempList } returns itemList
+            every { repo.deleteItems(itemList) } answers { Completable.complete() }
 
             logic.deletionNotificationTimedOut()
 
             verify { repo.deleteItems(itemList) }
+            assertThat(itemList.isEmpty()).isTrue()
+        }
+
+        /**
+         * - Check if the temp List is empty.
+         *   - Will not be in this test.
+         * - Pass the temp List [IRepositoryContract.Repository.deleteItems].
+         *   - This will fail.
+         * - Exception is thrown.
+         * - Display a message.
+         * - Clear the temp List.
+         */
+        @Test
+        fun `deletionNotificationTimedOut - failure`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val itemList = mutableListOf(itemOne)
+
+            every { viewModel.errorMsg } returns message
+            every { viewModel.tempList } returns itemList
+            every { repo.deleteItems(itemList) } answers { Completable.error(throwable) }
+
+            logic.deletionNotificationTimedOut()
+
+            verify { repo.deleteItems(itemList) }
+            verify { throwable.printStackTrace() }
+            verify { view.showMessage(message) }
             assertThat(itemList.isEmpty()).isTrue()
         }
 

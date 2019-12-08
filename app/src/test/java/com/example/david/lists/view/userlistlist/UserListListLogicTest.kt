@@ -6,6 +6,7 @@ import com.example.david.lists.util.IUtilNightModeContract
 import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import org.assertj.core.api.Assertions.assertThat
@@ -67,7 +68,7 @@ class UserListListLogicTest {
         fun `onStart - ViewModel has View Data`() {
             val userListList = mutableListOf(userListOne)
 
-            every { repo.getUserLists } returns Flowable.just(userListList)
+            every { repo.getUserLists() } returns Flowable.just(userListList)
             every { viewModel.viewData } returns userListList
 
             logic.onStart()
@@ -87,7 +88,7 @@ class UserListListLogicTest {
          */
         @Test
         fun `onStart - Empty List from repo`() {
-            every { repo.getUserLists } returns Flowable.just(emptyList)
+            every { repo.getUserLists() } returns Flowable.just(emptyList)
             every { viewModel.viewData } returns emptyList
             every { viewModel.errorMsgEmptyList } returns message
 
@@ -108,15 +109,16 @@ class UserListListLogicTest {
          */
         @Test
         fun `onStart - Repo throws an error`() {
-            val throwable = Throwable()
+            val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.viewData } returns emptyList
-            every { repo.getUserLists } returns Flowable.error(throwable)
+            every { repo.getUserLists() } returns Flowable.error(throwable)
             every { viewModel.errorMsg } returns message
 
             logic.onStart()
 
             verify { view.setStateLoading() }
+            verify { throwable.printStackTrace() }
             verify { view.setStateError(message) }
         }
     }
@@ -255,17 +257,48 @@ class UserListListLogicTest {
         /**
          * - Get the moved UserList from the ViewModel.
          * - Invoke [IRepositoryContract.Repository.updateUserListPosition].
+         *   - This will succeed.
          */
         @Test
-        fun movedPermanently() {
+        fun `movedPermanently - success`() {
             val newPosition = 0
             val userListList = mutableListOf(userListOne)
 
             every { viewModel.viewData } returns userListList
+            every {
+                repo.updateUserListPosition(userListOne, userListOne.position, newPosition)
+            } answers {
+                Completable.complete()
+            }
 
             logic.movedPermanently(newPosition)
 
             verify { repo.updateUserListPosition(userListOne, userListOne.position, newPosition) }
+        }
+
+        /**
+         * - Get the moved UserList from the ViewModel.
+         * - Invoke [IRepositoryContract.Repository.updateUserListPosition].
+         *   - This will fail.
+         * - Exception is thrown.
+         */
+        @Test
+        fun `movedPermanently - error`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val newPosition = 0
+            val userListList = mutableListOf(userListOne)
+
+            every { viewModel.viewData } returns userListList
+            every {
+                repo.updateUserListPosition(userListOne, userListOne.position, newPosition)
+            } answers {
+                Completable.error(throwable)
+            }
+
+            logic.movedPermanently(newPosition)
+
+            verify { repo.updateUserListPosition(userListOne, userListOne.position, newPosition) }
+            verify { throwable.printStackTrace() }
         }
 
         /**
@@ -342,11 +375,12 @@ class UserListListLogicTest {
          * - Re-add to the adapter using the temp position from the ViewModel.
          * - Re-add to the ViewData List.
          * - Remove the last UserList from the temp List.
-         * - Because the temp List is not empty, pass the temp List to the repo for deletion.
+         * - Pass the temp List to [IRepositoryContract.Repository.deleteUserLists].
+         *   - This will succeed.
          * - Clear the temp List.
          */
         @Test
-        fun undoRecentDeletion() {
+        fun `undoRecentDeletion - success`() {
             val userListList = mutableListOf<UserList>()
             val tempUserLists = mutableListOf(userListOne, userListTwo)
             val tempPosition = 0
@@ -354,6 +388,7 @@ class UserListListLogicTest {
             every { viewModel.viewData } returns userListList
             every { viewModel.tempList } returns tempUserLists
             every { viewModel.tempPosition } returns tempPosition
+            every { repo.deleteUserLists(tempUserLists) } answers { Completable.complete() }
 
             logic.undoRecentDeletion(adapter)
 
@@ -361,6 +396,40 @@ class UserListListLogicTest {
             assertThat(userListList).containsExactly(userListTwo)
             verify { repo.deleteUserLists(tempUserLists) }
             assertThat(tempUserLists.isEmpty()).isTrue()
+        }
+
+        /**
+         * - Get the last added UserList from the ViewModel's temp list.
+         * - Re-add to the adapter using the temp position from the ViewModel.
+         * - Re-add to the ViewData List.
+         * - Remove the last UserList from the temp List.
+         * - Pass the temp List to [IRepositoryContract.Repository.deleteUserLists].
+         *   - This will fail.
+         * - Throw the Exception.
+         * - Clear the temp list.
+         * - Display error message.
+         */
+        @Test
+        fun `undoRecentDeletion - error`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val userListList = mutableListOf<UserList>()
+            val tempUserLists = mutableListOf(userListOne, userListTwo)
+            val tempPosition = 0
+
+            every { viewModel.errorMsg } returns message
+            every { viewModel.viewData } returns userListList
+            every { viewModel.tempList } returns tempUserLists
+            every { viewModel.tempPosition } returns tempPosition
+            every { repo.deleteUserLists(tempUserLists) } answers { Completable.error(throwable) }
+
+            logic.undoRecentDeletion(adapter)
+
+            verify { adapter.reAdd(tempPosition, userListTwo) }
+            assertThat(userListList).containsExactly(userListTwo)
+            verify { repo.deleteUserLists(tempUserLists) }
+            verify { throwable.printStackTrace() }
+            assertThat(tempUserLists.isEmpty()).isTrue()
+            verify { view.showMessage(message) }
         }
 
         /**
@@ -402,19 +471,47 @@ class UserListListLogicTest {
         /**
          * - Check if the temp List is empty.
          *   - Will not be in this test.
-         * - Pass the temp List [IRepositoryContract.Repository.deleteUserLists].
+         * - Pass the temp List to [IRepositoryContract.Repository.deleteUserLists].
+         *   - This will succeed.
          * - Clear the temp List.
          */
         @Test
-        fun deletionNotificationTimedOut() {
+        fun `deletionNotificationTimedOut - success`() {
             val userListList = mutableListOf(userListOne)
 
             every { viewModel.tempList } returns userListList
+            every { repo.deleteUserLists(userListList) } answers { Completable.complete() }
 
             logic.deletionNotificationTimedOut()
 
             verify { repo.deleteUserLists(userListList) }
             assertThat(userListList.isEmpty()).isTrue()
+        }
+
+        /**
+         * - Check if the temp List is empty.
+         *   - Will not be in this test.
+         * - Pass the temp List to [IRepositoryContract.Repository.deleteUserLists].
+         *   - This will fail.
+         * - Throw the Exception.
+         * - Clear the temp list.
+         * - Display error message.
+         */
+        @Test
+        fun `deletionNotificationTimedOut - error`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+            val userListList = mutableListOf(userListOne)
+
+            every { viewModel.errorMsg } returns message
+            every { viewModel.tempList } returns userListList
+            every { repo.deleteUserLists(userListList) } answers { Completable.error(throwable) }
+
+            logic.deletionNotificationTimedOut()
+
+            verify { repo.deleteUserLists(userListList) }
+            verify { throwable.printStackTrace() }
+            assertThat(userListList.isEmpty()).isTrue()
+            verify { view.showMessage(message) }
         }
 
         /**

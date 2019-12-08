@@ -1,5 +1,7 @@
 package com.example.david.lists.view.userlistlist
 
+import com.example.david.lists.common.subscribeCompletable
+import com.example.david.lists.common.subscribeFlowableUserList
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.util.IUtilNightModeContract
 import com.example.david.lists.util.UtilExceptions
@@ -7,7 +9,6 @@ import com.example.david.lists.view.common.ListViewLogicBase
 import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subscribers.DisposableSubscriber
 import java.util.*
 
 class UserListListLogic(private val view: IUserListViewContract.View,
@@ -34,25 +35,17 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
 
     private fun getAllUserLists() {
-        disposable.add(repo.getUserLists
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .onTerminateDetach()
-                .subscribeWith(userListSubscriber())
-        )
+        disposable.add(subscribeFlowableUserList(
+                repo.getUserLists(),
+                { onNextList(it) },
+                { onObservableError(it) },
+                schedulerProvider
+        ))
     }
 
-    private fun userListSubscriber() = object : DisposableSubscriber<List<UserList>>() {
-        override fun onNext(userLists: List<UserList>) {
-            viewModel.viewData = userLists.toMutableList()
-            evalNewData()
-        }
-
-        override fun onError(t: Throwable) {
-            view.setStateError(viewModel.errorMsg)
-        }
-
-        override fun onComplete() {}
+    private fun onNextList(list: List<UserList>) {
+        viewModel.viewData = list.toMutableList()
+        evalNewData()
     }
 
     private fun evalNewData() {
@@ -61,6 +54,11 @@ class UserListListLogic(private val view: IUserListViewContract.View,
             viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
             else -> view.setStateDisplayList()
         }
+    }
+
+    private fun onObservableError(t: Throwable) {
+        UtilExceptions.throwException(t)
+        view.setStateError(viewModel.errorMsg)
     }
 
 
@@ -85,11 +83,12 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
     override fun movedPermanently(newPosition: Int) {
         val userList = viewModel.viewData[newPosition]
-        repo.updateUserListPosition(
-                userList,
-                userList.position,
-                newPosition
-        )
+        disposable.add(subscribeCompletable(
+                repo.updateUserListPosition(userList, userList.position, newPosition),
+                {},
+                { UtilExceptions.throwException(it) },
+                schedulerProvider
+        ))
     }
 
 
@@ -141,8 +140,18 @@ class UserListListLogic(private val view: IUserListViewContract.View,
         if (viewModel.tempList.isEmpty()) {
             return
         }
-        repo.deleteUserLists(viewModel.tempList)
+        disposable.add(subscribeCompletable(
+                repo.deleteUserLists(viewModel.tempList),
+                { viewModel.tempList.clear() },
+                { deletionError(it) },
+                schedulerProvider
+        ))
+    }
+
+    private fun deletionError(t: Throwable) {
+        UtilExceptions.throwException(t)
         viewModel.tempList.clear()
+        view.showMessage(viewModel.errorMsg)
     }
 
 

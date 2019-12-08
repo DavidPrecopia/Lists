@@ -1,6 +1,6 @@
 package com.example.david.lists.view.userlistlist
 
-import com.example.david.lists.data.datamodel.UserList
+import com.example.domain.datamodel.UserList
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

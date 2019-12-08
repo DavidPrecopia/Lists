@@ -21,6 +21,8 @@ interface IUserListViewContract {
         fun setStateLoading()
 
         fun setStateError(message: String)
+
+        fun showMessage(message: String)
     }
 
     interface Logic {
