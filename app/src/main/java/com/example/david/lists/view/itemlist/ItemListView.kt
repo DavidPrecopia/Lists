@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.david.lists.common.application
+import com.example.david.lists.common.navigateUp
 import com.example.david.lists.view.common.ListViewBase
 import com.example.david.lists.view.itemlist.buldlogic.DaggerItemListViewComponent
 import com.example.domain.datamodel.Item
@@ -90,7 +91,7 @@ class ItemListView : ListViewBase(), IItemViewContract.View {
     }
 
     override fun finishView() {
-        findNavController().navigateUp()
+        navigateUp()
     }
 
 
