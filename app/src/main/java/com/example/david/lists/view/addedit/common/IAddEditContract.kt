@@ -4,6 +4,8 @@ interface IAddEditContract {
     interface View {
         fun setStateError(message: String)
 
+        fun displayMessage(message: String)
+
         fun finishView()
     }
 
@@ -23,6 +25,8 @@ interface IAddEditContract {
         var userListId: String?
 
         var position: Int
+
+        val msgError: String
 
         val msgEmptyTitle: String
 

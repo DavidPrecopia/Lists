@@ -76,6 +76,7 @@ class AddEditUserListLogicTest {
          * - Add the new UserList to the repo.
          *   - This will fail.
          * - Thrown the Exception.
+         * - Display a failure message.
          * - Finish the View.
          */
         @Test
@@ -85,12 +86,14 @@ class AddEditUserListLogicTest {
             every { viewModel.taskType } returns ADD
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
+            every { viewModel.msgError } returns errorMessage
             every { repo.addUserList(validInput, position) } answers { Completable.error(throwable) }
 
             logic.validateInput(validInput)
 
             verify { repo.addUserList(validInput, position) }
             verify { throwable.printStackTrace() }
+            verify { view.displayMessage(errorMessage) }
             verify { view.finishView() }
         }
 
@@ -125,8 +128,9 @@ class AddEditUserListLogicTest {
          *   - In this test it will be [TaskType.EDIT]
          * - Get the ID from the ViewModel.
          * - Rename the UserList via the repo.
-         *   - This will be successful.
+         *   - This will fail.
          * - Thrown the Exception.
+         * - Display a failure message.
          * - Finish the View.
          */
         @Test
@@ -136,12 +140,14 @@ class AddEditUserListLogicTest {
             every { viewModel.taskType } returns EDIT
             every { viewModel.id } returns id
             every { viewModel.currentTitle } returns title
+            every { viewModel.msgError } returns errorMessage
             every { repo.renameUserList(id, validInput) } answers { Completable.error(throwable) }
 
             logic.validateInput(validInput)
 
             verify { repo.renameUserList(id, validInput) }
             verify { throwable.printStackTrace() }
+            verify { view.displayMessage(errorMessage) }
             verify { view.finishView() }
             verify(exactly = 0) { viewModel.position }
         }

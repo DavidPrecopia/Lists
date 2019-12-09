@@ -18,6 +18,9 @@ class AddEditViewModel(private val application: Application) : IAddEditContract.
     override var position: Int = 0
 
 
+    override val msgError: String
+        get() = application.getString(R.string.error_msg_generic)
+
     override val msgEmptyTitle: String
         get() = application.getString(R.string.error_msg_empty_title_text_field)
 

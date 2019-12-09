@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.david.lists.R
+import com.example.david.lists.common.toast
 import com.example.david.lists.util.UtilSoftKeyboard
 import kotlinx.android.synthetic.main.add_edit_dialog.*
 import javax.inject.Inject
@@ -90,6 +91,10 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
 
     override fun setStateError(message: String) {
         text_input_layout.error = message
+    }
+
+    override fun displayMessage(message: String) {
+        toast(message)
     }
 
 

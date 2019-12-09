@@ -52,10 +52,11 @@ class AddEditItemLogicTest {
          *   - In this test it will be [TaskType.ADD]
          * - Get the position and userListId from the ViewModel.
          * - Add the new Item to the repo.
+         *   - This will succeed.
          * - Finish the View.
          */
         @Test
-        fun `validateInput - Add - successful`() {
+        fun `validateInput - Add - success`() {
             every { viewModel.taskType } returns ADD
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
@@ -71,13 +72,44 @@ class AddEditItemLogicTest {
          * - Validate the input.
          *   - It will be valid.
          * - Get the current task type from the ViewModel.
-         *   - In this test it will be [TaskType.EDIT]
-         * - Get the ID from the ViewModel.
-         * - Rename the Item via the repo.
+         *   - In this test it will be [TaskType.ADD]
+         * - Get the position and userListId from the ViewModel.
+         * - Add the new Item to the repo.
+         *   - This will fail.
+         * - Throw the exception.
+         * - Display a failure message.
          * - Finish the View.
          */
         @Test
-        fun `validateInput - Edit - successful`() {
+        fun `validateInput - Add - failure`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+
+            every { viewModel.taskType } returns ADD
+            every { viewModel.position } returns position
+            every { viewModel.currentTitle } returns title
+            every { viewModel.userListId } returns userListId
+            every { viewModel.msgError } returns errorMessage
+            every { repo.addItem(validInput, position, userListId) } answers { Completable.error(throwable) }
+
+            logic.validateInput(validInput)
+
+            verify { throwable.printStackTrace() }
+            verify { view.displayMessage(errorMessage) }
+            verify { view.finishView() }
+        }
+
+        /**
+         * - Validate the input.
+         *   - It will be valid.
+         * - Get the current task type from the ViewModel.
+         *   - In this test it will be [TaskType.EDIT]
+         * - Get the ID from the ViewModel.
+         * - Rename the Item via the repo.
+         *   - This will succeed.
+         * - Finish the View.
+         */
+        @Test
+        fun `validateInput - Edit - success`() {
             every { viewModel.taskType } returns EDIT
             every { viewModel.id } returns id
             every { viewModel.currentTitle } returns title
@@ -86,6 +118,37 @@ class AddEditItemLogicTest {
             logic.validateInput(validInput)
 
             verify { repo.renameItem(id, validInput) }
+            verify { view.finishView() }
+            verify(exactly = 0) { viewModel.position }
+        }
+
+        /**
+         * - Validate the input.
+         *   - It will be valid.
+         * - Get the current task type from the ViewModel.
+         *   - In this test it will be [TaskType.EDIT]
+         * - Get the ID from the ViewModel.
+         * - Rename the Item via the repo.
+         *   - This will fail.
+         * - Throw the exception.
+         * - Display a failure message.
+         * - Finish the View.
+         */
+        @Test
+        fun `validateInput - Edit - failure`() {
+            val throwable = mockk<Throwable>(relaxed = true)
+
+            every { viewModel.taskType } returns EDIT
+            every { viewModel.id } returns id
+            every { viewModel.currentTitle } returns title
+            every { viewModel.msgError } returns errorMessage
+            every { repo.renameItem(id, validInput) } answers { Completable.error(throwable) }
+
+            logic.validateInput(validInput)
+
+            verify { repo.renameItem(id, validInput) }
+            verify { throwable.printStackTrace() }
+            verify { view.displayMessage(errorMessage) }
             verify { view.finishView() }
             verify(exactly = 0) { viewModel.position }
         }

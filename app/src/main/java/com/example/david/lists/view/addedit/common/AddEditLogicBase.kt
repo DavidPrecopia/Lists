@@ -48,7 +48,10 @@ abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
         subscribeCompletable(
                 completable,
                 {},
-                { UtilExceptions.throwException(it) },
+                {
+                    view.displayMessage(viewModel.msgError)
+                    UtilExceptions.throwException(it)
+                },
                 schedulerProvider
         )
     }
