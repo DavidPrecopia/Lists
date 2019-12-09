@@ -284,14 +284,14 @@ class ItemListLogicTest {
 
             every { viewModel.viewData } returns itemList
             every {
-                repo.updateItemPosition(itemOne, itemOne.position, newPosition)
+                repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition)
             } answers {
                 Completable.complete()
             }
 
             logic.movedPermanently(newPosition)
 
-            verify { repo.updateItemPosition(itemOne, itemOne.position, newPosition) }
+            verify { repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition) }
         }
 
         /**
@@ -310,14 +310,14 @@ class ItemListLogicTest {
             every { viewModel.errorMsg } returns message
             every { viewModel.viewData } returns itemList
             every {
-                repo.updateItemPosition(itemOne, itemOne.position, newPosition)
+                repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition)
             } answers {
                 Completable.error(throwable)
             }
 
             logic.movedPermanently(newPosition)
 
-            verify { repo.updateItemPosition(itemOne, itemOne.position, newPosition) }
+            verify { repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition) }
             verify { throwable.printStackTrace() }
             verify { view.showMessage(message) }
         }

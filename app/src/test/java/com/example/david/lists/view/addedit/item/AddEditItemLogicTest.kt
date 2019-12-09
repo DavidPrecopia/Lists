@@ -6,7 +6,6 @@ import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
-import com.example.domain.datamodel.Item
 import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.Completable
@@ -61,7 +60,7 @@ class AddEditItemLogicTest {
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
             every { viewModel.userListId } returns userListId
-            every { repo.addItem(Item(validInput, position, userListId)) } answers { Completable.complete() }
+            every { repo.addItem(validInput, position, userListId) } answers { Completable.complete() }
 
             logic.validateInput(validInput)
 

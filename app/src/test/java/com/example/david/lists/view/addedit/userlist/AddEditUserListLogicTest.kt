@@ -6,7 +6,6 @@ import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
-import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.Completable
@@ -57,16 +56,14 @@ class AddEditUserListLogicTest {
          */
         @Test
         fun `validateInput - Add - successful`() {
-            val userList = UserList(validInput, position)
-
             every { viewModel.taskType } returns ADD
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
-            every { repo.addUserList(userList) } answers { Completable.complete() }
+            every { repo.addUserList(validInput, position) } answers { Completable.complete() }
 
             logic.validateInput(validInput)
 
-            verify { repo.addUserList(userList) }
+            verify { repo.addUserList(validInput, position) }
             verify { view.finishView() }
         }
 
@@ -83,17 +80,16 @@ class AddEditUserListLogicTest {
          */
         @Test
         fun `validateInput - Add - failure`() {
-            val userList = UserList(validInput, position)
             val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.taskType } returns ADD
             every { viewModel.position } returns position
             every { viewModel.currentTitle } returns title
-            every { repo.addUserList(userList) } answers { Completable.error(throwable) }
+            every { repo.addUserList(validInput, position) } answers { Completable.error(throwable) }
 
             logic.validateInput(validInput)
 
-            verify { repo.addUserList(userList) }
+            verify { repo.addUserList(validInput, position) }
             verify { throwable.printStackTrace() }
             verify { view.finishView() }
         }

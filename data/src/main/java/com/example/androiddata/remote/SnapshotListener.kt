@@ -2,14 +2,13 @@ package com.example.androiddata.remote
 
 import android.annotation.SuppressLint
 import com.example.androiddata.common.createFlowable
-import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
-import com.example.domain.constants.RepositoryConstants.FIELD_POSITION
-import com.example.domain.datamodel.Item
-import com.example.domain.datamodel.UserList
+import com.example.androiddata.datamodel.FirebaseItem
+import com.example.androiddata.datamodel.FirebaseUserList
 import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.DocumentChange.Type.REMOVED
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import io.reactivex.Flowable
 import io.reactivex.FlowableEmitter
@@ -23,8 +22,8 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
     private var userListsSnapshotListener: ListenerRegistration? = null
     private var itemsSnapshotListener: ListenerRegistration? = null
 
-    override val deletedUserListsFlowable: Flowable<List<UserList>>
-    private var deletedUserListsEmitter: FlowableEmitter<List<UserList>>? = null
+    override val deletedUserListsFlowable: Flowable<List<FirebaseUserList>>
+    private var deletedUserListsEmitter: FlowableEmitter<List<FirebaseUserList>>? = null
 
     /**
      * Because there were recent local changes, I can assume that this payload is from the server
@@ -39,7 +38,7 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
     }
 
     private fun initDeletedUserListsFlowable() =
-            createFlowable<List<UserList>> { deletedUserListsEmitter = it }
+            createFlowable<List<FirebaseUserList>> { deletedUserListsEmitter = it }
 
     @SuppressLint("CheckResult")
     private fun initFirebaseAuth(userRepo: IRepositoryContract.UserRepository, firestore: FirebaseFirestore) {
@@ -57,9 +56,9 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
      * USER LIST
      */
     override fun getUserListFlowable() =
-            createFlowable<List<UserList>> { getUserListQuerySnapshot(it) }
+            createFlowable<List<FirebaseUserList>> { getUserListQuerySnapshot(it) }
 
-    private fun getUserListQuerySnapshot(emitter: FlowableEmitter<List<UserList>>) {
+    private fun getUserListQuerySnapshot(emitter: FlowableEmitter<List<FirebaseUserList>>) {
         this.userListsSnapshotListener = userListCollection
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE, getUserListEventListener(emitter))
@@ -69,7 +68,7 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
         }
     }
 
-    private fun getUserListEventListener(emitter: FlowableEmitter<List<UserList>>) =
+    private fun getUserListEventListener(emitter: FlowableEmitter<List<FirebaseUserList>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
                     emitter.onNext(querySnapshot!!.toObjects())
@@ -82,10 +81,10 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
             return
         }
 
-        val deletedUserLists = ArrayList<UserList>()
+        val deletedUserLists = ArrayList<FirebaseUserList>()
         for (change in querySnapshot.documentChanges) {
             if (change.type == REMOVED) {
-                deletedUserLists.add(change.document.toObject(UserList::class.java))
+                deletedUserLists.add(change.document.toObject())
             }
         }
 
@@ -103,9 +102,9 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
      * ITEM
      */
     override fun getItemFlowable(userListId: String) =
-            createFlowable<List<Item>> { getItemQuerySnapshot(it, userListId) }
+            createFlowable<List<FirebaseItem>> { getItemQuerySnapshot(it, userListId) }
 
-    private fun getItemQuerySnapshot(emitter: FlowableEmitter<List<Item>>, userListId: String) {
+    private fun getItemQuerySnapshot(emitter: FlowableEmitter<List<FirebaseItem>>, userListId: String) {
         itemsSnapshotListener = itemCollection
                 .whereEqualTo(FIELD_ITEM_USER_LIST_ID, userListId)
                 .orderBy(FIELD_POSITION, Query.Direction.ASCENDING)
@@ -116,7 +115,7 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
         }
     }
 
-    private fun getItemEventListener(emitter: FlowableEmitter<List<Item>>) =
+    private fun getItemEventListener(emitter: FlowableEmitter<List<FirebaseItem>>) =
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
                     emitter.onNext(querySnapshot!!.toObjects())

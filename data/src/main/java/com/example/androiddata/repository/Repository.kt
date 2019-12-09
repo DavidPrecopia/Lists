@@ -1,5 +1,7 @@
 package com.example.androiddata.repository
 
+import com.example.androiddata.datamodel.FirebaseItem
+import com.example.androiddata.datamodel.FirebaseUserList
 import com.example.androiddata.remote.IRemoteRepositoryContract
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
@@ -10,31 +12,45 @@ internal class Repository(private val remote: IRemoteRepositoryContract.Reposito
         IRepositoryContract.Repository {
 
     override val userListDeletedObservable: Flowable<List<UserList>>
-        get() = remote.userListDeletedObservable
+        get() = remote.userListDeletedObservable.map { mapRemoteUserLists(it) }
 
 
-    override fun getUserLists() = remote.getUserLists()
+    override fun getUserLists() =
+            remote.getUserLists().map { mapRemoteUserLists(it) }
 
-    override fun getItems(userListId: String) = remote.getItems(userListId)
+    override fun getItems(userListId: String) =
+            remote.getItems(userListId).map { mapRemoteItems(it) }
 
 
-    override fun addUserList(userList: UserList) = remote.addUserList(userList)
+    override fun addUserList(newTitle: String, position: Int) =
+            remote.addUserList(newTitle, position)
 
-    override fun addItem(item: Item) = remote.addItem(item)
+    override fun addItem(newTitle: String, position: Int, userListId: String) =
+            remote.addItem(newTitle, position, userListId)
 
 
     override fun deleteUserLists(userListList: List<UserList>) = remote.deleteUserLists(userListList)
 
     override fun deleteItems(itemList: List<Item>) = remote.deleteItems(itemList)
 
+
     override fun renameUserList(id: String, newTitle: String) = remote.renameUserList(id, newTitle)
 
     override fun renameItem(id: String, newTitle: String) = remote.renameItem(id, newTitle)
 
 
-    override fun updateUserListPosition(userList: UserList, oldPosition: Int, newPosition: Int) =
-            remote.updateUserListPosition(userList, oldPosition, newPosition)
+    override fun updateUserListPosition(id: String, oldPosition: Int, newPosition: Int) =
+            remote.updateUserListPosition(id, oldPosition, newPosition)
 
-    override fun updateItemPosition(item: Item, oldPosition: Int, newPosition: Int) =
-            remote.updateItemPosition(item, oldPosition, newPosition)
+    override fun updateItemPosition(id: String, userListId: String, oldPosition: Int, newPosition: Int) =
+            remote.updateItemPosition(id, userListId, oldPosition, newPosition)
+
+
+    private fun mapRemoteUserLists(list: List<FirebaseUserList>) = list.map {
+        UserList(it.title, it.position, it.id)
+    }
+
+    private fun mapRemoteItems(list: List<FirebaseItem>) = list.map {
+        Item(it.title, it.position, it.userListId, it.id)
+    }
 }

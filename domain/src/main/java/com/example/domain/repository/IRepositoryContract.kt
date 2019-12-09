@@ -16,9 +16,9 @@ interface IRepositoryContract {
 
         fun getItems(userListId: String): Flowable<List<Item>>
 
-        fun addUserList(userList: UserList): Completable
+        fun addUserList(newTitle: String, position: Int): Completable
 
-        fun addItem(item: Item): Completable
+        fun addItem(newTitle: String, position: Int, userListId: String): Completable
 
         fun deleteUserLists(userListList: List<UserList>): Completable
 
@@ -28,9 +28,9 @@ interface IRepositoryContract {
 
         fun renameItem(id: String, newTitle: String): Completable
 
-        fun updateUserListPosition(userList: UserList, oldPosition: Int, newPosition: Int): Completable
+        fun updateUserListPosition(id: String, oldPosition: Int, newPosition: Int): Completable
 
-        fun updateItemPosition(item: Item, oldPosition: Int, newPosition: Int): Completable
+        fun updateItemPosition(id: String, userListId: String, oldPosition: Int, newPosition: Int): Completable
     }
 
     interface UserRepository {

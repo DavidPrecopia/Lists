@@ -5,7 +5,6 @@ import com.example.david.lists.view.addedit.common.AddEditLogicBase
 import com.example.david.lists.view.addedit.common.IAddEditContract
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.example.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
-import com.example.domain.datamodel.UserList
 import com.example.domain.repository.IRepositoryContract
 
 class AddEditUserListLogic(view: IAddEditContract.View,
@@ -19,7 +18,7 @@ class AddEditUserListLogic(view: IAddEditContract.View,
 
     public override fun save(newTitle: String) {
         when (viewModel.taskType) {
-            ADD -> saveWithCompletable(repo.addUserList(UserList(newTitle, viewModel.position)))
+            ADD -> saveWithCompletable(repo.addUserList(newTitle, viewModel.position))
             EDIT -> saveWithCompletable(repo.renameUserList(viewModel.id, newTitle))
         }
     }

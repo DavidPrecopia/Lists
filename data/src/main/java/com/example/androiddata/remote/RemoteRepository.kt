@@ -1,48 +1,48 @@
 package com.example.androiddata.remote
 
 import com.example.androiddata.common.createCompletable
-import com.example.domain.constants.RepositoryConstants.FIELD_ITEM_USER_LIST_ID
-import com.example.domain.constants.RepositoryConstants.FIELD_POSITION
-import com.example.domain.constants.RepositoryConstants.FIELD_TITLE
+import com.example.androiddata.datamodel.FirebaseItem
+import com.example.androiddata.datamodel.FirebaseUserList
 import com.example.domain.datamodel.Item
 import com.example.domain.datamodel.UserList
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.*
+import io.reactivex.Completable
 import io.reactivex.CompletableEmitter
 import io.reactivex.Flowable
 
 internal class RemoteRepository(private val firestore: FirebaseFirestore,
-                       private val userListsCollection: CollectionReference,
-                       private val itemsCollection: CollectionReference,
-                       private val snapshotListener: IRemoteRepositoryContract.SnapshotListener) :
+                                private val userListsCollection: CollectionReference,
+                                private val itemsCollection: CollectionReference,
+                                private val snapshotListener: IRemoteRepositoryContract.SnapshotListener) :
         IRemoteRepositoryContract.Repository {
 
 
     /**
      * OBSERVE
      */
-    override fun getUserLists(): Flowable<List<UserList>> =
+    override fun getUserLists(): Flowable<List<FirebaseUserList>> =
             snapshotListener.getUserListFlowable()
 
     override fun getItems(userListId: String) =
             snapshotListener.getItemFlowable(userListId)
 
-    override val userListDeletedObservable: Flowable<List<UserList>>
+    override val userListDeletedObservable: Flowable<List<FirebaseUserList>>
         get() = snapshotListener.deletedUserListsFlowable
 
 
     /**
      * ADD
      */
-    override fun addUserList(userList: UserList) = createCompletable {
+    override fun addUserList(newTitle: String, position: Int): Completable = createCompletable {
         val documentRef = userListsCollection.document()
-        val newUserList = UserList(userList.title, userList.position, documentRef.id)
+        val newUserList = FirebaseUserList(newTitle, position, documentRef.id)
         add(documentRef, newUserList, it)
     }
 
-    override fun addItem(item: Item) = createCompletable {
+    override fun addItem(newTitle: String, position: Int, userListId: String): Completable = createCompletable {
         val documentRef = itemsCollection.document()
-        val newItem = Item(item.title, item.position, item.userListId, documentRef.id)
+        val newItem = FirebaseItem(newTitle, position, userListId, documentRef.id)
         add(documentRef, newItem, it)
     }
 
@@ -99,12 +99,12 @@ internal class RemoteRepository(private val firestore: FirebaseFirestore,
     /**
      * RENAME
      */
-    override fun renameUserList(userListId: String, newName: String) = createCompletable {
-        rename(getUserListDocument(userListId), newName, it)
+    override fun renameUserList(id: String, newName: String) = createCompletable {
+        rename(getUserListDocument(id), newName, it)
     }
 
-    override fun renameItem(itemId: String, newName: String) = createCompletable {
-        rename(getItemDocument(itemId), newName, it)
+    override fun renameItem(id: String, newName: String) = createCompletable {
+        rename(getItemDocument(id), newName, it)
     }
 
     private fun rename(docRef: DocumentReference, newName: String, emitter: CompletableEmitter) {
@@ -117,10 +117,10 @@ internal class RemoteRepository(private val firestore: FirebaseFirestore,
     /**
      * POSITION
      */
-    override fun updateUserListPosition(userList: UserList, oldPos: Int, newPos: Int) =
+    override fun updateUserListPosition(id: String, oldPos: Int, newPos: Int) =
             createCompletable {
                 updatePosition(
-                        getUserListDocument(userList.id),
+                        getUserListDocument(id),
                         oldPos,
                         newPos,
                         userListSuccessfullyUpdatedListener(it),
@@ -138,13 +138,13 @@ internal class RemoteRepository(private val firestore: FirebaseFirestore,
             }
 
 
-    override fun updateItemPosition(item: Item, oldPos: Int, newPos: Int) =
+    override fun updateItemPosition(id: String, userListId: String, oldPos: Int, newPos: Int) =
             createCompletable {
                 updatePosition(
-                        getItemDocument(item.id),
+                        getItemDocument(id),
                         oldPos,
                         newPos,
-                        itemSuccessfullyUpdatedListener(item.userListId, it),
+                        itemSuccessfullyUpdatedListener(userListId, it),
                         it
                 )
             }
@@ -200,7 +200,7 @@ internal class RemoteRepository(private val firestore: FirebaseFirestore,
     }
 
 
-    private fun getUserListDocument(groupId: String) = userListsCollection.document(groupId)
+    private fun getUserListDocument(id: String) = userListsCollection.document(id)
 
-    private fun getItemDocument(itemId: String) = itemsCollection.document(itemId)
+    private fun getItemDocument(id: String) = itemsCollection.document(id)
 }

@@ -84,7 +84,7 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     override fun movedPermanently(newPosition: Int) {
         val userList = viewModel.viewData[newPosition]
         disposable.add(subscribeCompletable(
-                repo.updateUserListPosition(userList, userList.position, newPosition),
+                repo.updateUserListPosition(userList.id, userList.position, newPosition),
                 {},
                 { UtilExceptions.throwException(it) },
                 schedulerProvider

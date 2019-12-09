@@ -90,7 +90,7 @@ class ItemListLogic(private val view: IItemViewContract.View,
     override fun movedPermanently(newPosition: Int) {
         val item = viewModel.viewData[newPosition]
         disposable.add(subscribeCompletable(
-                repo.updateItemPosition(item, item.position, newPosition),
+                repo.updateItemPosition(item.id, item.userListId, item.position, newPosition),
                 {},
                 {
                     view.showMessage(viewModel.errorMsg)
