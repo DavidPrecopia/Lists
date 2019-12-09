@@ -1,6 +1,5 @@
 package com.example.david.lists.view.reauthentication.phone.buildlogic
 
-import android.app.Application
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract
@@ -21,9 +20,10 @@ class SmsReAuthViewModule {
         return SmsReAuthLogic(view, viewModel, userRepo, schedulerProvider)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application): ISmsReAuthContract.ViewModel {
-        return SmsReAuthViewModel(application)
+    fun viewModel(getStringRes: (Int) -> String): ISmsReAuthContract.ViewModel {
+        return SmsReAuthViewModel(getStringRes)
     }
 }

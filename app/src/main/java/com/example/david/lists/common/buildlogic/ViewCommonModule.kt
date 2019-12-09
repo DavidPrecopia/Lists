@@ -59,6 +59,25 @@ class ViewCommonModule {
 
 
     /**
+     * The injection site needs to be annotated with `@JvmSuppressWildcards`.
+     */
+    @ViewScope
+    @Provides
+    fun getStringResFunction(application: Application): (Int) -> String {
+        return { application.getString(it) }
+    }
+
+    /**
+     * The injection site needs to be annotated with `@JvmSuppressWildcards`.
+     */
+    @ViewScope
+    @Provides
+    fun getStringResArgFunction(application: Application): (Int, String) -> String {
+        return { res, arg -> application.getString(res, arg) }
+    }
+
+
+    /**
      * RecyclerView
      */
     @Provides

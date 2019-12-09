@@ -1,13 +1,12 @@
 package com.example.david.lists.view.itemlist
 
-import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
 import com.example.domain.datamodel.Item
 import java.util.*
 
-class ItemListViewModel(application: Application, override val userListId: String) :
-        ViewModelBase(application),
+class ItemListViewModel(private val getStringRes: (Int) -> String,
+                        private val getStringResArg: (Int, String) -> String,
+                        override val userListId: String) :
         IItemViewContract.ViewModel {
 
     override var viewData: MutableList<Item> = ArrayList()
@@ -21,7 +20,7 @@ class ItemListViewModel(application: Application, override val userListId: Strin
         get() = getStringRes(R.string.msg_item_deletion)
 
     override fun getMsgListDeleted(title: String) =
-            getStringRes(R.string.msg_user_list_deletion_parameter, title)
+            getStringResArg(R.string.msg_user_list_deletion_parameter, title)
 
 
     override val errorMsg: String

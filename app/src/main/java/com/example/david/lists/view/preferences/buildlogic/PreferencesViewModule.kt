@@ -1,6 +1,5 @@
 package com.example.david.lists.view.preferences.buildlogic
 
-import android.app.Application
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.view.preferences.IPreferencesViewContract
 import com.example.david.lists.view.preferences.PreferencesLogic
@@ -19,9 +18,10 @@ class PreferencesViewModule {
         return PreferencesLogic(view, viewModel, userRepo)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application): IPreferencesViewContract.ViewModel {
-        return PreferencesViewModel(application)
+    fun viewModel(getStringRes: (Int) -> String): IPreferencesViewContract.ViewModel {
+        return PreferencesViewModel(getStringRes)
     }
 }

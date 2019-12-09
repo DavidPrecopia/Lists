@@ -24,9 +24,10 @@ class AddEditDialogCommonModule {
         return application.getSystemService()!!
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application): IAddEditContract.ViewModel {
-        return AddEditViewModel(application)
+    fun viewModel(getStringRes: (Int) -> String): IAddEditContract.ViewModel {
+        return AddEditViewModel(getStringRes)
     }
 }

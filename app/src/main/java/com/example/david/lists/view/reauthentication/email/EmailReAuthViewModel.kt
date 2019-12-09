@@ -1,11 +1,8 @@
 package com.example.david.lists.view.reauthentication.email
 
-import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
 
-class EmailReAuthViewModel(application: Application) :
-        ViewModelBase(application),
+class EmailReAuthViewModel(private val getStringRes: (Int) -> String) :
         IEmailReAuthContract.ViewModel {
 
     override val msgInvalidPassword: String

@@ -1,6 +1,5 @@
 package com.example.david.lists.view.reauthentication.google.buildlogic
 
-import android.app.Application
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.util.ISchedulerProviderContract
 import com.example.david.lists.view.reauthentication.google.GoogleReAuthLogic
@@ -21,9 +20,10 @@ class GoogleReAuthModule {
         return GoogleReAuthLogic(view, viewModel, userRepo, schedulerProvider)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application): IGoogleReAuthContract.ViewModel {
-        return GoogleReAuthViewModel(application)
+    fun viewModel(getStringRes: (Int) -> String): IGoogleReAuthContract.ViewModel {
+        return GoogleReAuthViewModel(getStringRes)
     }
 }

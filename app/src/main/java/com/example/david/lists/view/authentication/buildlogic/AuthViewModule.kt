@@ -25,12 +25,14 @@ internal class AuthViewModule {
         return AuthLogic(view, viewModel, userRepo, schedulerProvider)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application,
-                  sharedPrefs: SharedPreferences): IAuthContract.ViewModel {
+    fun viewModel(getStringRes: (Int) -> String,
+                  sharedPrefs: SharedPreferences,
+                  application: Application): IAuthContract.ViewModel {
         return AuthViewModel(
-                application,
+                getStringRes,
                 sharedPrefs,
                 application.getString(R.string.email_verification_sent_shared_pref_key)
         )

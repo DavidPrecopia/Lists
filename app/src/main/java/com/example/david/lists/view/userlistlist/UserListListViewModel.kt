@@ -1,12 +1,10 @@
 package com.example.david.lists.view.userlistlist
 
-import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
 import com.example.domain.datamodel.UserList
 import java.util.*
 
-class UserListListViewModel(application: Application) : ViewModelBase(application),
+class UserListListViewModel(private val getStringRes: (Int) -> String) :
         IUserListViewContract.ViewModel {
 
     override var viewData: MutableList<UserList> = ArrayList()

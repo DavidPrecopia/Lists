@@ -1,18 +1,14 @@
 package com.example.david.lists.view.authentication
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.SharedPreferences
 import androidx.core.content.edit
-
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
 import com.firebase.ui.auth.ErrorCodes
 
-class AuthViewModel(application: Application,
+class AuthViewModel(private val getStringRes: (Int) -> String,
                     private val sharedPrefs: SharedPreferences,
                     private val sharedPrefsKey: String) :
-        ViewModelBase(application),
         IAuthContract.ViewModel {
 
 

@@ -1,6 +1,5 @@
 package com.example.david.lists.view.itemlist.buldlogic
 
-import android.app.Application
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.david.lists.common.buildlogic.ViewScope
@@ -26,10 +25,13 @@ internal class ItemListViewModule {
         return ItemListLogic(view, viewModel, repo, schedulerProvider, disposable)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application, userListId: String): IItemViewContract.ViewModel {
-        return ItemListViewModel(application, userListId)
+    fun viewModel(getStringRes: (Int) -> String,
+                  getStringResArg: (Int, String) -> String,
+                  userListId: String): IItemViewContract.ViewModel {
+        return ItemListViewModel(getStringRes, getStringResArg, userListId)
     }
 
     @ViewScope

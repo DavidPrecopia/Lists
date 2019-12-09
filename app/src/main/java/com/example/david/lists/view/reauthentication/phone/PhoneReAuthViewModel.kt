@@ -1,11 +1,8 @@
 package com.example.david.lists.view.reauthentication.phone
 
-import android.app.Application
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
 
-class PhoneReAuthViewModel(application: Application) :
-        ViewModelBase(application),
+class PhoneReAuthViewModel(private val getStringRes: (Int) -> String) :
         IPhoneReAuthContract.ViewModel {
 
     override var phoneNumber: String = ""
