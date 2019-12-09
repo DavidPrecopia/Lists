@@ -72,8 +72,8 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
             EventListener<QuerySnapshot> { querySnapshot, e ->
                 if (validQuery(querySnapshot, e, emitter)) {
                     emitter.onNext(querySnapshot!!.toObjects())
+                    evalDeletedUserList(querySnapshot)
                 }
-                evalDeletedUserList(querySnapshot!!)
             }
 
     private fun evalDeletedUserList(querySnapshot: QuerySnapshot) {
