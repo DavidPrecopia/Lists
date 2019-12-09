@@ -18,7 +18,7 @@ class MyRemoteViewsFactory(private val packageName: String,
                            private val disposable: CompositeDisposable,
                            private val appWidgetManager: AppWidgetManager,
                            private val widgetId: Int,
-                           val schedulerProvider: ISchedulerProviderContract) : RemoteViewsService.RemoteViewsFactory {
+                           private val schedulerProvider: ISchedulerProviderContract) : RemoteViewsService.RemoteViewsFactory {
 
     private val itemList: MutableList<Item> = ArrayList()
 

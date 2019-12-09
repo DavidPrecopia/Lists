@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.david.lists.common.buildlogic.ViewCommonModule
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.widget.buildlogic.SharedPrefsModule
+import com.example.david.lists.widget.common.buildlogic.WidgetCommonModule
 import com.example.david.lists.widget.configview.IWidgetConfigContract
 import com.example.david.lists.widget.configview.WidgetConfigView
 import dagger.BindsInstance
@@ -13,7 +13,7 @@ import dagger.Component
 @ViewScope
 @Component(modules = [
     WidgetConfigViewModule::class,
-    SharedPrefsModule::class,
+    WidgetCommonModule::class,
     ViewCommonModule::class
 ])
 interface WidgetConfigViewComponent {

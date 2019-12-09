@@ -1,16 +1,14 @@
 package com.example.david.lists.widget.configview
 
 import android.app.Activity
-import android.app.Application
 import android.appwidget.AppWidgetManager
 import com.example.david.lists.R
-import com.example.david.lists.view.common.ViewModelBase
-import com.example.david.lists.widget.UtilWidgetKeys
+import com.example.david.lists.widget.common.UtilWidgetKeys
 import com.example.domain.datamodel.UserList
 import java.util.*
 
-class WidgetConfigViewModel(application: Application) :
-        ViewModelBase(application),
+class WidgetConfigViewModel(private val utilWidgetKeys: UtilWidgetKeys,
+                            private val getStringRes: (Int) -> String) :
         IWidgetConfigContract.ViewModel {
 
     override var viewData: List<UserList> = ArrayList()
@@ -36,8 +34,8 @@ class WidgetConfigViewModel(application: Application) :
 
 
     override val sharedPrefKeyId: String
-        get() = UtilWidgetKeys.getSharedPrefKeyId(application, this.widgetId)
+        get() = utilWidgetKeys.getSharedPrefKeyId(this.widgetId)
 
     override val sharedPrefKeyTitle: String
-        get() = UtilWidgetKeys.getSharedPrefKeyTitle(application, this.widgetId)
+        get() = utilWidgetKeys.getSharedPrefKeyTitle(this.widgetId)
 }

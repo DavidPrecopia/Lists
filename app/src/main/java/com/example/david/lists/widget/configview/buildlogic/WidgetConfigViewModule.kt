@@ -1,8 +1,8 @@
 package com.example.david.lists.widget.configview.buildlogic
 
-import android.app.Application
 import com.example.david.lists.common.buildlogic.ViewScope
 import com.example.david.lists.util.ISchedulerProviderContract
+import com.example.david.lists.widget.common.UtilWidgetKeys
 import com.example.david.lists.widget.configview.IWidgetConfigContract
 import com.example.david.lists.widget.configview.WidgetConfigAdapter
 import com.example.david.lists.widget.configview.WidgetConfigLogic
@@ -24,10 +24,12 @@ class WidgetConfigViewModule {
         return WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable)
     }
 
+    @JvmSuppressWildcards
     @ViewScope
     @Provides
-    fun viewModel(application: Application): IWidgetConfigContract.ViewModel {
-        return WidgetConfigViewModel(application)
+    fun viewModel(utilWidgetKeys: UtilWidgetKeys,
+                  getStringRes: (Int) -> String): IWidgetConfigContract.ViewModel {
+        return WidgetConfigViewModel(utilWidgetKeys, getStringRes)
     }
 
     @ViewScope

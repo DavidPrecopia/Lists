@@ -1,4 +1,4 @@
-package com.example.david.lists.widget
+package com.example.david.lists.widget.common
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,13 +15,18 @@ class UtilWidgetKeysTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    private val utilWidgetKeys = UtilWidgetKeys(
+            { context.getString(it) },
+            { res, arg -> context.getString(res, arg) }
+    )
+
     private val maxValue = Integer.MAX_VALUE
     private val minValue = Integer.MIN_VALUE
 
 
     @Test
     fun sharedPrefsName() {
-        assertThat(UtilWidgetKeys.getSharedPrefName(context))
+        assertThat(utilWidgetKeys.getSharedPrefName())
                 .isEqualTo(context.getString(R.string.widget_shared_prefs_name))
     }
 
@@ -37,7 +42,7 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyId(value: Int) {
-        assertThat(UtilWidgetKeys.getSharedPrefKeyId(context, value))
+        assertThat(utilWidgetKeys.getSharedPrefKeyId(value))
                 .isEqualTo(context.getString(R.string.widget_key_shared_pref_user_list_id, value))
     }
 
@@ -53,7 +58,7 @@ class UtilWidgetKeysTest {
     }
 
     private fun sharedPrefsKeyTitle(value: Int) {
-        assertThat(UtilWidgetKeys.getSharedPrefKeyTitle(context, value))
+        assertThat(utilWidgetKeys.getSharedPrefKeyTitle(value))
                 .isEqualTo(context.getString(R.string.widget_key_shared_pref_user_list_title, value))
     }
 }

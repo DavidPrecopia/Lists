@@ -5,7 +5,7 @@ import android.app.Application
 import android.appwidget.AppWidgetManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.david.lists.widget.UtilWidgetKeys
+import com.example.david.lists.widget.common.UtilWidgetKeys
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +23,14 @@ class WidgetConfigViewModelTest {
 
     private val application = ApplicationProvider.getApplicationContext() as Application
 
-    private val viewModel = WidgetConfigViewModel(application)
+    private val utilWidgetKeys = UtilWidgetKeys(
+            { application.getString(it) },
+            { res, arg -> application.getString(res, arg) }
+    )
+
+
+    private val viewModel = WidgetConfigViewModel(utilWidgetKeys) { application.getString(it) }
+
 
     private val widgetId = 100
 
@@ -53,7 +60,7 @@ class WidgetConfigViewModelTest {
         viewModel.widgetId = widgetId
 
         assertThat(viewModel.sharedPrefKeyId)
-                .isEqualTo(UtilWidgetKeys.getSharedPrefKeyId(application, widgetId))
+                .isEqualTo(utilWidgetKeys.getSharedPrefKeyId(widgetId))
     }
 
     @Test
@@ -61,6 +68,6 @@ class WidgetConfigViewModelTest {
         viewModel.widgetId = widgetId
 
         assertThat(viewModel.sharedPrefKeyTitle)
-                .isEqualTo(UtilWidgetKeys.getSharedPrefKeyTitle(application, widgetId))
+                .isEqualTo(utilWidgetKeys.getSharedPrefKeyTitle(widgetId))
     }
 }

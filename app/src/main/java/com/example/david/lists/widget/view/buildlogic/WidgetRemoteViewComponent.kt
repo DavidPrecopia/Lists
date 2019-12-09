@@ -2,7 +2,7 @@ package com.example.david.lists.widget.view.buildlogic
 
 import android.content.Context
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.widget.buildlogic.SharedPrefsModule
+import com.example.david.lists.widget.common.buildlogic.WidgetCommonModule
 import com.example.david.lists.widget.view.WidgetRemoteView
 import dagger.BindsInstance
 import dagger.Component
@@ -10,7 +10,7 @@ import dagger.Component
 @ViewScope
 @Component(modules = [
     WidgetRemoteViewModule::class,
-    SharedPrefsModule::class
+    WidgetCommonModule::class
 ])
 interface WidgetRemoteViewComponent {
     fun inject(widgetRemoteView: WidgetRemoteView)

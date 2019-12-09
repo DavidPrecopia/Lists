@@ -11,8 +11,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
 import com.example.david.lists.R
 import com.example.david.lists.common.buildlogic.ViewScope
-import com.example.david.lists.widget.UtilWidgetKeys
-import com.example.david.lists.widget.buildlogic.SHARED_PREFS
+import com.example.david.lists.widget.common.UtilWidgetKeys
+import com.example.david.lists.widget.common.buildlogic.SHARED_PREFS
 import com.example.david.lists.widget.configview.WidgetConfigView
 import com.example.david.lists.widget.view.IWidgetRemoteViewContract.Companion.INTENT_ADAPTER
 import com.example.david.lists.widget.view.IWidgetRemoteViewContract.Companion.INTENT_CONFIG
@@ -80,17 +80,17 @@ class WidgetRemoteViewModule {
     @Provides
     @Named(LIST_ID)
     fun listId(@Named(SHARED_PREFS) sharedPrefs: SharedPreferences,
-               context: Context,
+               utilWidgetKeys: UtilWidgetKeys,
                appWidgetId: Int): String {
-        return sharedPrefs.getString(UtilWidgetKeys.getSharedPrefKeyId(context, appWidgetId), "")!!
+        return sharedPrefs.getString(utilWidgetKeys.getSharedPrefKeyId(appWidgetId), "")!!
     }
 
     @ViewScope
     @Provides
     @Named(LIST_TITLE)
     fun listTitle(@Named(SHARED_PREFS) sharedPrefs: SharedPreferences,
-                  context: Context,
+                  utilWidgetKeys: UtilWidgetKeys,
                   appWidgetId: Int): String {
-        return sharedPrefs.getString(UtilWidgetKeys.getSharedPrefKeyTitle(context, appWidgetId), "")!!
+        return sharedPrefs.getString(utilWidgetKeys.getSharedPrefKeyTitle(appWidgetId), "")!!
     }
 }
