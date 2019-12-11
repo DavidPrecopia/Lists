@@ -38,8 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
 
     // Cloud Firestore
-    // This is exposed because of Dagger in the app module.
-    api "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
+    implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
     // Firebase Authentication
     // This is exposed because I am using it to authenticate users. I should refactor to a custom
     // implementation for decoupling sakes, however, this will do for now because that will take time
@@ -51,10 +50,6 @@ dependencies {
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
-
-    // Dagger
-    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
 
     // Timber
     debugImplementation "com.jakewharton.timber:timber:$rootProject.timberVersion"

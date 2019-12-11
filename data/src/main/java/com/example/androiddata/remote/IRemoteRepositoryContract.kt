@@ -8,7 +8,7 @@ import io.reactivex.Completable
 
 import io.reactivex.Flowable
 
-interface IRemoteRepositoryContract {
+internal interface IRemoteRepositoryContract {
     interface Repository {
         fun getUserLists(): Flowable<List<FirebaseUserList>>
 

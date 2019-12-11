@@ -33,7 +33,7 @@ internal abstract class ListsApplicationBase : Application() {
      */
     @SuppressLint("CheckResult")
     private fun firebaseAuthListener() {
-        appComponent.repositories().userRepo().userSignedOutObservable().subscribe { signedOut ->
+        appComponent.userRepo().userSignedOutObservable().subscribe { signedOut ->
             if (signedOut!!) {
                 initAppComponent()
             }

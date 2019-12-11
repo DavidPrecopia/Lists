@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import com.example.androiddata.common.createFlowable
 import com.example.androiddata.datamodel.FirebaseItem
 import com.example.androiddata.datamodel.FirebaseUserList
-import com.example.domain.repository.IRepositoryContract
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.DocumentChange.Type.REMOVED
 import com.google.firebase.firestore.EventListener
@@ -15,9 +14,9 @@ import io.reactivex.FlowableEmitter
 import java.util.*
 
 internal class SnapshotListener(private val userListCollection: CollectionReference,
-                       private val itemCollection: CollectionReference,
-                       userRepo: IRepositoryContract.UserRepository,
-                       firestore: FirebaseFirestore) : IRemoteRepositoryContract.SnapshotListener {
+                                private val itemCollection: CollectionReference,
+                                userSignedOutObservable: Flowable<Boolean>,
+                                firestore: FirebaseFirestore) : IRemoteRepositoryContract.SnapshotListener {
 
     private var userListsSnapshotListener: ListenerRegistration? = null
     private var itemsSnapshotListener: ListenerRegistration? = null
@@ -34,15 +33,15 @@ internal class SnapshotListener(private val userListCollection: CollectionRefere
 
     init {
         deletedUserListsFlowable = initDeletedUserListsFlowable()
-        initFirebaseAuth(userRepo, firestore)
+        initFirebaseAuth(userSignedOutObservable, firestore)
     }
 
     private fun initDeletedUserListsFlowable() =
             createFlowable<List<FirebaseUserList>> { deletedUserListsEmitter = it }
 
     @SuppressLint("CheckResult")
-    private fun initFirebaseAuth(userRepo: IRepositoryContract.UserRepository, firestore: FirebaseFirestore) {
-        userRepo.userSignedOutObservable().subscribe {
+    private fun initFirebaseAuth(userSignedOutObservable: Flowable<Boolean>, firestore: FirebaseFirestore) {
+        userSignedOutObservable.subscribe {
             if (it) {
                 userListsSnapshotListener?.remove()
                 itemsSnapshotListener?.remove()
