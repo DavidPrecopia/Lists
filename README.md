@@ -23,7 +23,7 @@ Keeps lists synchronized across different devices.
     - Dagger 2.
   - Domain module
     - Contains the app's solution its problem domain.
-    - The Interface that the repository will implement and the front-end will use to talk to the repository.
+    - The Interface that the repository will implement and the front-end will use to talk to the repository. Only RxJava observables are returned, Flowables and Completables specifically.
     - Data models for the View.
   - Data module
     - Implementation specific details for how data is stored and handled.
