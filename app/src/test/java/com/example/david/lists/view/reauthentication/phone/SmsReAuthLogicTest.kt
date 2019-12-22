@@ -50,13 +50,19 @@ internal class SmsReAuthLogicTest {
         /**
          * - [ViewEvent.OnStart]
          * - Save the phone number and the verification ID to the ViewModel.
+         * - Display a message that the SMS has been sent.
+         * - Start the timer.
          */
         @Test
         fun onStart() {
+            every { viewModel.msgSmsSent } returns message
+
             logic.onEvent(ViewEvent.OnStart(validPhoneNum, verificationId))
 
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { viewModel.verificationId = verificationId }
+            verify { view.displayMessage(message) }
+            verify { view.startTimer(SMS_TIME_OUT_SECONDS) }
         }
     }
 
@@ -349,6 +355,21 @@ internal class SmsReAuthLogicTest {
             verify { view.displayMessage(message) }
             verify { view.cancelTimer() }
             verify { view.finishView() }
+        }
+    }
+
+
+    @Nested
+    inner class ViewDestroyed {
+        /**
+         * - [ViewEvent.ViewDestroyed]
+         * - Cancel the timer.
+         */
+        @Test
+        fun viewDestroyed() {
+            logic.onEvent(ViewEvent.ViewDestroyed)
+
+            verify { view.cancelTimer() }
         }
     }
 }

@@ -24,13 +24,14 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
             is ViewEvent.OnStart -> saveData(event.phoneNum, event.verificationId)
             is ViewEvent.ConfirmSmsClicked -> evalSmsCode(event.sms.trim())
             ViewEvent.TimerFinished -> reSentSms()
+            ViewEvent.ViewDestroyed -> view.cancelTimer()
         }
     }
 
 
     private fun saveData(phoneNum: String, verificationId: String) {
         viewModel.phoneNumber = phoneNum
-        viewModel.verificationId = verificationId
+        smsCodeSent(verificationId)
     }
 
 

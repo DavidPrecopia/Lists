@@ -5,18 +5,21 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.InputType
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.david.lists.R
 import com.example.david.lists.common.application
 import com.example.david.lists.common.navigate
 import com.example.david.lists.common.navigateUp
 import com.example.david.lists.common.toast
-import com.example.david.lists.view.reauthentication.common.ReAuthBase
 import com.example.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
 import com.example.david.lists.view.reauthentication.phone.buildlogic.DaggerSmsReAuthViewComponent
+import kotlinx.android.synthetic.main.sms_reauth_view.*
+import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
-class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
+class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.View {
 
     @Inject
     lateinit var logic: ISmsReAuthContract.Logic
@@ -26,16 +29,16 @@ class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
     private val args: SmsReAuthViewArgs by navArgs()
 
 
-    override val messageResId: Int
+    private val messageResId: Int
         get() = R.string.msg_sms_code
 
-    override val inputType: Int
+    private val inputType: Int
         get() = InputType.TYPE_CLASS_NUMBER
 
-    override val hintResId: Int
+    private val hintResId: Int
         get() = R.string.hint_sms_code
 
-    override val buttonTextResId: Int
+    private val buttonTextResId: Int
         get() = R.string.button_text_delete_account
 
 
@@ -54,11 +57,42 @@ class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         logic.onEvent(ViewEvent.OnStart(args.phoneNum, args.verificationId))
     }
 
+    private fun initView() {
+        initText()
+        initToolbar()
+        initClickListener()
+    }
 
-    override fun buttonClickListener(enteredText: String) {
+    private fun initText() {
+        tv_message.text = getString(messageResId)
+        text_input_edit_text.inputType = inputType
+        text_input_layout.hint = getString(hintResId)
+        button_delete_account.text = getString(buttonTextResId)
+    }
+
+    private fun initToolbar() {
+        with(toolbar) {
+            (activity as AppCompatActivity).setSupportActionBar(this)
+            title = getString(R.string.title_delete_account)
+            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            setNavigationOnClickListener { navigateUp() }
+        }
+    }
+
+    private fun initClickListener() {
+        button_delete_account.setOnClickListener {
+            buttonClickListener(getEnteredText())
+        }
+    }
+
+    private fun getEnteredText() = text_input_edit_text.text.toString()
+
+
+    private fun buttonClickListener(enteredText: String) {
         logic.onEvent(ViewEvent.ConfirmSmsClicked(enteredText))
     }
 
@@ -70,7 +104,10 @@ class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                // millisUntilFinished / 1000 == seconds
+                timer.text = getString(
+                        R.string.msg_sms_code_timer_arg,
+                        { millisUntilFinished / 1000 }.invoke().toString()
+                )
             }
         }.start()
     }
@@ -98,11 +135,32 @@ class SmsReAuthView : ReAuthBase(), ISmsReAuthContract.View {
     }
 
 
+    private fun displayProgressBar() {
+        progress_bar.visibility = View.VISIBLE
+        root_layout.visibility = View.GONE
+    }
+
+    private fun hideProgressBar() {
+        progress_bar.visibility = View.GONE
+        root_layout.visibility = View.VISIBLE
+    }
+
+    private fun displayErrorEditText(message: String) {
+        text_input_layout.error = message
+    }
+
+
     override fun openAuthView() {
         navigate(SmsReAuthViewDirections.actionSmsCodeViewToAuthView())
     }
 
     override fun finishView() {
         navigateUp()
+    }
+
+
+    override fun onDestroyView() {
+        logic.onEvent(ViewEvent.ViewDestroyed)
+        super.onDestroyView()
     }
 }

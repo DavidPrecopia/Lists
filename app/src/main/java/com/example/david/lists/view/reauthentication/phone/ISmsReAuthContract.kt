@@ -44,8 +44,9 @@ interface ISmsReAuthContract {
     }
 
     sealed class ViewEvent {
-        data class OnStart(val phoneNum: String, val verificationId: String): ViewEvent()
+        data class OnStart(val phoneNum: String, val verificationId: String) : ViewEvent()
         data class ConfirmSmsClicked(val sms: String) : ViewEvent()
-        object TimerFinished: ViewEvent()
+        object ViewDestroyed : ViewEvent()
+        object TimerFinished : ViewEvent()
     }
 }

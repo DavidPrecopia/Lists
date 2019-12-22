@@ -23,12 +23,14 @@
     <string name="msg_email_reauth">Please enter your password to delete your account.</string>
 
     <string name="msg_invalid_sms_code">Invalid SMS code</string>
-    <string name="msg_sms_sent">SMS has been sent</string>
     <string name="msg_phone_reauth">Please enter your phone number to delete your account.
         \n\nYou will receive an SMS message for verification.
         \nMessage and data rates may apply.</string>
+
+    <string name="msg_sms_sent">SMS has been sent</string>
+    <string name="msg_sms_code">Please enter the 6-digit code sent to you.</string>
+    <string name="msg_sms_code_timer_arg">The SMS code will expire in %1$s seconds</string>
     <string name="button_text_send_sms">Verify your phone number</string>
-    <string name="msg_sms_code">Please enter the code sent to that number</string>
 
     <string name="hint_password">Password</string>
     <string name="hint_phone_num">Phone Number</string>
