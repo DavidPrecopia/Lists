@@ -29,7 +29,8 @@
 
     <string name="msg_sms_sent">SMS has been sent</string>
     <string name="msg_sms_code">Please enter the 6-digit code sent to you.</string>
-    <string name="msg_sms_code_timer_arg">The SMS code will expire in %1$s seconds</string>
+    <string name="msg_sms_code_timer">The SMS code will expire in</string>
+    <string name="msg_sms_code_timer_left_arg">%1$s seconds</string>
     <string name="button_text_send_sms">Verify your phone number</string>
 
     <string name="hint_password">Password</string>

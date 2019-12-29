@@ -63,23 +63,33 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/timer"
+            android:id="@+id/tv_timer_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
+            android:text="@string/msg_sms_code_timer"
             app:layout_constraintEnd_toStartOf="@id/button_delete_account"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_input_layout"
-            tools:text="@string/msg_sms_code_timer_arg" />
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout" />
+
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintEnd_toEndOf="@id/tv_timer_message"
+            app:layout_constraintStart_toStartOf="@id/tv_timer_message"
+            app:layout_constraintTop_toBottomOf="@id/tv_timer_message"
+            tools:text="@string/msg_sms_code_timer_left_arg" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_delete_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_input_layout"
             tools:text="@tools:sample/lorem" />

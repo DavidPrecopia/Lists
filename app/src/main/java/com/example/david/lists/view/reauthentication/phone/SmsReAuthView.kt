@@ -104,8 +104,8 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                timer.text = getString(
-                        R.string.msg_sms_code_timer_arg,
+                tv_timer.text = getString(
+                        R.string.msg_sms_code_timer_left_arg,
                         { millisUntilFinished / 1000 }.invoke().toString()
                 )
             }
