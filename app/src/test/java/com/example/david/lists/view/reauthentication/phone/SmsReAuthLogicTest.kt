@@ -51,18 +51,38 @@ internal class SmsReAuthLogicTest {
          * - [ViewEvent.OnStart]
          * - Save the phone number and the verification ID to the ViewModel.
          * - Display a message that the SMS has been sent.
-         * - Start the timer.
+         * - Start the timer with the constant because time left is invalid.
          */
         @Test
-        fun onStart() {
+        fun `onStart - invalid time left`() {
+            val invalidTimeLeft = -1L
+
             every { viewModel.msgSmsSent } returns message
 
-            logic.onEvent(ViewEvent.OnStart(validPhoneNum, verificationId))
+            logic.onEvent(ViewEvent.OnStart(validPhoneNum, verificationId, invalidTimeLeft))
 
             verify { viewModel.phoneNumber = validPhoneNum }
             verify { viewModel.verificationId = verificationId }
             verify { view.displayMessage(message) }
             verify { view.startTimer(SMS_TIME_OUT_SECONDS) }
+        }
+
+        /**
+         * - [ViewEvent.OnStart]
+         * - Save the phone number and the verification ID to the ViewModel.
+         * - Start the timer with the time left value because it is valid.
+         */
+        @Test
+        fun `onStart - valid time left`() {
+            val timeLeft = 10L
+
+            every { viewModel.msgSmsSent } returns message
+
+            logic.onEvent(ViewEvent.OnStart(validPhoneNum, verificationId, timeLeft))
+
+            verify { viewModel.phoneNumber = validPhoneNum }
+            verify { viewModel.verificationId = verificationId }
+            verify { view.startTimer(timeLeft) }
         }
     }
 

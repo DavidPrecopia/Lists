@@ -21,7 +21,7 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     override fun onEvent(event: ViewEvent) {
         when (event) {
-            is ViewEvent.OnStart -> saveData(event.phoneNum, event.verificationId)
+            is ViewEvent.OnStart -> saveData(event.phoneNum, event.verificationId, event.timeLeft)
             is ViewEvent.ConfirmSmsClicked -> evalSmsCode(event.sms.trim())
             ViewEvent.TimerFinished -> reSentSms()
             ViewEvent.ViewDestroyed -> view.cancelTimer()
@@ -29,9 +29,9 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
 
-    private fun saveData(phoneNum: String, verificationId: String) {
+    private fun saveData(phoneNum: String, verificationId: String, timeLeft: Long) {
         viewModel.phoneNumber = phoneNum
-        smsCodeSent(verificationId)
+        smsCodeSent(verificationId, timeLeft)
     }
 
 
@@ -98,15 +98,19 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun evalVerification(results: PhoneNumValidationResults) {
         when (results) {
-            is PhoneNumValidationResults.SmsSent -> smsCodeSent(results.validationCode)
+            is PhoneNumValidationResults.SmsSent -> smsCodeSent(results.validationCode, -1L)
             PhoneNumValidationResults.Validated -> verificationCompleted()
         }
     }
 
-    private fun smsCodeSent(verificationId: String) {
+    private fun smsCodeSent(verificationId: String, timeLeft: Long) {
         viewModel.verificationId = verificationId
-        view.displayMessage(viewModel.msgSmsSent)
-        view.startTimer(SMS_TIME_OUT_SECONDS)
+        if (timeLeft > 0) {
+            view.startTimer(timeLeft)
+        } else {
+            view.displayMessage(viewModel.msgSmsSent)
+            view.startTimer(SMS_TIME_OUT_SECONDS)
+        }
     }
 
 

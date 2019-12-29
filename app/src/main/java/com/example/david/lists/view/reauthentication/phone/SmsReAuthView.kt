@@ -1,10 +1,12 @@
 package com.example.david.lists.view.reauthentication.phone
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.david.lists.R
@@ -18,12 +20,19 @@ import kotlinx.android.synthetic.main.sms_reauth_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
+private const val TIME_LEFT_KEY = "time_left_key"
+
 class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.View {
 
     @Inject
     lateinit var logic: ISmsReAuthContract.Logic
 
+    @Inject
+    lateinit var sharedPrefs: SharedPreferences
+
     private lateinit var countDownTimer: CountDownTimer
+
+    private var timeLeft: Long = 0
 
     private val args: SmsReAuthViewArgs by navArgs()
 
@@ -43,7 +52,11 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        logic.onEvent(ViewEvent.OnStart(args.phoneNum, args.verificationId))
+        logic.onEvent(ViewEvent.OnStart(
+                args.phoneNum,
+                args.verificationId,
+                sharedPrefs.getLong(TIME_LEFT_KEY, -1L)
+        ))
     }
 
     private fun initView() {
@@ -81,9 +94,10 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
             }
 
             override fun onTick(millisUntilFinished: Long) {
+                timeLeft = { millisUntilFinished / 1000 }.invoke()
                 tv_timer.text = getString(
                         R.string.msg_sms_code_timer_left_arg,
-                        { millisUntilFinished / 1000 }.invoke().toString()
+                        timeLeft.toString()
                 )
             }
         }.start()
@@ -137,6 +151,7 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
 
 
     override fun onDestroyView() {
+        sharedPrefs.edit { putLong(TIME_LEFT_KEY, timeLeft) }
         logic.onEvent(ViewEvent.ViewDestroyed)
         super.onDestroyView()
     }
