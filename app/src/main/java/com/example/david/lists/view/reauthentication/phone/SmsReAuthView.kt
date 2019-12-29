@@ -3,7 +3,6 @@ package com.example.david.lists.view.reauthentication.phone
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -28,20 +27,6 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
 
     private val args: SmsReAuthViewArgs by navArgs()
 
-
-    private val messageResId: Int
-        get() = R.string.msg_sms_code
-
-    private val inputType: Int
-        get() = InputType.TYPE_CLASS_NUMBER
-
-    private val hintResId: Int
-        get() = R.string.hint_sms_code
-
-    private val buttonTextResId: Int
-        get() = R.string.button_text_delete_account
-
-
     override fun onAttach(context: Context) {
         inject()
         super.onAttach(context)
@@ -62,16 +47,8 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
     }
 
     private fun initView() {
-        initText()
         initToolbar()
         initClickListener()
-    }
-
-    private fun initText() {
-        tv_message.text = getString(messageResId)
-        text_input_edit_text.inputType = inputType
-        text_input_layout.hint = getString(hintResId)
-        button_delete_account.text = getString(buttonTextResId)
     }
 
     private fun initToolbar() {
