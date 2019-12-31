@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.example.david.lists.widget.configview.WidgetConfigView"
+    android:configure="com.precopia.david.lists.widget.configview.WidgetConfigView"
     android:initialLayout="@layout/widget"
     android:minWidth="110dp"
     android:minHeight="110dp"

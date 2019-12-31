@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/authView"
-        android:name="com.example.david.lists.view.authentication.AuthView"
+        android:name="com.precopia.david.lists.view.authentication.AuthView"
         android:label="@string/app_name"
         tools:layout="@layout/auth_view">
         <action
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/googleReAuthView"
-        android:name="com.example.david.lists.view.reauthentication.google.GoogleReAuthView"
+        android:name="com.precopia.david.lists.view.reauthentication.google.GoogleReAuthView"
         android:label="google_re_auth_view"
         tools:layout="@layout/google_re_auth_view">
         <action
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/emailReAuthView"
-        android:name="com.example.david.lists.view.reauthentication.email.EmailReAuthView"
+        android:name="com.precopia.david.lists.view.reauthentication.email.EmailReAuthView"
         android:label="@string/title_delete_account"
         tools:layout="@layout/reauth_view">
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/phoneReAuthView"
-        android:name="com.example.david.lists.view.reauthentication.phone.PhoneReAuthView"
+        android:name="com.precopia.david.lists.view.reauthentication.phone.PhoneReAuthView"
         android:label="phone_re_auth_view"
         tools:layout="@layout/reauth_view">
         <action
@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/smsReAuthView"
-        android:name="com.example.david.lists.view.reauthentication.phone.SmsReAuthView"
+        android:name="com.precopia.david.lists.view.reauthentication.phone.SmsReAuthView"
         android:label="sms_code_view"
         tools:layout="@layout/reauth_view">
         <action
@@ -82,7 +82,7 @@
 
     <fragment
         android:id="@+id/userListListView"
-        android:name="com.example.david.lists.view.userlistlist.UserListListView"
+        android:name="com.precopia.david.lists.view.userlistlist.UserListListView"
         android:label="@string/app_name"
         tools:layout="@layout/list_view_base">
         <action
@@ -110,7 +110,7 @@
 
     <dialog
         android:id="@+id/addEditUserListDialog"
-        android:name="com.example.david.lists.view.addedit.userlist.AddEditUserListDialog"
+        android:name="com.precopia.david.lists.view.addedit.userlist.AddEditUserListDialog"
         android:label="AddEditUserListDialog"
         tools:layout="@layout/add_edit_dialog">
         <argument
@@ -131,7 +131,7 @@
     -->
     <fragment
         android:id="@+id/itemListView"
-        android:name="com.example.david.lists.view.itemlist.ItemListView"
+        android:name="com.precopia.david.lists.view.itemlist.ItemListView"
         android:label="ItemListView"
         tools:layout="@layout/list_view_base">
         <argument
@@ -151,7 +151,7 @@
 
     <dialog
         android:id="@+id/addEditItemDialog"
-        android:name="com.example.david.lists.view.addedit.item.AddEditItemDialog"
+        android:name="com.precopia.david.lists.view.addedit.item.AddEditItemDialog"
         android:label="AddEditItemDialog"
         tools:layout="@layout/add_edit_dialog">
         <argument
@@ -171,7 +171,7 @@
 
     <fragment
         android:id="@+id/preferencesView"
-        android:name="com.example.david.lists.view.preferences.PreferencesView"
+        android:name="com.precopia.david.lists.view.preferences.PreferencesView"
         android:label="PreferencesView"
         tools:layout="@layout/preferences_view">
         <action
@@ -213,7 +213,7 @@
 
     <dialog
         android:id="@+id/confirmSignOutDialog"
-        android:name="com.example.david.lists.view.preferences.dialogs.ConfirmSignOutDialog"
+        android:name="com.precopia.david.lists.view.preferences.dialogs.ConfirmSignOutDialog"
         android:label="ConfirmSignOutDialog"
         tools:layout="@layout/add_edit_dialog">
         <action
@@ -225,11 +225,11 @@
 
     <dialog
         android:id="@+id/confirmAccountDeletionDialog"
-        android:name="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog"
+        android:name="com.precopia.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog"
         android:label="ConfirmAccountDeletionDialog"
         tools:layout="@layout/add_edit_dialog">
         <argument
             android:name="listener"
-            app:argType="com.example.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener" />
+            app:argType="com.precopia.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener" />
     </dialog>
 </navigation>

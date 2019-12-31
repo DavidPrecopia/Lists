@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.david.lists">
+    package="com.precopia.david.lists">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.common.MainActivity">
+        <activity android:name="com.precopia.david.lists.view.common.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
         </activity>
 
         <receiver
-            android:name=".widget.view.MyAppWidgetProvider"
+            android:name="com.precopia.david.lists.widget.view.MyAppWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -36,12 +36,12 @@
         </receiver>
 
         <service
-            android:name=".widget.view.MyRemoteViewsService"
+            android:name="com.precopia.david.lists.widget.view.MyRemoteViewsService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name=".widget.configview.WidgetConfigView"
+            android:name="com.precopia.david.lists.widget.configview.WidgetConfigView"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

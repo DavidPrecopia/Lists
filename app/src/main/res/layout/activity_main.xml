@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.david.lists.view.common.MainActivity">
+    tools:context="com.precopia.david.lists.view.common.MainActivity">
 
     <!--
         FragmentContainerView causes a crash in release builds.

@@ -18,7 +18,7 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
     defaultConfig {
-        applicationId "com.example.david.lists"
+        applicationId "com.precopia.david.lists"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode rootProject.versionCode
@@ -46,7 +46,7 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            applicationIdSuffix ".dev"
+            applicationIdSuffix ".debug"
             // Disables Crashlytics
             ext.enableCrashlytics = false
         }
