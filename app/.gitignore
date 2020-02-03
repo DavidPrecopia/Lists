@@ -1,3 +1,4 @@
 /build
 /src/main/gen/
-fabric.properties
+/src/debug/google-services.json
+/src/release/google-services.json

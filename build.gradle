@@ -25,7 +25,7 @@ buildscript {
         firebaseAuthVersion = "19.2.0"
         firebaseAuthUiVersion = "6.1.0"
         playServicesAuthVersion = "17.0.0"
-        crashlyticsVersion = "2.10.1"
+        crashlyticsVersion = "17.0.0-beta01"
         daggerVersion = '2.26'
         rxAndroidVersion = "2.1.1"
         rxJavaVersion = '2.2.17'
@@ -40,7 +40,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://firebase.bintray.com/gradle' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
@@ -49,7 +48,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
         classpath 'com.google.gms:google-services:4.3.3'
-        classpath 'io.fabric.tools:gradle:1.31.1'
+        classpath "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta01"
     }
 }
 

@@ -1,13 +1,13 @@
 package com.precopia.david.lists.util
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 object UtilExceptions {
     fun throwException(runtimeException: RuntimeException) {
-        Crashlytics.logException(runtimeException)
+        FirebaseCrashlytics.getInstance().recordException(runtimeException)
     }
 
     fun throwException(throwable: Throwable) {
-        Crashlytics.logException(throwable)
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 }

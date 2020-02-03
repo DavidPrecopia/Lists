@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -87,7 +87,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-commons:$rootProject.ankoVersion"
 
     // Firebase Crashlytics
-    releaseImplementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion"
+    releaseImplementation "com.google.firebase:firebase-crashlytics:$rootProject.crashlyticsVersion"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
@@ -117,7 +117,4 @@ dependencies {
     androidTestImplementation "org.assertj:assertj-core:$rootProject.assertjVersion"
 }
 
-// I am not deleting this line in-case I need to add
-// a new google-services.json file.
-// https://medium.com/@samstern_58566/how-to-use-firebase-on-android-without-the-google-services-plugin-93ecc7dc6c4
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
