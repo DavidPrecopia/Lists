@@ -40,10 +40,11 @@ dependencies {
     // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
     // Firebase Authentication
-    // This is exposed because I am using it to authenticate users. I should refactor to a custom
-    // implementation for decoupling sakes, however, this will do for now because that will take time
-    // I would rather spend elsewhere.
-    api "com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion"
+    api ("com.firebaseui:firebase-ui-auth:$rootProject.firebaseAuthUiVersion") {
+        because "This is exposed because I am using it to authenticate users. I should refactor to a custom " +
+                "implementation for decoupling sakes, however, this will do for now because that will take time " +
+                "I would rather spend elsewhere."
+    }
     implementation "com.google.firebase:firebase-auth:$rootProject.firebaseAuthVersion"
     implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
 
