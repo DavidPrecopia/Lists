@@ -2,7 +2,7 @@
 
 Keeps lists synchronized across different devices.
 
-An APK is now [available](https://github.com/DavidPrecopia/Lists/releases/download/v2.1.1/Lists-v2.1.1.apk).
+An APK is now [available](https://github.com/DavidPrecopia/Lists/releases/download/v2.1.2/Lists-v2.1.2.apk).
 
 **Technical Features**
 
