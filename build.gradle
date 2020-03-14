@@ -44,7 +44,7 @@ buildscript {
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
         classpath 'com.google.gms:google-services:4.3.3'
