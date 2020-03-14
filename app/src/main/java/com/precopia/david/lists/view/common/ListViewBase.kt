@@ -73,7 +73,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
     private fun initToolbar() {
         with(toolbar) {
             (activity as AppCompatActivity).setSupportActionBar(this)
-            title = this@ListViewBase.title
+            (activity as AppCompatActivity).supportActionBar?.title = this@ListViewBase.title
             if (enableUpNavigationOnToolbar()) {
                 setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
                 setNavigationOnClickListener { findNavController().navigateUp() }
