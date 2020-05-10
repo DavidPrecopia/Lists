@@ -63,6 +63,9 @@ class UserListListLogic(private val view: IUserListViewContract.View,
 
 
     override fun userListSelected(position: Int) {
+        if (position < 0) {
+            return
+        }
         view.openUserList(viewModel.viewData[position])
     }
 
