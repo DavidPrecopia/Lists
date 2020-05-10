@@ -21,7 +21,7 @@ buildscript {
         recyclerViewVersion = "1.1.0"
         constraintLayoutVersion = "1.1.3"
         swipeRevealVersion = "1.4.1"
-        firestoreVersion = "21.4.1"
+        firestoreVersion = "21.4.3"
         firebaseAuthVersion = "19.3.0"
         firebaseAuthUiVersion = "6.2.1"
         playServicesAuthVersion = "17.0.0"
