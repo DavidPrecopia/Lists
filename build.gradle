@@ -32,6 +32,7 @@ buildscript {
         timberVersion = "4.7.1"
         leakCanaryVersion = "2.3"
         junitVersion = "5.5.2"
+        mockkVersion = "1.9.3"
         assertjVersion = "3.13.2"
         androidXJunitVersion = "1.1.1"
         espressoCoreVersion = "3.2.0"
