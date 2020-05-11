@@ -144,7 +144,7 @@ class UserListListLogicTest {
 
         /**
          * - Attempt to get the selected UserList from the ViewModel with the invalid position.
-         * - Exception is thrown.
+         * - Exception is not thrown - it is caught.
          */
         @Test
         fun `userListSelected - Invalid Position`() {
@@ -153,9 +153,7 @@ class UserListListLogicTest {
 
             every { viewModel.viewData } returns userListList
 
-            assertThrows<IndexOutOfBoundsException> {
-                logic.userListSelected(invalidPosition)
-            }
+            logic.userListSelected(invalidPosition)
         }
     }
 
