@@ -10,6 +10,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.precopia.david.lists.R
 import com.precopia.david.lists.widget.common.buildlogic.SHARED_PREFS
 import com.precopia.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent
@@ -72,7 +73,9 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
             setHasFixedSize(true)
             layoutManager = layoutManger.get()
             addItemDecoration(dividerItemDecorator)
-            adapter = this@WidgetConfigView.adapter as RecyclerView.Adapter<*>
+            adapter = (this@WidgetConfigView.adapter as RecyclerView.Adapter<*>).apply {
+                stateRestorationPolicy = PREVENT_WHEN_EMPTY
+            }
         }
     }
 
