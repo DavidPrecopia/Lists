@@ -48,7 +48,7 @@ abstract class ListItemViewHolderBase(private val view: View,
         // Ensures only one row can be opened at a time.
         viewBinderHelper.bind(swipe_reveal_layout, id)
         background_view.setOnClickListener {
-            swipedLeft(adapterPosition)
+            swipedLeft(bindingAdapterPosition)
             viewBinderHelper.closeLayout(id)
         }
     }
@@ -75,10 +75,10 @@ abstract class ListItemViewHolderBase(private val view: View,
 
     private fun getMenuClickListener() = PopupMenu.OnMenuItemClickListener {
         when (it.itemId) {
-            R.id.menu_item_edit -> edit(adapterPosition)
+            R.id.menu_item_edit -> edit(bindingAdapterPosition)
             R.id.menu_item_delete -> {
                 viewBinderHelper.openLayout(id)
-                delete(adapterPosition)
+                delete(bindingAdapterPosition)
             }
             else -> UtilExceptions.throwException(IllegalArgumentException())
         }

@@ -45,7 +45,7 @@ class WidgetConfigAdapter(private val logic: IWidgetConfigContract.Logic) :
         }
 
         override fun onClick(v: View) {
-            logic.selectedUserList(adapterPosition)
+            logic.selectedUserList(bindingAdapterPosition)
         }
     }
 }
