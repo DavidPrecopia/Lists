@@ -16,7 +16,7 @@ class AddEditItemDialog : AddEditDialogBase() {
 
     private fun inject() {
         DaggerAddEditItemDialogComponent.builder()
-                .application(activity!!.application)
+                .application(requireActivity().application)
                 .view(this)
                 .id(args.itemId)
                 .title(args.itemTitle)

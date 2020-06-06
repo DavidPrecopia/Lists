@@ -27,7 +27,7 @@ abstract class ConfirmDialogBase : DialogFragment() {
 
     private fun setButtonTextColor(button: Button) {
         button.setTextColor(
-                ContextCompat.getColor(context!!.applicationContext, R.color.alert_dialog_button_day_night)
+                ContextCompat.getColor(requireContext().applicationContext, R.color.alert_dialog_button_day_night)
         )
     }
 }

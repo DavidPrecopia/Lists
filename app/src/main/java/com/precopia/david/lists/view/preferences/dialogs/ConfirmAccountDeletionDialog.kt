@@ -16,7 +16,7 @@ class ConfirmAccountDeletionDialog : ConfirmDialogBase() {
     private val args: ConfirmAccountDeletionDialogArgs by navArgs()
 
     override fun initAlertDialog(): AlertDialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setMessage(R.string.confirm_account_delete_dialog_message)
                 .setNegativeButton(R.string.button_text_cancel) { dialog, _ -> dialog.dismiss() }
                 .setPositiveButton(R.string.button_text_delete_account) { dialog, _ ->

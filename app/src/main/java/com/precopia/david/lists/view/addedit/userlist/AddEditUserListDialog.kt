@@ -16,7 +16,7 @@ class AddEditUserListDialog : AddEditDialogBase() {
 
     private fun inject() {
         DaggerAddEditUserListDialogComponent.builder()
-                .application(activity!!.application)
+                .application(requireActivity().application)
                 .view(this)
                 .id(args.userListId)
                 .title(args.userListTitle)

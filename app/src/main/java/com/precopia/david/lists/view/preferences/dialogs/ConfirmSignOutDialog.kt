@@ -6,7 +6,7 @@ import com.precopia.david.lists.R
 
 class ConfirmSignOutDialog : ConfirmDialogBase() {
     override fun initAlertDialog(): AlertDialog {
-        return AlertDialog.Builder(context!!)
+        return AlertDialog.Builder(requireContext())
                 .setMessage(R.string.confirm_sign_out_dialog_message)
                 .setNegativeButton(R.string.button_text_cancel) { dialog, _ -> dialog.dismiss() }
                 .setPositiveButton(R.string.button_text_yes) { _, _ -> signOut() }

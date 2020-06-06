@@ -94,7 +94,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
     }
 
     override fun displayMessage(message: String) {
-        context!!.longToast(message)
+        requireContext().longToast(message)
     }
 
 
@@ -106,6 +106,6 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
 
 
     override fun finishView() {
-        activity!!.finish()
+        requireActivity().finish()
     }
 }
