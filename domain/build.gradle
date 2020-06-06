@@ -19,11 +19,4 @@ dependencies {
     // RxJava
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
-
-    // Local testing
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.junitVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$rootProject.junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$rootProject.junitVersion"
-    testImplementation "io.mockk:mockk:1.9.3"
-    testImplementation "org.assertj:assertj-core:$rootProject.assertjVersion"
 }
