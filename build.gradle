@@ -27,8 +27,8 @@ buildscript {
         playServicesAuthVersion = "18.0.0"
         crashlyticsVersion = "17.0.0"
         daggerVersion = '2.26'
-        rxAndroidVersion = "2.1.1"
-        rxJavaVersion = '2.2.17'
+        rxAndroidVersion = "3.0.0"
+        rxJavaVersion = '3.0.4'
         timberVersion = "4.7.1"
         leakCanaryVersion = "2.3"
         junitVersion = "5.6.2"

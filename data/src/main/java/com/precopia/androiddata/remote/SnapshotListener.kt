@@ -9,8 +9,8 @@ import com.google.firebase.firestore.ktx.toObjects
 import com.precopia.androiddata.common.createFlowable
 import com.precopia.androiddata.datamodel.FirebaseItem
 import com.precopia.androiddata.datamodel.FirebaseUserList
-import io.reactivex.Flowable
-import io.reactivex.FlowableEmitter
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.FlowableEmitter
 import java.util.*
 
 internal class SnapshotListener(private val userListCollection: CollectionReference,

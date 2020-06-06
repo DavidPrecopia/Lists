@@ -15,7 +15,7 @@ import com.precopia.domain.constants.SMS_TIME_OUT_SECONDS
 import com.precopia.domain.exception.AuthInvalidCredentialsException
 import com.precopia.domain.exception.AuthTooManyRequestsException
 import com.precopia.domain.repository.IRepositoryContract
-import io.reactivex.*
+import io.reactivex.rxjava3.core.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -80,14 +80,14 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
             else -> AuthProviders.UNKNOWN
         }
 
-    override fun sendVerificationEmail() = createCompletable { emitter ->
+    override fun sendVerificationEmail(): Completable = createCompletable { emitter ->
         user?.sendEmailVerification(actionCodeSettings)
                 ?.addOnSuccessListener { emitter.onComplete() }
                 ?.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
                 ?: emitter.onError(userNullException)
     }
 
-    override fun reloadUser() = createCompletable { emitter ->
+    override fun reloadUser(): Completable = createCompletable { emitter ->
         user?.getIdToken(true)
                 ?.addOnSuccessListener { reload(emitter) }
                 ?.addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
@@ -102,22 +102,23 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
     }
 
 
-    override fun signOut() = createCompletable { emitter ->
+    override fun signOut(): Completable = createCompletable { emitter ->
         authUI.signOut(application)
                 .addOnSuccessListener { emitter.onComplete() }
                 .addOnFailureListener { emitter.onError(evalFirebaseException(it)) }
     }
 
 
-    override fun validatePhoneNumber(phoneNum: String) = Single.create<PhoneNumValidationResults> { emitter ->
-        PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
-                formatPhoneNum(phoneNum),
-                SMS_TIME_OUT_SECONDS,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                validateNumberCallbacks(emitter)
-        )
-    }
+    override fun validatePhoneNumber(phoneNum: String): Single<PhoneNumValidationResults> =
+            Single.create { emitter ->
+                PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
+                        formatPhoneNum(phoneNum),
+                        SMS_TIME_OUT_SECONDS,
+                        TimeUnit.SECONDS,
+                        TaskExecutors.MAIN_THREAD,
+                        validateNumberCallbacks(emitter)
+                )
+            }
 
     private fun formatPhoneNum(phoneNum: String) = "$PHONE_NUM_COUNTRY_CODE_USA$phoneNum"
 
@@ -136,7 +137,7 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
     }
 
 
-    override fun deleteGoogleUser() = createCompletable { emitter ->
+    override fun deleteGoogleUser(): Completable = createCompletable { emitter ->
         deleteAccount(
                 GoogleAuthProvider.getCredential(
                         GoogleSignIn.getLastSignedInAccount(application)!!.idToken,
@@ -145,7 +146,7 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
         )
     }
 
-    override fun deleteEmailUser(password: String) = createCompletable { emitter ->
+    override fun deleteEmailUser(password: String): Completable = createCompletable { emitter ->
         deleteAccount(
                 EmailAuthProvider.getCredential(email!!, password),
                 emitter
@@ -153,7 +154,7 @@ internal class UserRepository(private val firebaseAuth: FirebaseAuth,
     }
 
     override fun deletePhoneUser(verificationId: String,
-                                 smsCode: String) = createCompletable { emitter ->
+                                 smsCode: String): Completable = createCompletable { emitter ->
         deleteAccount(
                 PhoneAuthProvider.getCredential(verificationId, smsCode),
                 emitter

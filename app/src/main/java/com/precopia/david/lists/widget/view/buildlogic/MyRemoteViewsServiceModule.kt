@@ -11,7 +11,7 @@ import com.precopia.david.lists.widget.view.MyRemoteViewsFactory
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Named
 
 private const val PACKAGE_NAME = "package_name"

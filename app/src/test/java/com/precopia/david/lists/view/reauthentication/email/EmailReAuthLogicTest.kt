@@ -7,7 +7,7 @@ import com.precopia.domain.exception.AuthInvalidCredentialsException
 import com.precopia.domain.exception.AuthTooManyRequestsException
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

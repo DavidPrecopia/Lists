@@ -6,7 +6,7 @@ import com.precopia.androiddata.remote.IRemoteRepositoryContract
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 internal class Repository(private val remote: IRemoteRepositoryContract.Repository) :
         IRepositoryContract.Repository {
@@ -15,10 +15,10 @@ internal class Repository(private val remote: IRemoteRepositoryContract.Reposito
         get() = remote.userListDeletedObservable.map { mapRemoteUserLists(it) }
 
 
-    override fun getUserLists() =
+    override fun getUserLists(): Flowable<List<UserList>> =
             remote.getUserLists().map { mapRemoteUserLists(it) }
 
-    override fun getItems(userListId: String) =
+    override fun getItems(userListId: String): Flowable<List<Item>> =
             remote.getItems(userListId).map { mapRemoteItems(it) }
 
 

@@ -8,7 +8,7 @@ import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.AD
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

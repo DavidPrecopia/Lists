@@ -4,9 +4,9 @@ import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.domain.constants.PhoneNumValidationResults
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 internal fun <E : List<UserList>> subscribeFlowableUserList(flowable: Flowable<E>,
                                                             onNext: (E) -> Unit,

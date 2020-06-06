@@ -5,8 +5,8 @@ import android.app.Application
 import android.os.Looper
 import com.precopia.david.lists.common.buildlogic.AppComponent
 import com.precopia.david.lists.common.buildlogic.DaggerAppComponent
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 internal abstract class ListsApplicationBase : Application() {
 

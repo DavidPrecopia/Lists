@@ -7,9 +7,9 @@ import com.precopia.androiddata.datamodel.FirebaseItem
 import com.precopia.androiddata.datamodel.FirebaseUserList
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
-import io.reactivex.Completable
-import io.reactivex.CompletableEmitter
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.CompletableEmitter
+import io.reactivex.rxjava3.core.Flowable
 
 internal class RemoteRepository(private val firestore: FirebaseFirestore,
                                 private val userListsCollection: CollectionReference,

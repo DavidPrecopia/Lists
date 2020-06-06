@@ -10,7 +10,7 @@ import com.precopia.david.lists.widget.configview.WidgetConfigViewModel
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Module
 class WidgetConfigViewModule {

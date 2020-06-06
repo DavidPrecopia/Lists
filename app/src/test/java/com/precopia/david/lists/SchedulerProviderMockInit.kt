@@ -2,7 +2,7 @@ package com.precopia.david.lists
 
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import io.mockk.every
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 /**
  * Keeping code DRY.

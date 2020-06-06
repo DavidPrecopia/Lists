@@ -8,7 +8,7 @@ import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewLogicBase
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.repository.IRepositoryContract
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
 class ItemListLogic(private val view: IItemViewContract.View,

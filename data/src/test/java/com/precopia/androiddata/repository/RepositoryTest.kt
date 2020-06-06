@@ -7,7 +7,7 @@ import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
 import io.mockk.every
 import io.mockk.mockk
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 

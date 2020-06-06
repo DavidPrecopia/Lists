@@ -4,9 +4,8 @@ import com.precopia.androiddata.datamodel.FirebaseItem
 import com.precopia.androiddata.datamodel.FirebaseUserList
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
-import io.reactivex.Completable
-
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
 
 internal interface IRemoteRepositoryContract {
     interface Repository {

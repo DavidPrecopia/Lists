@@ -6,9 +6,9 @@ import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

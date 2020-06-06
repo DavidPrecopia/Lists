@@ -11,8 +11,8 @@ import com.precopia.domain.exception.AuthInvalidCredentialsException
 import com.precopia.domain.exception.AuthTooManyRequestsException
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -307,7 +307,7 @@ internal class SmsReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
             } answers {
-                Single.error<PhoneNumValidationResults>(exception)
+                Single.error(exception)
             }
 
             logic.onEvent(ViewEvent.TimerFinished)
@@ -337,7 +337,7 @@ internal class SmsReAuthLogicTest {
             every {
                 userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
             } answers {
-                Single.error<PhoneNumValidationResults>(exception)
+                Single.error(exception)
             }
 
             logic.onEvent(ViewEvent.TimerFinished)

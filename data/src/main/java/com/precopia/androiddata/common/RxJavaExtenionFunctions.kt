@@ -1,12 +1,9 @@
 package com.precopia.androiddata.common
 
-import io.reactivex.Completable
-import io.reactivex.CompletableEmitter
-import io.reactivex.Flowable
-import io.reactivex.FlowableEmitter
+import io.reactivex.rxjava3.core.*
 
 internal fun createCompletable(function: (emitter: CompletableEmitter) -> Unit) =
         Completable.create(function)
 
 internal fun <L : List<Any>> createFlowable(function: (emitter: FlowableEmitter<L>) -> Unit) =
-        Flowable.create(function, io.reactivex.BackpressureStrategy.BUFFER)
+        Flowable.create(function, BackpressureStrategy.BUFFER)

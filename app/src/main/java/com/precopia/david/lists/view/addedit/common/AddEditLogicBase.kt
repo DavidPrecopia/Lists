@@ -6,7 +6,7 @@ import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
 import com.precopia.domain.repository.IRepositoryContract
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 
 abstract class AddEditLogicBase(protected val view: IAddEditContract.View,
                                 protected val viewModel: IAddEditContract.ViewModel,

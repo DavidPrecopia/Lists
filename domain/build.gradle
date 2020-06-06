@@ -17,8 +17,8 @@ dependencies {
     }
 
     // RxJava
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
 
     // Local testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.junitVersion"

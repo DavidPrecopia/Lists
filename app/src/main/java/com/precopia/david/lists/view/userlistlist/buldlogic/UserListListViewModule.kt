@@ -12,7 +12,7 @@ import com.precopia.david.lists.view.userlistlist.UserListListViewModel
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Module
 internal class UserListListViewModule {

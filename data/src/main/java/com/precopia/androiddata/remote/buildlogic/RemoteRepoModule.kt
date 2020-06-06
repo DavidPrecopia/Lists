@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.precopia.androiddata.remote.*
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 
 internal class RemoteRepoModule(private val userSignedOutObservable: Flowable<Boolean>) {
 

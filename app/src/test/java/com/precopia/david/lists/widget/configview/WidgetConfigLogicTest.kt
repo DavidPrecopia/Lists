@@ -5,8 +5,8 @@ import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
-import io.reactivex.Flowable
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

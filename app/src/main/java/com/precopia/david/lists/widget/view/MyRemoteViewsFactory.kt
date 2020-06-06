@@ -9,7 +9,7 @@ import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.repository.IRepositoryContract
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
 class MyRemoteViewsFactory(private val packageName: String,
