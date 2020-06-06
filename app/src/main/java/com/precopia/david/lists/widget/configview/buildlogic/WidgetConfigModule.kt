@@ -1,5 +1,7 @@
 package com.precopia.david.lists.widget.configview.buildlogic
 
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.widget.common.UtilWidgetKeys
@@ -13,15 +15,23 @@ import dagger.Provides
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Module
-class WidgetConfigViewModule {
+class WidgetConfigModule {
     @ViewScope
     @Provides
-    fun logic(view: IWidgetConfigContract.View,
-              viewModel: IWidgetConfigContract.ViewModel,
-              repo: IRepositoryContract.Repository,
-              schedulerProvider: ISchedulerProviderContract,
-              disposable: CompositeDisposable): IWidgetConfigContract.Logic {
-        return WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable)
+    fun logic(view: AppCompatActivity,
+              factory: ViewModelProvider.NewInstanceFactory
+    ): IWidgetConfigContract.Logic {
+        return ViewModelProvider(view, factory).get(WidgetConfigLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IWidgetConfigContract.ViewModel,
+                repo: IRepositoryContract.Repository,
+                schedulerProvider: ISchedulerProviderContract,
+                disposable: CompositeDisposable
+    ): ViewModelProvider.NewInstanceFactory {
+        return WidgetConfigLogicFactory(viewModel, repo, schedulerProvider, disposable)
     }
 
     @JvmSuppressWildcards

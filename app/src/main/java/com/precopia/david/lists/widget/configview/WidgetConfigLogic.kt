@@ -1,29 +1,43 @@
 package com.precopia.david.lists.widget.configview
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.precopia.david.lists.common.subscribeFlowableUserList
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewLogicBase
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.LogicEvents
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.ViewEvents
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
-                        private val viewModel: IWidgetConfigContract.ViewModel,
+class WidgetConfigLogic(private val viewModel: IWidgetConfigContract.ViewModel,
                         repo: IRepositoryContract.Repository,
                         schedulerProvider: ISchedulerProviderContract,
                         disposable: CompositeDisposable) :
         ListViewLogicBase(repo, schedulerProvider, disposable),
         IWidgetConfigContract.Logic {
 
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
 
-    override fun onStart(widgetId: Int) {
-        view.setStateLoading()
+    override fun onEvent(event: LogicEvents) {
+        when (event) {
+            is LogicEvents.OnStart -> onStart(event.widgetId)
+            is LogicEvents.SelectedUserList -> selectedUserList(event.position)
+        }
+    }
+
+    private fun onStart(widgetId: Int) {
+        viewEventLiveData.value = ViewEvents.SetStateLoading
         viewModel.widgetId = widgetId
-        view.setResults(widgetId, viewModel.resultCancelled)
+        viewEventLiveData.value = ViewEvents.SetResults(
+                widgetId, viewModel.resultCancelled
+        )
 
         when (widgetId) {
-            viewModel.invalidWidgetId -> view.finishViewInvalidId()
+            viewModel.invalidWidgetId ->
+                viewEventLiveData.value = ViewEvents.FinishViewInvalidId
             else -> getUserLists()
         }
     }
@@ -44,29 +58,32 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
     }
 
     private fun onObservableError(t: Throwable) {
-        view.setStateError(viewModel.errorMsg)
+        viewEventLiveData.value = ViewEvents.SetStateError(viewModel.errorMsg)
         UtilExceptions.throwException(t)
     }
 
 
     private fun evalNewData() {
-        view.setViewData(viewModel.viewData)
+        viewEventLiveData.value = ViewEvents.SetViewData(viewModel.viewData)
         when {
-            viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
-            else -> view.setStateDisplayList()
+            viewModel.viewData.isEmpty() ->
+                viewEventLiveData.value = ViewEvents.SetStateError(viewModel.errorMsgEmptyList)
+            else -> viewEventLiveData.value = ViewEvents.SetStateDisplayList
         }
     }
 
 
-    override fun selectedUserList(position: Int) {
+    private fun selectedUserList(position: Int) {
         val userList = viewModel.viewData[position]
         saveDetails(userList.id, userList.title)
-        view.setResults(viewModel.widgetId, viewModel.resultOk)
-        view.finishView(viewModel.widgetId)
+        with(viewEventLiveData) {
+            value = ViewEvents.SetResults(viewModel.widgetId, viewModel.resultOk)
+            value = ViewEvents.FinishView(viewModel.widgetId)
+        }
     }
 
     private fun saveDetails(id: String, title: String) {
-        view.saveDetails(
+        viewEventLiveData.value = ViewEvents.SaveDetails(
                 id,
                 title,
                 viewModel.sharedPrefKeyId,
@@ -75,7 +92,10 @@ class WidgetConfigLogic(private val view: IWidgetConfigContract.View,
     }
 
 
-    override fun onDestroy() {
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
+
+    override fun onCleared() {
+        super.onCleared()
         disposable.clear()
     }
 }

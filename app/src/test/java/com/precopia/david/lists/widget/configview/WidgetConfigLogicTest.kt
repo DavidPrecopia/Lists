@@ -1,20 +1,25 @@
 package com.precopia.david.lists.widget.configview
 
+import androidx.lifecycle.Observer
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
 import com.precopia.david.lists.util.ISchedulerProviderContract
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.LogicEvents
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.ViewEvents
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(value = [InstantExecutorExtension::class])
 class WidgetConfigLogicTest {
-
-    private val view = mockk<IWidgetConfigContract.View>(relaxUnitFun = true)
 
     private val viewModel = mockk<IWidgetConfigContract.ViewModel>(relaxUnitFun = true)
 
@@ -24,7 +29,8 @@ class WidgetConfigLogicTest {
 
     private val disposable = spyk<CompositeDisposable>()
 
-    private val logic = WidgetConfigLogic(view, viewModel, repo, schedulerProvider, disposable)
+
+    private lateinit var logic: WidgetConfigLogic
 
 
     private val position = 0
@@ -37,8 +43,14 @@ class WidgetConfigLogicTest {
     private val resultCanceled = 0
 
 
+    /**
+     * I am re-instantiating the class under test before each test
+     * to ensure that the observable returned by [IWidgetConfigContract.Logic.observe]
+     * is cleared before the following test.
+     */
     @BeforeEach
     fun init() {
+        logic = WidgetConfigLogic(viewModel, repo, schedulerProvider, disposable)
         clearAllMocks()
         SchedulerProviderMockInit.init(schedulerProvider)
     }
@@ -59,21 +71,26 @@ class WidgetConfigLogicTest {
         @Test
         fun `onStart - Valid WidgetId`() {
             val userListList = listOf(userList)
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
             every { viewModel.viewData } returns userListList
             every { repo.getUserLists() } returns Flowable.just(userListList)
 
-            logic.onStart(widgetIdValid)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart(widgetIdValid))
+
             verify { viewModel.widgetId = widgetIdValid }
-            verify { view.setResults(widgetIdValid, resultCanceled) }
             verify { repo.getUserLists() }
             verify { viewModel.viewData = userListList }
-            verify { view.setViewData(userListList) }
-            verify { view.setStateDisplayList() }
+            assertThat(listLiveDataOutput.size).isEqualTo(4)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetViewData(userListList))
+            assertThat(listLiveDataOutput[3]).isEqualTo(ViewEvents.SetStateDisplayList)
         }
 
         /**
@@ -87,13 +104,18 @@ class WidgetConfigLogicTest {
         fun `onStart - Invalid WidgetId`() {
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
-            logic.onStart(widgetIdInvalid)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart(widgetIdInvalid))
+
             verify { viewModel.widgetId = widgetIdInvalid }
-            verify { view.setResults(widgetIdInvalid, resultCanceled) }
-            verify { view.finishViewInvalidId() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdInvalid, resultCanceled))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishViewInvalidId)
         }
 
         /**
@@ -110,6 +132,8 @@ class WidgetConfigLogicTest {
         fun `onStart - Repo returns an empty List`() {
             val emptyList = emptyList<UserList>()
             val emptyListError = "error"
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
@@ -117,14 +141,17 @@ class WidgetConfigLogicTest {
             every { viewModel.errorMsgEmptyList } returns emptyListError
             every { repo.getUserLists() } returns Flowable.just(emptyList)
 
-            logic.onStart(widgetIdValid)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart(widgetIdValid))
+
             verify { viewModel.widgetId = widgetIdValid }
-            verify { view.setResults(widgetIdValid, resultCanceled) }
             verify { viewModel.viewData = emptyList }
-            verify { view.setViewData(emptyList) }
-            verify { view.setStateError(emptyListError) }
+            assertThat(listLiveDataOutput.size).isEqualTo(4)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetViewData(emptyList))
+            assertThat(listLiveDataOutput[3]).isEqualTo(ViewEvents.SetStateError(emptyListError))
         }
 
         /**
@@ -140,18 +167,23 @@ class WidgetConfigLogicTest {
         fun `onStart - Repo returns an error`() {
             val throwable = Throwable()
             val errorMsg = "error"
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
             every { viewModel.invalidWidgetId } returns widgetIdInvalid
             every { viewModel.resultCancelled } returns resultCanceled
             every { viewModel.errorMsg } returns errorMsg
             every { repo.getUserLists() } returns Flowable.error(throwable)
 
-            logic.onStart(widgetIdValid)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart(widgetIdValid))
+
             verify { viewModel.widgetId = widgetIdValid }
-            verify { view.setResults(widgetIdValid, resultCanceled) }
-            verify { view.setStateError(errorMsg) }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateError(errorMsg))
         }
     }
 
@@ -169,8 +201,9 @@ class WidgetConfigLogicTest {
             val resultOk = 1
             val sharedPrefId = "id"
             val sharedPrefTitle = "title"
-
             val userListList = listOf(userList)
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
             every { viewModel.viewData } returns userListList
             every { viewModel.widgetId } returns widgetIdValid
@@ -178,11 +211,17 @@ class WidgetConfigLogicTest {
             every { viewModel.sharedPrefKeyId } returns sharedPrefId
             every { viewModel.sharedPrefKeyTitle } returns sharedPrefTitle
 
-            logic.selectedUserList(position)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.saveDetails(userList.id, userList.title, sharedPrefId, sharedPrefTitle) }
-            verify { view.setResults(widgetIdValid, resultOk) }
-            verify { view.finishView(widgetIdValid) }
+            logic.onEvent(LogicEvents.SelectedUserList(position))
+
+
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SaveDetails(
+                    userList.id, userList.title, sharedPrefId, sharedPrefTitle
+            ))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultOk))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView(widgetIdValid))
         }
 
         /**
@@ -196,19 +235,8 @@ class WidgetConfigLogicTest {
             every { viewModel.viewData } returns userListList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.selectedUserList(negativePosition)
+                logic.onEvent(LogicEvents.SelectedUserList(negativePosition))
             }
         }
-    }
-
-
-    /**
-     * Verify that the CompositeDisposable is cleared.
-     */
-    @Test
-    fun onDestroy() {
-        logic.onDestroy()
-
-        verify { disposable.clear() }
     }
 }

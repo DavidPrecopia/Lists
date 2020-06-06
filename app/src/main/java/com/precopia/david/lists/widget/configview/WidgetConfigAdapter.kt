@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.precopia.david.lists.R
 import com.precopia.david.lists.view.userlistlist.UserListDiffCallback
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.LogicEvents
 import com.precopia.domain.datamodel.UserList
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.widget_config_list_item.*
@@ -45,7 +46,7 @@ class WidgetConfigAdapter(private val logic: IWidgetConfigContract.Logic) :
         }
 
         override fun onClick(v: View) {
-            logic.selectedUserList(bindingAdapterPosition)
+            logic.onEvent(LogicEvents.SelectedUserList(bindingAdapterPosition))
         }
     }
 }

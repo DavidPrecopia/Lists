@@ -8,12 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.precopia.david.lists.R
 import com.precopia.david.lists.widget.common.buildlogic.SHARED_PREFS
-import com.precopia.david.lists.widget.configview.buildlogic.DaggerWidgetConfigViewComponent
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.LogicEvents
+import com.precopia.david.lists.widget.configview.IWidgetConfigContract.ViewEvents
+import com.precopia.david.lists.widget.configview.buildlogic.DaggerWidgetConfigComponent
 import com.precopia.david.lists.widget.view.WidgetRemoteView
 import com.precopia.domain.datamodel.UserList
 import kotlinx.android.synthetic.main.widget_config_view.*
@@ -49,17 +52,34 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
         inject()
         super.onCreate(savedInstanceState)
         initView()
-
-        logic.onStart(widgetId)
+        with(logic) {
+            onEvent(LogicEvents.OnStart(widgetId))
+            observe().observe(this@WidgetConfigView, Observer { evalViewEvents(it) })
+        }
     }
 
     private fun inject() {
-        DaggerWidgetConfigViewComponent.builder()
+        DaggerWidgetConfigComponent.builder()
                 .application(application)
-                .context(applicationContext)
                 .view(this)
+                .context(applicationContext)
                 .build()
                 .inject(this)
+    }
+
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            is ViewEvents.SetViewData -> setViewData(event.list)
+            ViewEvents.SetStateDisplayList -> setStateDisplayList()
+            ViewEvents.SetStateLoading -> setStateLoading()
+            is ViewEvents.SetStateError -> setStateError(event.message)
+            is ViewEvents.SetResults -> setResults(event.widgetId, event.resultCode)
+            is ViewEvents.FinishView -> finishView(event.widgetId)
+            ViewEvents.FinishViewInvalidId -> finishViewInvalidId()
+            is ViewEvents.SaveDetails -> saveDetails(
+                    event.id, event.title, event.sharedPrefKeyId, event.sharedPrefKeyTitle
+            )
+        }
     }
 
 
@@ -85,21 +105,21 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
     }
 
 
-    override fun setResults(widgetId: Int, resultCode: Int) {
+    private fun setResults(widgetId: Int, resultCode: Int) {
         val resultValue = Intent().apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         setResult(resultCode, resultValue)
     }
 
-    override fun saveDetails(id: String, title: String, sharedPrefKeyId: String, sharedPrefKeyTitle: String) {
+    private fun saveDetails(id: String, title: String, sharedPrefKeyId: String, sharedPrefKeyTitle: String) {
         sharedPrefs.edit {
             putString(sharedPrefKeyId, id)
             putString(sharedPrefKeyTitle, title)
         }
     }
 
-    override fun finishView(widgetId: Int) {
+    private fun finishView(widgetId: Int) {
         updateWidget(widgetId)
         super.finish()
     }
@@ -109,44 +129,33 @@ class WidgetConfigView : AppCompatActivity(R.layout.widget_config_view),
         AppWidgetManager.getInstance(application).updateAppWidget(widgetId, remoteView)
     }
 
-    override fun finishViewInvalidId() {
+    private fun finishViewInvalidId() {
         super.finish()
     }
 
 
-    override fun setViewData(list: List<UserList>) {
+    private fun setViewData(list: List<UserList>) {
         adapter.setData(list)
     }
 
 
-    override fun setStateDisplayList() {
+    private fun setStateDisplayList() {
         progress_bar.isGone = true
         tv_error.isGone = true
         recycler_view.isVisible = true
     }
 
-    override fun setStateLoading() {
+    private fun setStateLoading() {
         tv_error.isGone = true
         recycler_view.isGone = true
         progress_bar.isVisible = true
     }
 
-    override fun setStateError(message: String) {
+    private fun setStateError(message: String) {
         recycler_view.isGone = true
         progress_bar.isGone = true
 
         tv_error.text = message
         tv_error.isVisible = true
-    }
-
-
-    override fun onDestroy() {
-        logic.onDestroy()
-        super.onDestroy()
-    }
-
-    override fun onBackPressed() {
-        logic.onDestroy()
-        super.onBackPressed()
     }
 }
