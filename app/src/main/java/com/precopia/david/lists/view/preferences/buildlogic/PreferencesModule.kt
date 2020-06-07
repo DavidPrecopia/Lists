@@ -1,5 +1,7 @@
 package com.precopia.david.lists.view.preferences.buildlogic
 
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract
 import com.precopia.david.lists.view.preferences.PreferencesLogic
@@ -9,13 +11,19 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class PreferencesViewModule {
+class PreferencesModule {
     @ViewScope
     @Provides
-    fun logic(view: IPreferencesViewContract.View,
-              viewModel: IPreferencesViewContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository): IPreferencesViewContract.Logic {
-        return PreferencesLogic(view, viewModel, userRepo)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): IPreferencesViewContract.Logic {
+        return ViewModelProvider(view, factory).get(PreferencesLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IPreferencesViewContract.ViewModel,
+                userRepo: IRepositoryContract.UserRepository): ViewModelProvider.NewInstanceFactory {
+        return PreferencesLogicFactory(viewModel, userRepo)
     }
 
     @JvmSuppressWildcards

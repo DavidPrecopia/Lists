@@ -1,27 +1,30 @@
 package com.precopia.david.lists.view.preferences
 
-import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
+import com.precopia.david.lists.InstantExecutorExtension
+import com.precopia.david.lists.observeForTesting
+import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
+import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.domain.constants.AuthProviders
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(value = [InstantExecutorExtension::class])
 class PreferencesLogicTest {
-
-    private val view = mockk<IPreferencesViewContract.View>(relaxUnitFun = true)
 
     private val viewModel = mockk<IPreferencesViewContract.ViewModel>()
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>()
 
 
-    private val logic = PreferencesLogic(view, viewModel, userRepo)
+    private val logic = PreferencesLogic(viewModel, userRepo)
 
 
     private val message = "message"
@@ -38,9 +41,12 @@ class PreferencesLogicTest {
      */
     @Test
     fun `onEvent - SignOut`() {
-        logic.onEvent(ViewEvent.SignOutClicked)
+        logic.onEvent(LogicEvents.SignOutClicked)
 
-        verify { view.confirmSignOut() }
+        logic.observe().observeForTesting {
+            Assertions.assertThat(logic.observe().value)
+                    .isEqualTo(ViewEvents.ConfirmSignOut)
+        }
     }
 
     /**
@@ -48,9 +54,12 @@ class PreferencesLogicTest {
      */
     @Test
     fun `onEvent - Delete Account`() {
-        logic.onEvent(ViewEvent.DeleteAccountClicked)
+        logic.onEvent(LogicEvents.DeleteAccountClicked)
 
-        verify { view.confirmAccountDeletion() }
+        logic.observe().observeForTesting {
+            Assertions.assertThat(logic.observe().value)
+                    .isEqualTo(ViewEvents.ConfirmAccountDeletion)
+        }
     }
 
 
@@ -66,9 +75,12 @@ class PreferencesLogicTest {
         fun `deleteAccountConfirmed - Google provider`() {
             every { userRepo.authProvider } returns AuthProviders.GOOGLE
 
-            logic.onEvent(ViewEvent.DeleteAccountConfirmed)
+            logic.onEvent(LogicEvents.DeleteAccountConfirmed)
 
-            verify { view.openGoogleReAuth() }
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.OpenGoogleReAuth)
+            }
         }
 
 
@@ -82,9 +94,12 @@ class PreferencesLogicTest {
         fun `deleteAccountConfirmed - Email provider`() {
             every { userRepo.authProvider } returns AuthProviders.EMAIL
 
-            logic.onEvent(ViewEvent.DeleteAccountConfirmed)
+            logic.onEvent(LogicEvents.DeleteAccountConfirmed)
 
-            verify { view.openEmailReAuth() }
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.OpenEmailReAuth)
+            }
         }
 
         /**
@@ -97,9 +112,12 @@ class PreferencesLogicTest {
         fun `deleteAccountConfirmed - Phone provider`() {
             every { userRepo.authProvider } returns AuthProviders.PHONE
 
-            logic.onEvent(ViewEvent.DeleteAccountConfirmed)
+            logic.onEvent(LogicEvents.DeleteAccountConfirmed)
 
-            verify { view.openPhoneReAuth() }
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.OpenPhoneReAuth)
+            }
         }
 
         /**
@@ -115,10 +133,13 @@ class PreferencesLogicTest {
             every { viewModel.msgDeletionFailed } returns message
 
             assertThrows<IllegalStateException> {
-                logic.onEvent(ViewEvent.DeleteAccountConfirmed)
+                logic.onEvent(LogicEvents.DeleteAccountConfirmed)
             }
 
-            verify { view.displayMessage(message) }
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayMessage(message))
+            }
         }
     }
 }

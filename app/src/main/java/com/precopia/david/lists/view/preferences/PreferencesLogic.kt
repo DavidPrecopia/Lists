@@ -1,31 +1,47 @@
 package com.precopia.david.lists.view.preferences
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.precopia.david.lists.util.UtilExceptions
-import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvent
+import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
+import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.domain.constants.AuthProviders
 import com.precopia.domain.repository.IRepositoryContract
 
-class PreferencesLogic(private val view: IPreferencesViewContract.View,
-                       private val viewModel: IPreferencesViewContract.ViewModel,
+class PreferencesLogic(private val viewModel: IPreferencesViewContract.ViewModel,
                        private val userRepo: IRepositoryContract.UserRepository) :
+        ViewModel(),
         IPreferencesViewContract.Logic {
-    override fun onEvent(viewEvent: ViewEvent) {
-        when (viewEvent) {
-            ViewEvent.SignOutClicked -> view.confirmSignOut()
-            ViewEvent.DeleteAccountClicked -> view.confirmAccountDeletion()
-            ViewEvent.DeleteAccountConfirmed -> deleteAccount()
+
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
+
+
+    override fun onEvent(event: LogicEvents) {
+        when (event) {
+            LogicEvents.SignOutClicked -> viewEventLiveData.value =
+                    ViewEvents.ConfirmSignOut
+            LogicEvents.DeleteAccountClicked -> viewEventLiveData.value =
+                    ViewEvents.ConfirmAccountDeletion
+            LogicEvents.DeleteAccountConfirmed -> deleteAccount()
         }
     }
 
     private fun deleteAccount() {
         when (userRepo.authProvider) {
-            AuthProviders.GOOGLE -> view.openGoogleReAuth()
-            AuthProviders.EMAIL -> view.openEmailReAuth()
-            AuthProviders.PHONE -> view.openPhoneReAuth()
+            AuthProviders.GOOGLE -> viewEventLiveData.value =
+                    ViewEvents.OpenGoogleReAuth
+            AuthProviders.EMAIL -> viewEventLiveData.value =
+                    ViewEvents.OpenEmailReAuth
+            AuthProviders.PHONE -> viewEventLiveData.value =
+                    ViewEvents.OpenPhoneReAuth
             AuthProviders.UNKNOWN -> {
-                view.displayMessage(viewModel.msgDeletionFailed)
+                viewEventLiveData.value = ViewEvents.DisplayMessage(viewModel.msgDeletionFailed)
                 UtilExceptions.throwException(IllegalStateException("Unknown authentication provider"))
             }
         }
     }
+
+
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
 }
