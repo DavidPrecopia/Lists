@@ -12,9 +12,11 @@ import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.ED
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.ViewEvents
 import com.precopia.domain.repository.IRepositoryContract
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 abstract class AddEditLogicBase(protected val viewModel: IAddEditContract.ViewModel,
                                 protected val repo: IRepositoryContract.Repository,
+                                private val disposable: CompositeDisposable,
                                 private val schedulerProvider: ISchedulerProviderContract,
                                 id: String,
                                 title: String,
@@ -65,7 +67,7 @@ abstract class AddEditLogicBase(protected val viewModel: IAddEditContract.ViewMo
     }
 
     protected fun saveWithCompletable(completable: Completable) {
-        subscribeCompletable(
+        disposable.add(subscribeCompletable(
                 completable,
                 { /*intentionally empty*/ },
                 {
@@ -73,8 +75,14 @@ abstract class AddEditLogicBase(protected val viewModel: IAddEditContract.ViewMo
                     UtilExceptions.throwException(it)
                 },
                 schedulerProvider
-        )
+        ))
     }
 
     private fun titleUnchanged(input: String) = input == viewModel.currentTitle
+
+
+    override fun onCleared() {
+        disposable.clear()
+        super.onCleared()
+    }
 }

@@ -13,6 +13,7 @@ import com.precopia.david.lists.view.addedit.item.AddEditItemLogic
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Named
 
 @Module
@@ -30,13 +31,14 @@ AddEditItemModule {
     @Provides
     fun factory(viewModel: IAddEditContract.ViewModel,
                 repository: IRepositoryContract.Repository,
+                disposable: CompositeDisposable,
                 schedulerProvider: ISchedulerProviderContract,
                 @Named(ID) id: String,
                 @Named(TITLE) title: String,
                 @Named(USER_LIST_ID) userListId: String,
                 @Named(POSITION) position: Int): ViewModelProvider.NewInstanceFactory {
         return AddEditItemLogicFactory(
-                viewModel, repository, schedulerProvider, id, title, userListId, position
+                viewModel, repository, disposable, schedulerProvider, id, title, userListId, position
         )
     }
 }

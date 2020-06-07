@@ -12,6 +12,7 @@ import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.ED
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -24,6 +25,8 @@ class AddEditUserListLogicTest {
     private val viewModel = mockk<ViewModel>(relaxUnitFun = true)
 
     private val repo = mockk<IRepositoryContract.Repository>(relaxUnitFun = true)
+
+    private val disposable = spyk<CompositeDisposable>()
 
     private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
@@ -46,7 +49,7 @@ class AddEditUserListLogicTest {
     @BeforeEach
     fun init() {
         clearAllMocks()
-        logic = AddEditUserListLogic(viewModel, repo, schedulerProvider, id, title, position)
+        logic = AddEditUserListLogic(viewModel, repo, disposable, schedulerProvider, id, title, position)
         SchedulerProviderMockInit.init(schedulerProvider)
     }
 
