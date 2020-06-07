@@ -4,7 +4,7 @@ import com.precopia.david.lists.R
 import com.precopia.domain.datamodel.UserList
 import java.util.*
 
-class UserListListViewModel(private val getStringRes: (Int) -> String) :
+class UserListViewModel(private val getStringRes: (Int) -> String) :
         IUserListViewContract.ViewModel {
 
     override var viewData: MutableList<UserList> = ArrayList()

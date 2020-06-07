@@ -1,56 +1,17 @@
 package com.precopia.david.lists.view.userlistlist
 
+import androidx.lifecycle.LiveData
 import com.precopia.domain.datamodel.UserList
 
 interface IUserListViewContract {
-    interface View {
-        fun openUserList(userList: UserList)
-
-        fun openPreferences()
-
-        fun openAddDialog(position: Int)
-
-        fun openEditDialog(userList: UserList)
-
-        fun setViewData(viewData: List<UserList>)
-
-        fun notifyUserOfDeletion(message: String)
-
-        fun setStateDisplayList()
-
-        fun setStateLoading()
-
-        fun setStateError(message: String)
-
-        fun showMessage(message: String)
-    }
+    interface View
 
     interface Logic {
         val isNightModeEnabled: Boolean
 
-        fun onStart()
+        fun onEvent(event: LogicEvents)
 
-        fun userListSelected(position: Int)
-
-        fun add()
-
-        fun edit(position: Int)
-
-        fun dragging(fromPosition: Int, toPosition: Int, adapter: Adapter)
-
-        fun movedPermanently(newPosition: Int)
-
-        fun delete(position: Int, adapter: Adapter)
-
-        fun undoRecentDeletion(adapter: Adapter)
-
-        fun deletionNotificationTimedOut()
-
-        fun preferencesSelected()
-
-        fun setNightMode(isMenuItemChecked: Boolean)
-
-        fun onDestroy()
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -77,5 +38,33 @@ interface IUserListViewContract {
         fun remove(position: Int)
 
         fun reAdd(position: Int, userList: UserList)
+    }
+
+
+    sealed class ViewEvents {
+        data class OpenUserList(val userList: UserList) : ViewEvents()
+        object OpenPreferences : ViewEvents()
+        data class OpenAddDialog(val position: Int) : ViewEvents()
+        data class OpenEditDialog(val userList: UserList) : ViewEvents()
+        data class SetViewData(val viewData: List<UserList>) : ViewEvents()
+        data class NotifyUserOfDeletion(val message: String) : ViewEvents()
+        object SetStateDisplayList : ViewEvents()
+        object SetStateLoading : ViewEvents()
+        data class SetStateError(val message: String) : ViewEvents()
+        data class ShowMessage(val message: String) : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        object OnStart : LogicEvents()
+        data class UserListSelected(val position: Int) : LogicEvents()
+        object Add : LogicEvents()
+        data class Edit(val position: Int) : LogicEvents()
+        data class Dragging(val fromPosition: Int, val toPosition: Int, val adapter: Adapter) : LogicEvents()
+        data class MovedPermanently(val newPosition: Int) : LogicEvents()
+        data class Delete(val position: Int, val adapter: Adapter) : LogicEvents()
+        data class UndoRecentDeletion(val adapter: Adapter) : LogicEvents()
+        object DeletionNotificationTimedOut : LogicEvents()
+        object PreferencesSelected : LogicEvents()
+        data class SetNightMode(val isMenuItemChecked: Boolean) : LogicEvents()
     }
 }

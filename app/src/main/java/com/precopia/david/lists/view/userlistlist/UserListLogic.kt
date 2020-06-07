@@ -1,34 +1,57 @@
 package com.precopia.david.lists.view.userlistlist
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.common.subscribeFlowableUserList
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.IUtilNightModeContract
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewLogicBase
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.ViewEvents
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
-class UserListListLogic(private val view: IUserListViewContract.View,
-                        private val viewModel: IUserListViewContract.ViewModel,
-                        private val utilNightMode: IUtilNightModeContract,
-                        repo: IRepositoryContract.Repository,
-                        schedulerProvider: ISchedulerProviderContract,
-                        disposable: CompositeDisposable) :
+class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
+                    private val utilNightMode: IUtilNightModeContract,
+                    repo: IRepositoryContract.Repository,
+                    schedulerProvider: ISchedulerProviderContract,
+                    disposable: CompositeDisposable) :
         ListViewLogicBase(repo, schedulerProvider, disposable),
         IUserListViewContract.Logic {
 
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
 
     override val isNightModeEnabled: Boolean
         get() = utilNightMode.nightModeEnabled
 
 
-    override fun onStart() {
+    override fun onEvent(event: LogicEvents) {
+        when (event) {
+            LogicEvents.OnStart -> onStart()
+            is LogicEvents.UserListSelected -> userListSelected(event.position)
+            LogicEvents.Add -> add()
+            is LogicEvents.Edit -> edit(event.position)
+            is LogicEvents.Dragging -> dragging(
+                    event.fromPosition, event.toPosition, event.adapter
+            )
+            is LogicEvents.MovedPermanently -> movedPermanently(event.newPosition)
+            is LogicEvents.Delete -> delete(event.position, event.adapter)
+            is LogicEvents.UndoRecentDeletion -> undoRecentDeletion(event.adapter)
+            LogicEvents.DeletionNotificationTimedOut -> deletionNotificationTimedOut()
+            LogicEvents.PreferencesSelected -> preferencesSelected()
+            is LogicEvents.SetNightMode -> setNightMode(event.isMenuItemChecked)
+        }
+    }
+
+    private fun onStart() {
         when {
-            viewModel.viewData.isEmpty() -> view.setStateLoading()
-            else -> view.setViewData(viewModel.viewData)
+            viewModel.viewData.isEmpty() -> viewEventLiveData.value =
+                    ViewEvents.SetStateLoading
+            else -> viewEventLiveData.value = ViewEvents.SetViewData(viewModel.viewData)
         }
         getAllUserLists()
     }
@@ -49,42 +72,45 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
     private fun evalNewData() {
-        view.setViewData(viewModel.viewData)
+        viewEventLiveData.value = ViewEvents.SetViewData(viewModel.viewData)
         when {
-            viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
-            else -> view.setStateDisplayList()
+            viewModel.viewData.isEmpty() -> viewEventLiveData.value =
+                    ViewEvents.SetStateError(viewModel.errorMsgEmptyList)
+            else -> viewEventLiveData.value = ViewEvents.SetStateDisplayList
         }
     }
 
     private fun onObservableError(t: Throwable) {
         UtilExceptions.throwException(t)
-        view.setStateError(viewModel.errorMsg)
+        viewEventLiveData.value = ViewEvents.SetStateError(viewModel.errorMsg)
     }
 
 
-    override fun userListSelected(position: Int) {
+    private fun userListSelected(position: Int) {
         if (position < 0) {
             return
         }
-        view.openUserList(viewModel.viewData[position])
+        viewEventLiveData.value = ViewEvents.OpenUserList(viewModel.viewData[position])
     }
 
 
-    override fun add() {
-        view.openAddDialog(viewModel.viewData.size)
+    private fun add() {
+        viewEventLiveData.value =
+                ViewEvents.OpenAddDialog(viewModel.viewData.size)
     }
 
-    override fun edit(position: Int) {
-        view.openEditDialog(viewModel.viewData[position])
+    private fun edit(position: Int) {
+        viewEventLiveData.value =
+                ViewEvents.OpenEditDialog(viewModel.viewData[position])
     }
 
 
-    override fun dragging(fromPosition: Int, toPosition: Int, adapter: IUserListViewContract.Adapter) {
+    private fun dragging(fromPosition: Int, toPosition: Int, adapter: IUserListViewContract.Adapter) {
         adapter.move(fromPosition, toPosition)
         Collections.swap(viewModel.viewData, fromPosition, toPosition)
     }
 
-    override fun movedPermanently(newPosition: Int) {
+    private fun movedPermanently(newPosition: Int) {
         val userList = viewModel.viewData[newPosition]
         disposable.add(subscribeCompletable(
                 repo.updateUserListPosition(userList.id, userList.position, newPosition),
@@ -95,10 +121,10 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
 
-    override fun delete(position: Int, adapter: IUserListViewContract.Adapter) {
+    private fun delete(position: Int, adapter: IUserListViewContract.Adapter) {
         adapter.remove(position)
         saveDeletedUserList(position)
-        view.notifyUserOfDeletion(viewModel.msgDeletion)
+        viewEventLiveData.value = ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion)
     }
 
     private fun saveDeletedUserList(position: Int) {
@@ -108,7 +134,7 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
 
-    override fun undoRecentDeletion(adapter: IUserListViewContract.Adapter) {
+    private fun undoRecentDeletion(adapter: IUserListViewContract.Adapter) {
         if (viewModel.tempList.isEmpty() || viewModel.tempPosition < 0) {
             UtilExceptions.throwException(UnsupportedOperationException(
                     viewModel.errorMsgInvalidUndo
@@ -139,7 +165,7 @@ class UserListListLogic(private val view: IUserListViewContract.View,
         )
     }
 
-    override fun deletionNotificationTimedOut() {
+    private fun deletionNotificationTimedOut() {
         if (viewModel.tempList.isEmpty()) {
             return
         }
@@ -154,16 +180,16 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     private fun deletionError(t: Throwable) {
         UtilExceptions.throwException(t)
         viewModel.tempList.clear()
-        view.showMessage(viewModel.errorMsg)
+        viewEventLiveData.value = ViewEvents.ShowMessage(viewModel.errorMsg)
     }
 
 
-    override fun preferencesSelected() {
-        view.openPreferences()
+    private fun preferencesSelected() {
+        viewEventLiveData.value = ViewEvents.OpenPreferences
     }
 
 
-    override fun setNightMode(isMenuItemChecked: Boolean) {
+    private fun setNightMode(isMenuItemChecked: Boolean) {
         when {
             isMenuItemChecked -> utilNightMode.setDay()
             else -> utilNightMode.setNight()
@@ -171,7 +197,10 @@ class UserListListLogic(private val view: IUserListViewContract.View,
     }
 
 
-    override fun onDestroy() {
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
+
+
+    override fun onCleared() {
         disposable.clear()
     }
 }

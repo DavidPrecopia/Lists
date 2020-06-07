@@ -6,17 +6,20 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewBase
-import com.precopia.david.lists.view.userlistlist.buldlogic.DaggerUserListListViewComponent
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.ViewEvents
+import com.precopia.david.lists.view.userlistlist.buldlogic.DaggerUserListComponent
 import com.precopia.domain.datamodel.UserList
 import javax.inject.Inject
 
-class UserListListView : ListViewBase(),
+class UserListView : ListViewBase(),
         IUserListViewContract.View {
 
     @Inject
@@ -35,7 +38,7 @@ class UserListListView : ListViewBase(),
     }
 
     private fun inject() {
-        DaggerUserListListViewComponent.builder()
+        DaggerUserListComponent.builder()
                 .application(application)
                 .view(this)
                 .movementCallback(this)
@@ -50,13 +53,27 @@ class UserListListView : ListViewBase(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        logic.onStart()
+        with(logic) {
+            onEvent(LogicEvents.OnStart)
+            observe().observe(viewLifecycleOwner, Observer { evalViewEvents(it) })
+        }
     }
 
-    override fun onDestroy() {
-        logic.onDestroy()
-        super.onDestroy()
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            is ViewEvents.OpenUserList -> openUserList(event.userList)
+            ViewEvents.OpenPreferences -> openPreferences()
+            is ViewEvents.OpenAddDialog -> openAddDialog(event.position)
+            is ViewEvents.OpenEditDialog -> openEditDialog(event.userList)
+            is ViewEvents.SetViewData -> setViewData(event.viewData)
+            is ViewEvents.NotifyUserOfDeletion -> notifyUserOfDeletion(event.message)
+            ViewEvents.SetStateDisplayList -> setStateDisplayList()
+            ViewEvents.SetStateLoading -> setStateLoading()
+            is ViewEvents.SetStateError -> setStateError(event.message)
+            is ViewEvents.ShowMessage -> showMessage(event.message)
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_menu, menu)
@@ -70,10 +87,10 @@ class UserListListView : ListViewBase(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_id_preferences -> logic.preferencesSelected()
+            R.id.menu_id_preferences -> logic.onEvent(LogicEvents.PreferencesSelected)
             R.id.menu_id_night_mode -> {
                 with(item.isChecked) {
-                    logic.setNightMode(this)
+                    logic.onEvent(LogicEvents.SetNightMode(this))
                     this.not()
                 }
             }
@@ -83,82 +100,82 @@ class UserListListView : ListViewBase(),
     }
 
 
-    override fun openUserList(userList: UserList) {
-        findNavController().navigate(UserListListViewDirections.actionUserListListViewToItemListView(
+    private fun openUserList(userList: UserList) {
+        findNavController().navigate(UserListViewDirections.actionUserListListViewToItemListView(
                 userList.id,
                 userList.title
         ))
     }
 
 
-    override fun openPreferences() {
+    private fun openPreferences() {
         findNavController().navigate(
-                UserListListViewDirections.actionUserListListViewToPreferencesView()
+                UserListViewDirections.actionUserListListViewToPreferencesView()
         )
     }
 
 
-    override fun openAddDialog(position: Int) {
+    private fun openAddDialog(position: Int) {
         findNavController().navigate(
-                UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
+                UserListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         "", "", position
                 )
         )
     }
 
-    override fun openEditDialog(userList: UserList) {
+    private fun openEditDialog(userList: UserList) {
         findNavController().navigate(
-                UserListListViewDirections.actionUserListListViewToAddEditUserListDialog(
+                UserListViewDirections.actionUserListListViewToAddEditUserListDialog(
                         userList.id, userList.title, userList.position
                 )
         )
     }
 
-    override fun setViewData(viewData: List<UserList>) {
+    private fun setViewData(viewData: List<UserList>) {
         adapter.setData(viewData)
     }
 
-    override fun notifyUserOfDeletion(message: String) {
+    private fun notifyUserOfDeletion(message: String) {
         notifyDeletionSnackbar(message)
     }
 
 
-    override fun setStateDisplayList() {
+    private fun setStateDisplayList() {
         displayList()
     }
 
-    override fun setStateLoading() {
+    private fun setStateLoading() {
         displayLoading()
     }
 
-    override fun setStateError(message: String) {
+    private fun setStateError(message: String) {
         displayError(message)
     }
 
 
-    override fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         super.toastMessage(message)
     }
 
 
     override fun addButtonClicked() {
-        logic.add()
+        logic.onEvent(LogicEvents.Add)
     }
 
     override fun undoRecentDeletion() {
-        logic.undoRecentDeletion(adapter)
+        logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
     }
 
     override fun deletionNotificationTimedOut() {
-        logic.deletionNotificationTimedOut()
+        logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
     }
 
     override fun draggingListItem(fromPosition: Int, toPosition: Int) {
-        logic.dragging(fromPosition, toPosition, adapter)
+        logic.onEvent(LogicEvents.Dragging(fromPosition, toPosition, adapter))
     }
 
     override fun permanentlyMoved(newPosition: Int) {
-        logic.movedPermanently(newPosition)
+        logic.onEvent(LogicEvents.MovedPermanently(newPosition))
     }
 
     override fun enableUpNavigationOnToolbar() = false

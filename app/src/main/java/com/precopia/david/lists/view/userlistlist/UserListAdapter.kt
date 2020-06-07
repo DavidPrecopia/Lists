@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.precopia.david.lists.R
 import com.precopia.david.lists.view.common.ListItemViewHolderBase
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
 import com.precopia.domain.datamodel.UserList
 import kotlinx.android.synthetic.main.list_item.*
 
@@ -56,19 +57,19 @@ class UserListAdapter(private val logic: IUserListViewContract.Logic,
         }
 
         override fun swipedLeft(adapterPosition: Int) {
-            logic.delete(adapterPosition, this@UserListAdapter)
+            logic.onEvent(LogicEvents.Delete(adapterPosition, this@UserListAdapter))
         }
 
         override fun edit(adapterPosition: Int) {
-            logic.edit(adapterPosition)
+            logic.onEvent(LogicEvents.Edit(adapterPosition))
         }
 
         override fun delete(adapterPosition: Int) {
-            logic.delete(adapterPosition, this@UserListAdapter)
+            logic.onEvent(LogicEvents.Delete(adapterPosition, this@UserListAdapter))
         }
 
         override fun onClick(v: View) {
-            logic.userListSelected(bindingAdapterPosition)
+            logic.onEvent(LogicEvents.UserListSelected(bindingAdapterPosition))
         }
     }
 }

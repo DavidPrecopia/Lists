@@ -1,8 +1,13 @@
 package com.precopia.david.lists.view.userlistlist
 
+import androidx.lifecycle.Observer
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
+import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.IUtilNightModeContract
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
+import com.precopia.david.lists.view.userlistlist.IUserListViewContract.ViewEvents
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
@@ -14,12 +19,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
-class UserListListLogicTest {
-
-    private val view = mockk<IUserListViewContract.View>(relaxUnitFun = true)
+@ExtendWith(value = [InstantExecutorExtension::class])
+class UserListLogicTest {
 
     private val viewModel = mockk<IUserListViewContract.ViewModel>(relaxUnitFun = true)
 
@@ -31,7 +36,7 @@ class UserListListLogicTest {
 
     private val utilNightMode = mockk<IUtilNightModeContract>(relaxUnitFun = true)
 
-    private val logic = UserListListLogic(view, viewModel, utilNightMode, repo, schedulerProvider, disposable)
+    private val logic = UserListLogic(viewModel, utilNightMode, repo, schedulerProvider, disposable)
 
 
     private val adapter = mockk<IUserListViewContract.Adapter>(relaxUnitFun = true)
@@ -66,16 +71,24 @@ class UserListListLogicTest {
          */
         @Test
         fun `onStart - ViewModel has View Data`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val userListList = mutableListOf(userListOne)
 
             every { repo.getUserLists() } returns Flowable.just(userListList)
             every { viewModel.viewData } returns userListList
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify(exactly = 2) { view.setViewData(userListList) }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { viewModel.viewData = userListList }
-            verify { view.setStateDisplayList() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetViewData(userListList))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetViewData(userListList))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateDisplayList)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -88,16 +101,24 @@ class UserListListLogicTest {
          */
         @Test
         fun `onStart - Empty List from repo`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { repo.getUserLists() } returns Flowable.just(emptyList)
             every { viewModel.viewData } returns emptyList
             every { viewModel.errorMsgEmptyList } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { viewModel.viewData = emptyList }
-            verify { view.setViewData(emptyList) }
-            verify { view.setStateError(message) }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetViewData(emptyList))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateError(message))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -109,17 +130,24 @@ class UserListListLogicTest {
          */
         @Test
         fun `onStart - Repo throws an error`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.viewData } returns emptyList
             every { repo.getUserLists() } returns Flowable.error(throwable)
             every { viewModel.errorMsg } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { throwable.printStackTrace() }
-            verify { view.setStateError(message) }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetStateError(message))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
     }
 
@@ -137,9 +165,11 @@ class UserListListLogicTest {
 
             every { viewModel.viewData } returns userListList
 
-            logic.userListSelected(position)
+            logic.onEvent(LogicEvents.UserListSelected(position))
 
-            verify { view.openUserList(userListList[position]) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenUserList(userListList[position]))
+            }
         }
 
         /**
@@ -153,13 +183,13 @@ class UserListListLogicTest {
 
             every { viewModel.viewData } returns userListList
 
-            logic.userListSelected(invalidPosition)
+            logic.onEvent(LogicEvents.UserListSelected(invalidPosition))
         }
     }
 
 
     /**
-     * - [IUserListViewContract.View.openAddDialog] is invoked with the current size.
+     * - [IUserListViewContract.ViewEvents.OpenAddDialog] is invoked with the current size.
      * of List containing the view data.
      */
     @Test
@@ -169,9 +199,11 @@ class UserListListLogicTest {
 
         every { viewModel.viewData } returns userListList
 
-        logic.add()
+        logic.onEvent(LogicEvents.Add)
 
-        verify { view.openAddDialog(size) }
+        logic.observe().observeForTesting {
+            assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenAddDialog(size))
+        }
     }
 
 
@@ -179,7 +211,7 @@ class UserListListLogicTest {
     inner class Edit {
         /**
          * - Get the UserList at the passed-in position.
-         * - Pass that UserList to [IUserListViewContract.View.openEditDialog].
+         * - Pass that UserList to [IUserListViewContract.ViewEvents.OpenEditDialog].
          */
         @Test
         fun edit() {
@@ -188,9 +220,11 @@ class UserListListLogicTest {
 
             every { viewModel.viewData } returns userListList
 
-            logic.edit(position)
+            logic.onEvent(LogicEvents.Edit(position))
 
-            verify { view.openEditDialog(userListOne) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenEditDialog(userListOne))
+            }
         }
 
         /**
@@ -205,7 +239,7 @@ class UserListListLogicTest {
             every { viewModel.viewData } returns userListList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.edit(invalidPosition)
+                logic.onEvent(LogicEvents.Edit(invalidPosition))
             }
         }
     }
@@ -225,7 +259,7 @@ class UserListListLogicTest {
 
             every { viewModel.viewData } returns userListList
 
-            logic.dragging(fromPosition, toPosition, adapter)
+            logic.onEvent(LogicEvents.Dragging(fromPosition, toPosition, adapter))
 
             verify { adapter.move(fromPosition, toPosition) }
             // Assert that the ViewData was updated.
@@ -244,7 +278,7 @@ class UserListListLogicTest {
             every { viewModel.viewData } returns userListList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.dragging(fromPosition, toPosition, adapter)
+                logic.onEvent(LogicEvents.Dragging(fromPosition, toPosition, adapter))
             }
         }
     }
@@ -269,7 +303,7 @@ class UserListListLogicTest {
                 Completable.complete()
             }
 
-            logic.movedPermanently(newPosition)
+            logic.onEvent(LogicEvents.MovedPermanently(newPosition))
 
             verify { repo.updateUserListPosition(userListOne.id, userListOne.position, newPosition) }
         }
@@ -293,7 +327,7 @@ class UserListListLogicTest {
                 Completable.error(throwable)
             }
 
-            logic.movedPermanently(newPosition)
+            logic.onEvent(LogicEvents.MovedPermanently(newPosition))
 
             verify { repo.updateUserListPosition(userListOne.id, userListOne.position, newPosition) }
             verify { throwable.printStackTrace() }
@@ -311,7 +345,7 @@ class UserListListLogicTest {
             every { viewModel.viewData } returns userListList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.movedPermanently(invalidPosition)
+                logic.onEvent(LogicEvents.MovedPermanently(invalidPosition))
             }
         }
     }
@@ -337,13 +371,15 @@ class UserListListLogicTest {
             every { viewModel.tempList } returns tempUserLists
             every { viewModel.msgDeletion } returns message
 
-            logic.delete(position, adapter)
+            logic.onEvent(LogicEvents.Delete(position, adapter))
 
             verify { adapter.remove(position) }
             assertThat(tempUserLists).containsExactly(userListOne)
             verify { viewModel.tempPosition = position }
             assertThat(userListList.isEmpty()).isTrue()
-            verify { view.notifyUserOfDeletion(message) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.NotifyUserOfDeletion(message))
+            }
         }
 
         /**
@@ -360,7 +396,7 @@ class UserListListLogicTest {
             every { viewModel.tempList } returns tempUserLists
 
             assertThrows<java.lang.IndexOutOfBoundsException> {
-                logic.delete(invalidPosition, adapter)
+                logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
             }
         }
     }
@@ -388,7 +424,7 @@ class UserListListLogicTest {
             every { viewModel.tempPosition } returns tempPosition
             every { repo.deleteUserLists(tempUserLists) } answers { Completable.complete() }
 
-            logic.undoRecentDeletion(adapter)
+            logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
 
             verify { adapter.reAdd(tempPosition, userListTwo) }
             assertThat(userListList).containsExactly(userListTwo)
@@ -420,14 +456,16 @@ class UserListListLogicTest {
             every { viewModel.tempPosition } returns tempPosition
             every { repo.deleteUserLists(tempUserLists) } answers { Completable.error(throwable) }
 
-            logic.undoRecentDeletion(adapter)
+            logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
 
             verify { adapter.reAdd(tempPosition, userListTwo) }
             assertThat(userListList).containsExactly(userListTwo)
             verify { repo.deleteUserLists(tempUserLists) }
             verify { throwable.printStackTrace() }
             assertThat(tempUserLists.isEmpty()).isTrue()
-            verify { view.showMessage(message) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.ShowMessage(message))
+            }
         }
 
         /**
@@ -440,7 +478,7 @@ class UserListListLogicTest {
             every { viewModel.errorMsgInvalidUndo } returns message
 
             assertThrows<UnsupportedOperationException> {
-                logic.undoRecentDeletion(adapter)
+                logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
             }
         }
 
@@ -458,7 +496,7 @@ class UserListListLogicTest {
             every { viewModel.errorMsgInvalidUndo } returns message
 
             assertThrows<UnsupportedOperationException> {
-                logic.undoRecentDeletion(adapter)
+                logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
             }
         }
     }
@@ -480,7 +518,7 @@ class UserListListLogicTest {
             every { viewModel.tempList } returns userListList
             every { repo.deleteUserLists(userListList) } answers { Completable.complete() }
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo.deleteUserLists(userListList) }
             assertThat(userListList.isEmpty()).isTrue()
@@ -504,12 +542,14 @@ class UserListListLogicTest {
             every { viewModel.tempList } returns userListList
             every { repo.deleteUserLists(userListList) } answers { Completable.error(throwable) }
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo.deleteUserLists(userListList) }
             verify { throwable.printStackTrace() }
             assertThat(userListList.isEmpty()).isTrue()
-            verify { view.showMessage(message) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.ShowMessage(message))
+            }
         }
 
         /**
@@ -520,7 +560,7 @@ class UserListListLogicTest {
         fun `deletionNotificationTimedOut - Empty Temp List`() {
             every { viewModel.tempList } returns emptyList
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo wasNot Called }
         }
@@ -528,13 +568,15 @@ class UserListListLogicTest {
 
 
     /**
-     * - Invokes [IUserListViewContract.View.openPreferences]
+     * - Invokes [IUserListViewContract.ViewEvents.OpenPreferences]
      */
     @Test
     fun preferencesSelected() {
-        logic.preferencesSelected()
+        logic.onEvent(LogicEvents.PreferencesSelected)
 
-        verify { view.openPreferences() }
+        logic.observe().observeForTesting {
+            assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenPreferences)
+        }
     }
 
 
@@ -546,7 +588,7 @@ class UserListListLogicTest {
          */
         @Test
         fun `setNightMode - Unchecked`() {
-            logic.setNightMode(false)
+            logic.onEvent(LogicEvents.SetNightMode(false))
 
             verify { utilNightMode.setNight() }
         }
@@ -557,7 +599,7 @@ class UserListListLogicTest {
          */
         @Test
         fun `setNightMode - Checked`() {
-            logic.setNightMode(true)
+            logic.onEvent(LogicEvents.SetNightMode(true))
 
             verify { utilNightMode.setDay() }
         }
@@ -573,16 +615,5 @@ class UserListListLogicTest {
 
             assertThat(logic.isNightModeEnabled).isEqualTo(nightModeEnabled)
         }
-    }
-
-
-    /**
-     * - Verify that [CompositeDisposable.clear] is invoked.
-     */
-    @Test
-    fun onDestroy() {
-        logic.onDestroy()
-
-        verify { disposable.clear() }
     }
 }

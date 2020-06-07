@@ -82,7 +82,7 @@
 
     <fragment
         android:id="@+id/userListListView"
-        android:name="com.precopia.david.lists.view.userlistlist.UserListListView"
+        android:name="com.precopia.david.lists.view.userlistlist.UserListView"
         android:label="@string/app_name"
         tools:layout="@layout/list_view_base">
         <action
