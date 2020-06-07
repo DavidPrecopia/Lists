@@ -71,7 +71,9 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentVersion"
 
-    implementation "com.google.android.material:material:$rootProject.materialDesignVersion"
+    implementation ("com.google.android.material:material:$rootProject.materialDesignVersion") {
+        because "v1.1.0 has unwanted behavior regarding its choice of color in night mode and buttons."
+    }
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
 
