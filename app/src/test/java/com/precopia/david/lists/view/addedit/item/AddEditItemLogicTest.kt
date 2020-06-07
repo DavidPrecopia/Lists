@@ -5,7 +5,6 @@ import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
 import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
-import com.precopia.david.lists.view.addedit.common.IAddEditContract
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.*
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
@@ -33,24 +32,18 @@ class AddEditItemLogicTest {
     private val userListId = "id_user_list"
     private val position = 0
 
-    private lateinit var logic: AddEditItemLogic
+    private val logic = AddEditItemLogic(
+            viewModel, repo, disposable, schedulerProvider, id, title, userListId, position
+    )
 
 
     private val errorMessage = "error"
     private val validInput = "input"
 
 
-    /**
-     * I am re-instantiating the class under test before each test
-     * to ensure that the observable returned by [IAddEditContract.Logic.observe]
-     * is cleared before the following test.
-     */
     @BeforeEach
     fun setUp() {
         clearAllMocks()
-        logic = AddEditItemLogic(
-                viewModel, repo, disposable, schedulerProvider, id, title, userListId, position
-        )
         SchedulerProviderMockInit.init(schedulerProvider)
     }
 

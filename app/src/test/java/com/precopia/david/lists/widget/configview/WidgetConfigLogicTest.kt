@@ -30,7 +30,9 @@ class WidgetConfigLogicTest {
     private val disposable = spyk<CompositeDisposable>()
 
 
-    private lateinit var logic: WidgetConfigLogic
+    private val logic = WidgetConfigLogic(
+            viewModel, repo, schedulerProvider, disposable
+    )
 
 
     private val position = 0
@@ -43,14 +45,8 @@ class WidgetConfigLogicTest {
     private val resultCanceled = 0
 
 
-    /**
-     * I am re-instantiating the class under test before each test
-     * to ensure that the observable returned by [IWidgetConfigContract.Logic.observe]
-     * is cleared before the following test.
-     */
     @BeforeEach
     fun init() {
-        logic = WidgetConfigLogic(viewModel, repo, schedulerProvider, disposable)
         clearAllMocks()
         SchedulerProviderMockInit.init(schedulerProvider)
     }
