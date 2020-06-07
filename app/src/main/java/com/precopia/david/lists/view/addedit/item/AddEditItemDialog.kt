@@ -3,7 +3,7 @@ package com.precopia.david.lists.view.addedit.item
 import android.content.Context
 import androidx.navigation.fragment.navArgs
 import com.precopia.david.lists.view.addedit.common.AddEditDialogBase
-import com.precopia.david.lists.view.addedit.item.buildlogic.DaggerAddEditItemDialogComponent
+import com.precopia.david.lists.view.addedit.item.buildlogic.DaggerAddEditItemComponent
 
 class AddEditItemDialog : AddEditDialogBase() {
 
@@ -15,7 +15,7 @@ class AddEditItemDialog : AddEditDialogBase() {
     }
 
     private fun inject() {
-        DaggerAddEditItemDialogComponent.builder()
+        DaggerAddEditItemComponent.builder()
                 .application(requireActivity().application)
                 .view(this)
                 .id(args.itemId)

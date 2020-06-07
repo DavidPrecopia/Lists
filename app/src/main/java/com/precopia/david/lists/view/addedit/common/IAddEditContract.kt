@@ -1,18 +1,16 @@
 package com.precopia.david.lists.view.addedit.common
 
+import androidx.lifecycle.LiveData
+
 interface IAddEditContract {
-    interface View {
-        fun setStateError(message: String)
-
-        fun displayMessage(message: String)
-
-        fun finishView()
-    }
+    interface View
 
     interface Logic {
         val currentTitle: String
 
-        fun validateInput(input: String)
+        fun onEvent(event: LogicEvents)
+
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -36,5 +34,16 @@ interface IAddEditContract {
     enum class TaskType {
         ADD,
         EDIT
+    }
+
+
+    sealed class ViewEvents {
+        data class SetStateError(val message: String): ViewEvents()
+        data class DisplayMessage(val message: String): ViewEvents()
+        object FinishView: ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        data class Save(val input: String): LogicEvents()
     }
 }

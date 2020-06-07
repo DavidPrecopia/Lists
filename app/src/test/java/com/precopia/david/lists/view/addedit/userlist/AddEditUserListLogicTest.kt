@@ -1,9 +1,12 @@
 package com.precopia.david.lists.view.addedit.userlist
 
+import androidx.lifecycle.Observer
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
+import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.view.addedit.common.IAddEditContract
-import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType
+import com.precopia.david.lists.view.addedit.common.IAddEditContract.*
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.ADD
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
 import com.precopia.domain.repository.IRepositoryContract
@@ -13,12 +16,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(value = [InstantExecutorExtension::class])
 class AddEditUserListLogicTest {
 
-    private val view = mockk<IAddEditContract.View>(relaxUnitFun = true)
-
-    private val viewModel = mockk<IAddEditContract.ViewModel>(relaxUnitFun = true)
+    private val viewModel = mockk<ViewModel>(relaxUnitFun = true)
 
     private val repo = mockk<IRepositoryContract.Repository>(relaxUnitFun = true)
 
@@ -28,16 +31,22 @@ class AddEditUserListLogicTest {
     private val title = "title"
     private val position = 0
 
-    private val logic = AddEditUserListLogic(view, viewModel, repo, schedulerProvider, id, title, position)
+    private lateinit var logic: AddEditUserListLogic
 
 
     private val errorMessage = "error"
     private val validInput = "input"
 
 
+    /**
+     * I am re-instantiating the class under test before each test
+     * to ensure that the observable returned by [IAddEditContract.Logic.observe]
+     * is cleared before the following test.
+     */
     @BeforeEach
     fun init() {
         clearAllMocks()
+        logic = AddEditUserListLogic(viewModel, repo, schedulerProvider, id, title, position)
         SchedulerProviderMockInit.init(schedulerProvider)
     }
 
@@ -61,10 +70,12 @@ class AddEditUserListLogicTest {
             every { viewModel.currentTitle } returns title
             every { repo.addUserList(validInput, position) } answers { Completable.complete() }
 
-            logic.validateInput(validInput)
+            logic.onEvent(LogicEvents.Save(validInput))
 
             verify { repo.addUserList(validInput, position) }
-            verify { view.finishView() }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.FinishView)
+            }
         }
 
         /**
@@ -81,6 +92,8 @@ class AddEditUserListLogicTest {
          */
         @Test
         fun `validateInput - Add - failure`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.taskType } returns ADD
@@ -89,12 +102,17 @@ class AddEditUserListLogicTest {
             every { viewModel.msgError } returns errorMessage
             every { repo.addUserList(validInput, position) } answers { Completable.error(throwable) }
 
-            logic.validateInput(validInput)
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.Save(validInput))
 
             verify { repo.addUserList(validInput, position) }
             verify { throwable.printStackTrace() }
-            verify { view.displayMessage(errorMessage) }
-            verify { view.finishView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(errorMessage))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -114,11 +132,13 @@ class AddEditUserListLogicTest {
             every { viewModel.currentTitle } returns title
             every { repo.renameUserList(id, validInput) } answers { Completable.complete() }
 
-            logic.validateInput(validInput)
+            logic.onEvent(LogicEvents.Save(validInput))
 
             verify { repo.renameUserList(id, validInput) }
-            verify { view.finishView() }
             verify(exactly = 0) { viewModel.position }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.FinishView)
+            }
         }
 
         /**
@@ -135,6 +155,8 @@ class AddEditUserListLogicTest {
          */
         @Test
         fun `validateInput - Edit - failure`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.taskType } returns EDIT
@@ -143,13 +165,18 @@ class AddEditUserListLogicTest {
             every { viewModel.msgError } returns errorMessage
             every { repo.renameUserList(id, validInput) } answers { Completable.error(throwable) }
 
-            logic.validateInput(validInput)
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.Save(validInput))
 
             verify { repo.renameUserList(id, validInput) }
             verify { throwable.printStackTrace() }
-            verify { view.displayMessage(errorMessage) }
-            verify { view.finishView() }
             verify(exactly = 0) { viewModel.position }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(errorMessage))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -163,10 +190,12 @@ class AddEditUserListLogicTest {
 
             every { viewModel.msgEmptyTitle } returns errorMessage
 
-            logic.validateInput(emptyInput)
+            logic.onEvent(LogicEvents.Save(emptyInput))
 
-            verify { view.setStateError(errorMessage) }
             verify { repo wasNot Called }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.SetStateError(errorMessage))
+            }
         }
 
         /**
@@ -179,10 +208,12 @@ class AddEditUserListLogicTest {
             every { viewModel.currentTitle } returns validInput
             every { viewModel.msgTitleUnchanged } returns errorMessage
 
-            logic.validateInput(validInput)
+            logic.onEvent(LogicEvents.Save(validInput))
 
-            verify { view.setStateError(errorMessage) }
             verify { repo wasNot Called }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.SetStateError(errorMessage))
+            }
         }
     }
 

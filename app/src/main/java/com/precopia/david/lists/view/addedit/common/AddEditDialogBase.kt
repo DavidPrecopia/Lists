@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.toast
 import com.precopia.david.lists.util.UtilSoftKeyboard
+import com.precopia.david.lists.view.addedit.common.IAddEditContract.LogicEvents
+import com.precopia.david.lists.view.addedit.common.IAddEditContract.ViewEvents
 import kotlinx.android.synthetic.main.add_edit_dialog.*
 import javax.inject.Inject
 
@@ -34,6 +37,7 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = AlertDialog.Builder(requireContext()).setView(view).create()
         init()
+        logic.observe().observe(this, Observer { evalViewEvents(it) })
         return dialog
     }
 
@@ -41,6 +45,16 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
         super.onStart()
         utilSoftKeyboard.showKeyboardInDialog(text_input_edit_text)
     }
+
+
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            is ViewEvents.SetStateError -> setStateError(event.message)
+            is ViewEvents.DisplayMessage -> displayMessage(event.message)
+            ViewEvents.FinishView -> finishView()
+        }
+    }
+
 
     private fun init() {
         initEditText()
@@ -67,7 +81,7 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
     }
 
     private fun confirmClickListener() {
-        button_confirm.setOnClickListener { logic.validateInput(enteredText()) }
+        button_confirm.setOnClickListener { logic.onEvent(LogicEvents.Save(enteredText())) }
     }
 
     private fun cancelClickListener() {
@@ -78,7 +92,7 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
         text_input_edit_text.setOnEditorActionListener { _, actionId, _ ->
             var handled = false
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                logic.validateInput(enteredText())
+                logic.onEvent(LogicEvents.Save(enteredText()))
                 handled = true
             }
             handled
@@ -89,16 +103,16 @@ abstract class AddEditDialogBase : DialogFragment(), IAddEditContract.View {
             text_input_edit_text.text.toString().trim { it <= ' ' }
 
 
-    override fun setStateError(message: String) {
+    private fun setStateError(message: String) {
         text_input_layout.error = message
     }
 
-    override fun displayMessage(message: String) {
+    private fun displayMessage(message: String) {
         toast(message)
     }
 
 
-    override fun finishView() {
+    private fun finishView() {
         dismiss()
     }
 

@@ -1,9 +1,9 @@
 package com.precopia.david.lists.view.addedit.userlist.buildlogic
 
 import android.app.Application
+import androidx.fragment.app.DialogFragment
 import com.precopia.david.lists.common.buildlogic.ViewCommonModule
 import com.precopia.david.lists.common.buildlogic.ViewScope
-import com.precopia.david.lists.view.addedit.common.IAddEditContract
 import com.precopia.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.ID
 import com.precopia.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.POSITION
 import com.precopia.david.lists.view.addedit.common.buildlogic.AddEditCommonNamedConstants.TITLE
@@ -15,22 +15,22 @@ import javax.inject.Named
 
 @ViewScope
 @Component(modules = [
-    AddEditUserListDialogModule::class,
+    AddEditUserListModule::class,
     AddEditDialogCommonModule::class,
     ViewCommonModule::class
 ])
-interface AddEditUserListDialogComponent {
+interface AddEditUserListComponent {
     fun inject(fragment: AddEditUserListDialog)
 
     @Component.Builder
     interface Builder {
-        fun build(): AddEditUserListDialogComponent
+        fun build(): AddEditUserListComponent
 
         @BindsInstance
         fun application(application: Application): Builder
 
         @BindsInstance
-        fun view(view: IAddEditContract.View): Builder
+        fun view(view: DialogFragment): Builder
 
         @BindsInstance
         fun id(@Named(ID) id: String): Builder

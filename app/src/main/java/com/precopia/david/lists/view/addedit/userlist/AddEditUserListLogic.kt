@@ -7,16 +7,15 @@ import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.AD
 import com.precopia.david.lists.view.addedit.common.IAddEditContract.TaskType.EDIT
 import com.precopia.domain.repository.IRepositoryContract
 
-class AddEditUserListLogic(view: IAddEditContract.View,
-                           viewModel: IAddEditContract.ViewModel,
+class AddEditUserListLogic(viewModel: IAddEditContract.ViewModel,
                            repo: IRepositoryContract.Repository,
                            schedulerProvider: ISchedulerProviderContract,
                            id: String,
                            title: String,
                            position: Int) :
-        AddEditLogicBase(view, viewModel, repo, schedulerProvider, id, title, null, position) {
+        AddEditLogicBase(viewModel, repo, schedulerProvider, id, title, null, position) {
 
-    public override fun save(newTitle: String) {
+    override fun save(newTitle: String) {
         when (viewModel.taskType) {
             ADD -> saveWithCompletable(repo.addUserList(newTitle, viewModel.position))
             EDIT -> saveWithCompletable(repo.renameUserList(viewModel.id, newTitle))

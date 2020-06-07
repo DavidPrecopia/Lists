@@ -3,7 +3,7 @@ package com.precopia.david.lists.view.addedit.userlist
 import android.content.Context
 import androidx.navigation.fragment.navArgs
 import com.precopia.david.lists.view.addedit.common.AddEditDialogBase
-import com.precopia.david.lists.view.addedit.userlist.buildlogic.DaggerAddEditUserListDialogComponent
+import com.precopia.david.lists.view.addedit.userlist.buildlogic.DaggerAddEditUserListComponent
 
 class AddEditUserListDialog : AddEditDialogBase() {
 
@@ -15,7 +15,7 @@ class AddEditUserListDialog : AddEditDialogBase() {
     }
 
     private fun inject() {
-        DaggerAddEditUserListDialogComponent.builder()
+        DaggerAddEditUserListComponent.builder()
                 .application(requireActivity().application)
                 .view(this)
                 .id(args.userListId)
