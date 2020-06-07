@@ -91,6 +91,8 @@ class WidgetConfigLogicTest {
             assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
             assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetViewData(userListList))
             assertThat(listLiveDataOutput[3]).isEqualTo(ViewEvents.SetStateDisplayList)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -116,6 +118,8 @@ class WidgetConfigLogicTest {
             assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
             assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdInvalid, resultCanceled))
             assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishViewInvalidId)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -152,6 +156,8 @@ class WidgetConfigLogicTest {
             assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
             assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetViewData(emptyList))
             assertThat(listLiveDataOutput[3]).isEqualTo(ViewEvents.SetStateError(emptyListError))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -184,6 +190,8 @@ class WidgetConfigLogicTest {
             assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
             assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultCanceled))
             assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateError(errorMsg))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
     }
 
@@ -222,6 +230,8 @@ class WidgetConfigLogicTest {
             ))
             assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetResults(widgetIdValid, resultOk))
             assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView(widgetIdValid))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
