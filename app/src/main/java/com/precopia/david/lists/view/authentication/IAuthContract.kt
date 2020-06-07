@@ -1,30 +1,14 @@
 package com.precopia.david.lists.view.authentication
 
+import androidx.lifecycle.LiveData
+
 interface IAuthContract {
-    interface View {
-        fun signIn(requestCode: Int)
-
-        fun displayEmailSentMessage(email: String)
-
-        fun hideEmailSentMessage()
-
-        fun displayMessage(message: String)
-
-        fun openMainView()
-
-        fun finishView()
-    }
+    interface View
 
     interface Logic {
-        fun onStart(signOut: Boolean = false)
+        fun onEvent(event: LogicEvents)
 
-        fun signInSuccessful()
-
-        fun signInCancelled()
-
-        fun signInFailed(errorCode: Int)
-
-        fun verifyEmailButtonClicked()
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -45,5 +29,23 @@ interface IAuthContract {
         val msgSignOutSucceed: String
 
         val msgSignOutFailed: String
+    }
+
+
+    sealed class ViewEvents {
+        data class SignIn(val requestCode: Int) : ViewEvents()
+        data class DisplayEmailSentMessage(val email: String) : ViewEvents()
+        object HideEmailSentMessage : ViewEvents()
+        data class DisplayMessage(val message: String) : ViewEvents()
+        object OpenMainView : ViewEvents()
+        object FinishView : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        data class OnStart(val signOut: Boolean = false) : LogicEvents()
+        object SignInSuccessful : LogicEvents()
+        object SignInCancelled : LogicEvents()
+        data class SignInFailed(val errorCode: Int) : LogicEvents()
+        object VerifyEmailButtonClicked : LogicEvents()
     }
 }

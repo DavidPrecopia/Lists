@@ -1,41 +1,67 @@
 package com.precopia.david.lists.view.authentication
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
+import com.precopia.david.lists.view.authentication.IAuthContract.LogicEvents
+import com.precopia.david.lists.view.authentication.IAuthContract.ViewEvents
 import com.precopia.domain.repository.IRepositoryContract
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class AuthLogic(private val view: IAuthContract.View,
-                private val viewModel: IAuthContract.ViewModel,
+class AuthLogic(private val viewModel: IAuthContract.ViewModel,
                 private val userRepo: IRepositoryContract.UserRepository,
-                private val schedulerProvider: ISchedulerProviderContract) : IAuthContract.Logic {
+                private val disposable: CompositeDisposable,
+                private val schedulerProvider: ISchedulerProviderContract) :
+        ViewModel(),
+        IAuthContract.Logic {
 
-    override fun onStart(signOut: Boolean) {
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
+
+
+    override fun onEvent(event: LogicEvents) {
+        when (event) {
+            is LogicEvents.OnStart -> onStart(event.signOut)
+            LogicEvents.SignInSuccessful -> signInSuccessful()
+            LogicEvents.SignInCancelled -> signInCancelled()
+            is LogicEvents.SignInFailed -> signInFailed(event.errorCode)
+            LogicEvents.VerifyEmailButtonClicked -> verifyEmailButtonClicked()
+        }
+    }
+
+
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
+
+
+    private fun onStart(signOut: Boolean) {
         when {
             signOut -> signOut()
-            userRepo.userVerified -> view.openMainView()
-            userRepo.signedOut -> view.signIn(viewModel.signInRequestCode)
+            userRepo.userVerified -> viewEventLiveData.value =
+                    ViewEvents.OpenMainView
+            userRepo.signedOut -> viewEventLiveData.value =
+                    ViewEvents.SignIn(viewModel.signInRequestCode)
             userRepo.hasEmail && userRepo.emailVerified.not() -> verifyEmail()
             else -> UtilExceptions.throwException(IllegalStateException())
         }
     }
 
-
-    override fun signInSuccessful() {
+    private fun signInSuccessful() {
         when (userRepo.hasEmail && userRepo.emailVerified.not()) {
             true -> verifyEmail()
-            false -> {
-                view.displayMessage(viewModel.msgSignInSucceed)
-                view.openMainView()
+            false -> with(viewEventLiveData) {
+                value = ViewEvents.DisplayMessage(viewModel.msgSignInSucceed)
+                value = ViewEvents.OpenMainView
             }
         }
     }
 
-    override fun signInCancelled() {
+    private fun signInCancelled() {
         finish(viewModel.msgSignInCanceled)
     }
 
-    override fun signInFailed(errorCode: Int) {
+    private fun signInFailed(errorCode: Int) {
         finish(viewModel.getMsgSignInError(errorCode))
     }
 
@@ -44,68 +70,73 @@ class AuthLogic(private val view: IAuthContract.View,
         // Need to re-set state in case the user
         // signs-in with an unverified email.
         viewModel.emailVerificationSent = false
-        subscribeCompletable(
+        disposable.add(subscribeCompletable(
                 userRepo.signOut(),
                 { signOutSucceeded() },
                 { signOutFailed(it) },
                 schedulerProvider
-        )
+        ))
     }
 
     private fun signOutSucceeded() {
-        view.displayMessage(viewModel.msgSignOutSucceed)
-        view.signIn(viewModel.signInRequestCode)
+        with(viewEventLiveData) {
+            value = ViewEvents.DisplayMessage(viewModel.msgSignOutSucceed)
+            value = ViewEvents.SignIn(viewModel.signInRequestCode)
+        }
     }
 
     private fun signOutFailed(e: Throwable) {
         UtilExceptions.throwException(e)
-        view.displayMessage(viewModel.msgSignOutFailed)
-        view.openMainView()
+        with(viewEventLiveData) {
+            value = ViewEvents.DisplayMessage(viewModel.msgSignOutFailed)
+            value = ViewEvents.OpenMainView
+        }
     }
 
 
-    override fun verifyEmailButtonClicked() {
-        view.hideEmailSentMessage()
+    private fun verifyEmailButtonClicked() {
+        viewEventLiveData.value = ViewEvents.HideEmailSentMessage
         verifyEmail()
     }
 
 
     private fun verifyEmail() {
         when (viewModel.emailVerificationSent) {
-            true -> subscribeCompletable(
+            true -> disposable.add(subscribeCompletable(
                     userRepo.reloadUser(),
                     { successfullyReloadedUser() },
                     { failedToReloadUser(it) },
                     schedulerProvider
-            )
-            false -> subscribeCompletable(
+            ))
+            false -> disposable.add(subscribeCompletable(
                     userRepo.sendVerificationEmail(),
                     { successfullySentEmail() },
                     { failedToSendEmail(it) },
                     schedulerProvider
-            )
+            ))
         }
     }
 
     private fun successfullyReloadedUser() {
         when (userRepo.emailVerified) {
-            true -> {
-                view.hideEmailSentMessage()
-                view.displayMessage(viewModel.msgSignInSucceed)
-                view.openMainView()
+            true -> with(viewEventLiveData) {
+                value = ViewEvents.HideEmailSentMessage
+                value = ViewEvents.DisplayMessage(viewModel.msgSignInSucceed)
+                value = ViewEvents.OpenMainView
             }
-            false -> view.displayEmailSentMessage(userRepo.email!!)
+            false -> viewEventLiveData.value =
+                    ViewEvents.DisplayEmailSentMessage(userRepo.email!!)
         }
     }
 
     private fun failedToReloadUser(e: Throwable) {
         UtilExceptions.throwException(e)
-        view.signIn(viewModel.signInRequestCode)
+        viewEventLiveData.value = ViewEvents.SignIn(viewModel.signInRequestCode)
     }
 
     private fun successfullySentEmail() {
         viewModel.emailVerificationSent = true
-        view.displayEmailSentMessage(userRepo.email!!)
+        viewEventLiveData.value = ViewEvents.DisplayEmailSentMessage(userRepo.email!!)
     }
 
     private fun failedToSendEmail(e: Throwable) {
@@ -115,7 +146,16 @@ class AuthLogic(private val view: IAuthContract.View,
 
 
     private fun finish(displayMessage: String) {
-        view.displayMessage(displayMessage)
-        view.finishView()
+        disposable.clear()
+        with(viewEventLiveData) {
+            value = ViewEvents.DisplayMessage(displayMessage)
+            value = ViewEvents.FinishView
+        }
+    }
+
+
+    override fun onCleared() {
+        disposable.clear()
+        super.onCleared()
     }
 }

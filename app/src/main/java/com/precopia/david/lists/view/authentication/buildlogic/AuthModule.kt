@@ -3,6 +3,8 @@ package com.precopia.david.lists.view.authentication.buildlogic
 import android.app.Application
 import android.content.Intent
 import android.content.SharedPreferences
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.buildlogic.ViewScope
@@ -13,16 +15,25 @@ import com.precopia.david.lists.view.authentication.IAuthContract
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.Module
 import dagger.Provides
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Module
-internal class AuthViewModule {
+internal class AuthModule {
     @ViewScope
     @Provides
-    fun logic(view: IAuthContract.View,
-              viewModel: IAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository,
-              schedulerProvider: ISchedulerProviderContract): IAuthContract.Logic {
-        return AuthLogic(view, viewModel, userRepo, schedulerProvider)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): IAuthContract.Logic {
+        return ViewModelProvider(view, factory).get(AuthLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IAuthContract.ViewModel,
+                userRepo: IRepositoryContract.UserRepository,
+                disposable: CompositeDisposable,
+                schedulerProvider: ISchedulerProviderContract
+    ): ViewModelProvider.NewInstanceFactory {
+        return AuthLogicFactory(viewModel, userRepo, disposable, schedulerProvider)
     }
 
     @JvmSuppressWildcards

@@ -1,30 +1,37 @@
 package com.precopia.david.lists.view.authentication
 
+import androidx.lifecycle.Observer
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
+import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
+import com.precopia.david.lists.view.authentication.IAuthContract.LogicEvents
+import com.precopia.david.lists.view.authentication.IAuthContract.ViewEvents
 import com.precopia.domain.repository.IRepositoryContract
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(value = [InstantExecutorExtension::class])
 class AuthLogicTest {
-
-    private val view = mockk<IAuthContract.View>(relaxUnitFun = true)
 
     private val viewModel = mockk<IAuthContract.ViewModel>(relaxUnitFun = true)
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>(relaxUnitFun = true)
 
+    private val disposable = spyk<CompositeDisposable>()
+
     private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
 
-    private val logic = AuthLogic(view, viewModel, userRepo, schedulerProvider)
+    private val logic = AuthLogic(viewModel, userRepo, disposable, schedulerProvider)
+
 
     private val email = "email"
     private val message = "message"
@@ -49,9 +56,11 @@ class AuthLogicTest {
         fun `onStart - User Verified`() {
             every { userRepo.userVerified } returns true
 
-            logic.onStart(signOut = false)
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
-            verify { view.openMainView() }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenMainView)
+            }
         }
 
         /**
@@ -63,15 +72,23 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Sign Out - succeeded`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { viewModel.msgSignOutSucceed } returns message
             every { userRepo.signOut() } answers { Completable.complete() }
 
-            logic.onStart(signOut = true)
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.OnStart(signOut = true))
 
             verify { viewModel.emailVerificationSent = false }
             verify { userRepo.signOut() }
-            verify { view.displayMessage(message) }
-            verify { view.signIn(requestCode) }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SignIn(requestCode))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -84,6 +101,8 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Sign Out - failed`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val exception = Exception()
 
             every { viewModel.msgSignOutFailed } returns message
@@ -91,12 +110,17 @@ class AuthLogicTest {
                 userRepo.signOut()
             } answers { Completable.error(exception) }
 
-            logic.onStart(signOut = true)
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.OnStart(signOut = true))
 
             verify { viewModel.emailVerificationSent = false }
             verify { userRepo.signOut() }
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.OpenMainView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -108,9 +132,11 @@ class AuthLogicTest {
             every { userRepo.userVerified } returns false
             every { userRepo.signedOut } returns true
 
-            logic.onStart(signOut = false)
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
-            verify { view.signIn(requestCode) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.SignIn(requestCode))
+            }
         }
 
         /**
@@ -132,11 +158,14 @@ class AuthLogicTest {
             every { viewModel.emailVerificationSent } returns false
             every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
-            logic.onStart(signOut = false)
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
             verify { userRepo.sendVerificationEmail() }
             verify { viewModel.emailVerificationSent = true }
-            verify { view.displayEmailSentMessage(email) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayEmailSentMessage(email))
+            }
         }
 
         /**
@@ -151,6 +180,8 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification not sent, failed sent email`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val email = "email"
             val exception = Exception()
 
@@ -163,11 +194,16 @@ class AuthLogicTest {
             every { viewModel.msgSignInError } returns message
             every { userRepo.sendVerificationEmail() } answers { Completable.error(exception) }
 
-            logic.onStart(signOut = false)
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
             verify { userRepo.sendVerificationEmail() }
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -182,6 +218,9 @@ class AuthLogicTest {
          */
         @Test
         fun `onStart - Email not verified, verification sent, successfully reload user, email verified`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { viewModel.emailVerificationSent } returns true
             every { viewModel.msgSignInSucceed } returns message
             every { userRepo.userVerified } returns false
@@ -191,11 +230,16 @@ class AuthLogicTest {
             every { userRepo.emailVerified } returns false andThen true
             every { userRepo.reloadUser() } answers { Completable.complete() }
 
-            logic.onStart(signOut = false)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.hideEmailSentMessage() }
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
+
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.HideEmailSentMessage)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.OpenMainView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -217,9 +261,12 @@ class AuthLogicTest {
             every { viewModel.msgSignInSucceed } returns message
             every { userRepo.reloadUser() } answers { Completable.complete() }
 
-            logic.onStart(signOut = false)
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
-            verify { view.displayEmailSentMessage(email) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayEmailSentMessage(email))
+            }
         }
 
         /**
@@ -242,9 +289,11 @@ class AuthLogicTest {
             every { viewModel.msgSignInSucceed } returns message
             every { userRepo.reloadUser() } answers { Completable.error(exception) }
 
-            logic.onStart(signOut = false)
+            logic.onEvent(LogicEvents.OnStart(signOut = false))
 
-            verify { view.signIn(requestCode) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.SignIn(requestCode))
+            }
         }
 
         /**
@@ -259,7 +308,7 @@ class AuthLogicTest {
             every { userRepo.emailVerified } returns true
 
             assertThrows<IllegalStateException> {
-                logic.onStart(signOut = false)
+                logic.onEvent(LogicEvents.OnStart(signOut = false))
             }
         }
 
@@ -274,7 +323,7 @@ class AuthLogicTest {
             every { userRepo.hasEmail } returns false
 
             assertThrows<IllegalStateException> {
-                logic.onStart(signOut = false)
+                logic.onEvent(LogicEvents.OnStart(signOut = false))
             }
         }
     }
@@ -298,7 +347,7 @@ class AuthLogicTest {
             every { viewModel.emailVerificationSent } returns false
             every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
-            logic.signInSuccessful()
+            logic.onEvent(LogicEvents.SignInSuccessful)
 
             verify { userRepo.sendVerificationEmail() }
         }
@@ -310,14 +359,22 @@ class AuthLogicTest {
          */
         @Test
         fun `signInSuccessful - User has email and it is verified`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { userRepo.hasEmail } returns true
             every { userRepo.emailVerified } returns true
             every { viewModel.msgSignInSucceed } returns message
 
-            logic.signInSuccessful()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
+            logic.onEvent(LogicEvents.SignInSuccessful)
+
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.OpenMainView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -327,13 +384,21 @@ class AuthLogicTest {
          */
         @Test
         fun `signInSuccessful - User does not have an email`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { userRepo.hasEmail } returns false
             every { viewModel.msgSignInSucceed } returns message
 
-            logic.signInSuccessful()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.displayMessage(message) }
-            verify { view.openMainView() }
+            logic.onEvent(LogicEvents.SignInSuccessful)
+
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.OpenMainView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
 
@@ -343,12 +408,20 @@ class AuthLogicTest {
          */
         @Test
         fun signInCancelled() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { viewModel.msgSignInCanceled } returns message
 
-            logic.signInCancelled()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            logic.onEvent(LogicEvents.SignInCancelled)
+
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -358,14 +431,21 @@ class AuthLogicTest {
          */
         @Test
         fun signInFailed() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val errorCode = 100
 
             every { viewModel.getMsgSignInError(errorCode) } returns message
 
-            logic.signInFailed(errorCode)
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            logic.onEvent(LogicEvents.SignInFailed(errorCode))
+
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
     }
 
@@ -383,9 +463,11 @@ class AuthLogicTest {
         every { viewModel.emailVerificationSent } returns false
         every { userRepo.sendVerificationEmail() } answers { Completable.complete() }
 
-        logic.verifyEmailButtonClicked()
+        logic.onEvent(LogicEvents.VerifyEmailButtonClicked)
 
-        verify { view.hideEmailSentMessage() }
         verify { userRepo.sendVerificationEmail() }
+        logic.observe().observeForTesting {
+            assertThat(logic.observe().value).isEqualTo(ViewEvents.HideEmailSentMessage)
+        }
     }
 }
