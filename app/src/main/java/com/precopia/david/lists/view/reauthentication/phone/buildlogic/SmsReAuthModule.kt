@@ -1,5 +1,7 @@
 package com.precopia.david.lists.view.reauthentication.phone.buildlogic
 
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract
@@ -10,14 +12,20 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class SmsReAuthViewModule {
+class SmsReAuthModule {
     @ViewScope
     @Provides
-    fun logic(view: ISmsReAuthContract.View,
-              viewModel: ISmsReAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository,
-              schedulerProvider: ISchedulerProviderContract): ISmsReAuthContract.Logic {
-        return SmsReAuthLogic(view, viewModel, userRepo, schedulerProvider)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): ISmsReAuthContract.Logic {
+        return ViewModelProvider(view, factory).get(SmsReAuthLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: ISmsReAuthContract.ViewModel,
+                userRepo: IRepositoryContract.UserRepository,
+                schedulerProvider: ISchedulerProviderContract): ViewModelProvider.NewInstanceFactory {
+        return SmsReAuthLogicFactory(viewModel, userRepo, schedulerProvider)
     }
 
     @JvmSuppressWildcards

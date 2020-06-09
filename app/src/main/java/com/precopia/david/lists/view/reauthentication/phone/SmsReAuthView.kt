@@ -8,14 +8,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.navigate
 import com.precopia.david.lists.common.navigateUp
 import com.precopia.david.lists.common.toast
-import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
-import com.precopia.david.lists.view.reauthentication.phone.buildlogic.DaggerSmsReAuthViewComponent
+import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvents
+import com.precopia.david.lists.view.reauthentication.phone.buildlogic.DaggerSmsReAuthComponent
 import kotlinx.android.synthetic.main.sms_reauth_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
@@ -42,7 +44,7 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
     }
 
     private fun inject() {
-        DaggerSmsReAuthViewComponent.builder()
+        DaggerSmsReAuthComponent.builder()
                 .application(application)
                 .view(this)
                 .build()
@@ -52,11 +54,27 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        logic.onEvent(ViewEvent.OnStart(
-                args.phoneNum,
-                args.verificationId,
-                sharedPrefs.getLong(TIME_LEFT_KEY, -1L)
-        ))
+        with(logic) {
+            onEvent(LogicEvents.OnStart(
+                    args.phoneNum,
+                    args.verificationId,
+                    sharedPrefs.getLong(TIME_LEFT_KEY, -1L)
+            ))
+            observe().observe(viewLifecycleOwner, Observer { evalViewEvents(it) })
+        }
+    }
+
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            is ViewEvents.StartTimer -> startTimer(event.durationSeconds)
+            ViewEvents.CancelTimer -> cancelTimer()
+            is ViewEvents.DisplayMessage -> displayMessage(event.message)
+            is ViewEvents.DisplayError -> displayError(event.message)
+            ViewEvents.DisplayLoading -> displayLoading()
+            ViewEvents.HideLoading -> hideLoading()
+            ViewEvents.OpenAuthView -> openAuthView()
+            ViewEvents.FinishView -> finishView()
+        }
     }
 
     private fun initView() {
@@ -83,14 +101,14 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
 
 
     private fun buttonClickListener(enteredText: String) {
-        logic.onEvent(ViewEvent.ConfirmSmsClicked(enteredText))
+        logic.onEvent(LogicEvents.ConfirmSmsClicked(enteredText))
     }
 
 
-    override fun startTimer(durationSeconds: Long) {
+    private fun startTimer(durationSeconds: Long) {
         countDownTimer = object : CountDownTimer(durationSeconds * 1000, 1000) {
             override fun onFinish() {
-                logic.onEvent(ViewEvent.TimerFinished)
+                logic.onEvent(LogicEvents.TimerFinished)
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -103,25 +121,25 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
         }.start()
     }
 
-    override fun cancelTimer() {
+    private fun cancelTimer() {
         countDownTimer.cancel()
     }
 
 
-    override fun displayMessage(message: String) {
+    private fun displayMessage(message: String) {
         toast(message)
     }
 
-    override fun displayError(message: String) {
+    private fun displayError(message: String) {
         displayErrorEditText(message)
     }
 
 
-    override fun displayLoading() {
+    private fun displayLoading() {
         displayProgressBar()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         hideProgressBar()
     }
 
@@ -141,18 +159,18 @@ class SmsReAuthView : Fragment(R.layout.sms_reauth_view), ISmsReAuthContract.Vie
     }
 
 
-    override fun openAuthView() {
+    private fun openAuthView() {
         navigate(SmsReAuthViewDirections.actionSmsCodeViewToAuthView())
     }
 
-    override fun finishView() {
+    private fun finishView() {
         navigateUp()
     }
 
 
     override fun onDestroyView() {
         sharedPrefs.edit { putLong(TIME_LEFT_KEY, timeLeft) }
-        logic.onEvent(ViewEvent.ViewDestroyed)
+        logic.onEvent(LogicEvents.ViewDestroyed)
         super.onDestroyView()
     }
 }

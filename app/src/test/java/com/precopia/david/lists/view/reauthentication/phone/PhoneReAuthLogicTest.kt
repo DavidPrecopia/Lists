@@ -1,9 +1,13 @@
 package com.precopia.david.lists.view.reauthentication.phone
 
+import androidx.lifecycle.Observer
 import com.google.firebase.auth.PhoneAuthProvider
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
+import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
-import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
+import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvents
 import com.precopia.domain.constants.PhoneNumValidationResults.SmsSent
 import com.precopia.domain.constants.PhoneNumValidationResults.Validated
 import com.precopia.domain.exception.AuthInvalidCredentialsException
@@ -11,13 +15,14 @@ import com.precopia.domain.exception.AuthTooManyRequestsException
 import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.*
 import io.reactivex.rxjava3.core.Single
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExtendWith(value = [InstantExecutorExtension::class])
 class PhoneReAuthLogicTest {
-
-    private val view = mockk<IPhoneReAuthContract.View>(relaxUnitFun = true)
 
     private val viewModel = mockk<IPhoneReAuthContract.ViewModel>(relaxUnitFun = true)
 
@@ -26,7 +31,7 @@ class PhoneReAuthLogicTest {
     private val schedulerProvider = mockk<ISchedulerProviderContract>()
 
 
-    private val logic = PhoneReAuthLogic(view, viewModel, userRepo, schedulerProvider)
+    private val logic = PhoneReAuthLogic(viewModel, userRepo, schedulerProvider)
 
 
     private val validPhoneNum = "1235550100"
@@ -46,7 +51,7 @@ class PhoneReAuthLogicTest {
     @Nested
     inner class ConfirmPhoneNumber {
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
@@ -59,21 +64,33 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - sent sms`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { viewModel.phoneNumber } returns validPhoneNum
             every { viewModel.msgSmsSent } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.just(SmsSent(verificationId)) }
+            every {
+                userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
+            } answers {
+                Single.just(SmsSent(verificationId))
+            }
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
-            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
-            verify { view.displayMessage(message) }
-            verify { view.openSmsVerification(validPhoneNum, verificationId) }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.OpenSmsVerification(validPhoneNum, verificationId))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
@@ -88,23 +105,34 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - invalid credentials`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val firebaseException = mockk<AuthInvalidCredentialsException>(relaxed = true)
 
             every { viewModel.msgInvalidNum } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
+            every {
+                userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
+            } answers {
+                Single.error(firebaseException)
+            }
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
-            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { firebaseException.printStackTrace() }
-            verify { view.hideLoading() }
-            verify { view.displayError(message) }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.HideLoading)
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.DisplayError(message))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
@@ -119,23 +147,34 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - too many requests`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val firebaseException = mockk<AuthTooManyRequestsException>(relaxed = true)
 
             every { viewModel.msgTooManyRequest } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(firebaseException) }
+            every {
+                userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
+            } answers {
+                Single.error(firebaseException)
+            }
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
-            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { firebaseException.printStackTrace() }
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be valid.
          * - Save phone number to ViewModel.
@@ -150,23 +189,34 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - failed - general exception`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val exception = mockk<Exception>(relaxed = true)
 
             every { viewModel.msgGenericError } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.error(exception) }
+            every {
+                userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
+            } answers {
+                Single.error(exception)
+            }
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
-            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
             verify { exception.printStackTrace() }
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.DisplayError(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be valid for this test.
          * - Save phone number to ViewModel.
@@ -180,21 +230,33 @@ class PhoneReAuthLogicTest {
          */
         @Test
         fun `onEvent - confirm phone num - valid number - verification completed`() {
-            every { viewModel.msgTryAgainLater } returns message
-            every { userRepo.validatePhoneNumber(phoneNum = validPhoneNum) } answers { Single.just(Validated) }
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(validPhoneNum))
+            every { viewModel.msgTryAgainLater } returns message
+            every {
+                userRepo.validatePhoneNumber(phoneNum = validPhoneNum)
+            } answers {
+                Single.just(Validated)
+            }
+
+            logic.observe().observeForever(liveDataObserver)
+
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(validPhoneNum))
 
             verify { viewModel.phoneNumber = validPhoneNum }
-            verify { view.displayLoading() }
             verify { userRepo.validatePhoneNumber(validPhoneNum) }
-            verify { view.displayMessage(message) }
-            verify { view.finishView() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.DisplayLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.DisplayMessage(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be invalid because it is empty.
          * - Display an error with a message from the ViewModel.
@@ -205,14 +267,17 @@ class PhoneReAuthLogicTest {
 
             every { viewModel.msgInvalidNum } returns message
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(emptyPhoneNum))
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(emptyPhoneNum))
 
-            verify { view.displayError(message) }
             verify { userRepo wasNot Called }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayError(message))
+            }
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be invalid because it contains a letter.
          * - Display an error with a message from the ViewModel.
@@ -223,14 +288,17 @@ class PhoneReAuthLogicTest {
 
             every { viewModel.msgInvalidNum } returns message
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(phoneNumWithLetter))
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(phoneNumWithLetter))
 
-            verify { view.displayError(message) }
             verify { userRepo wasNot Called }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayError(message))
+            }
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be invalid because it too short.
          * - Display an error with a message from the ViewModel.
@@ -241,14 +309,17 @@ class PhoneReAuthLogicTest {
 
             every { viewModel.msgInvalidNum } returns message
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(shortPhoneNum))
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(shortPhoneNum))
 
-            verify { view.displayError(message) }
             verify { userRepo wasNot Called }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayError(message))
+            }
         }
 
         /**
-         * - [ViewEvent.ConfirmPhoneNumClicked]
+         * - [LogicEvents.ConfirmPhoneNumClicked]
          * - Validate the number
          *   - It will be invalid because it too long.
          * - Display an error with a message from the ViewModel.
@@ -259,10 +330,14 @@ class PhoneReAuthLogicTest {
 
             every { viewModel.msgInvalidNum } returns message
 
-            logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(longPhoneNum))
+            logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(longPhoneNum))
 
-            verify { view.displayError(message) }
             verify { userRepo wasNot Called }
+
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.DisplayError(message))
+            }
         }
     }
 }

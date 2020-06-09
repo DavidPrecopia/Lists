@@ -1,15 +1,19 @@
 package com.precopia.david.lists.view.reauthentication.phone
 
 import android.content.Context
+import android.os.Bundle
 import android.text.InputType
+import android.view.View
+import androidx.lifecycle.Observer
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.navigate
 import com.precopia.david.lists.common.navigateUp
 import com.precopia.david.lists.common.toast
 import com.precopia.david.lists.view.reauthentication.common.ReAuthBase
-import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvent
-import com.precopia.david.lists.view.reauthentication.phone.buildlogic.DaggerPhoneReAuthViewComponent
+import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.phone.IPhoneReAuthContract.ViewEvents
+import com.precopia.david.lists.view.reauthentication.phone.buildlogic.DaggerPhoneReAuthComponent
 import javax.inject.Inject
 
 class PhoneReAuthView : ReAuthBase(), IPhoneReAuthContract.View {
@@ -37,44 +41,60 @@ class PhoneReAuthView : ReAuthBase(), IPhoneReAuthContract.View {
     }
 
     private fun inject() {
-        DaggerPhoneReAuthViewComponent.builder()
+        DaggerPhoneReAuthComponent.builder()
                 .application(application)
                 .view(this)
                 .build()
                 .inject(this)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        logic.observe().observe(viewLifecycleOwner, Observer { evalViewEvents(it) })
+    }
+
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            is ViewEvents.DisplayMessage -> displayMessage(event.message)
+            is ViewEvents.DisplayError -> displayError(event.message)
+            ViewEvents.DisplayLoading -> displayLoading()
+            ViewEvents.HideLoading -> hideLoading()
+            is ViewEvents.OpenSmsVerification ->
+                openSmsVerification(event.phoneNum, event.verificationId)
+            ViewEvents.FinishView -> finishView()
+        }
+    }
 
     override fun buttonClickListener(enteredText: String) {
-        logic.onEvent(ViewEvent.ConfirmPhoneNumClicked(enteredText))
+        logic.onEvent(LogicEvents.ConfirmPhoneNumClicked(enteredText))
     }
 
 
-    override fun displayMessage(message: String) {
+    private fun displayMessage(message: String) {
         toast(message)
     }
 
-    override fun displayError(message: String) {
+    private fun displayError(message: String) {
         displayErrorEditText(message)
     }
 
 
-    override fun displayLoading() {
+    private fun displayLoading() {
         displayProgressBar()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         hideProgressBar()
     }
 
 
-    override fun openSmsVerification(phoneNum: String, verificationId: String) {
+    private fun openSmsVerification(phoneNum: String, verificationId: String) {
         navigate(PhoneReAuthViewDirections.actionPhoneReAuthViewToSmsCodeView(
                 phoneNum, verificationId
         ))
     }
 
-    override fun finishView() {
+    private fun finishView() {
         navigateUp()
     }
 }

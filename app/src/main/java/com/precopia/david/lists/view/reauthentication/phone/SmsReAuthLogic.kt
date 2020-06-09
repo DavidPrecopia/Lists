@@ -1,30 +1,37 @@
 package com.precopia.david.lists.view.reauthentication.phone
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.precopia.david.lists.common.onlyDigits
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.common.subscribeSingleValidatePhoneNum
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
-import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvent
+import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.phone.ISmsReAuthContract.ViewEvents
 import com.precopia.domain.constants.PhoneNumValidationResults
 import com.precopia.domain.constants.SMS_TIME_OUT_SECONDS
 import com.precopia.domain.exception.AuthInvalidCredentialsException
 import com.precopia.domain.exception.AuthTooManyRequestsException
 import com.precopia.domain.repository.IRepositoryContract
 
-class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
-                     private val viewModel: ISmsReAuthContract.ViewModel,
+class SmsReAuthLogic(private val viewModel: ISmsReAuthContract.ViewModel,
                      private val userRepo: IRepositoryContract.UserRepository,
                      private val schedulerProvider: ISchedulerProviderContract) :
+        ViewModel(),
         ISmsReAuthContract.Logic {
 
 
-    override fun onEvent(event: ViewEvent) {
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
+
+
+    override fun onEvent(event: LogicEvents) {
         when (event) {
-            is ViewEvent.OnStart -> saveData(event.phoneNum, event.verificationId, event.timeLeft)
-            is ViewEvent.ConfirmSmsClicked -> evalSmsCode(event.sms.trim())
-            ViewEvent.TimerFinished -> reSentSms()
-            ViewEvent.ViewDestroyed -> view.cancelTimer()
+            is LogicEvents.OnStart -> saveData(event.phoneNum, event.verificationId, event.timeLeft)
+            is LogicEvents.ConfirmSmsClicked -> evalSmsCode(event.sms.trim())
+            LogicEvents.TimerFinished -> reSentSms()
+            LogicEvents.ViewDestroyed -> viewEvent(ViewEvents.CancelTimer)
         }
     }
 
@@ -37,9 +44,11 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun evalSmsCode(smsCode: String) {
         when {
-            smsCodeIsInvalid(smsCode) -> view.displayError(viewModel.msgInvalidSms)
+            smsCodeIsInvalid(smsCode) -> viewEvent(
+                    ViewEvents.DisplayError(viewModel.msgInvalidSms)
+            )
             else -> {
-                view.displayLoading()
+                viewEvent(ViewEvents.DisplayLoading)
                 deleteAccount(smsCode)
             }
         }
@@ -59,9 +68,9 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     }
 
     private fun deletionSucceeded() {
-        view.cancelTimer()
-        view.displayMessage(viewModel.msgAccountDeletionSucceed)
-        view.openAuthView()
+        viewEvent(ViewEvents.CancelTimer)
+        viewEvent(ViewEvents.DisplayMessage(viewModel.msgAccountDeletionSucceed))
+        viewEvent(ViewEvents.OpenAuthView)
     }
 
     private fun deletionFailed(e: Throwable) {
@@ -72,16 +81,16 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     private fun evalDeletionFailureException(e: Throwable) {
         when (e) {
             is AuthInvalidCredentialsException -> {
-                view.hideLoading()
-                view.displayError(viewModel.msgInvalidSms)
+                viewEvent(ViewEvents.HideLoading)
+                viewEvent(ViewEvents.DisplayError(viewModel.msgInvalidSms))
             }
             is AuthTooManyRequestsException -> {
-                view.displayMessage(viewModel.msgTooManyRequest)
-                view.finishView()
+                viewEvent(ViewEvents.DisplayMessage(viewModel.msgTooManyRequest))
+                viewEvent(ViewEvents.FinishView)
             }
             else -> {
-                view.displayMessage(viewModel.msgAccountDeletionFailed)
-                view.finishView()
+                viewEvent(ViewEvents.DisplayMessage(viewModel.msgAccountDeletionFailed))
+                viewEvent(ViewEvents.FinishView)
             }
         }
     }
@@ -106,10 +115,10 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
     private fun smsCodeSent(verificationId: String, timeLeft: Long) {
         viewModel.verificationId = verificationId
         if (timeLeft > 0) {
-            view.startTimer(timeLeft)
+            viewEvent(ViewEvents.StartTimer(timeLeft))
         } else {
-            view.displayMessage(viewModel.msgSmsSent)
-            view.startTimer(SMS_TIME_OUT_SECONDS)
+            viewEvent(ViewEvents.DisplayMessage(viewModel.msgSmsSent))
+            viewEvent(ViewEvents.StartTimer(SMS_TIME_OUT_SECONDS))
         }
     }
 
@@ -133,8 +142,15 @@ class SmsReAuthLogic(private val view: ISmsReAuthContract.View,
 
     private fun finish(e: Throwable, message: String) {
         UtilExceptions.throwException(e)
-        view.displayMessage(message)
-        view.cancelTimer()
-        view.finishView()
+        viewEvent(ViewEvents.DisplayMessage(message))
+        viewEvent(ViewEvents.CancelTimer)
+        viewEvent(ViewEvents.FinishView)
     }
+
+
+    private fun viewEvent(event: ViewEvents) {
+        viewEventLiveData.value = event
+    }
+
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
 }

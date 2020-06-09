@@ -1,22 +1,14 @@
 package com.precopia.david.lists.view.reauthentication.phone
 
+import androidx.lifecycle.LiveData
+
 interface IPhoneReAuthContract {
-    interface View {
-        fun displayMessage(message: String)
-
-        fun displayError(message: String)
-
-        fun displayLoading()
-
-        fun hideLoading()
-
-        fun openSmsVerification(phoneNum: String, verificationId: String)
-
-        fun finishView()
-    }
+    interface View
 
     interface Logic {
-        fun onEvent(event: ViewEvent)
+        fun onEvent(event: LogicEvents)
+
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -33,7 +25,17 @@ interface IPhoneReAuthContract {
         val msgTooManyRequest: String
     }
 
-    sealed class ViewEvent {
-        data class ConfirmPhoneNumClicked(val phoneNum: String) : ViewEvent()
+
+    sealed class ViewEvents {
+        data class DisplayMessage(val message: String) : ViewEvents()
+        data class DisplayError(val message: String) : ViewEvents()
+        object DisplayLoading : ViewEvents()
+        object HideLoading : ViewEvents()
+        data class OpenSmsVerification(val phoneNum: String, val verificationId: String) : ViewEvents()
+        object FinishView : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        data class ConfirmPhoneNumClicked(val phoneNum: String) : LogicEvents()
     }
 }

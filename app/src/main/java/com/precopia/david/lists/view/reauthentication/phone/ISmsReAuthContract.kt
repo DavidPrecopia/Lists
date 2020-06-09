@@ -1,26 +1,14 @@
 package com.precopia.david.lists.view.reauthentication.phone
 
+import androidx.lifecycle.LiveData
+
 interface ISmsReAuthContract {
-    interface View {
-        fun startTimer(durationSeconds: Long)
-
-        fun cancelTimer()
-
-        fun displayMessage(message: String)
-
-        fun displayError(message: String)
-
-        fun displayLoading()
-
-        fun hideLoading()
-
-        fun openAuthView()
-
-        fun finishView()
-    }
+    interface View
 
     interface Logic {
-        fun onEvent(event: ViewEvent)
+        fun onEvent(event: LogicEvents)
+
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -43,10 +31,22 @@ interface ISmsReAuthContract {
         val msgAccountDeletionFailed: String
     }
 
-    sealed class ViewEvent {
-        data class OnStart(val phoneNum: String, val verificationId: String, val timeLeft: Long) : ViewEvent()
-        data class ConfirmSmsClicked(val sms: String) : ViewEvent()
-        object ViewDestroyed : ViewEvent()
-        object TimerFinished : ViewEvent()
+
+    sealed class ViewEvents {
+        data class StartTimer(val durationSeconds: Long) : ViewEvents()
+        object CancelTimer : ViewEvents()
+        data class DisplayMessage(val message: String) : ViewEvents()
+        data class DisplayError(val message: String) : ViewEvents()
+        object DisplayLoading : ViewEvents()
+        object HideLoading : ViewEvents()
+        object OpenAuthView : ViewEvents()
+        object FinishView : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        data class OnStart(val phoneNum: String, val verificationId: String, val timeLeft: Long) : LogicEvents()
+        data class ConfirmSmsClicked(val sms: String) : LogicEvents()
+        object ViewDestroyed : LogicEvents()
+        object TimerFinished : LogicEvents()
     }
 }
