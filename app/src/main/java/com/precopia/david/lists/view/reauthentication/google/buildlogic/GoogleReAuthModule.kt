@@ -1,5 +1,7 @@
 package com.precopia.david.lists.view.reauthentication.google.buildlogic
 
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.view.reauthentication.google.GoogleReAuthLogic
@@ -13,11 +15,17 @@ import dagger.Provides
 class GoogleReAuthModule {
     @ViewScope
     @Provides
-    fun logic(view: IGoogleReAuthContract.View,
-              viewModel: IGoogleReAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository,
-              schedulerProvider: ISchedulerProviderContract): IGoogleReAuthContract.Logic {
-        return GoogleReAuthLogic(view, viewModel, userRepo, schedulerProvider)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): IGoogleReAuthContract.Logic {
+        return ViewModelProvider(view, factory).get(GoogleReAuthLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IGoogleReAuthContract.ViewModel,
+                userRepo: IRepositoryContract.UserRepository,
+                schedulerProvider: ISchedulerProviderContract): ViewModelProvider.NewInstanceFactory {
+        return GoogleReAuthLogicFactory(viewModel, userRepo, schedulerProvider)
     }
 
     @JvmSuppressWildcards

@@ -1,10 +1,10 @@
 package com.precopia.david.lists.view.reauthentication.google.buildlogic
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import com.precopia.david.lists.common.buildlogic.ViewCommonModule
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.view.reauthentication.google.GoogleReAuthView
-import com.precopia.david.lists.view.reauthentication.google.IGoogleReAuthContract
 import dagger.BindsInstance
 import dagger.Component
 
@@ -24,6 +24,6 @@ interface GoogleReAuthComponent {
         fun application(application: Application): Builder
 
         @BindsInstance
-        fun view(view: IGoogleReAuthContract.View): Builder
+        fun view(view: Fragment): Builder
     }
 }

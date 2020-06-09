@@ -1,16 +1,14 @@
 package com.precopia.david.lists.view.reauthentication.google
 
+import androidx.lifecycle.LiveData
+
 interface IGoogleReAuthContract {
-    interface View {
-        fun openAuthView()
-
-        fun finishView()
-
-        fun displayMessage(message: String)
-    }
+    interface View
 
     interface Logic {
-        fun onEvent(event: ViewEvent)
+        fun onEvent(event: LogicEvents)
+
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -19,7 +17,14 @@ interface IGoogleReAuthContract {
         val msgAccountDeletionFailed: String
     }
 
-    sealed class ViewEvent {
-        object OnStart : ViewEvent()
+
+    sealed class ViewEvents {
+        object OpenAuthView : ViewEvents()
+        object FinishView : ViewEvents()
+        data class DisplayMessage(val message: String) : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        object OnStart : LogicEvents()
     }
 }

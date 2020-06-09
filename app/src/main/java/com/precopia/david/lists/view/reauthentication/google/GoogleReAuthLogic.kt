@@ -1,20 +1,27 @@
 package com.precopia.david.lists.view.reauthentication.google
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
-import com.precopia.david.lists.view.reauthentication.google.IGoogleReAuthContract.ViewEvent
+import com.precopia.david.lists.view.reauthentication.google.IGoogleReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.google.IGoogleReAuthContract.ViewEvents
 import com.precopia.domain.repository.IRepositoryContract
 
-class GoogleReAuthLogic(private val view: IGoogleReAuthContract.View,
-                        private val viewModel: IGoogleReAuthContract.ViewModel,
+class GoogleReAuthLogic(private val viewModel: IGoogleReAuthContract.ViewModel,
                         private val userRepo: IRepositoryContract.UserRepository,
                         private val schedulerProvider: ISchedulerProviderContract) :
+        ViewModel(),
         IGoogleReAuthContract.Logic {
 
-    override fun onEvent(event: ViewEvent) {
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
+
+
+    override fun onEvent(event: LogicEvents) {
         when (event) {
-            ViewEvent.OnStart -> deleteAccount()
+            LogicEvents.OnStart -> deleteAccount()
         }
     }
 
@@ -29,13 +36,20 @@ class GoogleReAuthLogic(private val view: IGoogleReAuthContract.View,
     }
 
     private fun accountDeletionSucceeded() {
-        view.displayMessage(viewModel.msgAccountDeletionSucceed)
-        view.openAuthView()
+        viewEvent(ViewEvents.DisplayMessage(viewModel.msgAccountDeletionSucceed))
+        viewEvent(ViewEvents.OpenAuthView)
     }
 
     private fun accountDeletionFailed(e: Throwable) {
         UtilExceptions.throwException(e)
-        view.displayMessage(viewModel.msgAccountDeletionFailed)
-        view.finishView()
+        viewEvent(ViewEvents.DisplayMessage(viewModel.msgAccountDeletionFailed))
+        viewEvent(ViewEvents.FinishView)
     }
+
+
+    private fun viewEvent(event: ViewEvents) {
+        viewEventLiveData.value = event
+    }
+
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
 }
