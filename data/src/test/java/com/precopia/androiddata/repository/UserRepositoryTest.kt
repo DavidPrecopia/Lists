@@ -4,6 +4,7 @@ import android.app.Application
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.*
 import com.precopia.domain.constants.AuthProviders
+import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
