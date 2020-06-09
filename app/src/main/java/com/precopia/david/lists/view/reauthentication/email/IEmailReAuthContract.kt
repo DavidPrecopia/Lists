@@ -1,22 +1,14 @@
 package com.precopia.david.lists.view.reauthentication.email
 
+import androidx.lifecycle.LiveData
+
 interface IEmailReAuthContract {
-    interface View {
-        fun openAuthView()
-
-        fun finishView()
-
-        fun displayMessage(message: String)
-
-        fun displayError(message: String)
-
-        fun displayLoading()
-
-        fun hideLoading()
-    }
+    interface View
 
     interface Logic {
-        fun onEvent(event: ViewEvent)
+        fun onEvent(event: LogicEvents)
+
+        fun observe(): LiveData<ViewEvents>
     }
 
     interface ViewModel {
@@ -29,7 +21,17 @@ interface IEmailReAuthContract {
         val msgAccountDeletionFailed: String
     }
 
-    sealed class ViewEvent {
-        data class DeleteAcctClicked(val password: String) : ViewEvent()
+
+    sealed class ViewEvents {
+        object OpenAuthView : ViewEvents()
+        data class DisplayMessage(val message: String) : ViewEvents()
+        data class DisplayError(val message: String) : ViewEvents()
+        object DisplayLoading : ViewEvents()
+        object HideLoading : ViewEvents()
+        object FinishView : ViewEvents()
+    }
+
+    sealed class LogicEvents {
+        data class DeleteAcctClicked(val password: String) : LogicEvents()
     }
 }

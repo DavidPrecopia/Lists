@@ -1,5 +1,7 @@
 package com.precopia.david.lists.view.reauthentication.email.buildlogic
 
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.view.reauthentication.email.EmailReAuthLogic
@@ -13,11 +15,17 @@ import dagger.Provides
 class EmailReAuthModule {
     @ViewScope
     @Provides
-    fun logic(view: IEmailReAuthContract.View,
-              viewModel: IEmailReAuthContract.ViewModel,
-              userRepo: IRepositoryContract.UserRepository,
-              schedulerProvider: ISchedulerProviderContract): IEmailReAuthContract.Logic {
-        return EmailReAuthLogic(view, viewModel, userRepo, schedulerProvider)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): IEmailReAuthContract.Logic {
+        return ViewModelProvider(view, factory).get(EmailReAuthLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IEmailReAuthContract.ViewModel,
+                userRepo: IRepositoryContract.UserRepository,
+                schedulerProvider: ISchedulerProviderContract): ViewModelProvider.NewInstanceFactory {
+        return EmailReAuthLogicFactory(viewModel, userRepo, schedulerProvider)
     }
 
     @JvmSuppressWildcards

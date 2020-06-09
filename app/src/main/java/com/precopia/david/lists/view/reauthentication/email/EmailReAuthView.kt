@@ -1,14 +1,18 @@
 package com.precopia.david.lists.view.reauthentication.email
 
 import android.content.Context
+import android.os.Bundle
 import android.text.InputType
+import android.view.View
+import androidx.lifecycle.Observer
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.navigate
 import com.precopia.david.lists.common.navigateUp
 import com.precopia.david.lists.common.toast
 import com.precopia.david.lists.view.reauthentication.common.ReAuthBase
-import com.precopia.david.lists.view.reauthentication.email.IEmailReAuthContract.ViewEvent
+import com.precopia.david.lists.view.reauthentication.email.IEmailReAuthContract.LogicEvents
+import com.precopia.david.lists.view.reauthentication.email.IEmailReAuthContract.ViewEvents
 import com.precopia.david.lists.view.reauthentication.email.buildlogic.DaggerEmailReAuthComponent
 import javax.inject.Inject
 
@@ -44,35 +48,51 @@ class EmailReAuthView : ReAuthBase(), IEmailReAuthContract.View {
                 .inject(this)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        logic.observe().observe(viewLifecycleOwner, Observer { evalViewEvents(it) })
+    }
 
-    override fun buttonClickListener(enteredText: String) {
-        logic.onEvent(ViewEvent.DeleteAcctClicked(enteredText))
+    private fun evalViewEvents(event: ViewEvents) {
+        when (event) {
+            ViewEvents.OpenAuthView -> openAuthView()
+            is ViewEvents.DisplayMessage -> displayMessage(event.message)
+            is ViewEvents.DisplayError -> displayError(event.message)
+            ViewEvents.DisplayLoading -> displayLoading()
+            ViewEvents.HideLoading -> hideLoading()
+            ViewEvents.FinishView -> finishView()
+        }
     }
 
 
-    override fun openAuthView() {
+    override fun buttonClickListener(enteredText: String) {
+        logic.onEvent(LogicEvents.DeleteAcctClicked(enteredText))
+    }
+
+
+    private fun openAuthView() {
         navigate(EmailReAuthViewDirections.actionEmailReAuthViewToAuthView())
     }
 
-    override fun finishView() {
+    private fun finishView() {
         navigateUp()
     }
 
 
-    override fun displayMessage(message: String) {
+    private fun displayMessage(message: String) {
         toast(message)
     }
 
-    override fun displayError(message: String) {
+    private fun displayError(message: String) {
         displayErrorEditText(message)
     }
 
 
-    override fun displayLoading() {
+    private fun displayLoading() {
         displayProgressBar()
     }
 
-    override fun hideLoading() {
+    private fun hideLoading() {
         hideProgressBar()
     }
 }
