@@ -49,9 +49,8 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
 
     private fun onStart() {
         when {
-            viewModel.viewData.isEmpty() -> viewEventLiveData.value =
-                    ViewEvents.SetStateLoading
-            else -> viewEventLiveData.value = ViewEvents.SetViewData(viewModel.viewData)
+            viewModel.viewData.isEmpty() -> viewEvent(ViewEvents.SetStateLoading)
+            else -> viewEvent(ViewEvents.SetViewData(viewModel.viewData))
         }
         getAllUserLists()
     }
@@ -74,15 +73,16 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
     private fun evalNewData() {
         viewEventLiveData.value = ViewEvents.SetViewData(viewModel.viewData)
         when {
-            viewModel.viewData.isEmpty() -> viewEventLiveData.value =
+            viewModel.viewData.isEmpty() -> viewEvent(
                     ViewEvents.SetStateError(viewModel.errorMsgEmptyList)
-            else -> viewEventLiveData.value = ViewEvents.SetStateDisplayList
+            )
+            else -> viewEvent(ViewEvents.SetStateDisplayList)
         }
     }
 
     private fun onObservableError(t: Throwable) {
         UtilExceptions.throwException(t)
-        viewEventLiveData.value = ViewEvents.SetStateError(viewModel.errorMsg)
+        viewEvent(ViewEvents.SetStateError(viewModel.errorMsg))
     }
 
 
@@ -90,18 +90,16 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
         if (position < 0) {
             return
         }
-        viewEventLiveData.value = ViewEvents.OpenUserList(viewModel.viewData[position])
+        viewEvent(ViewEvents.OpenUserList(viewModel.viewData[position]))
     }
 
 
     private fun add() {
-        viewEventLiveData.value =
-                ViewEvents.OpenAddDialog(viewModel.viewData.size)
+        viewEvent(ViewEvents.OpenAddDialog(viewModel.viewData.size))
     }
 
     private fun edit(position: Int) {
-        viewEventLiveData.value =
-                ViewEvents.OpenEditDialog(viewModel.viewData[position])
+        viewEvent(ViewEvents.OpenEditDialog(viewModel.viewData[position]))
     }
 
 
@@ -124,7 +122,7 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
     private fun delete(position: Int, adapter: IUserListViewContract.Adapter) {
         adapter.remove(position)
         saveDeletedUserList(position)
-        viewEventLiveData.value = ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion)
+        viewEvent(ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion))
     }
 
     private fun saveDeletedUserList(position: Int) {
@@ -180,12 +178,12 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
     private fun deletionError(t: Throwable) {
         UtilExceptions.throwException(t)
         viewModel.tempList.clear()
-        viewEventLiveData.value = ViewEvents.ShowMessage(viewModel.errorMsg)
+        viewEvent(ViewEvents.ShowMessage(viewModel.errorMsg))
     }
 
 
     private fun preferencesSelected() {
-        viewEventLiveData.value = ViewEvents.OpenPreferences
+        viewEvent(ViewEvents.OpenPreferences)
     }
 
 
@@ -196,6 +194,10 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
         }
     }
 
+
+    private fun viewEvent(event: ViewEvents) {
+        viewEventLiveData.value = event
+    }
 
     override fun observe(): LiveData<ViewEvents> = viewEventLiveData
 
