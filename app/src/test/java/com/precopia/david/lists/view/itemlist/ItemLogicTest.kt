@@ -1,7 +1,12 @@
 package com.precopia.david.lists.view.itemlist
 
+import androidx.lifecycle.Observer
+import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
+import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
+import com.precopia.david.lists.view.itemlist.IItemViewContract.LogicEvents
+import com.precopia.david.lists.view.itemlist.IItemViewContract.ViewEvents
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.datamodel.UserList
 import com.precopia.domain.repository.IRepositoryContract
@@ -14,12 +19,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
-class ItemListLogicTest {
-
-    private val view = mockk<IItemViewContract.View>(relaxUnitFun = true)
+@ExtendWith(value = [InstantExecutorExtension::class])
+class ItemLogicTest {
 
     private val viewModel = mockk<IItemViewContract.ViewModel>(relaxUnitFun = true)
 
@@ -30,7 +35,7 @@ class ItemListLogicTest {
     private val disposable = spyk<CompositeDisposable>()
 
 
-    private val logic = ItemListLogic(view, viewModel, repo, schedulerProvider, disposable)
+    private val logic = ItemLogic(viewModel, repo, schedulerProvider, disposable)
 
 
     private val adapter = mockk<IItemViewContract.Adapter>(relaxUnitFun = true)
@@ -70,16 +75,24 @@ class ItemListLogicTest {
          */
         @Test
         fun `onStart - ViewModel has View Data`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val itemList = mutableListOf(itemOne)
 
             every { repo.getItems(userListId) } returns Flowable.just(itemList)
             every { viewModel.viewData } returns itemList
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify(exactly = 2) { view.setViewData(itemList) }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { viewModel.viewData = itemList }
-            verify { view.setStateDisplayList() }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateDisplayList)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -92,16 +105,24 @@ class ItemListLogicTest {
          */
         @Test
         fun `onStart - Empty List from repo`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
+
             every { repo.getItems(userListId) } returns Flowable.just(emptyList)
             every { viewModel.viewData } returns emptyList
             every { viewModel.errorMsgEmptyList } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { viewModel.viewData = emptyList }
-            verify { view.setViewData(emptyList) }
-            verify { view.setStateError(message) }
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetViewData(emptyList))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateError(message))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -113,17 +134,24 @@ class ItemListLogicTest {
          */
         @Test
         fun `onStart - Repo throws an error`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val throwable = mockk<Throwable>(relaxed = true)
 
             every { viewModel.viewData } returns emptyList
             every { repo.getItems(userListId) } returns Flowable.error(throwable)
             every { viewModel.errorMsg } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.setStateLoading() }
+            logic.onEvent(LogicEvents.OnStart)
+
             verify { throwable.printStackTrace() }
-            verify { view.setStateError(message) }
+            assertThat(listLiveDataOutput.size).isEqualTo(2)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetStateLoading)
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetStateError(message))
+
+            logic.observe().removeObserver(liveDataObserver)
         }
     }
 
@@ -137,6 +165,8 @@ class ItemListLogicTest {
          */
         @Test
         fun `observeDeletedUserLists - UserListId matches`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val userListList = listOf(UserList(title, position, userListId))
             val itemList = mutableListOf(itemOne)
 
@@ -145,10 +175,18 @@ class ItemListLogicTest {
             every { repo.userListDeletedObservable } returns Flowable.just(userListList)
             every { viewModel.getMsgListDeleted(title) } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify { view.showMessage(message) }
-            verify { view.finishView() }
+            logic.onEvent(LogicEvents.OnStart)
+
+            assertThat(listLiveDataOutput.size).isEqualTo(5)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.ShowMessage(message))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.FinishView)
+            assertThat(listLiveDataOutput[3]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[4]).isEqualTo(ViewEvents.SetStateDisplayList)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
 
         /**
@@ -158,6 +196,8 @@ class ItemListLogicTest {
          */
         @Test
         fun `observeDeletedUserLists - UserListId does not match`() {
+            val listLiveDataOutput = mutableListOf<ViewEvents>()
+            val liveDataObserver = Observer<ViewEvents> { listLiveDataOutput.add(it) }
             val userListIdShouldNotMatch = ""
             val userListList = listOf(UserList(title, position, userListIdShouldNotMatch))
             val itemList = mutableListOf(itemOne)
@@ -167,10 +207,16 @@ class ItemListLogicTest {
             every { repo.userListDeletedObservable } returns Flowable.just(userListList)
             every { viewModel.getMsgListDeleted(title) } returns message
 
-            logic.onStart()
+            logic.observe().observeForever(liveDataObserver)
 
-            verify(exactly = 0) { view.showMessage(message) }
-            verify(exactly = 0) { view.finishView() }
+            logic.onEvent(LogicEvents.OnStart)
+
+            assertThat(listLiveDataOutput.size).isEqualTo(3)
+            assertThat(listLiveDataOutput[0]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[1]).isEqualTo(ViewEvents.SetViewData(itemList))
+            assertThat(listLiveDataOutput[2]).isEqualTo(ViewEvents.SetStateDisplayList)
+
+            logic.observe().removeObserver(liveDataObserver)
         }
     }
 
@@ -178,7 +224,7 @@ class ItemListLogicTest {
     @Nested
     inner class Add {
         /**
-         * - [IItemViewContract.View.openAddDialog] is invoked with the current size.
+         * - [IItemViewContract.ViewEvents.OpenAddDialog] is invoked with the current size.
          * of List containing the view data.
          */
         @Test
@@ -188,9 +234,11 @@ class ItemListLogicTest {
 
             every { viewModel.viewData } returns itemList
 
-            logic.add()
+            logic.onEvent(LogicEvents.Add)
 
-            verify { view.openAddDialog(userListId, size) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenAddDialog(userListId, size))
+            }
         }
     }
 
@@ -199,7 +247,7 @@ class ItemListLogicTest {
     inner class Edit {
         /**
          * - Get the Item at the passed-in position.
-         * - Pass that Item to [IItemViewContract.View.openEditDialog].
+         * - Pass that Item to [IItemViewContract.ViewEvents.OpenEditDialog].
          */
         @Test
         fun edit() {
@@ -208,9 +256,11 @@ class ItemListLogicTest {
 
             every { viewModel.viewData } returns itemList
 
-            logic.edit(position)
+            logic.onEvent(LogicEvents.Edit(position))
 
-            verify { view.openEditDialog(itemOne) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenEditDialog(itemOne))
+            }
         }
 
         /**
@@ -225,7 +275,7 @@ class ItemListLogicTest {
             every { viewModel.viewData } returns itemList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.edit(invalidPosition)
+                logic.onEvent(LogicEvents.Edit(invalidPosition))
             }
         }
     }
@@ -245,7 +295,7 @@ class ItemListLogicTest {
 
             every { viewModel.viewData } returns itemList
 
-            logic.dragging(fromPosition, toPosition, adapter)
+            logic.onEvent(LogicEvents.Dragging(fromPosition, toPosition, adapter))
 
             verify { adapter.move(fromPosition, toPosition) }
             // Assert that the ViewData was updated.
@@ -264,7 +314,7 @@ class ItemListLogicTest {
             every { viewModel.viewData } returns itemList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.dragging(fromPosition, toPosition, adapter)
+                logic.onEvent(LogicEvents.Dragging(fromPosition, toPosition, adapter))
             }
         }
     }
@@ -289,7 +339,7 @@ class ItemListLogicTest {
                 Completable.complete()
             }
 
-            logic.movedPermanently(newPosition)
+            logic.onEvent(LogicEvents.MovedPermanently(newPosition))
 
             verify { repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition) }
         }
@@ -315,11 +365,13 @@ class ItemListLogicTest {
                 Completable.error(throwable)
             }
 
-            logic.movedPermanently(newPosition)
+            logic.onEvent(LogicEvents.MovedPermanently(newPosition))
 
             verify { repo.updateItemPosition(itemOne.id, itemOne.userListId, itemOne.position, newPosition) }
             verify { throwable.printStackTrace() }
-            verify { view.showMessage(message) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.ShowMessage(message))
+            }
         }
 
         /**
@@ -334,7 +386,7 @@ class ItemListLogicTest {
             every { viewModel.viewData } returns itemList
 
             assertThrows<IndexOutOfBoundsException> {
-                logic.movedPermanently(invalidPosition)
+                logic.onEvent(LogicEvents.MovedPermanently(invalidPosition))
             }
         }
     }
@@ -360,13 +412,16 @@ class ItemListLogicTest {
             every { viewModel.tempList } returns tempItemLists
             every { viewModel.msgDeletion } returns message
 
-            logic.delete(position, adapter)
+            logic.onEvent(LogicEvents.Delete(position, adapter))
 
             verify { adapter.remove(position) }
             assertThat(tempItemLists).containsExactly(itemOne)
             verify { viewModel.tempPosition = position }
             assertThat(itemList.isEmpty()).isTrue()
-            verify { view.notifyUserOfDeletion(message) }
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.NotifyUserOfDeletion(message))
+            }
         }
 
         /**
@@ -383,7 +438,7 @@ class ItemListLogicTest {
             every { viewModel.tempList } returns tempItemLists
 
             assertThrows<java.lang.IndexOutOfBoundsException> {
-                logic.delete(invalidPosition, adapter)
+                logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
             }
         }
     }
@@ -411,7 +466,7 @@ class ItemListLogicTest {
             every { viewModel.tempPosition } returns tempPosition
             every { repo.deleteItems(tempItemList) } answers { Completable.complete() }
 
-            logic.undoRecentDeletion(adapter)
+            logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
 
             verify { adapter.reAdd(tempPosition, itemTwo) }
             assertThat(itemList).containsExactly(itemTwo)
@@ -443,14 +498,16 @@ class ItemListLogicTest {
             every { viewModel.tempPosition } returns tempPosition
             every { repo.deleteItems(tempItemList) } answers { Completable.error(throwable) }
 
-            logic.undoRecentDeletion(adapter)
+            logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
 
             verify { adapter.reAdd(tempPosition, itemTwo) }
             assertThat(itemList).containsExactly(itemTwo)
             verify { repo.deleteItems(tempItemList) }
             verify { throwable.printStackTrace() }
-            verify { view.showMessage(message) }
             assertThat(tempItemList.isEmpty()).isTrue()
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.ShowMessage(message))
+            }
         }
 
         /**
@@ -463,7 +520,7 @@ class ItemListLogicTest {
             every { viewModel.errorMsgInvalidUndo } returns message
 
             assertThrows<UnsupportedOperationException> {
-                logic.undoRecentDeletion(adapter)
+                logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
             }
         }
 
@@ -481,7 +538,7 @@ class ItemListLogicTest {
             every { viewModel.errorMsgInvalidUndo } returns message
 
             assertThrows<UnsupportedOperationException> {
-                logic.undoRecentDeletion(adapter)
+                logic.onEvent(LogicEvents.UndoRecentDeletion(adapter))
             }
         }
     }
@@ -503,7 +560,7 @@ class ItemListLogicTest {
             every { viewModel.tempList } returns itemList
             every { repo.deleteItems(itemList) } answers { Completable.complete() }
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo.deleteItems(itemList) }
             assertThat(itemList.isEmpty()).isTrue()
@@ -527,12 +584,14 @@ class ItemListLogicTest {
             every { viewModel.tempList } returns itemList
             every { repo.deleteItems(itemList) } answers { Completable.error(throwable) }
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo.deleteItems(itemList) }
             verify { throwable.printStackTrace() }
-            verify { view.showMessage(message) }
             assertThat(itemList.isEmpty()).isTrue()
+            logic.observe().observeForTesting {
+                assertThat(logic.observe().value).isEqualTo(ViewEvents.ShowMessage(message))
+            }
         }
 
         /**
@@ -543,20 +602,9 @@ class ItemListLogicTest {
         fun `deletionNotificationTimedOut - Empty Temp List`() {
             every { viewModel.tempList } returns emptyList
 
-            logic.deletionNotificationTimedOut()
+            logic.onEvent(LogicEvents.DeletionNotificationTimedOut)
 
             verify { repo wasNot Called }
         }
-    }
-
-
-    /**
-     * - Verify that [CompositeDisposable.clear] is invoked.
-     */
-    @Test
-    fun onDestroy() {
-        logic.onDestroy()
-
-        verify { disposable.clear() }
     }
 }

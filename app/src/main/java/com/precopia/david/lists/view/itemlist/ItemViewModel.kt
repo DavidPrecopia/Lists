@@ -4,9 +4,9 @@ import com.precopia.david.lists.R
 import com.precopia.domain.datamodel.Item
 import java.util.*
 
-class ItemListViewModel(private val getStringRes: (Int) -> String,
-                        private val getStringResArg: (Int, String) -> String,
-                        override val userListId: String) :
+class ItemViewModel(private val getStringRes: (Int) -> String,
+                    private val getStringResArg: (Int, String) -> String,
+                    override val userListId: String) :
         IItemViewContract.ViewModel {
 
     override var viewData: MutableList<Item> = ArrayList()

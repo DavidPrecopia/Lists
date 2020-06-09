@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.precopia.david.lists.R
 import com.precopia.david.lists.view.common.ListItemViewHolderBase
+import com.precopia.david.lists.view.itemlist.IItemViewContract.LogicEvents
 import com.precopia.domain.datamodel.Item
 
 class ItemAdapter(private val logic: IItemViewContract.Logic,
@@ -51,15 +52,15 @@ class ItemAdapter(private val logic: IItemViewContract.Logic,
                                itemTouchHelper: ItemTouchHelper) :
             ListItemViewHolderBase(view, viewBinderHelper, itemTouchHelper) {
         override fun swipedLeft(adapterPosition: Int) {
-            logic.delete(adapterPosition, this@ItemAdapter)
+            logic.onEvent(LogicEvents.Delete(adapterPosition, this@ItemAdapter))
         }
 
         override fun edit(adapterPosition: Int) {
-            logic.edit(adapterPosition)
+            logic.onEvent(LogicEvents.Edit(adapterPosition))
         }
 
         override fun delete(adapterPosition: Int) {
-            logic.delete(adapterPosition, this@ItemAdapter)
+            logic.onEvent(LogicEvents.Delete(adapterPosition, this@ItemAdapter))
         }
     }
 }

@@ -1,31 +1,31 @@
 package com.precopia.david.lists.view.itemlist.buldlogic
 
 import android.app.Application
+import androidx.fragment.app.Fragment
 import com.precopia.david.lists.common.buildlogic.ViewCommonModule
 import com.precopia.david.lists.common.buildlogic.ViewScope
 import com.precopia.david.lists.view.common.TouchHelperCallback
-import com.precopia.david.lists.view.itemlist.IItemViewContract
-import com.precopia.david.lists.view.itemlist.ItemListView
+import com.precopia.david.lists.view.itemlist.ItemView
 import dagger.BindsInstance
 import dagger.Component
 
 @ViewScope
 @Component(modules = [
-    ItemListViewModule::class,
+    ItemModule::class,
     ViewCommonModule::class
 ])
-interface ItemListViewComponent {
-    fun inject(view: ItemListView)
+interface ItemComponent {
+    fun inject(view: ItemView)
 
     @Component.Builder
     interface Builder {
-        fun build(): ItemListViewComponent
+        fun build(): ItemComponent
 
         @BindsInstance
         fun application(application: Application): Builder
 
         @BindsInstance
-        fun view(view: IItemViewContract.View): Builder
+        fun view(view: Fragment): Builder
 
         @BindsInstance
         fun movementCallback(movementCallback: TouchHelperCallback.MovementCallback): Builder

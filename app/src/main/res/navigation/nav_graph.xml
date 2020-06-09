@@ -131,7 +131,7 @@
     -->
     <fragment
         android:id="@+id/itemListView"
-        android:name="com.precopia.david.lists.view.itemlist.ItemListView"
+        android:name="com.precopia.david.lists.view.itemlist.ItemView"
         android:label="ItemListView"
         tools:layout="@layout/list_view_base">
         <argument

@@ -1,28 +1,50 @@
 package com.precopia.david.lists.view.itemlist
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.common.subscribeFlowableItem
 import com.precopia.david.lists.common.subscribeFlowableUserList
 import com.precopia.david.lists.util.ISchedulerProviderContract
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewLogicBase
+import com.precopia.david.lists.view.itemlist.IItemViewContract.LogicEvents
+import com.precopia.david.lists.view.itemlist.IItemViewContract.ViewEvents
 import com.precopia.domain.datamodel.Item
 import com.precopia.domain.repository.IRepositoryContract
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
-class ItemListLogic(private val view: IItemViewContract.View,
-                    private val viewModel: IItemViewContract.ViewModel,
-                    repo: IRepositoryContract.Repository,
-                    schedulerProvider: ISchedulerProviderContract,
-                    disposable: CompositeDisposable) :
+class ItemLogic(private val viewModel: IItemViewContract.ViewModel,
+                repo: IRepositoryContract.Repository,
+                schedulerProvider: ISchedulerProviderContract,
+                disposable: CompositeDisposable) :
         ListViewLogicBase(repo, schedulerProvider, disposable),
         IItemViewContract.Logic {
 
-    override fun onStart() {
+
+    private val viewEventLiveData = MutableLiveData<ViewEvents>()
+
+
+    override fun onEvent(even: LogicEvents) {
+        when (even) {
+            LogicEvents.OnStart -> onStart()
+            LogicEvents.Add -> add()
+            is LogicEvents.Edit -> edit(even.position)
+            is LogicEvents.Dragging ->
+                dragging(even.fromPosition, even.toPosition, even.adapter)
+            is LogicEvents.MovedPermanently -> movedPermanently(even.newPosition)
+            is LogicEvents.Delete -> delete(even.position, even.adapter)
+            is LogicEvents.UndoRecentDeletion -> undoRecentDeletion(even.adapter)
+            LogicEvents.DeletionNotificationTimedOut -> deletionNotificationTimedOut()
+        }
+    }
+
+
+    private fun onStart() {
         when {
-            viewModel.viewData.isEmpty() -> view.setStateLoading()
-            else -> view.setViewData(viewModel.viewData)
+            viewModel.viewData.isEmpty() -> viewEvent(ViewEvents.SetStateLoading)
+            else -> viewEvent(ViewEvents.SetViewData(viewModel.viewData))
         }
         observeDeletedUserLists()
         getItems()
@@ -35,8 +57,8 @@ class ItemListLogic(private val view: IItemViewContract.View,
                 {
                     for ((title, _, id) in it) {
                         if (id == viewModel.userListId) {
-                            view.showMessage(viewModel.getMsgListDeleted(title))
-                            view.finishView()
+                            viewEvent(ViewEvents.ShowMessage(viewModel.getMsgListDeleted(title)))
+                            viewEvent(ViewEvents.FinishView)
                         }
                     }
                 },
@@ -60,40 +82,44 @@ class ItemListLogic(private val view: IItemViewContract.View,
     }
 
     private fun evalNewData() {
-        view.setViewData(viewModel.viewData)
+        viewEvent(ViewEvents.SetViewData(viewModel.viewData))
         when {
-            viewModel.viewData.isEmpty() -> view.setStateError(viewModel.errorMsgEmptyList)
-            else -> view.setStateDisplayList()
+            viewModel.viewData.isEmpty() -> viewEvent(
+                    ViewEvents.SetStateError(viewModel.errorMsgEmptyList)
+            )
+            else -> viewEvent(ViewEvents.SetStateDisplayList)
         }
     }
 
     private fun onObservableError(t: Throwable) {
         UtilExceptions.throwException(t)
-        view.setStateError(viewModel.errorMsg)
+        viewEvent(ViewEvents.SetStateError(viewModel.errorMsg))
     }
 
 
-    override fun add() {
-        view.openAddDialog(viewModel.userListId, viewModel.viewData.size)
+    private fun add() {
+        viewEvent(ViewEvents.OpenAddDialog(
+                viewModel.userListId, viewModel.viewData.size
+        ))
     }
 
-    override fun edit(position: Int) {
-        view.openEditDialog(viewModel.viewData[position])
+    private fun edit(position: Int) {
+        viewEvent(ViewEvents.OpenEditDialog(viewModel.viewData[position]))
     }
 
 
-    override fun dragging(fromPosition: Int, toPosition: Int, adapter: IItemViewContract.Adapter) {
+    private fun dragging(fromPosition: Int, toPosition: Int, adapter: IItemViewContract.Adapter) {
         Collections.swap(viewModel.viewData, fromPosition, toPosition)
         adapter.move(fromPosition, toPosition)
     }
 
-    override fun movedPermanently(newPosition: Int) {
+    private fun movedPermanently(newPosition: Int) {
         val item = viewModel.viewData[newPosition]
         disposable.add(subscribeCompletable(
                 repo.updateItemPosition(item.id, item.userListId, item.position, newPosition),
                 {},
                 {
-                    view.showMessage(viewModel.errorMsg)
+                    viewEvent(ViewEvents.ShowMessage(viewModel.errorMsg))
                     UtilExceptions.throwException(it)
                 },
                 schedulerProvider
@@ -101,10 +127,10 @@ class ItemListLogic(private val view: IItemViewContract.View,
     }
 
 
-    override fun delete(position: Int, adapter: IItemViewContract.Adapter) {
+    private fun delete(position: Int, adapter: IItemViewContract.Adapter) {
         adapter.remove(position)
         saveDeletedItem(position)
-        view.notifyUserOfDeletion(viewModel.msgDeletion)
+        viewEvent(ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion))
     }
 
     private fun saveDeletedItem(position: Int) {
@@ -114,7 +140,7 @@ class ItemListLogic(private val view: IItemViewContract.View,
     }
 
 
-    override fun undoRecentDeletion(adapter: IItemViewContract.Adapter) {
+    private fun undoRecentDeletion(adapter: IItemViewContract.Adapter) {
         if (viewModel.tempList.isEmpty() || viewModel.tempPosition < 0) {
             UtilExceptions.throwException(UnsupportedOperationException(
                     viewModel.errorMsgInvalidUndo
@@ -145,7 +171,7 @@ class ItemListLogic(private val view: IItemViewContract.View,
         )
     }
 
-    override fun deletionNotificationTimedOut() {
+    private fun deletionNotificationTimedOut() {
         if (viewModel.tempList.isEmpty()) {
             return
         }
@@ -160,11 +186,19 @@ class ItemListLogic(private val view: IItemViewContract.View,
     private fun deletionError(t: Throwable) {
         UtilExceptions.throwException(t)
         viewModel.tempList.clear()
-        view.showMessage(viewModel.errorMsg)
+        viewEvent(ViewEvents.ShowMessage(viewModel.errorMsg))
     }
 
 
-    override fun onDestroy() {
+    private fun viewEvent(event: ViewEvents) {
+        viewEventLiveData.value = event
+    }
+
+    override fun observe(): LiveData<ViewEvents> = viewEventLiveData
+
+
+    override fun onCleared() {
         disposable.clear()
+        super.onCleared()
     }
 }
