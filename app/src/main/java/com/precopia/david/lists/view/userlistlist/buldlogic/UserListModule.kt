@@ -1,5 +1,7 @@
 package com.precopia.david.lists.view.userlistlist.buldlogic
 
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.precopia.david.lists.common.buildlogic.ViewScope
@@ -18,12 +20,19 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 internal class UserListModule {
     @ViewScope
     @Provides
-    fun logic(viewModel: IUserListViewContract.ViewModel,
-              utilNightMode: IUtilNightModeContract,
-              repo: IRepositoryContract.Repository,
-              schedulerProvider: ISchedulerProviderContract,
-              disposable: CompositeDisposable): IUserListViewContract.Logic {
-        return UserListLogic(viewModel, utilNightMode, repo, schedulerProvider, disposable)
+    fun logic(view: Fragment,
+              factory: ViewModelProvider.NewInstanceFactory): IUserListViewContract.Logic {
+        return ViewModelProvider(view, factory).get(UserListLogic::class.java)
+    }
+
+    @ViewScope
+    @Provides
+    fun factory(viewModel: IUserListViewContract.ViewModel,
+                utilNightMode: IUtilNightModeContract,
+                repo: IRepositoryContract.Repository,
+                schedulerProvider: ISchedulerProviderContract,
+                disposable: CompositeDisposable): ViewModelProvider.NewInstanceFactory {
+        return UserListLogicFactory(viewModel, utilNightMode, repo, schedulerProvider, disposable)
     }
 
     @JvmSuppressWildcards
