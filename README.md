@@ -14,8 +14,8 @@ An APK is [available](https://github.com/DavidPrecopia/Lists/releases/download/v
   - Users can authenticate via their Google account, a phone number (verification via SMS), or email and password (with email verification).
   - User can delete their account from within the app. A user's data will be automatically deleted when they do so.
 - MVP-like architecture with dependency injection via Dagger2.
-  - View: Fragments set-up as Passive Views. I use a single Activity architecture with Jetpack's [Navigation library](https://developer.android.com/guide/navigation).
-  - Logic: Similar to a presenter.
+  - View: Fragments set-up as Passive Views. I use a single Activity architecture with Jetpacks' [Navigation library](https://developer.android.com/guide/navigation).
+  - Logic: Similar to a presenter. Extends Jetpacks' [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) to store and restore data to the View in a lifecycle conscious way.
   - ViewModel: A cache for the View. Additionally, it retrieves user-facing messages, which requires holding a reference to the Android framework.
   - Repository: It hides the implementation details from the front-end. There are separate repositories for data storage and the user management.
 - Multi-module
