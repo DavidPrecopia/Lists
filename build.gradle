@@ -26,7 +26,7 @@ buildscript {
         firebaseAuthVersion = "19.3.1"
         firebaseAuthUiVersion = "6.2.1"
         playServicesAuthVersion = "18.0.0"
-        crashlyticsVersion = "17.0.1"
+        crashlyticsVersion = "17.1.0"
         daggerVersion = '2.26'
         rxAndroidVersion = "3.0.0"
         rxJavaVersion = '3.0.4'
@@ -50,7 +50,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
         classpath 'com.google.gms:google-services:4.3.3'
-        classpath "com.google.firebase:firebase-crashlytics-gradle:2.1.1"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:2.2.0"
     }
 }
 
