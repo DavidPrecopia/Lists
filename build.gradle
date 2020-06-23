@@ -31,7 +31,7 @@ buildscript {
         rxAndroidVersion = "3.0.0"
         rxJavaVersion = '3.0.4'
         timberVersion = "4.7.1"
-        leakCanaryVersion = "2.3"
+        leakCanaryVersion = "2.4"
         junitVersion = "5.6.2"
         mockkVersion = "1.9.3"
         assertjVersion = "3.13.2"
