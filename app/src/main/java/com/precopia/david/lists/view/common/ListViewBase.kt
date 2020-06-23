@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback.*
 import com.precopia.david.lists.R
@@ -67,9 +66,7 @@ abstract class ListViewBase : Fragment(R.layout.list_view_base),
             layoutManager = layoutManger.get()
             addItemDecoration(dividerItemDecorator)
             itemTouchHelper.attachToRecyclerView(this)
-            adapter = this@ListViewBase.getAdapter().apply {
-                stateRestorationPolicy = PREVENT_WHEN_EMPTY
-            }
+            adapter = this@ListViewBase.getAdapter()
         }
     }
 

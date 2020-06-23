@@ -69,7 +69,7 @@ class UserListAdapter(private val logic: IUserListViewContract.Logic,
         }
 
         override fun onClick(v: View) {
-            logic.onEvent(LogicEvents.UserListSelected(bindingAdapterPosition))
+            logic.onEvent(LogicEvents.UserListSelected(adapterPosition))
         }
     }
 }
