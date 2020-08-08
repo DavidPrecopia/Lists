@@ -6,5 +6,5 @@
 /build
 /captures
 .externalNativeBuild
-lists_keystore.jks
+/app/lists_keystore.jks
 keystore.properties
