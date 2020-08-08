@@ -43,6 +43,7 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://firebase.bintray.com/gradle' }
+        maven { url 'https://dl.bintray.com/aurae/maven' }
         maven { url 'https://jetbrains.bintray.com/trove4j' }
     }
     dependencies {
@@ -51,6 +52,7 @@ buildscript {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"
         classpath 'com.google.gms:google-services:4.3.3'
         classpath "com.google.firebase:firebase-crashlytics-gradle:2.2.0"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0"
     }
 }
 
