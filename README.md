@@ -38,6 +38,7 @@ An APK is [available](https://github.com/DavidPrecopia/Lists/releases/download/v
 - Unit testing with JUnit 5, AssertJ, and MockK.
 - Originally written in Java, completely converted to Kotlin.
   - When the app was written in Java, JUnit 4 and Mockito was used for unit testing.
+- CI with GitHub Actions.
 
 
 **Features**
