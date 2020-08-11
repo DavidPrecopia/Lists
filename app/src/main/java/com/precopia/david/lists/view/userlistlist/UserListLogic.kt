@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.precopia.david.lists.common.subscribeCompletable
 import com.precopia.david.lists.common.subscribeFlowableUserList
 import com.precopia.david.lists.util.ISchedulerProviderContract
-import com.precopia.david.lists.util.IUtilNightModeContract
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.common.ListViewLogicBase
 import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
@@ -16,7 +15,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.util.*
 
 class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
-                    private val utilNightMode: IUtilNightModeContract,
                     repo: IRepositoryContract.Repository,
                     schedulerProvider: ISchedulerProviderContract,
                     disposable: CompositeDisposable) :
@@ -24,9 +22,6 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
         IUserListViewContract.Logic {
 
     private val viewEventLiveData = MutableLiveData<ViewEvents>()
-
-    override val isNightModeEnabled: Boolean
-        get() = utilNightMode.nightModeEnabled
 
 
     override fun onEvent(event: LogicEvents) {
@@ -43,7 +38,6 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
             is LogicEvents.UndoRecentDeletion -> undoRecentDeletion(event.adapter)
             LogicEvents.DeletionNotificationTimedOut -> deletionNotificationTimedOut()
             LogicEvents.PreferencesSelected -> preferencesSelected()
-            is LogicEvents.SetNightMode -> setNightMode(event.isMenuItemChecked)
         }
     }
 
@@ -184,14 +178,6 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
 
     private fun preferencesSelected() {
         viewEvent(ViewEvents.OpenPreferences)
-    }
-
-
-    private fun setNightMode(isMenuItemChecked: Boolean) {
-        when {
-            isMenuItemChecked -> utilNightMode.setDay()
-            else -> utilNightMode.setNight()
-        }
     }
 
 

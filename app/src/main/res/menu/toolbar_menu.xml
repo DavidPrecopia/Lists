@@ -5,10 +5,4 @@
         android:id="@+id/menu_id_preferences"
         android:title="@string/menu_item_preferences"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_id_night_mode"
-        android:checkable="true"
-        android:title="@string/menu_item_title_night_mode"
-        app:showAsAction="never" />
 </menu>
