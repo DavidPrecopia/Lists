@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation project(":domain")
+    api project(":domain")
 
     api "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.kotlinVersion"
 
