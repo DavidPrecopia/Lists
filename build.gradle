@@ -25,7 +25,7 @@ buildscript {
         firestoreVersion = "21.5.0"
         firebaseAuthVersion = "19.3.2"
         firebaseAuthUiVersion = "6.3.0"
-        playServicesAuthVersion = "18.0.0"
+        playServicesAuthVersion = "18.1.0"
         crashlyticsVersion = "17.1.0"
         daggerVersion = '2.26'
         rxAndroidVersion = "3.0.0"
