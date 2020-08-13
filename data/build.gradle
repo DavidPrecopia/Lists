@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: "de.mannodermaus.android-junit5"
 
 android {
@@ -34,9 +33,9 @@ android {
 }
 
 dependencies {
-    implementation project(":domain")
+    api project(":domain")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.kotlinVersion"
 
     // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
@@ -52,7 +51,6 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
 
     // RxJava
-    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
 
     // Timber
