@@ -1,9 +1,13 @@
 package com.precopia.david.lists.util
 
 interface IUtilNightModeContract {
-    val nightModeEnabled: Boolean
+    fun isNightModeEnabled(): Boolean
 
     fun setDay()
 
     fun setNight()
+
+    fun setFollowSystem()
+
+    fun restore()
 }

@@ -58,10 +58,6 @@ internal abstract class ListsApplicationBase : Application() {
     }
 
     private fun setNightMode() {
-        val utilNightMode = appComponent.utilNightMode()
-        when {
-            utilNightMode.nightModeEnabled -> utilNightMode.setNight()
-            else -> utilNightMode.setDay()
-        }
+        appComponent.utilNightMode().restore()
     }
 }

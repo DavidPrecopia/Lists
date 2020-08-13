@@ -1,5 +1,6 @@
 package com.precopia.david.lists.util
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.precopia.david.lists.common.ListsApplication
@@ -16,16 +17,30 @@ class UtilNightModeTest {
     @Test
     fun setDayTest() {
         utilNightMode.setDay()
-        assertNightModeEnabled(false)
+        assertModeEnabled(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     @Test
     fun setNightTest() {
         utilNightMode.setNight()
-        assertNightModeEnabled(true)
+        assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
-    private fun assertNightModeEnabled(expectation: Boolean) {
-        assertThat(utilNightMode.nightModeEnabled).isEqualTo(expectation)
+    @Test
+    fun setFollowSystemTest() {
+        utilNightMode.setFollowSystem()
+        assertModeEnabled(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+
+    @Test
+    fun restoreTest() {
+        utilNightMode.setNight()
+        utilNightMode.restore()
+        assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+
+    private fun assertModeEnabled(expectation: Int) {
+        assertThat(AppCompatDelegate.getDefaultNightMode()).isEqualTo(expectation)
     }
 }

@@ -17,6 +17,7 @@ class UtilNightModeModule {
                       sharedPrefs: SharedPreferences): IUtilNightModeContract {
         return UtilNightMode(
                 sharedPrefs,
+                application,
                 application.getString(R.string.night_mode_shared_pref_key)
         )
     }
