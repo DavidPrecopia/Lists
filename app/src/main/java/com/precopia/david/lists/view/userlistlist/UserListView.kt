@@ -110,9 +110,7 @@ class UserListView : ListViewBase(),
 
     private fun openPreferences() {
         findNavController().navigate(
-                // TODO Fix once old preference view is deleted.
-//                UserListViewDirections.actionUserListListViewToPreferencesView()
-                UserListViewDirections.actionUserListListViewToPreferencesViewFrag()
+                UserListViewDirections.actionUserListListViewToPreferencesView()
         )
     }
 

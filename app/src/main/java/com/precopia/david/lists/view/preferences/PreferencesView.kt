@@ -5,10 +5,11 @@ import android.os.Bundle
 import android.os.Parcel
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.toast
@@ -16,11 +17,10 @@ import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicE
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.david.lists.view.preferences.buildlogic.DaggerPreferencesComponent
 import com.precopia.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog
-import kotlinx.android.synthetic.main.preferences_view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
-class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewContract.View {
+class PreferencesView : PreferenceFragmentCompat(), IPreferencesViewContract.View {
 
     @Inject
     lateinit var logic: IPreferencesViewContract.Logic
@@ -37,6 +37,10 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
                 .view(this)
                 .build()
                 .inject(this)
+    }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.preferences_view, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +61,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
     }
 
     private fun init() {
-        initToolbar()
+//        initToolbar()
         initClickListeners()
     }
 
@@ -71,8 +75,19 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
     }
 
     private fun initClickListeners() {
-        sign_out.setOnClickListener { logic.onEvent(LogicEvents.SignOutClicked) }
-        delete_account.setOnClickListener { logic.onEvent(LogicEvents.DeleteAccountClicked) }
+        setPreferenceListener(R.string.prefs_key_sign_out) {
+            logic.onEvent(LogicEvents.SignOutClicked)
+        }
+        setPreferenceListener(R.string.prefs_key_delete_account) {
+            logic.onEvent(LogicEvents.DeleteAccountClicked)
+        }
+    }
+
+    private fun setPreferenceListener(key: Int, function: () -> Unit) {
+        findPreference<Preference>(getString(key))?.setOnPreferenceClickListener {
+            function.invoke()
+            true
+        }
     }
 
 

@@ -106,13 +106,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_userListListView_to_preferencesViewFrag"
-            app:destination="@id/preferencesViewFrag"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
@@ -176,12 +169,10 @@
     </dialog>
 
 
-    <!--TODO Remove once old preference view is deleted.-->
     <fragment
         android:id="@+id/preferencesView"
         android:name="com.precopia.david.lists.view.preferences.PreferencesView"
-        android:label="PreferencesView"
-        tools:layout="@layout/preferences_view">
+        android:label="PreferencesView">
         <action
             android:id="@+id/action_preferencesView_to_confirmSignOutDialog"
             app:destination="@id/confirmSignOutDialog"
@@ -218,11 +209,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-
-    <fragment
-        android:id="@+id/preferencesViewFrag"
-        android:name="com.precopia.david.lists.view.preferences.PreferencesViewFrag"
-        android:label="PreferencesViewFrag" />
 
     <dialog
         android:id="@+id/confirmSignOutDialog"
