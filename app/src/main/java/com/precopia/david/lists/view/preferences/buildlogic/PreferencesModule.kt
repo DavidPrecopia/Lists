@@ -3,6 +3,7 @@ package com.precopia.david.lists.view.preferences.buildlogic
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
+import com.precopia.david.lists.util.IUtilNightModeContract
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract
 import com.precopia.david.lists.view.preferences.PreferencesLogic
 import com.precopia.david.lists.view.preferences.PreferencesViewModel
@@ -22,8 +23,9 @@ class PreferencesModule {
     @ViewScope
     @Provides
     fun factory(viewModel: IPreferencesViewContract.ViewModel,
+                utilNightMode: IUtilNightModeContract,
                 userRepo: IRepositoryContract.UserRepository): ViewModelProvider.NewInstanceFactory {
-        return PreferencesLogicFactory(viewModel, userRepo)
+        return PreferencesLogicFactory(viewModel, utilNightMode, userRepo)
     }
 
     @JvmSuppressWildcards

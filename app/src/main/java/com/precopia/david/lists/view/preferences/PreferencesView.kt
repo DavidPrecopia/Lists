@@ -8,11 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.toast
+import com.precopia.david.lists.util.IUtilNightModeContract.ThemeLabels
+import com.precopia.david.lists.util.IUtilNightModeContract.ThemeValues
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.david.lists.view.preferences.buildlogic.DaggerPreferencesComponent
@@ -62,7 +65,8 @@ class PreferencesView : PreferenceFragmentCompat(), IPreferencesViewContract.Vie
 
     private fun init() {
 //        initToolbar()
-        initClickListeners()
+        initTheme()
+        initAccountClickListeners()
     }
 
     private fun initToolbar() {
@@ -74,7 +78,33 @@ class PreferencesView : PreferenceFragmentCompat(), IPreferencesViewContract.Vie
         }
     }
 
-    private fun initClickListeners() {
+    private fun initTheme() {
+        val themeRef = findPreference<ListPreference>(getString(R.string.prefs_key_theme))!!
+        initThemeEntries(themeRef)
+        initThemeClickListener(themeRef)
+    }
+
+    private fun initThemeEntries(themeRef: ListPreference) {
+        themeRef.entries = arrayOf(
+                ThemeLabels.DAY.label,
+                ThemeLabels.DARK.label,
+                ThemeLabels.FOLLOW_SYSTEM.label
+        )
+        themeRef.entryValues = arrayOf(
+                ThemeValues.DAY.value,
+                ThemeValues.DARK.value,
+                ThemeValues.FOLLOW_SYSTEM.value
+        )
+    }
+
+    private fun initThemeClickListener(themeRef: ListPreference) {
+        themeRef.setOnPreferenceChangeListener { _, value ->
+            logic.onEvent(LogicEvents.ThemeChanged(value.toString()))
+            true
+        }
+    }
+
+    private fun initAccountClickListeners() {
         setPreferenceListener(R.string.prefs_key_sign_out) {
             logic.onEvent(LogicEvents.SignOutClicked)
         }

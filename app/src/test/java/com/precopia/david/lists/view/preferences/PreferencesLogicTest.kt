@@ -2,6 +2,7 @@ package com.precopia.david.lists.view.preferences
 
 import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.observeForTesting
+import com.precopia.david.lists.util.IUtilNightModeContract
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.domain.constants.AuthProviders
@@ -9,6 +10,7 @@ import com.precopia.domain.repository.IRepositoryContract
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -23,8 +25,10 @@ class PreferencesLogicTest {
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>()
 
+    private val utilNightMode = mockk<IUtilNightModeContract>(relaxUnitFun = true)
 
-    private val logic = PreferencesLogic(viewModel, userRepo)
+
+    private val logic = PreferencesLogic(viewModel, utilNightMode, userRepo)
 
 
     private val message = "message"
@@ -36,29 +40,79 @@ class PreferencesLogicTest {
     }
 
 
-    /**
-     * Via the View, confirm the user wants to sign-out.
-     */
-    @Test
-    fun `onEvent - SignOut`() {
-        logic.onEvent(LogicEvents.SignOutClicked)
+    @Nested
+    inner class ThemeChanged {
+        /**
+         * - Pass [IUtilNightModeContract.ThemeValues.DAY].
+         * - Invoke [IUtilNightModeContract.setDay]
+         */
+        @Test
+        fun `onEvent - ThemeChanged - day`() {
+            logic.onEvent(
+                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.DAY.value)
+            )
 
-        logic.observe().observeForTesting {
-            Assertions.assertThat(logic.observe().value)
-                    .isEqualTo(ViewEvents.ConfirmSignOut)
+            verify(exactly = 1) { utilNightMode.setDay() }
+        }
+
+        /**
+         * - Pass [IUtilNightModeContract.ThemeValues.DARK].
+         * - Invoke [IUtilNightModeContract.setNight]
+         */
+        @Test
+        fun `onEvent - ThemeChanged - dark`() {
+            logic.onEvent(
+                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.DARK.value)
+            )
+
+            verify(exactly = 1) { utilNightMode.setNight() }
+        }
+
+        /**
+         * - Pass [IUtilNightModeContract.ThemeValues.FOLLOW_SYSTEM].
+         * - Invoke [IUtilNightModeContract.setFollowSystem]
+         */
+        @Test
+        fun `onEvent - ThemeChanged - system`() {
+            logic.onEvent(
+                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.FOLLOW_SYSTEM.value)
+            )
+
+            verify(exactly = 1) { utilNightMode.setFollowSystem() }
         }
     }
 
-    /**
-     * Via the View, confirm the user wants to delete their account.
-     */
-    @Test
-    fun `onEvent - Delete Account`() {
-        logic.onEvent(LogicEvents.DeleteAccountClicked)
 
-        logic.observe().observeForTesting {
-            Assertions.assertThat(logic.observe().value)
-                    .isEqualTo(ViewEvents.ConfirmAccountDeletion)
+    @Nested
+    inner class SignOut {
+        /**
+         * Via the View, confirm the user wants to sign-out.
+         */
+        @Test
+        fun `onEvent - SignOut`() {
+            logic.onEvent(LogicEvents.SignOutClicked)
+
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.ConfirmSignOut)
+            }
+        }
+    }
+
+
+    @Nested
+    inner class DeleteAccount {
+        /**
+         * Via the View, confirm the user wants to delete their account.
+         */
+        @Test
+        fun `onEvent - Delete Account`() {
+            logic.onEvent(LogicEvents.DeleteAccountClicked)
+
+            logic.observe().observeForTesting {
+                Assertions.assertThat(logic.observe().value)
+                        .isEqualTo(ViewEvents.ConfirmAccountDeletion)
+            }
         }
     }
 

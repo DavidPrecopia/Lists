@@ -6,11 +6,9 @@
         android:key="@string/prefs_category_key_general"
         android:title="@string/prefs_category_title_general">
         <ListPreference
-            app:entries="@array/night_mode_labels"
-            app:entryValues="@array/night_mode_values"
-            app:icon="@drawable/ic_night_mode_24dp"
-            app:key="@string/prefs_key_night_mode"
-            app:title="@string/prefs_title_night_mode"
+            app:icon="@drawable/ic_theme_24dp"
+            app:key="@string/prefs_key_theme"
+            app:title="@string/prefs_title_theme"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

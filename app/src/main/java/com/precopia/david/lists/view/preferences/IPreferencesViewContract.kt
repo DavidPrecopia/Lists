@@ -26,9 +26,9 @@ interface IPreferencesViewContract {
     }
 
     sealed class LogicEvents {
+        data class ThemeChanged(val value: String) : LogicEvents()
         object SignOutClicked : LogicEvents()
         object DeleteAccountClicked : LogicEvents()
         object DeleteAccountConfirmed : LogicEvents()
-
     }
 }
