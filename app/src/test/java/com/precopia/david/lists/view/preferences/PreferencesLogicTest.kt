@@ -57,7 +57,7 @@ class PreferencesLogicTest {
 
         /**
          * - Pass [IUtilThemeContract.ThemeValues.DARK].
-         * - Invoke [IUtilThemeContract.setNight]
+         * - Invoke [IUtilThemeContract.setDark]
          */
         @Test
         fun `onEvent - ThemeChanged - dark`() {
@@ -65,7 +65,7 @@ class PreferencesLogicTest {
                     LogicEvents.ThemeChanged(IUtilThemeContract.ThemeValues.DARK.value)
             )
 
-            verify(exactly = 1) { utilNightMode.setNight() }
+            verify(exactly = 1) { utilNightMode.setDark() }
         }
 
         /**

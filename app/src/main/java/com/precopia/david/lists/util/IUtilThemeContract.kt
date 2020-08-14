@@ -5,7 +5,7 @@ interface IUtilThemeContract {
 
     fun setDay()
 
-    fun setNight()
+    fun setDark()
 
     fun setFollowSystem()
 

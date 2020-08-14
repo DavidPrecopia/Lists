@@ -22,7 +22,7 @@ class UtilNightModeTest {
 
     @Test
     fun setNightTest() {
-        utilNightMode.setNight()
+        utilNightMode.setDark()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
@@ -34,7 +34,7 @@ class UtilNightModeTest {
 
     @Test
     fun restoreTest() {
-        utilNightMode.setNight()
+        utilNightMode.setDark()
         utilNightMode.restore()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
     }

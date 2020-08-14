@@ -35,7 +35,7 @@ class PreferencesLogic(private val viewModel: IPreferencesViewContract.ViewModel
     private fun themeChanged(value: String) {
         when (value) {
             ThemeValues.DAY.value -> utilTheme.setDay()
-            ThemeValues.DARK.value -> utilTheme.setNight()
+            ThemeValues.DARK.value -> utilTheme.setDark()
             ThemeValues.FOLLOW_SYSTEM.value -> utilTheme.setFollowSystem()
         }
     }

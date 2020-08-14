@@ -24,7 +24,7 @@ class UtilTheme(private val sharedPrefs: SharedPreferences,
         setMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
-    override fun setNight() {
+    override fun setDark() {
         setMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
