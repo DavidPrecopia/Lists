@@ -1,6 +1,6 @@
 package com.precopia.david.lists.util
 
-interface IUtilNightModeContract {
+interface IUtilThemeContract {
     fun isNightModeEnabled(): Boolean
 
     fun setDay()

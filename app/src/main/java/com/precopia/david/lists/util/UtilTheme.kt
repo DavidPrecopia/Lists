@@ -6,9 +6,9 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
-class UtilNightMode(private val sharedPrefs: SharedPreferences,
-                    private val application: Application,
-                    private val key: String) : IUtilNightModeContract {
+class UtilTheme(private val sharedPrefs: SharedPreferences,
+                private val application: Application,
+                private val key: String) : IUtilThemeContract {
 
 
     override fun isNightModeEnabled(): Boolean = when (getMode()) {

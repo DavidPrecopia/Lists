@@ -2,7 +2,7 @@ package com.precopia.david.lists.view.preferences
 
 import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.observeForTesting
-import com.precopia.david.lists.util.IUtilNightModeContract
+import com.precopia.david.lists.util.IUtilThemeContract
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.domain.constants.AuthProviders
@@ -25,7 +25,7 @@ class PreferencesLogicTest {
 
     private val userRepo = mockk<IRepositoryContract.UserRepository>()
 
-    private val utilNightMode = mockk<IUtilNightModeContract>(relaxUnitFun = true)
+    private val utilNightMode = mockk<IUtilThemeContract>(relaxUnitFun = true)
 
 
     private val logic = PreferencesLogic(viewModel, utilNightMode, userRepo)
@@ -43,39 +43,39 @@ class PreferencesLogicTest {
     @Nested
     inner class ThemeChanged {
         /**
-         * - Pass [IUtilNightModeContract.ThemeValues.DAY].
-         * - Invoke [IUtilNightModeContract.setDay]
+         * - Pass [IUtilThemeContract.ThemeValues.DAY].
+         * - Invoke [IUtilThemeContract.setDay]
          */
         @Test
         fun `onEvent - ThemeChanged - day`() {
             logic.onEvent(
-                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.DAY.value)
+                    LogicEvents.ThemeChanged(IUtilThemeContract.ThemeValues.DAY.value)
             )
 
             verify(exactly = 1) { utilNightMode.setDay() }
         }
 
         /**
-         * - Pass [IUtilNightModeContract.ThemeValues.DARK].
-         * - Invoke [IUtilNightModeContract.setNight]
+         * - Pass [IUtilThemeContract.ThemeValues.DARK].
+         * - Invoke [IUtilThemeContract.setNight]
          */
         @Test
         fun `onEvent - ThemeChanged - dark`() {
             logic.onEvent(
-                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.DARK.value)
+                    LogicEvents.ThemeChanged(IUtilThemeContract.ThemeValues.DARK.value)
             )
 
             verify(exactly = 1) { utilNightMode.setNight() }
         }
 
         /**
-         * - Pass [IUtilNightModeContract.ThemeValues.FOLLOW_SYSTEM].
-         * - Invoke [IUtilNightModeContract.setFollowSystem]
+         * - Pass [IUtilThemeContract.ThemeValues.FOLLOW_SYSTEM].
+         * - Invoke [IUtilThemeContract.setFollowSystem]
          */
         @Test
         fun `onEvent - ThemeChanged - system`() {
             logic.onEvent(
-                    LogicEvents.ThemeChanged(IUtilNightModeContract.ThemeValues.FOLLOW_SYSTEM.value)
+                    LogicEvents.ThemeChanged(IUtilThemeContract.ThemeValues.FOLLOW_SYSTEM.value)
             )
 
             verify(exactly = 1) { utilNightMode.setFollowSystem() }

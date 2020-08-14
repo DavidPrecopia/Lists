@@ -14,8 +14,8 @@ import androidx.preference.PreferenceFragmentCompat
 import com.precopia.david.lists.R
 import com.precopia.david.lists.common.application
 import com.precopia.david.lists.common.toast
-import com.precopia.david.lists.util.IUtilNightModeContract.ThemeLabels
-import com.precopia.david.lists.util.IUtilNightModeContract.ThemeValues
+import com.precopia.david.lists.util.IUtilThemeContract.ThemeLabels
+import com.precopia.david.lists.util.IUtilThemeContract.ThemeValues
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
 import com.precopia.david.lists.view.preferences.buildlogic.DaggerPreferencesComponent

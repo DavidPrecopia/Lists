@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.precopia.david.lists.common.ListsApplication
 import com.precopia.david.lists.util.ISchedulerProviderContract
-import com.precopia.david.lists.util.IUtilNightModeContract
+import com.precopia.david.lists.util.IUtilThemeContract
 import com.precopia.david.lists.util.SchedulerProvider
 import com.precopia.david.lists.view.common.TouchHelperCallback
 import com.precopia.domain.repository.IRepositoryContract
@@ -30,7 +30,7 @@ class ViewCommonModule {
     }
 
     @Provides
-    fun utilNightMode(appComponent: AppComponent): IUtilNightModeContract {
+    fun utilNightMode(appComponent: AppComponent): IUtilThemeContract {
         return appComponent.utilNightMode()
     }
 

@@ -3,8 +3,8 @@ package com.precopia.david.lists.view.preferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.precopia.david.lists.util.IUtilNightModeContract
-import com.precopia.david.lists.util.IUtilNightModeContract.ThemeValues
+import com.precopia.david.lists.util.IUtilThemeContract
+import com.precopia.david.lists.util.IUtilThemeContract.ThemeValues
 import com.precopia.david.lists.util.UtilExceptions
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.LogicEvents
 import com.precopia.david.lists.view.preferences.IPreferencesViewContract.ViewEvents
@@ -12,7 +12,7 @@ import com.precopia.domain.constants.AuthProviders
 import com.precopia.domain.repository.IRepositoryContract
 
 class PreferencesLogic(private val viewModel: IPreferencesViewContract.ViewModel,
-                       private val utilNightMode: IUtilNightModeContract,
+                       private val utilTheme: IUtilThemeContract,
                        private val userRepo: IRepositoryContract.UserRepository) :
         ViewModel(),
         IPreferencesViewContract.Logic {
@@ -34,9 +34,9 @@ class PreferencesLogic(private val viewModel: IPreferencesViewContract.ViewModel
 
     private fun themeChanged(value: String) {
         when (value) {
-            ThemeValues.DAY.value -> utilNightMode.setDay()
-            ThemeValues.DARK.value -> utilNightMode.setNight()
-            ThemeValues.FOLLOW_SYSTEM.value -> utilNightMode.setFollowSystem()
+            ThemeValues.DAY.value -> utilTheme.setDay()
+            ThemeValues.DARK.value -> utilTheme.setNight()
+            ThemeValues.FOLLOW_SYSTEM.value -> utilTheme.setFollowSystem()
         }
     }
 
