@@ -64,7 +64,7 @@ class PreferencesView : Fragment(R.layout.preferences_view), IPreferencesViewCon
     private fun initToolbar() {
         with(toolbar) {
             (activity as AppCompatActivity).setSupportActionBar(this)
-            title = context.getString(R.string.preferences_title)
+            title = context.getString(R.string.prefs_title)
             setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
             setNavigationOnClickListener { findNavController().navigateUp() }
         }
