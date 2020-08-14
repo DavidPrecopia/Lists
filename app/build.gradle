@@ -81,7 +81,6 @@ dependencies {
     implementation project(':data')
 
     implementation "androidx.core:core-ktx:$rootProject.rootProject.coreKtxVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
 
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
@@ -96,12 +95,13 @@ dependencies {
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
+
+    // Preferences
+    implementation "androidx.preference:preference-ktx:$preferenceVersion"
 
     // Navigation
     implementation "androidx.navigation:navigation-runtime-ktx:$rootProject.navVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navVersion"
 
     // Swipe Reveal Layout
     implementation "com.chauthai.swipereveallayout:swipe-reveal-layout:$rootProject.swipeRevealVersion"

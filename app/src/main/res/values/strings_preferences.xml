@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="preferences_title">Preferences</string>
+    <string name="prefs_title">Preferences</string>
 
-    <string name="preferences_title_log_out">Sign-Out</string>
-    <string name="preferences_description_log_out">Sign-out of the app.</string>
+    <string name="prefs_category_key_general">general_category_key</string>
+    <string name="prefs_category_title_general">General</string>
 
-    <string name="preferences_title_delete_account">Delete Account</string>
-    <string name="preferences_description_delete_account">Permanently delete your account.\nCANNOT BE UNDONE.</string>
+    <string name="prefs_key_night_mode">night_mode_key</string>
+    <string name="prefs_title_night_mode">Night Mode</string>
+
+
+    <string name="prefs_category_key_account">account_category_key</string>
+    <string name="prefs_category_title_account">Account</string>
+
+    <string name="prefs_key_sign_out">sign_out_key</string>
+    <string name="prefs_title_sign_out">Sign-Out</string>
+    <string name="prefs_description_sign_out">Sign-out of the app.</string>
+
+    <string name="prefs_key_delete_account">delete_account_key</string>
+    <string name="prefs_title_delete_account">Delete Account</string>
+    <string name="prefs_description_delete_account">Permanently delete your account. \nCANNOT BE UNDONE.</string>
 </resources>

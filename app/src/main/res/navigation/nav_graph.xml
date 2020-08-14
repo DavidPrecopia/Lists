@@ -172,8 +172,7 @@
     <fragment
         android:id="@+id/preferencesView"
         android:name="com.precopia.david.lists.view.preferences.PreferencesView"
-        android:label="PreferencesView"
-        tools:layout="@layout/preferences_view">
+        android:label="PreferencesView">
         <action
             android:id="@+id/action_preferencesView_to_confirmSignOutDialog"
             app:destination="@id/confirmSignOutDialog"
