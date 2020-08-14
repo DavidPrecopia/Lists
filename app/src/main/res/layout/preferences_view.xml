@@ -34,14 +34,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_normal"
-                android:text="@string/preferences_title_log_out"
+                android:text="@string/preferences_title_sign_out"
                 app:layout_constraintStart_toEndOf="@id/iv_sign_out"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/preferences_description_log_out"
+                android:text="@string/preferences_description_sign_out"
                 app:layout_constraintStart_toStartOf="@id/sign_out_title"
                 app:layout_constraintTop_toBottomOf="@id/sign_out_title" />
 

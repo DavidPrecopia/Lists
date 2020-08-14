@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="@string/preferences_category_key_general"
+        android:title="@string/preferences_category_title_general">
+        <ListPreference
+            app:icon="@drawable/ic_night_mode_24dp"
+            app:key="@string/preferences_key_night_mode"
+            app:summary="@string/preferences_description_night_mode"
+            app:title="@string/preferences_title_night_mode" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/preferences_category_key_account"
+        android:title="@string/preferences_category_title_account">
+
+        <Preference
+            app:icon="@drawable/ic_sign_out_40dp"
+            app:key="@string/preferences_key_sign_out"
+            app:summary="@string/preferences_description_sign_out"
+            app:title="@string/preferences_title_sign_out" />
+
+        <Preference
+            app:icon="@drawable/ic_delete_forever_40dp"
+            app:key="@string/preferences_key_delete_account"
+            app:summary="@string/preferences_description_delete_account"
+            app:title="@string/preferences_title_delete_account" />
+    </PreferenceCategory>
+</PreferenceScreen>
