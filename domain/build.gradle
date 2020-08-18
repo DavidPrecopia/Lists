@@ -10,8 +10,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.kotlinVersion"
-
     // RxJava
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
     api "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"

@@ -35,8 +35,6 @@ android {
 dependencies {
     api project(":domain")
 
-    api "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.kotlinVersion"
-
     // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
     // Firebase Authentication
