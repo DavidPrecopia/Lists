@@ -209,6 +209,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_preferencesView_to_themeDialog"
+            app:destination="@id/themeDialog"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
@@ -231,5 +238,17 @@
         <argument
             android:name="listener"
             app:argType="com.precopia.david.lists.view.preferences.dialogs.ConfirmAccountDeletionDialog$DeleteAccountListener" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/themeDialog"
+        android:name="com.precopia.david.lists.view.preferences.dialogs.ThemeDialog"
+        android:label="ThemeDialog">
+        <argument
+            android:name="selectedIndex"
+            app:argType="integer" />
+        <argument
+            android:name="listener"
+            app:argType="com.precopia.david.lists.view.preferences.dialogs.ThemeDialog$ThemeChangeListener" />
     </dialog>
 </navigation>

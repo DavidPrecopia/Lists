@@ -4,7 +4,6 @@
     <string name="menu_item_title_delete">Delete</string>
 
     <string name="menu_item_preferences">Preferences</string>
-    <string name="menu_item_title_night_mode">Night Mode</string>
 
     <string name="night_mode_shared_pref_key" translatable="false">night_mode_shared_pref_key</string>
 </resources>

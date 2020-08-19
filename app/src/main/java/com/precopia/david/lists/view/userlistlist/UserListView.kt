@@ -77,23 +77,12 @@ class UserListView : ListViewBase(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.toolbar_menu, menu)
-        initMenuSetCheckedState(menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun initMenuSetCheckedState(menu: Menu) {
-        menu.findItem(R.id.menu_id_night_mode).isChecked = logic.isNightModeEnabled
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_id_preferences -> logic.onEvent(LogicEvents.PreferencesSelected)
-            R.id.menu_id_night_mode -> {
-                with(item.isChecked) {
-                    logic.onEvent(LogicEvents.SetNightMode(this))
-                    this.not()
-                }
-            }
             else -> UtilExceptions.throwException(IllegalArgumentException())
         }
         return super.onOptionsItemSelected(item)

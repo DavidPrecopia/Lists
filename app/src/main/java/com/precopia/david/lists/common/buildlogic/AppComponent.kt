@@ -2,7 +2,7 @@ package com.precopia.david.lists.common.buildlogic
 
 import android.app.Application
 import android.content.SharedPreferences
-import com.precopia.david.lists.util.IUtilNightModeContract
+import com.precopia.david.lists.util.IUtilThemeContract
 import com.precopia.domain.repository.IRepositoryContract
 import dagger.BindsInstance
 import dagger.Component
@@ -12,10 +12,10 @@ import javax.inject.Singleton
 @Component(modules = [
     RepositoryModule::class,
     SharedPrefsModule::class,
-    UtilNightModeModule::class
+    UtilThemeModule::class
 ])
 interface AppComponent {
-    fun utilNightMode(): IUtilNightModeContract
+    fun utilTheme(): IUtilThemeContract
 
     fun sharedPrefs(): SharedPreferences
 
