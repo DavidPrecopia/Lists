@@ -9,33 +9,33 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class UtilNightModeTest {
+class UtilThemeTest {
 
-    private val utilNightMode = (ApplicationProvider.getApplicationContext() as ListsApplication)
-            .appComponent.utilNightMode()
+    private val utilTheme = (ApplicationProvider.getApplicationContext() as ListsApplication)
+            .appComponent.utilTheme()
 
     @Test
     fun setDayTest() {
-        utilNightMode.setDay()
+        utilTheme.setDay()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     @Test
     fun setNightTest() {
-        utilNightMode.setDark()
+        utilTheme.setDark()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     @Test
     fun setFollowSystemTest() {
-        utilNightMode.setFollowSystem()
+        utilTheme.setFollowSystem()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     @Test
     fun restoreTest() {
-        utilNightMode.setDark()
-        utilNightMode.restore()
+        utilTheme.setDark()
+        utilTheme.restore()
         assertModeEnabled(AppCompatDelegate.MODE_NIGHT_YES)
     }
 

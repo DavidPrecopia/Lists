@@ -10,11 +10,11 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class UtilNightModeModule {
+class UtilThemeModule {
     @Singleton
     @Provides
-    fun utilNightMode(application: Application,
-                      sharedPrefs: SharedPreferences): IUtilThemeContract {
+    fun utilTheme(application: Application,
+                  sharedPrefs: SharedPreferences): IUtilThemeContract {
         return UtilTheme(
                 sharedPrefs,
                 application,

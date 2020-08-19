@@ -30,8 +30,8 @@ class ViewCommonModule {
     }
 
     @Provides
-    fun utilNightMode(appComponent: AppComponent): IUtilThemeContract {
-        return appComponent.utilNightMode()
+    fun utilTheme(appComponent: AppComponent): IUtilThemeContract {
+        return appComponent.utilTheme()
     }
 
     @Provides

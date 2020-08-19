@@ -43,7 +43,7 @@ internal abstract class ListsApplicationBase : Application() {
 
     private fun init() {
         initRxAndroidSchedulers()
-        setNightMode()
+        setTheme()
     }
 
     /**
@@ -57,7 +57,7 @@ internal abstract class ListsApplicationBase : Application() {
         }
     }
 
-    private fun setNightMode() {
-        appComponent.utilNightMode().restore()
+    private fun setTheme() {
+        appComponent.utilTheme().restore()
     }
 }

@@ -12,10 +12,10 @@ import javax.inject.Singleton
 @Component(modules = [
     RepositoryModule::class,
     SharedPrefsModule::class,
-    UtilNightModeModule::class
+    UtilThemeModule::class
 ])
 interface AppComponent {
-    fun utilNightMode(): IUtilThemeContract
+    fun utilTheme(): IUtilThemeContract
 
     fun sharedPrefs(): SharedPreferences
 
