@@ -1,5 +1,6 @@
 package com.precopia.david.lists.view.preferences.buildlogic
 
+import android.content.SharedPreferences
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.precopia.david.lists.common.buildlogic.ViewScope
@@ -24,8 +25,9 @@ class PreferencesModule {
     @Provides
     fun factory(viewModel: IPreferencesViewContract.ViewModel,
                 utilTheme: IUtilThemeContract,
-                userRepo: IRepositoryContract.UserRepository): ViewModelProvider.NewInstanceFactory {
-        return PreferencesLogicFactory(viewModel, utilTheme, userRepo)
+                userRepo: IRepositoryContract.UserRepository,
+                sharedPrefs: SharedPreferences): ViewModelProvider.NewInstanceFactory {
+        return PreferencesLogicFactory(viewModel, utilTheme, userRepo, sharedPrefs)
     }
 
     @JvmSuppressWildcards

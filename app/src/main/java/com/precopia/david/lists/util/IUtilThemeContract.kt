@@ -17,10 +17,4 @@ interface IUtilThemeContract {
         DARK("Dark"),
         FOLLOW_SYSTEM("System default")
     }
-
-    enum class ThemeValues(val value: String) {
-        DAY("0"),
-        DARK("1"),
-        FOLLOW_SYSTEM("2")
-    }
 }
