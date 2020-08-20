@@ -42,8 +42,8 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle
     - name: Run all unit tests
       run: ./gradlew testDebug --info
-    - name: Build release APK
-      run: ./gradlew buildRelease --info
+    - name: Assemble release APK
+      run: ./gradlew assembleRelease --info
     - name: Upload the release APK
       uses: actions/upload-artifact@v2
       with:
