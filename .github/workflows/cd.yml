@@ -40,8 +40,8 @@ jobs:
       run: ./gradlew testDebug --info
     - name: Build release APK
       run: ./gradlew buildRelease --info
-    - uses: actions/upload-artifact@v2
     - name: Upload the release APK
+      uses: actions/upload-artifact@v2
       with:
         name: release-apk
         path: app/build/outputs/apk/release/**.apk
