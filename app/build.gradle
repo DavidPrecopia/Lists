@@ -28,7 +28,7 @@ android {
         // https://developer.android.com/studio/build/shrink-code#unused-alt-resources
         resConfig rootProject.resConfigs
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        setProperty("archivesBaseName", "${applicationId}-v${rootProject.versionName}-(${rootProject.versionCode})")
+        setProperty("archivesBaseName", "Lists-v${rootProject.versionName}")
     }
     signingConfigs {
         release {
