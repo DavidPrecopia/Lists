@@ -103,9 +103,6 @@ dependencies {
     // Swipe Reveal Layout
     implementation "com.chauthai.swipereveallayout:swipe-reveal-layout:$rootProject.swipeRevealVersion"
 
-    //Anko
-    implementation "org.jetbrains.anko:anko-commons:$rootProject.ankoVersion"
-
     // Firebase Crashlytics
     releaseImplementation "com.google.firebase:firebase-crashlytics:$rootProject.crashlyticsVersion"
 
