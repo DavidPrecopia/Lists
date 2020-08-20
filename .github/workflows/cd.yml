@@ -22,6 +22,10 @@ jobs:
       run: |
         echo "${{ secrets.KEYSTORE }}" > lists_keystore.jks.asc
         gpg -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch lists_keystore.jks.asc > app/lists_keystore.jks
+    - name: Restore debug google.json
+      run: |
+        echo "${{ secrets.GOOGLE_JSON_DEBUG }}" > google-services.json.asc
+        gpg -d --passphrase "${{ secrets.GOOGLE_JSON_DEBUG_PASSPHRASE }}" --batch google-services.json.asc > app/src/debug/google-services.json
     - name: Restore release google.json
       run: |
         echo "${{ secrets.GOOGLE_JSON_RELEASE }}" > google-services.json.asc
