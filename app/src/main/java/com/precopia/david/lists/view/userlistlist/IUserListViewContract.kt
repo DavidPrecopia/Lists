@@ -7,8 +7,6 @@ interface IUserListViewContract {
     interface View
 
     interface Logic {
-        val isNightModeEnabled: Boolean
-
         fun onEvent(event: LogicEvents)
 
         fun observe(): LiveData<ViewEvents>
@@ -65,6 +63,5 @@ interface IUserListViewContract {
         data class UndoRecentDeletion(val adapter: Adapter) : LogicEvents()
         object DeletionNotificationTimedOut : LogicEvents()
         object PreferencesSelected : LogicEvents()
-        data class SetNightMode(val isMenuItemChecked: Boolean) : LogicEvents()
     }
 }

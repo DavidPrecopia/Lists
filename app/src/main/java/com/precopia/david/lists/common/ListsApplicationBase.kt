@@ -43,7 +43,7 @@ internal abstract class ListsApplicationBase : Application() {
 
     private fun init() {
         initRxAndroidSchedulers()
-        setNightMode()
+        setTheme()
     }
 
     /**
@@ -57,11 +57,7 @@ internal abstract class ListsApplicationBase : Application() {
         }
     }
 
-    private fun setNightMode() {
-        val utilNightMode = appComponent.utilNightMode()
-        when {
-            utilNightMode.nightModeEnabled -> utilNightMode.setNight()
-            else -> utilNightMode.setDay()
-        }
+    private fun setTheme() {
+        appComponent.utilTheme().restore()
     }
 }

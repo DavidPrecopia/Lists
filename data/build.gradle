@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: "de.mannodermaus.android-junit5"
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -33,9 +33,7 @@ android {
 }
 
 dependencies {
-    implementation project(":domain")
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$rootProject.kotlinVersion"
+    api project(":domain")
 
     // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore-ktx:$rootProject.firestoreVersion"
@@ -47,11 +45,13 @@ dependencies {
                 "I would rather spend elsewhere." +
                 "I am excluding the material library so I can continue using an older version of it."
     }
+    implementation ("com.google.android.material:material:$rootProject.materialDesignVersion") {
+        because "This fixes the Gradle `assemble` command failing. This dependency is required by Firebase UI."
+    }
     implementation "com.google.firebase:firebase-auth-ktx:$rootProject.firebaseAuthVersion"
     implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
 
     // RxJava
-    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
 
     // Timber

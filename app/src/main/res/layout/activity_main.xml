@@ -6,11 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.precopia.david.lists.view.common.MainActivity">
 
-    <!--
-        FragmentContainerView causes a crash in release builds.
-        As of fragment-1.2.0-rc01.
-    -->
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"

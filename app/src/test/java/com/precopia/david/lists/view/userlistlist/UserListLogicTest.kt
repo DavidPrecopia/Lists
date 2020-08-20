@@ -5,7 +5,6 @@ import com.precopia.david.lists.InstantExecutorExtension
 import com.precopia.david.lists.SchedulerProviderMockInit
 import com.precopia.david.lists.observeForTesting
 import com.precopia.david.lists.util.ISchedulerProviderContract
-import com.precopia.david.lists.util.IUtilNightModeContract
 import com.precopia.david.lists.view.userlistlist.IUserListViewContract.LogicEvents
 import com.precopia.david.lists.view.userlistlist.IUserListViewContract.ViewEvents
 import com.precopia.domain.datamodel.UserList
@@ -34,9 +33,7 @@ class UserListLogicTest {
 
     private val disposable = spyk<CompositeDisposable>()
 
-    private val utilNightMode = mockk<IUtilNightModeContract>(relaxUnitFun = true)
-
-    private val logic = UserListLogic(viewModel, utilNightMode, repo, schedulerProvider, disposable)
+    private val logic = UserListLogic(viewModel, repo, schedulerProvider, disposable)
 
 
     private val adapter = mockk<IUserListViewContract.Adapter>(relaxUnitFun = true)
@@ -576,44 +573,6 @@ class UserListLogicTest {
 
         logic.observe().observeForTesting {
             assertThat(logic.observe().value).isEqualTo(ViewEvents.OpenPreferences)
-        }
-    }
-
-
-    @Nested
-    inner class NightMode {
-        /**
-         * - Menu item is unchecked.
-         * - Night mode is enabled.
-         */
-        @Test
-        fun `setNightMode - Unchecked`() {
-            logic.onEvent(LogicEvents.SetNightMode(false))
-
-            verify { utilNightMode.setNight() }
-        }
-
-        /**
-         * - Menu item is Checked.
-         * - Night mode is Disabled.
-         */
-        @Test
-        fun `setNightMode - Checked`() {
-            logic.onEvent(LogicEvents.SetNightMode(true))
-
-            verify { utilNightMode.setDay() }
-        }
-
-        /**
-         * - True is returned when night mode is enabled.
-         */
-        @Test
-        fun isNightModeEnabled() {
-            val nightModeEnabled = true
-
-            every { utilNightMode.nightModeEnabled } returns nightModeEnabled
-
-            assertThat(logic.isNightModeEnabled).isEqualTo(nightModeEnabled)
         }
     }
 }

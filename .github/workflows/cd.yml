@@ -1,0 +1,51 @@
+name: CD
+
+on:
+  pull_request:
+    branches: [ release ]
+
+# The CD job is a god job due to a security issue.
+# In order to transfer the restored files in-between jobs, I would have to upload and then download them.
+# That is a security breach because the uploaded files will be publicly available.
+
+jobs:
+  cd:
+    name: CD
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Restore keystore.properties
+      run: |
+        echo "${{ secrets.KEYSTORE_PROPERTIES }}" > keystore.properties.asc
+        gpg -d --passphrase "${{ secrets.KEYSTORE_PROPERTIES_PASSPHRASE }}" --batch keystore.properties.asc > keystore.properties
+    - name: Restore keystore.jsk
+      run: |
+        echo "${{ secrets.KEYSTORE }}" > lists_keystore.jks.asc
+        gpg -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch lists_keystore.jks.asc > app/lists_keystore.jks
+    - name: Restore debug google.json
+      run: |
+        echo "${{ secrets.GOOGLE_JSON_DEBUG }}" > google-services.json.asc
+        gpg -d --passphrase "${{ secrets.GOOGLE_JSON_DEBUG_PASSPHRASE }}" --batch google-services.json.asc > app/src/debug/google-services.json
+    - name: Restore release google.json
+      run: |
+        echo "${{ secrets.GOOGLE_JSON_RELEASE }}" > google-services.json.asc
+        gpg -d --passphrase "${{ secrets.GOOGLE_JSON_RELEASE_PASSPHRASE }}" --batch google-services.json.asc > app/src/release/google-services.json
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: ${{ runner.os }}-gradle
+    - name: Run all unit tests
+      run: ./gradlew testDebug --info
+    - name: Assemble release APK
+      run: ./gradlew assembleRelease --info
+    - name: Upload the release APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-apk
+        path: app/build/outputs/apk/release/*.apk
