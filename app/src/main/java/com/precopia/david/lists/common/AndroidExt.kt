@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import org.jetbrains.anko.toast
+import splitties.toast.toast
 
 val Fragment.application: Application
     get() = activity!!.application
 
-fun Fragment.toast(message: String) = context!!.toast(message)
+fun Fragment.toast(message: String) = toast(message)
 
 fun Fragment.navigate(direction: NavDirections) {
     findNavController().navigate(direction)

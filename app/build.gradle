@@ -96,15 +96,15 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
 
+    // Splitties
+    implementation "com.louiscad.splitties:splitties-toast:$splittiesVersion"
+
     // Navigation
     implementation "androidx.navigation:navigation-runtime-ktx:$rootProject.navVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navVersion"
 
     // Swipe Reveal Layout
     implementation "com.chauthai.swipereveallayout:swipe-reveal-layout:$rootProject.swipeRevealVersion"
-
-    //Anko
-    implementation "org.jetbrains.anko:anko-commons:$rootProject.ankoVersion"
 
     // Firebase Crashlytics
     releaseImplementation "com.google.firebase:firebase-crashlytics:$rootProject.crashlyticsVersion"

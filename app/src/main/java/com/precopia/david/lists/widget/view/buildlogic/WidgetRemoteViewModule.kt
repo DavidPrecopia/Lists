@@ -22,7 +22,6 @@ import com.precopia.david.lists.widget.view.IWidgetRemoteViewContract.Companion.
 import com.precopia.david.lists.widget.view.MyRemoteViewsService
 import dagger.Module
 import dagger.Provides
-import org.jetbrains.anko.intentFor
 import javax.inject.Named
 
 @Module
@@ -55,9 +54,9 @@ class WidgetRemoteViewModule {
     @Named(INTENT_CONFIG)
     fun configActivityIntent(context: Context,
                              appWidgetId: Int): Intent {
-        return context.intentFor<WidgetConfigView>(
-                AppWidgetManager.EXTRA_APPWIDGET_ID to appWidgetId
-        )
+        return Intent(context, WidgetConfigView::class.java).apply {
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        }
     }
 
     @ViewScope
@@ -66,10 +65,9 @@ class WidgetRemoteViewModule {
     fun adapterIntent(context: Context,
                       @Named(LIST_ID) listId: String,
                       appWidgetId: Int): Intent {
-        return context.intentFor<MyRemoteViewsService>(
-                context.getString(R.string.intent_extra_user_list_id) to listId,
-                AppWidgetManager.EXTRA_APPWIDGET_ID to appWidgetId
-        ).apply {
+        return Intent(context, MyRemoteViewsService::class.java).apply {
+            putExtra(context.getString(R.string.intent_extra_user_list_id), listId)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             // So the system can distinguish between the different widget instances
             data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
         }

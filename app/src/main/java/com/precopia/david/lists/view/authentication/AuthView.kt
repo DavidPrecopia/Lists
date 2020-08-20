@@ -17,7 +17,7 @@ import com.precopia.david.lists.view.authentication.IAuthContract.LogicEvents
 import com.precopia.david.lists.view.authentication.IAuthContract.ViewEvents
 import com.precopia.david.lists.view.authentication.buildlogic.DaggerAuthComponent
 import kotlinx.android.synthetic.main.auth_view.*
-import org.jetbrains.anko.longToast
+import splitties.toast.longToast
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -115,7 +115,7 @@ class AuthView : Fragment(R.layout.auth_view), IAuthContract.View {
     }
 
     private fun displayMessage(message: String) {
-        requireContext().longToast(message)
+        longToast(message)
     }
 
 
