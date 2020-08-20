@@ -45,6 +45,9 @@ dependencies {
                 "I would rather spend elsewhere." +
                 "I am excluding the material library so I can continue using an older version of it."
     }
+    implementation ("com.google.android.material:material:$rootProject.materialDesignVersion") {
+        because "This fixes the Gradle `assemble` command failing. This dependency is required by Firebase UI."
+    }
     implementation "com.google.firebase:firebase-auth-ktx:$rootProject.firebaseAuthVersion"
     implementation "com.google.android.gms:play-services-auth:$rootProject.playServicesAuthVersion"
 
