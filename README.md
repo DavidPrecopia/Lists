@@ -71,7 +71,7 @@ Inside of a list
 
 Preferences
 
-<img src="screenshots/preferences.jpg" width=30% />
+<img src="screenshots/preferences_v2.jpg" width=30% />
 
 Night mode
 

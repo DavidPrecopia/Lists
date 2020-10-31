@@ -1,15 +1,16 @@
 package com.precopia.david.lists.common
 
 import android.app.Application
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import splitties.toast.toast
 
 val Fragment.application: Application
     get() = activity!!.application
 
-fun Fragment.toast(message: String) = toast(message)
+fun Fragment.toast(message: String) =
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
 fun Fragment.navigate(direction: NavDirections) {
     findNavController().navigate(direction)
