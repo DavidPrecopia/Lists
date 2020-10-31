@@ -381,20 +381,16 @@ class UserListLogicTest {
 
         /**
          * - Attempt to get the selected UserList from the ViewModel with the invalid position.
-         * - Exception is thrown
+         * - Nothing happens.
          */
         @Test
         fun `delete - Invalid Position`() {
             val invalidPosition = -1
-            val userListList = mutableListOf(userListOne)
-            val tempUserLists = mutableListOf<UserList>()
 
-            every { viewModel.viewData } returns userListList
-            every { viewModel.tempList } returns tempUserLists
+            logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
 
-            assertThrows<java.lang.IndexOutOfBoundsException> {
-                logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
-            }
+            verify { adapter wasNot Called }
+            verify { viewModel wasNot Called }
         }
     }
 
