@@ -114,6 +114,9 @@ class UserListLogic(private val viewModel: IUserListViewContract.ViewModel,
 
 
     private fun delete(position: Int, adapter: IUserListViewContract.Adapter) {
+        if (position < 0) {
+            return
+        }
         adapter.remove(position)
         saveDeletedUserList(position)
         viewEvent(ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion))

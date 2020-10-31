@@ -431,15 +431,11 @@ class ItemLogicTest {
         @Test
         fun `delete - Invalid Position`() {
             val invalidPosition = -1
-            val itemList = mutableListOf(itemOne)
-            val tempItemLists = mutableListOf<Item>()
 
-            every { viewModel.viewData } returns itemList
-            every { viewModel.tempList } returns tempItemLists
+            logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
 
-            assertThrows<java.lang.IndexOutOfBoundsException> {
-                logic.onEvent(LogicEvents.Delete(invalidPosition, adapter))
-            }
+            verify { adapter wasNot Called }
+            verify { viewModel wasNot Called }
         }
     }
 

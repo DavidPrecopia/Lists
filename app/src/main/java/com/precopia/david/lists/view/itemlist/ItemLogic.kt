@@ -128,6 +128,9 @@ class ItemLogic(private val viewModel: IItemViewContract.ViewModel,
 
 
     private fun delete(position: Int, adapter: IItemViewContract.Adapter) {
+        if (position < 0) {
+            return
+        }
         adapter.remove(position)
         saveDeletedItem(position)
         viewEvent(ViewEvents.NotifyUserOfDeletion(viewModel.msgDeletion))
