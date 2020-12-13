@@ -28,7 +28,7 @@ buildscript {
         crashlyticsVersion = "17.2.1"
         daggerVersion = '2.27'
         rxAndroidVersion = "3.0.0"
-        rxJavaVersion = '3.0.5'
+        rxJavaVersion = '3.0.7'
         timberVersion = "4.7.1"
         leakCanaryVersion = "2.4"
         junitVersion = "5.6.2"
