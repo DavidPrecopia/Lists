@@ -4,6 +4,8 @@
 
 Keeps lists synchronized across different devices.
 
+You can find the latest APK [here](https://github.com/DavidPrecopia/Lists/releases).
+
 **Technical Features**
 
 - Firebase's [Cloud Firestore](https://firebase.google.com/docs/firestore) to synchronize between Android devices.
