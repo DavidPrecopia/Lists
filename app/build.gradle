@@ -100,8 +100,8 @@ dependencies {
     implementation "androidx.navigation:navigation-runtime-ktx:$rootProject.navVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navVersion"
 
-    // Swipe Reveal Layout
-    implementation "com.chauthai.swipereveallayout:swipe-reveal-layout:$rootProject.swipeRevealVersion"
+    // Swipe Reveal Layout - stored locally due to being depreciated and exclusively on JCenter.
+    implementation files('libs/swipe-reveal-layout-1.4.1.aar')
 
     // Firebase Crashlytics
     releaseImplementation "com.google.firebase:firebase-crashlytics:$rootProject.crashlyticsVersion"
