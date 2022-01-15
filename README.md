@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/DavidPrecopia/Lists/workflows/CI/badge.svg)
 
+This project is now depreciated due to having antiquated dependencies (cannot find due to JCenter being shut down) and needing to move on to other projects.
+
 Keeps lists synchronized across different devices.
 
 You can find the latest APK [here](https://github.com/DavidPrecopia/Lists/releases).
